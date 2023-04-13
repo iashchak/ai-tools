@@ -1,0 +1,39 @@
+# General
+.DS_Store
+*.log
+*.bak
+*.swp
+*.pyc
+__pycache__
+*.pyo
+*.egg-info/
+dist/
+*.egg
+*.so
+*.o
+*.a
+*.lib
+*.exe
+
+# Jupyter Notebook
+.ipynb_checkpoints/*.ipynb
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Spyder
+.spyderproject
+.spyproject
+.spyder/
+
+# Python environments
+.env
+.venv/
+venv/
+ENV/
+env.bak/
+data/*.csv
+datasets/*.pkl
