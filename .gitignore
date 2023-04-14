@@ -16,7 +16,7 @@ dist/
 *.exe
 
 # Jupyter Notebook
-.ipynb_checkpoints/*.ipynb
+.ipynb_checkpoints
 
 # VSCode
 .vscode/

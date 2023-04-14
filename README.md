@@ -1,39 +1,62 @@
-# AI Tools
+# AI-based Question Answering System
 
-This project aims to fine-tune the Databricks Dolly v2-3b transformer model for engaging in conversations about science fiction films. The model will be trained on a dataset generated from Wikipedia articles about this specific topic.
-The project includes a Jupyter Notebook that outlines the steps to preprocess the data, fine-tune the model, and evaluate its performance.
+This project is an AI-based question answering system that uses fine-tuned language models to generate answers to questions based on a dataset of Wikipedia articles. The project includes data collection, dataset creation, and training of a language model for question answering.
 
-## Jupyter Notebook Structure
-The Jupyter Notebook is organized into the following sections:
+## Table of Contents
+- [Getting Started](#getting-started)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation)
+- [Usage](#usage)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
-1. Introduction
-   A brief overview of the project's goals and the model being fine-tuned.
-2. Importing Libraries
-   Import all necessary Python libraries such as transformers, pandas, numpy, and torch.
-3. Data Collection
-   Code for downloading and processing the Wikipedia articles using the WikipediaBulkDownloader class provided in the first message.
-4. Creating a Dialogue Dataset
-   Code for generating question-answer pairs based on the Wikipedia articles and storing them in a text file.
-5. Data Preprocessing
-   Tokenizing the text using the appropriate tokenizer from the transformers library.
-   Processing the dataset into input tokens (questions) and output tokens (answers).
-6. Model Fine-tuning
-   Code for fine-tuning the Databricks Dolly v2-3b model on the processed dataset using the Trainer method from the transformers library.
-   Defining loss computation functions, an optimizer, and configuring hyperparameters such as the number of epochs, batch size, and learning rate.
-7. Model Testing
-   Code for evaluating the performance of the fine-tuned model by posing questions related to the topic of the articles and generating responses using the instructions provided in the second message.
-8. Conclusion
-   A summary of the project's results and any insights gained from fine-tuning and testing the model.
-   To run the Jupyter Notebook, ensure that you have the necessary dependencies installed, such as transformers, pandas, numpy, and torch. You can install them using pip:
+## Getting Started
 
-```bash
-pip install -r requirements.txt
-```
+Follow these steps to set up and run the project on your local machine.
 
-Once the dependencies are installed, you can open and execute the Jupyter Notebook by running:
+### Prerequisites
 
-```bash
-jupyter notebook
-```
+- Python 3.8 or higher
+- PyTorch 1.9 or higher
+- Hugging Face Transformers library
 
-and navigating to the notebook file in your browser.
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:iashchak/ai-tools.git
+   ```
+
+2. Change to the project directory:
+   ```bash
+   cd ai-tools
+   ```
+
+3. Install the required packages using pip:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Usage
+
+To run the project, execute the Jupyter Notebook `notebooks/train.ipynb`. This will download the dataset, create question-answer pairs, train the model, and test it with some example questions.
+
+## Roadmap
+
+- [x] Data collection from Wikipedia
+- [x] Dataset creation (question-answer pairs)
+- [x] Model training using Hugging Face Transformers
+- [x] Model evaluation and testing
+- [ ] Improve dataset quality with better question generation
+- [ ] Increase the size and diversity of the dataset
+- [ ] Improve model performance with hyperparameter tuning
+- [ ] Implement a user-friendly interface for interacting with the model
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to the project.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

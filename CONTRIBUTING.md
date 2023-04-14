@@ -1,39 +1,96 @@
-# Contributing to AI Tools
+# Contributing Guidelines
 
-We appreciate your interest in contributing to the Sci-Fi Films Dialogue Project! This document provides guidelines to help make your contribution experience smooth and efficient.
+Thank you for considering contributing to our project! Here are some guidelines to help you get started.
 
-## Getting Started
+## Project Overview
 
-1. Fork the repository on GitHub.
-2. Clone your fork to your local machine.
-3. Set up a new branch for your feature or bugfix.
-4. Commit your changes to your branch.
-5. Push your changes to your fork on GitHub.
-6. Create a pull request against the main repository.
+Our project aims to build a question answering model using the Transformers library from Hugging Face. We download and preprocess data from Wikipedia using natural language processing techniques and transformer-based models, fine-tune a pre-trained transformer model on the data, and generate answers to a set of predefined questions using the trained model.
 
-## Code Structure
+## How to Contribute
 
-The project consists of a Jupyter Notebook that utilizes a transformer model (Databricks Dolly v2-2-8b) to generate dialogues related to the sci-fi films topic. The data used to fine-tune the model is fetched from Wikipedia articles on sci-fi films using the `WikipediaBulkDownloader` class.
+We welcome contributions from the community! Here are some ways you can contribute:
 
-## Reporting Issues
+### Reporting Issues
 
-If you encounter any issues or have any feature requests, please create a new issue on the project's GitHub page. Be sure to provide a detailed description of the problem or request, along with any relevant information.
+If you encounter any issues while using our project, please report them on our [GitHub Issues](https://github.com/your-username/your-project-name/issues) page. Please include a detailed description of the issue, steps to reproduce it, and any relevant screenshots or error messages.
 
-## Pull Requests
+### Fixing Bugs
 
-When submitting a pull request, please ensure that your code follows the existing coding style and structure. Make sure to:
+If you would like to fix a bug, please follow these steps:
 
-1. Add a clear and concise description of your changes.
-2. Ensure your changes do not break any existing functionality.
-3. Verify that your code has been tested and is working as expected.
-4. Add any necessary comments or documentation to help others understand your changes.
+1. Find an open issue on our [GitHub Issues](https://github.com/your-username/your-project-name/issues) page that you would like to fix.
+
+2. Comment on the issue that you would like to work on it, and wait for confirmation from a project maintainer.
+
+3. Fork the repository and clone it to your local machine.
+
+4. Create a new branch with a descriptive name for the bug fix (e.g., "fix-broken-link").
+
+5. Make the necessary code changes to fix the bug.
+
+6. Write tests for the bug fix.
+
+7. Push the changes to your forked repository.
+
+8. Create a pull request from your forked repository to our main repository.
+
+9. Wait for review from a project maintainer. Address any feedback and make additional changes as necessary.
+
+10. Once your pull request is approved and merged, your changes will be included in the next release of the project.
+
+### Adding Features
+
+If you would like to add a new feature to our project, please follow these steps:
+
+1. Find an open issue on our [GitHub Issues](https://github.com/your-username/your-project-name/issues) page that describes the feature you would like to add.
+
+2. Comment on the issue that you would like to work on it, and wait for confirmation from a project maintainer.
+
+3. Fork the repository and clone it to your local machine.
+
+4. Create a new branch with a descriptive name for the new feature (e.g., "add-search-functionality").
+
+5. Make the necessary code changes to add the new feature.
+
+6. Write tests for the new feature.
+
+7. Push the changes to your forked repository.
+
+8. Create a pull request from your forked repository to our main repository.
+
+9. Wait for review from a project maintainer. Address any feedback and make additional changes as necessary.
+
+10. Once your pull request is approved and merged, your changes will be included in the next release of the project.
+
+### Contributing to Documentation
+
+If you would like to contribute to the project's documentation, please follow these steps:
+
+1. Fork the repository and clone it to your local machine.
+
+2. Create a new branch with a descriptive name for your documentation changes (e.g., "update-readme").
+
+3. Make the necessary changes to the documentation.
+
+4. Push the changes to your forked repository.
+
+5. Create a pull request from your forked repository to our main repository.
+
+6. Wait for review from a project maintainer. Address any feedback and make additional changes as necessary.
+
+7. Once your pull request is approved and merged, your changes will be included in the next release of the project.
 
 ## Code of Conduct
 
-We aim to foster an inclusive and welcoming community. As a contributor, you are expected to treat everyone with respect and follow the project's [Code of Conduct](CODE_OF_CONDUCT.md).
+We want our project to be an open and welcoming community for everyone. To achieve this, we ask that all contributors follow our Code of Conduct. This includes:
 
-## Contact
+- Being respectful and considerate of others' opinions, experiences, and backgrounds.
+- Refraining from discriminatory language or behavior.
+- Being open to feedback and constructive criticism.
+- Reporting any Code of Conduct violations to the project maintainers.
 
-If you have any questions or need assistance, please feel free to reach out to the project maintainers.
+If you have any questions or concerns about the Code of Conduct, please contact the project maintainers.
 
-Thank you for contributing to AI Tools!
+## Attribution
+
+This Contributing Guidelines document was adapted from the [Contributing Guidelines](https://github.com/nayafia/contributing-template/blob/master/CONTRIBUTING-template.md) template by [nayafia](https://github.com/nayafia). 
