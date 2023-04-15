@@ -36,4 +36,4 @@ venv/
 ENV/
 env.bak/
 data/*.csv
-datasets/*.pkl
+datasets/*.csv

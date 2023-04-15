@@ -48,7 +48,7 @@ To run the project, execute the Jupyter Notebook `notebooks/train.ipynb`. This w
 - [x] Dataset creation (question-answer pairs)
 - [x] Model training using Hugging Face Transformers
 - [x] Model evaluation and testing
-- [ ] Improve dataset quality with better question generation
+- [X] Improve dataset quality with better question generation
 - [ ] Increase the size and diversity of the dataset
 - [ ] Improve model performance with hyperparameter tuning
 - [ ] Implement a user-friendly interface for interacting with the model
