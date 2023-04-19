@@ -33,9 +33,11 @@ Follow these steps to set up and run the project on your local machine.
    cd ai-tools
    ```
 
-3. Install the required packages using pip:
+3. Install the required packages:
+- Init a new conda environment with `environment.yml` file (preffered)
+- Update current one with `environment.yml` file
    ```bash
-   pip install -r requirements.txt
+   conda env update --file environment.yml
    ```
 
 ## Usage
