@@ -1,0 +1,19 @@
+[tool.black]
+
+# The default line length of 88 characters in Black was chosen as a balance
+# between readability and the number of line wraps.
+# It is slightly longer than the traditional 80 characters per line limit,
+# which is a common practice in Python and other programming languages.
+# A The 80-character limit comes from the historical limitation of early terminal
+# screens that could only display 80 characters per line.
+# The choice of 88 characters in Black is based on a study by Raymond Hettinger,
+# a core Python developer, who observed that 90 characters per line is the optimal
+# line length for readability. Black chose 88 as a compromise between 80 and 90,
+# as it is a multiple of 8, which is a common convention in Python for indentation.
+line_length = 88
+
+target_version = ["py37", "py38", "py39", "py310", "py311"]
+
+ipynb = true
+
+include = '\.ipynb$'
