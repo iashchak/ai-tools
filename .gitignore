@@ -35,5 +35,4 @@ dist/
 venv/
 ENV/
 env.bak/
-data/*.csv
-datasets/*.csv
+/notebooks/output/
