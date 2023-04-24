@@ -1,8 +1,10 @@
 # AI-based Question Answering System
 
-This project is an AI-based question answering system that uses fine-tuned language models to generate answers to questions based on a dataset of Wikipedia articles. The project includes data collection, dataset creation, and training of a language model for question answering.
+This project aims to fine-tune some existing models from the Hugging Face Transformers library.
+AS a source of data i used some public articles (questions for interview) from GitHub
 
 ## Table of Contents
+
 - [Getting Started](#getting-started)
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
@@ -11,17 +13,19 @@ This project is an AI-based question answering system that uses fine-tuned langu
 - [Contributing](#contributing)
 - [License](#license)
 
+## The jedi way of building a QA system
+
+1. Collect data (as such as possible)
+2. Preprocess data (clean, turn it into question-answer pairs or dialogue)
+3. Augment data (add noise, add duplicates, add outliers)
+4. Split data (train, validation, test)
+5. Configure model (choose model architecture, hyperparameters)
+6. Train model (fit model to data)
+7. Evaluate model (check model performance on validation data)
+
 ## Getting Started
 
 Follow these steps to set up and run the project on your local machine.
-
-### Prerequisites
-
-- Python 3.8 or higher
-- PyTorch 1.9 or higher
-- Hugging Face Transformers library
-
-### Installation
 
 1. Clone the repository:
    ```bash
@@ -40,13 +44,21 @@ Follow these steps to set up and run the project on your local machine.
    conda env update --file environment.yml
    ```
 
+
+### Prerequisites
+
+- Python 3.8 or higher
+- PyTorch 1.9 or higher
+- Hugging Face Transformers library
+
+
 ## Usage
 
-To run the project, execute the Jupyter Notebook `notebooks/train.ipynb`. This will download the dataset, create question-answer pairs, train the model, and test it with some example questions.
+To run the project, execute the Jupyter Notebook `notebooks/process_interview_questions`. This will download the dataset, create question-answer pairs, train the model, and test it with some example questions.
 
 ## Roadmap
 
-- [x] Data collection from Wikipedia
+- [x] Data collection
 - [x] Dataset creation (question-answer pairs)
 - [x] Model training using Hugging Face Transformers
 - [x] Model evaluation and testing

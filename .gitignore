@@ -36,3 +36,5 @@ venv/
 ENV/
 env.bak/
 /notebooks/output/
+/notebooks/.ipynb_checkpoints/
+/notebooks/logs/
