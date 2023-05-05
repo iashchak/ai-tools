@@ -1,0 +1,38 @@
+{
+  "settings": {
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "content": {
+        "store": true,
+        "type": "text"
+      },
+      "created": {
+        "store": true,
+        "type": "date"
+      },
+      "creators": {
+        "store": true,
+        "type": "text"
+      },
+      "length": {
+        "store": true,
+        "type": "long"
+      },
+      "mime": {
+        "store": true,
+        "type": "keyword"
+      },
+      "tika_exception": {
+        "store": true,
+        "type": "text"
+      },
+      "title": {
+        "store": true,
+        "type": "text"
+      }
+    }
+  }
+}

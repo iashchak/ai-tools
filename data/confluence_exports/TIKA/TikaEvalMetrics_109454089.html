@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaEvalMetrics</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaEvalMetrics
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Tim Allison</span> on апр 05, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaEvalMetrics-tika-evalmetrics">tika-eval metrics</h1><p>To be filled in.</p><h1 id="TikaEvalMetrics-ProfilingMetrics">Profiling Metrics</h1><h2 id="TikaEvalMetrics-CommonWords/OutofVocabulary(OOV)">Common Words/Out of Vocabulary (OOV)</h2><p>We gathered the top 30k most common words for ~120 languages from wikipedia or the Leipzig corpus.  These word lists are available in the <a class="external-link" href="https://github.com/apache/tika/tree/main/tika-eval/tika-eval-core/src/main/resources/common_tokens" rel="nofollow">common_tokens</a> directory.</p><p>When text is extracted for a given document, we run language id on the string and then count the number of common words in the extracted text divided by the number of alphabetic words total extracted.  This gives us a percentage of common words or the inverse, the Out of Vocabulary (OOV) statistic.  This is some indication of how &quot;languagey&quot; the extracted text is.</p><p>If the assumption is that your documents generally contain natural language (e.g., not just parts lists or numbers), the OOV% statistic can identify outliers for manual review.  For example, when we were testing the Tika 1.15 release candidate against the 1.14 version, we found that the text extracted by 1.14 had a 100% out of vocabulary (language id was Chinese, and the top 10 tokens were: 捳敨: 18 | 獴档: 14 | 略獴: 14 | m: 11 | 杮湥: 11 | 瑵捳: 11 | 畬杮: 11 | 档湥: 10 | 搠敩: 9 | 敮浨: 9), however, FOR THE SAME FILE, the text extracted by the 1.15 release candidate had an OOV of 54% (language id was German and the top 10 tokens were:  die: 11 | und: 8 | von: 8 | deutschen: 7 | deutsche: 6 | 1: 5 | das: 5 | der: 5 | finanzministerium: 5 | oder: 5).  In short, text that has a high OOV <em>might</em>  indicate a failed parse.  Or, when comparing two different extraction methods, it is likely that the text with the lower OOV is better (assuming the extractors aren't hallucinating common words).</p><p>Tilman Hausherr originally recommended this metric as a comparison metric when comparing the output from different versions of PDFBox. For our initial collaboration with PDFBox, we found a list of common English words and removed those that had fewer than four characters. The intuition is that if tool A extracts 500, but tool B extracts 1,000, there is <em>some</em> indication that tool B may have done a better job.</p><h3 id="TikaEvalMetrics-ImplementationDetails">Implementation Details</h3><p>For now, we've set up an Analyzer chain in Lucene that:</p><ul><li>Filters out tokens that don't contain an alphabetic or ideographic character.</li><li>Maps urls to &quot;<span style="text-decoration: underline;">url</span>&quot; and emails to &quot;<span style="text-decoration: underline;">email</span>&quot; (We don't want to penalize documents with urls and emails).</li><li>Requires that a token be at least 4 characters long <em>unless</em> it is comprised entirely of CJK characters.</li></ul><p>But wait, what's a word for non-whitespace (e.g. Chinese/Japanese) languages? We've followed common practice for non-whitespace languages of tokenizing bigrams...this is linguistically abhorrent, but it is mildly useful if inaccurate for our purposes.</p><p><strong>Benefits</strong>: Easy to implement.</p><p><strong>Risks</strong>:</p><ul><li>If an OCR engine relies solely on dictionary lookup and does not allow for out-of-vocabulary terms, the generated text will contain only known words, and the &quot;common words&quot; score will be incorrectly high. Yes, the text contains known words, but they might <strong>not</strong> reflect the correct text.</li><li>If a document contains part numbers or other non-natural language tokens, then this metric will not accurately reflect success.</li><li>Multi-lingual documents can cause challenges for interpretation. If the language id component &quot;detects&quot; English, even though the majority of the document is in Chinese, this metric will be misleading. <br class="atl-forced-newline"/><br class="atl-forced-newline"/></li></ul><h1 id="TikaEvalMetrics-ComparisonMetrics">Comparison Metrics</h1>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

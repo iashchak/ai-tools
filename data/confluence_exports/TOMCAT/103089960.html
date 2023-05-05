@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : JSP TCK (2.3 &amp; 3.0)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Jakarta-EE-TCKs_103088319.html">Jakarta EE TCKs</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : JSP TCK (2.3 &amp; 3.0)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on ноя 23, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="JSPTCK(2.3&amp;3.0)-Running">Running</h1><h2 id="JSPTCK(2.3&amp;3.0)-CommonConfigurationforallTomcatversions">Common Configuration for all Tomcat versions</h2><p>None.</p><p>Note: If you re-run the TCK you must stop Tomcat, empty the work directory and then restart Tomcat. This is because the TCK assumes it is running for the first time and a number of tests check various compilation activities.</p><h2 id="JSPTCK(2.3&amp;3.0)-Tomcat9.0.x">Tomcat 9.0.x</h2><p>None required (clean 9.0.x build).</p><h2 id="JSPTCK(2.3&amp;3.0)-Tomcat10.0.x">Tomcat 10.0.x</h2><p>Remove the request-character-encoding and response-character-encoding settings from conf/web.xml (the JSP TCK has one test that depends on the default encoding).</p><h2 id="JSPTCK(2.3&amp;3.0)-TestSuite">Test Suite</h2><p>Download one of the following:</p><ul><li>Jakarta EE 8 (Tomcat 9.0.x): <a class="external-link" href="http://download.eclipse.org/ee4j/jakartaee-tck/jakartaee8/promoted/pages-tck-2.3.0.zip" rel="nofollow">http://download.eclipse.org/ee4j/jakartaee-tck/jakartaee8/promoted/pages-tck-2.3.0.zip</a></li><li>Jakarta EE 9 (Tomcat 10.0.x): <a class="external-link" href="https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9/promoted/pages-tck-3.0.0.zip" rel="nofollow">https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9/promoted/pages-tck-3.0.0.zip</a></li></ul><p>Extract to JSP_TCK_HOME</p><p><br/></p><p>Edit $JSP_HOME/bin/ts.jte</p><p>You'll need to set the following properties (adjust the paths and values for your environment)</p><p>webServerHome=/path/to/tomcat</p><pre>webServerHost=localhost</pre><pre>webServerPort=8080</pre><p>jspservlet.classes=${webServerHome}/lib/servlet-api.jar${pathsep}${webServerHome}/lib/jsp-api.jar</p><p>el.classes=${webServerHome}/lib/el-api.jar</p><p>sigTestClasspath=${el.classes}${pathsep}${jspservlet.classes}${pathsep}${JAVA_HOME}/lib/rt.jar${pathsep}${JAVA_HOME}/lib/modules</p><pre>set JAVA_HOME</pre><pre>cd $JSP_TCK_HOME/bin</pre><pre>ant gui</pre><pre>Accept the defaults and then run the tests</pre><h1 id="JSPTCK(2.3&amp;3.0)-Expectedresults">Expected results</h1><p>A default 9.0.x build with the above configuration passes the Jakarta EE 8 JSP TCK.</p><p>A default 10.0.x build with the above configuration passes the Jakarta EE 9 JSP TCK with the following JREs:</p><ul><li>Adopt OpenJDK 8u275 b01</li><li>Adopt OpenJDK 11.0.9 b11 (TCK and Tomcat)</li></ul><h1 id="JSPTCK(2.3&amp;3.0)-Fixedbugs">Fixed bugs</h1><p>The Apache Tomcat project has reported the following bugs to the Eclipse Jakarta EE TCK project which have since been fixed.</p><ul><li>1 x regressions<ul><li><a class="external-link" href="https://github.com/eclipse-ee4j/jakartaee-tck/issues/535" rel="nofollow">https://github.com/eclipse-ee4j/jakartaee-tck/issues/535</a> (PR to fix - <a class="external-link" href="https://github.com/eclipse-ee4j/jakartaee-tck/pull/536" rel="nofollow">https://github.com/eclipse-ee4j/jakartaee-tck/pull/536</a>)</li></ul></li><li>1 x signature test<ul><li><a class="external-link" href="https://github.com/eclipse-ee4j/jakartaee-tck/issues/48" rel="nofollow">https://github.com/eclipse-ee4j/jakartaee-tck/issues/48</a></li><li><a class="external-link" href="https://github.com/eclipse-ee4j/jakartaee-tck/issues/294" rel="nofollow">https://github.com/eclipse-ee4j/jakartaee-tck/issues/294</a> (PR to fix - <a class="external-link" href="https://github.com/eclipse-ee4j/jakartaee-tck/pull/295" rel="nofollow">https://github.com/eclipse-ee4j/jakartaee-tck/pull/295</a>)</li></ul></li></ul><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

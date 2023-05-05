@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaServer in Tika 2.x</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TikaServer_148639291.html">TikaServer</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaServer in Tika 2.x
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on ноя 09, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>See <a href="Migrating-to-Tika-2.0.0_173083194.html">Migrating to Tika 2.0.0</a> for a general overview of changes in Tika 2.x.</p><p>See <a href="TikaServer_148639291.html">TikaServer</a> for building and general usage of tika-server.</p><h2 id="TikaServerinTika2.x-Majorchanges">Major changes</h2><ul><li>Modularization – We've modularized tika-server:<ul><li><code> tika-server-core</code> includes all of the functionality of <code>tika-server</code>, but with no bundled parsers.  Users might want this if they are only parsing a few file formats or want to use only their custom parsers.</li><li><code>tika-server-standard</code> is what most people will want to use.  As with the <code>tika-parsers-standard</code> module, this includes most of the common file format parsers. If needed, users may also add the <span style="color: rgb(23,43,77);"><code>tika-parser-scientific-package</code> and </span><code>tika-parser-sqlite3-package</code> to the class path.  In 1.x, the first was included in tika-server 1.x by default, and the second was included only if users added xerial's sqlite3 jar on the classpath.</li></ul></li><li><code>--spawnChild</code> mode is now default.  In Tika 1.x, users had to specify this on the commandline to force <code>tika-server </code>to fork a process that did the actual parsing.  This option is far more robust against timeouts, OOMs, crashes and other mishaps; the forking process monitors the forked process and will restart on timeouts, etc. <strong>NOTE:</strong> Client code needs to be able to handle the times when <code>tika-server</code> is restarting and is not available; this typically only takes a few seconds.  To disable this mode, use <code>-noFork</code> on the commandline.</li><li>Configuring <code>tika-server</code> in Tika 2.x.  See below.  We've moved most configuration options into <code>tika-config.xml</code> and dramatically limited the commandline options.</li><li>The namespace has changed slightly for <code>TikaServerCli </code>to <code>org.apache.tika.server.core.TikaServerCli</code>. If adding optional jars to the class path in, say, a <code>bin/ </code>directory, start tika-server with:<code> java -cp &quot;bin/*&quot; org.apache.tika.server.core.TikaServerCli -c tika-config.xml</code></li><li><code>enableFileUrl</code> -- We have removed this capability from tika-server in 2.x.  We have replaced it with the FileSystemFetcher, which is available in tika-core.  See <a href="https://cwiki.apache.org/confluence/display/TIKA/tika-pipes#tikapipes-FetchersInClassicServerEndpoints" rel="nofollow">FetchersInClassicServerEndpoints</a>.</li></ul><h2 id="TikaServerinTika2.x-Configuringtika-serverinTika2.x">Configuring tika-server in Tika 2.x</h2><p>As with other components, in Tika 2.x, we moved configuration into <code>tika-config.xml</code>.  We have left only a few commandline options available (to see the options: <code>java -jar tika-server-standard-2.x.x.jar --help</code>).  <span style="color: rgb(34,34,34);"><span> </span></span><span style="color: rgb(23,43,77);"><strong>Please note that all command-line option values will override their counterparts in the xml configuration file.</strong></span></p><ul><li>-h, --host – hostname</li><li>-p, --port – which port to bind to.  Can specify ranges, e.g. <code>9990-9999</code>, and Tika will launch 10 servers in forked processes on each of those ports. Can also specify a comma-delimited list, e.g. (<code>9996,9998,9999</code>).</li><li>-?, --help</li><li>-c, --config – specify the tika-config.xml file to use for this tika-server and its forked processes.</li><li>-i, --id – specify the id for this server.  This is used in logging and in the <code>/status</code> endpoint.</li><li>-noFork – run tika-server in legacy mode without forking a process.</li></ul><p><br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>tika-config.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;!-- &lt;parsers etc.../&gt; --&gt;
+  &lt;server&gt;
+    &lt;params&gt;
+      &lt;!-- which port to start the server on. If you specify a range,
+          e.g. 9995-9998, TikaServerCli will start four forked servers,
+          one at each port.  You can also specify multiple forked servers
+          via a comma-delimited value: 9995,9997.
+
+      --&gt;
+      &lt;port&gt;9998&lt;/port&gt;
+      &lt;host&gt;localhost&lt;/host&gt;
+      &lt;!-- if specified, this will be the id that is used in the
+          /status endpoint and elsewhere.  If an id is specified
+          and more than one forked processes are invoked, each process
+          will have an id followed by the port, e.g my_id-9998. If a
+          forked server has to restart, it will maintain its original id.
+          If not specified, a UUID will be generated.
+          --&gt;
+      &lt;id&gt;&lt;/id&gt;       
+      &lt;!-- Origin URL for cors requests. Set to &#39;*&#39; if you
+          want to allow all CORS requests. Leave blank or remove element
+          if you do not want to enable CORS. --&gt;
+      &lt;cors&gt;*&lt;/cors&gt;       
+      &lt;!-- which digests to calculate, comma delimited (e.g. md5,sha256);
+          optionally specify encoding followed by a colon (e.g. &quot;sha1:32&quot;).
+          Can be empty if you don&#39;t want to calculate a digest --&gt;
+      &lt;digest&gt;sha256&lt;/digest&gt;
+      &lt;!-- how much to read to memory during the digest phase before
+          spooling to disc...only if digest is selected --&gt;
+      &lt;digestMarkLimit&gt;1000000&lt;/digestMarkLimit&gt;
+      &lt;!-- request URI log level &#39;debug&#39; or &#39;info&#39; --&gt;
+      &lt;logLevel&gt;info&lt;/logLevel&gt;
+      &lt;!-- whether or not to return the stacktrace in the data returned 
+           to the user when a parse exception happens--&gt;
+      &lt;returnStackTrace&gt;false&lt;/returnStackTrace&gt;
+      &lt;!-- If set to &#39;true&#39;, this runs tika server &quot;in process&quot;
+          in the legacy 1.x mode.
+          This means that the server will be susceptible to infinite loops
+          and crashes.
+          If set to &#39;false&#39;, the server will spawn a forked
+          process and restart the forked process on catastrophic failures
+          (this was called -spawnChild mode in 1.x).
+          noFork=false is the default in 2.x
+      --&gt;
+      &lt;noFork&gt;false&lt;/noFork&gt;
+      &lt;!-- maximum time to allow per parse before shutting down and restarting
+          the forked parser. Not allowed if noFork=true. --&gt;
+      &lt;taskTimeoutMillis&gt;300000&lt;/taskTimeoutMillis&gt;
+      &lt;!-- maximum amount of time to wait for a forked process to
+          start up.
+          Not allowed if noFork=true. --&gt;
+      &lt;maxForkedStartupMillis&gt;120000&lt;/maxForkedStartupMillis&gt;
+      &lt;!-- maximum number of times to allow a specific forked process
+          to be restarted.
+          Not allowed if noFork=true. --&gt;
+      &lt;maxRestarts&gt;-1&lt;/maxRestarts&gt;
+      &lt;!-- maximum files to parse per forked process before
+          restarting the forked process to clear potential
+          memory leaks.
+          Not allowed if noFork=true. --&gt;
+      &lt;maxFiles&gt;100000&lt;/maxFiles&gt;
+      &lt;!-- if you want to specify a specific javaPath for
+          the forked process.  This path should end
+          the application &#39;java&#39;, e.g. /my/special-java/java
+          Not allowed if noFork=true. --&gt;
+      &lt;javaPath&gt;java&lt;/javaPath&gt;
+      &lt;!-- jvm args to use in the forked process --&gt;
+      &lt;forkedJvmArgs&gt;
+        &lt;arg&gt;-Xms1g&lt;/arg&gt;
+        &lt;arg&gt;-Xmx1g&lt;/arg&gt;
+        &lt;arg&gt;-Dlog4j.configurationFile=my-forked-log4j2.xml&lt;/arg&gt;
+       &lt;/forkedJvmArgs&gt;
+      &lt;!-- this must be set to true for any handler that uses a fetcher or emitter.  These pipes features are inherently unsecure because
+           the client has the same read/write access as the tika-server process.  Implementers must secure Tika server so that only their clients can reach it.
+           A byproduct of setting this to true is that the /status endpoint is turned on --&gt;
+      &lt;enableUnsecureFeatures&gt;false&lt;/enableUnsecureFeatures&gt;
+      &lt;!-- you can optionally select specific endpoints to turn on/load.  This can improve resource usage and decrease your attack surface.
+           If you want to access the status endpoint, specify it here or set unsecureFeatures to true --&gt;
+      &lt;endpoints&gt;
+        &lt;endpoint&gt;status&lt;/endpoint&gt;
+        &lt;endpoint&gt;rmeta&lt;/endpoint&gt;
+      &lt;/endpoints&gt;     
+    &lt;/params&gt;
+  &lt;/server&gt;
+&lt;/properties&gt;</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

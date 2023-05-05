@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : OutOfMemory</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Memory_103098949.html">Memory</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : OutOfMemory
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Felix Schumacher</span> on июн 09, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025319541 {padding: 0px;}
+div.rbtoc1683025319541 ul {margin-left: 0px;}
+div.rbtoc1683025319541 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025319541'>
+<ul class='toc-indentation'>
+<li><a href='#OutOfMemory-HowtoDealWithOutOfMemoryErrors'>How to Deal With Out Of Memory Errors</a>
+<ul class='toc-indentation'>
+<li><a href='#OutOfMemory-TheGeneralRule'>The General Rule</a></li>
+<li><a href='#OutOfMemory-Threads'>Threads</a></li>
+<li><a href='#OutOfMemory-DriverManager'>DriverManager</a></li>
+<li><a href='#OutOfMemory-ThreadLocal'>ThreadLocal</a></li>
+<li><a href='#OutOfMemory-ContextClassLoader'>ContextClassLoader</a></li>
+<li><a href='#OutOfMemory-LoggingFrameworks'>Logging Frameworks</a></li>
+</ul>
+</li>
+<li><a href='#OutOfMemory-Whenallelsefails'>When all else fails</a></li>
+<li><a href='#OutOfMemory-HTTPsessions'>HTTP sessions</a></li>
+</ul>
+</div></p><h1 id="OutOfMemory-HowtoDealWithOutOfMemoryErrors">How to Deal With Out Of Memory Errors</h1><p>These errors are rather commonly seen during development phases, and even on production servers. These errors are even more annoying than others, because they do not show any stack trace. The reason for this is that a stack trace would not be of help for these errors. The code that fails with an Out Of Memory will be, in most cases, a &quot;victim&quot; of the problem, and not the problem itself.</p><p>Although it is very tempting to blame Tomcat on these errors, the fact is that many of them have their causes in &quot;mistakes&quot; in the webapps. These mistakes usually come from programming patterns and techniques perfectly legal and safe on standalone applications, but that are not correct in a managed environment like a servlet container (that is, Tomcat).</p><p>This page will maintain a list of those &quot;well-known mistakes&quot;, so anyone experiencing these problems, or wanting to avoid them, could check their webapps and correct them.</p><h2 id="OutOfMemory-TheGeneralRule">The General Rule</h2><p>The first thing to do is to set the basis for these patterns to be recognized. This way, the developer will be able to find even those mistakes that are not listed in this page, and why not, add them here <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></p><p>An Out Of Memory can be thrown by several causes:</p><ul><li>A servlet trying to load a several GBytes file into memory will surely kill the server. These kind of errors must be considered a simple bug in our program.</li><li>To compensate for the data your servlet tries to load, you increase the heap size so that there is no room to create the stack size for the threads that need to be created. The memory required by each thread will vary by OS but can be as high as 2M by default and in some OS's (like Debian Sarge) is not reducible with the -Xss parameter. Rule of Thumb, use no more than 1G for heap space in a 32-bit web application.</li><li>Deep recursive algorithms can also lead to Out Of Memory problems. In this case, the only fixes are increasing the thread stack size (<code>-Xss</code>), or refactoring the algorithms to reduce the depth, or the local data size per call.</li><li><p class="auto-cursor-target">A webapp that uses lots of libraries with many dependencies, or a server maintaining lots of webapps could exhauste the JVM <a class="unresolved" href="#">PermGen</a> space. This space is where the VM stores the classes and methods data. In those cases, the fix is to increase this size. The Sun VM has the flag <code>-XX:MaxPermSize</code> that allows to set its size (the default value is 64M)</p><div class="confluence-information-macro confluence-information-macro-information"><span class="aui-icon aui-icon-small aui-iconfont-info confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>PermGen has been integrated into a new concept called MetaSpace from Java 8 on. The old setting will generate a warning and will be ignored by newer JVMs.</p></div></div></li><li>Hard references to classes can prevent the garbage collector from reclaiming the memory allocated for them when a <a class="unresolved" href="#">ClassLoader</a> is discarded. This will occur on JSP recompilations, and webapps reloads. If these operations are common in a webapp having these kinds of problems, it will be a matter of time, until the <a class="unresolved" href="#">PermGen</a> space gets full and an Out Of Memory is thrown.</li></ul><p>This last case is the one we intend to address here. It is directly related to the fact that the webapp is running on a managed environment, in which code changes can be commited without the application being stopped at all.</p><p>Once said this, the patterns to be included here will be those that, although being safe and legal on a standalone application, need to be refactored to make them &quot;compatible&quot; with the servlet container.</p><h2 id="OutOfMemory-Threads">Threads</h2><p>Any threads a web application starts, a web application should stop. ServletContextListener is your friend. Note Tomcat 7 will warn you if you do this and will also provide a (highly dangerous - use at your own risk) option to terminate the threads.</p><h2 id="OutOfMemory-DriverManager">DriverManager</h2><p>If you load a java.sql.Driver in your own classloader (or servlets), the driver should be removed before undeploying. Each driver is registered in DriverManager which is loaded in system classloader and references the local driver. Note Tomcat will do this for you if you forget.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>                Enumeration&lt;Driver&gt; drivers = DriverManager.getDrivers();
+		ArrayList&lt;Driver&gt; driversToUnload=new ArrayList&lt;Driver&gt;();
+		while (drivers.hasMoreElements()) {
+			Driver driver = drivers.nextElement();
+			if (driver.getClass().getClassLoader().equals(getClass().getClassLoader())) {
+				driversToUnload.add(driver);
+			}
+		}
+		for (Driver driver : driversToUnload) {
+	            DriverManager.deregisterDriver(driver);
+                }
+</pre>
+</div></div><h2 id="OutOfMemory-ThreadLocal">ThreadLocal</h2><p>The lifecycle of a ThreadLocal should match that of a request. There is no guarantee that a thread will ever be used to process a request again so if a ThreadLocal is left on the thread at the end of the request there may be no opportunity for the web application to clean it up. Note Tomcat 7 will do this for you.</p><h2 id="OutOfMemory-ContextClassLoader">ContextClassLoader</h2><p>There are various parts of the Java API that retain a permanent reference to the context class loader. If this happens to be a web application class loader then a memory leak will occur. Tomcat provides <a class="external-link" href="http://svn.apache.org/repos/asf/tomcat/trunk/java/org/apache/catalina/core/JreMemoryLeakPreventionListener.java" rel="nofollow">workarounds</a> for these where known but there are undoubtedly others.</p><h2 id="OutOfMemory-LoggingFrameworks">Logging Frameworks</h2><p>Most logging frameworks provide a mechanism to release all resources when you have finished with the framework. These should always be used in a container environment.</p><h1 id="OutOfMemory-Whenallelsefails">When all else fails</h1><p>If you still have a leak then you'll need to debug the root cause. The outline of the process is:</p><ol><li>You'll need a profiler (I use YourKit), Tomcat and a copy of the app that leaks.</li><li>Configure Tomcat for use with the profiler. This usually means setting / adding to PATH and CATALINA_OPTS in setenv.(bat|sh)</li><li>Start Tomcat with the app deployed.</li><li>Reload the app once.</li><li>Start up the profiler and connected it to Tomcat.</li><li>Get a heap dump.</li><li>Look for instances of WebappClassLoader. If there are more instances than you have apps deployed, you have a leak.</li><li>If there is a leak, there should be one extra instance of WebappClassLoader.</li><li>Examine each of the WebappClassLoader objects in turn to find the one where started==false.</li><li>Trace the GC roots of this object to find out what is holding on to a reference to that object that shouldn't be. That will be the source of the leak.</li></ol><hr/><h1 id="OutOfMemory-HTTPsessions">HTTP sessions</h1><p>(In response to <a class="external-link" href="https://issues.apache.org/bugzilla/show_bug.cgi?id=50685" rel="nofollow">[1</a>], <a class="external-link" href="http://marc.info/?t=139136279300001&amp;r=1&amp;w=2" rel="nofollow">[2</a>])</p><p>Please remember that a JSP page, even one that simply prints out “OK”, will create a session. This is by design and if you do not want it to create a session you need to explicitly indicate that in your JSP. For example:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: php; gutter: false; theme: Default" data-theme="Default">&lt;%@ page session=&quot;false&quot; %&gt;</pre>
+</div></div><p>This is important in scenarios where you are doing load testing and using custom HTTP clients, because these clients may not be handling sessions correctly and thus end up creating a new session every time they access the page.</p><p>One known category of misbehaving clients are web bots. To deal with them you can configure a <a class="external-link" href="http://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Crawler_Session_Manager_Valve" rel="nofollow">CrawlerSessionManagerValve</a>.</p><p>It is also possible to limit the number of active sessions by setting <strong>maxActiveSessions</strong> attribute on a <a class="external-link" href="http://tomcat.apache.org/tomcat-8.0-doc/config/manager.html" rel="nofollow">Manager</a> element, e.g.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;Context&gt;
+  &lt;Manager maxActiveSessions=&quot;500&quot; /&gt;
+&lt;/Context&gt;</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

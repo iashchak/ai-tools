@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : FetchEmitTuple</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="tika-pipes_181306665.html">tika-pipes</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : FetchEmitTuple
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span> on июн 03, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This is the request object that is submitted to tika-server's <code>/pipes</code> and <code>/async</code> handlers in Tika 2.x. Users send a single FetchEmitTuple to the <code>/pipes</code> endpoint, and they send a list of FetchEmitTuples to the <code>/async</code> endpoint.</p><h1 id="FetchEmitTuple-Minimal">Minimal</h1><p>This is the minimal information that needs to be included:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>{
+    &quot;fetcher&quot;: &quot;fsf&quot;,
+    &quot;fetchKey&quot;: &quot;hello_world.pdf&quot;,
+    &quot;emitter&quot;: &quot;fse&quot;,
+    &quot;emitKey&quot;: &quot;hello_world.pdf.json&quot;
+}</pre>
+</div></div><p>The fetcher is the name of the fetcher to be used.  This name must be defined in the tika-config.xml file that is passed into <code>tika-app</code> or <code>tika-server</code>.  The key is the key to the file to be parsed.  The emitter is the name of the emitter to be used.  This name must be defined in the tika-config.xml file as well.  The key is the key to use when writing the extracted text+metadata.</p><p><br/></p><h1 id="FetchEmitTuple-Id">Id</h1><p>As default the <code>fetchKey</code> is used as the <code>id</code> for logging.  However, if users need a distinct task id for the request, they may add an <code>id</code> element:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>{
+    &quot;id&quot;: &quot;myTaskId&quot;,
+    &quot;fetcher&quot;: &quot;fsf&quot;,
+    &quot;fetchKey&quot;: &quot;hello_world.pdf&quot;,
+    &quot;emitter&quot;: &quot;fse&quot;,
+    &quot;emitKey&quot;: &quot;hello_world.pdf.json&quot;
+}</pre>
+</div></div><h2 class="auto-cursor-target" id="FetchEmitTuple-HandlerConfig">HandlerConfig</h2><p>Users may specify limitations and format of extracted text with the <code>HandlerConfig</code>:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>{
+    &quot;fetcher&quot;: &quot;fsf&quot;,
+    &quot;fetchKey&quot;: &quot;hello_world.pdf&quot;,
+    &quot;emitter&quot;: &quot;fse&quot;,
+    &quot;emitKey&quot;: &quot;hello_world.pdf.json&quot;,
+    &quot;handlerConfig&quot;: {
+        &quot;maxEmbeddedResources&quot;: 10,
+        &quot;type&quot;: &quot;xml&quot;,
+        &quot;writeLimit&quot;: 10000
+    }
+}</pre>
+</div></div><h1 id="FetchEmitTuple-UserMetadata">UserMetadata</h1><p>Users may inject external metadata into the output of the extract.  Users specify this in the <code>metadata</code> element with key/value or key/values:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>{
+    &quot;emitKey&quot;: &quot;emitKey1&quot;,
+    &quot;emitter&quot;: &quot;my_emitter&quot;,
+    &quot;fetchKey&quot;: &quot;fetchKey1&quot;,
+    &quot;fetcher&quot;: &quot;my_fetcher&quot;,
+    &quot;handlerConfig&quot;: {
+        &quot;maxEmbeddedResources&quot;: 10,
+        &quot;type&quot;: &quot;xml&quot;,
+        &quot;writeLimit&quot;: 10000
+    },
+    &quot;id&quot;: &quot;myTaskId&quot;,
+    &quot;metadata&quot;: {
+        &quot;m1&quot;: [
+            &quot;v1&quot;,
+            &quot;v2&quot;
+        ],
+        &quot;m2&quot;: &quot;v3:
+    }
+}</pre>
+</div></div><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

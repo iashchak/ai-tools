@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Logging</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Logging
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Gribov</span> on ноя 14, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040428484 {padding: 0px;}
+div.rbtoc1683040428484 ul {margin-left: 0px;}
+div.rbtoc1683040428484 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040428484'>
+<ul class='toc-indentation'>
+<li><a href='#Logging-Currentstate'>Current state</a>
+<ul class='toc-indentation'>
+<li><a href='#Logging-Importantnote'>Important note</a></li>
+<li><a href='#Logging-Tikaparsermodules'>Tika parser modules</a></li>
+</ul>
+</li>
+<li><a href='#Logging-ExampleconfigurationforApacheTika2.5.0+(ApacheMaven)'>Example configuration for Apache Tika 2.5.0+ (Apache Maven)</a>
+<ul class='toc-indentation'>
+<li><a href='#Logging-Commonsections'>Common sections</a></li>
+<li><a href='#Logging-ApacheLog4j2.xwithslf4jbridges'>Apache Log4j 2.x with slf4j bridges</a></li>
+<li><a href='#Logging-Logback'>Logback</a></li>
+<li><a href='#Logging-ApacheLog4j2.xwithnativebridges'>Apache Log4j 2.x with native bridges</a></li>
+</ul>
+</li>
+<li><a href='#Logging-ExampleconfigurationforApacheTika2.5.0+(Gradle)'>Example configuration for Apache Tika 2.5.0+ (Gradle)</a>
+<ul class='toc-indentation'>
+<li><a href='#Logging-Commonsections.1'>Common sections</a></li>
+<li><a href='#Logging-ApacheLog4j2.xwithslf4jbridges.1'>Apache Log4j 2.x with slf4j bridges</a></li>
+<li><a href='#Logging-Logback.1'>Logback</a></li>
+<li><a href='#Logging-ApacheLog4j2.xwithnativebridges.1'>Apache Log4j 2.x with native bridges</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="Logging-Currentstate">Current state</h1><p>Apache Tika include a lot of Apache and thirdparty libraries that have different approach to logging. Tika use <code>slf4j-api</code> as logging API and <a class="external-link" href="https://logging.apache.org/log4j/2.x/index.html" rel="nofollow">Apache Log4j 2.x</a> as an implementation for modules that require it.</p><h2 id="Logging-Importantnote">Important note</h2><p>Since Tika 2.5.0 (released 2022-10-03) depends on <code>slf4j-api</code> 2.0.x which requires downstream library users to update logging backend to compatible version. Tika 2.0.0 – 2.4.1 depends on <code>slf4j-api</code> 1.7.x.</p><p>Otherwise you will receive something like following message:</p><blockquote><p>SLF4J: No SLF4J providers were found.<br/>SLF4J: Defaulting to no-operation (NOP) logger implementation<br/>SLF4J: See <span class="nobr"><a class="external-link" href="https://www.slf4j.org/codes.html#noProviders" rel="nofollow">https://www.slf4j.org/codes.html#noProviders<sup><span class="confluence-embedded-file-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image rendericon confluence-external-resource" draggable="false" height="7" width="7" src="images/icons/linkext7.gif" data-image-src="https://cwiki.apache.org/confluence/images/icons/linkext7.gif"></span></sup></a></span> for further details.<br/>SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.<br/>SLF4J: Ignoring binding found at <a class="unresolved" href="#">file:/home/gross/.gradle/caches/modules-2/files-2.1/org.jboss.slf4j/slf4j-jboss-logmanager/1.2.0.Final/baff8ae78011e6859e127a5cb6f16332a056fd93/slf4j-jboss-logmanager-1.2.0.Final.jar!/org/slf4j/impl/StaticLoggerBinder.class</a><br/>SLF4J: See <span class="nobr"><a class="external-link" href="https://www.slf4j.org/codes.html#ignoredBindings" rel="nofollow">https://www.slf4j.org/codes.html#ignoredBindings<sup><span class="confluence-embedded-file-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image rendericon confluence-external-resource" draggable="false" height="7" width="7" src="images/icons/linkext7.gif" data-image-src="https://cwiki.apache.org/confluence/images/icons/linkext7.gif"></span></sup></a></span> for an explanation.<br/>ERROR StatusLogger Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console..</p></blockquote><p>Updates for popular logging backends:</p><ul><li>Apache Log4j 2.x: <code>org.apache.logging.log4j:log4j-slf4j-impl</code> → <code>org.apache.logging.log4j:log4j-slf4j2-impl</code></li><li>Logback: <code>ch.qos.logback:logback-classic</code> 1.2.x → 1.3.x (uses older <code>javax.*</code> APIs) or 1.4.x (uses <code>jakarta.*</code> APIs)</li><li>Apache Log4j 1.2.x: <code>org.slf4j:slf4j-log4j12</code> → <code>org.slf4j:slf4j-reload4j</code> (though <code>slf4j-log4j12</code> has relocation relocation directive to <code>slf4j-reload4j</code>  since 1.7.34) or migrate to the Log4j 2.x since log4j 1.2.x is in the End of Life status since 2015 and has <a class="external-link" href="https://logging.apache.org/log4j/1.2/index.html" rel="nofollow">known vulnerabilities</a></li></ul><p>JBoss Logging (<code>slf4j-jboss-logging</code>/<code>slf4j-jboss-logmanager</code>) as of 2022-11-09 are still on <code>slf4j-api</code> 1.7.x, see <a class="external-link" href="https://issues.redhat.com/browse/JBLOGGING-165" rel="nofollow">https://issues.redhat.com/browse/JBLOGGING-165</a>. Currently you can try downgrading <code>org.slf4j:slf4j-api</code> version to 1.7.36 if you have to use Tika with JBoss Logging (e.g. if you use Quarkus or WildFly native logging).</p><h2 id="Logging-Tikaparsermodules">Tika parser modules</h2><p><code>tika-parser-*-module</code> artifacts depend on many Apache and thirdparty libraries. Tika itself use <code>slf4j-api</code> but underlying libraries use different logging API (<a class="external-link" href="http://commons.apache.org/proper/commons-logging/" rel="nofollow"><code>commons-logging</code></a>, <a class="external-link" href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/package-summary.html" rel="nofollow"><code>java.util.logging</code>,</a> <a class="external-link" href="https://logging.apache.org/log4j/1.2/index.html" rel="nofollow"><code>log4j 1.2.x</code></a>, <a class="external-link" href="https://logging.apache.org/log4j/2.x/" rel="nofollow"><code>log4j 2.x</code></a>, <a class="external-link" href="https://www.slf4j.org/" rel="nofollow"><code>slf4j</code></a>).</p><p>By default Tika will bring <code>slf4j-api</code> via <code>tika-core</code> and some bridges like <code>org.slf4j:jcl-over-slf4j</code> and <code>org.slf4j:jul-to-slf4j</code> as opinionated default. Depending on your logging backend and preferred configuration you'll need different dependency exclusions and bridges/implementations.</p><p>In you have no preference about logging backend it's enough to add <code>org.apache.logging.log4j:log4j-core</code>, <code>org.apache.logging.log4j:log4j-slf4j2-impl</code> and <code>org.apache.logging.log4j:log4j-1.2-api</code> (or <code>org.slf4j:log4j-over-slf4j</code>) and exclude <code>log4j:log4j</code>, <code>commons-logging:commons-logging</code>, <code>ch.qos.logback:logback-classic</code>, <code>ch.qos.logback:logback-core</code>, <code>ch.qos.reload4j:reload4j</code> and <code>org.slf4j:slf4j-reload4j</code>.</p><p><em>As of <code>main</code> branch (and Tika 2.6.0) all Tika source use <code>slf4j-api</code> as a logging API with <code>org.apache.logging.log4j:log4j-core:2.x</code> as the backend for applications like <code>tika-app</code> / <code>tika-eval-app</code> / <code>tika-server</code>.<br/></em></p><p><em>Following sections shows how to configure different logging solutions/backends dependencies to avoid conflicts. Loggers configuration are out of scope of this document, you should look at relevant library documentation.</em></p><h1 id="Logging-ExampleconfigurationforApacheTika2.5.0+(ApacheMaven)">Example configuration for Apache Tika 2.5.0+ (Apache Maven)</h1><p>If you use <a class="external-link" href="https://maven.apache.org" rel="nofollow">Apache Maven</a> dependency section in <code>pom.xml</code> will contain something like this:</p><h2 id="Logging-Commonsections">Common sections</h2><pre><code class="language-xml">&lt;!-- Merge with your properties section --&gt;
+&lt;properties&gt;
+  &lt;!-- components versions, feel free keep only required for your case --&gt;
+  &lt;tika.version&gt;2.6.0&lt;/tika.version&gt;
+  &lt;slf4j.version&gt;2.0.3&lt;/slf4j.version&gt;
+  &lt;log4j2.version&gt;2.19.0&lt;/log4j2.version&gt;
+  &lt;logback.version&gt;1.4.4&lt;/logback.version&gt; &lt;!-- 1.4.4 for Jakarta EE 9+ or 1.3.4 if you use Java EE or Jakarta EE 8 --&gt;<br/>  &lt;reload4j.version&gt;1.2.22&lt;/reload4j.version&gt;
+&lt;/properties&gt;
+
+&lt;dependencyManagement&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+      &lt;artifactId&gt;tika-bom&lt;/artifactId&gt;
+      &lt;version&gt;${tika.version}&lt;/version&gt;
+      &lt;type&gt;pom&lt;/type&gt;
+      &lt;scope&gt;import&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+      &lt;artifactId&gt;log4j-bom&lt;/artifactId&gt;
+      &lt;version&gt;${log4j2.version}&lt;/version&gt;
+      &lt;type&gt;pom&lt;/type&gt;
+      &lt;scope&gt;import&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;!-- Merge with your dependencies section --&gt;
+&lt;dependencies&gt;<br/>  &lt;dependency&gt;<br/>    &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;<br/>    &lt;artifactId&gt;tika-core&lt;/artifactId&gt;<br/>  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+    &lt;artifactId&gt;tika-parsers-standard-package&lt;/artifactId&gt;
+    &lt;exclusions&gt;
+      &lt;!--
+        This exclusions will become obsolete at some point but better to keep it now.
+        tika-parser-*-module should exclude commons-logging explicitly but upstream libraries
+        may add it to their transitive dependencies
+      --&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+        &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+      &lt;/exclusion&gt;<br/><br/>      &lt;!--<br/>        These exclusions aren't necessary for tika-parsers-standard-package <br/>        but may be required for other artifacts to have explicit logging configuration<br/>        and avoid logging backend loops.<br/>      --&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;<br/>      &lt;exclusion&gt;<br/>        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;<br/>        &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;<br/>      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-reload4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;<br/>      &lt;exclusion&gt;
+        &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+        &lt;artifactId&gt;logback-core&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+        &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;ch.qos.reload4j&lt;/groupId&gt;
+        &lt;artifactId&gt;reload4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- You may want to add these dependencies to the dependencyManagement to force consistent versions and omit their versions here --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+    &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+    &lt;version&gt;${slf4j.version}&lt;/version&gt;
+  &lt;/dependency&gt;
+<br/>  &lt;!-- java.util.logging to slf4j adapter, requires additional configuration, see <a class="external-link" href="https://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html" rel="nofollow">https://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html</a> --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+    &lt;artifactId&gt;jul-to-slf4j&lt;/artifactId&gt;
+    &lt;version&gt;${slf4j.version}&lt;/version&gt;
+  &lt;/dependency&gt;<br/><br/>  &lt;!-- commons-logging (JCL) to slf4j bridge --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+    &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;
+    &lt;version&gt;${slf4j.version}&lt;/version&gt;<br/>    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;<br/><br/>  &lt;!-- log4j 1.2.x to slf4j bridge --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;
+    &lt;version&gt;${slf4j.version}&lt;/version&gt;<br/>    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><h2 id="Logging-ApacheLog4j2.xwithslf4jbridges">Apache Log4j 2.x with slf4j bridges</h2><pre>&lt;!-- Merge with your dependencies section --&gt;<br/>&lt;dependencies&gt;<br/>  &lt;!-- logging backend: log4j 2.x --&gt;<br/>  &lt;dependency&gt;<br/>    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;<br/>    &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;<br/>    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;<br/>  &lt;/dependency&gt;<br/>  &lt;dependency&gt;<br/>    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;<br/>    &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;<br/>    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;<br/>    &lt;scope&gt;runtime&lt;/scope&gt;<br/>  &lt;/dependency&gt;<br/>
+  &lt;!-- slf4j implementation that forwards to log4j 2.x --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-slf4j2-impl&lt;/artifactId&gt; &lt;!-- for slf4j 1.7.x use log4j-slf4j-impl instead --&gt;<br/>    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;<br/>    &lt;scope&gt;runtime&lt;/scope&gt;<br/>  &lt;/dependency&gt;<br/>&lt;/dependencies&gt;</pre><h2 id="Logging-Logback">Logback</h2><pre>&lt;!-- Merge with your dependencies section --&gt;<br/>&lt;dependencies&gt;<br/>  &lt;!-- slf4j implementation --&gt;<br/>  &lt;dependency&gt;<br/>    &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;<br/>    &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;<br/>    &lt;version&gt;${logback.version}&lt;/version&gt;<br/>    &lt;scope&gt;runtime&lt;/scope&gt;<br/>  &lt;/dependency&gt;<br/><br/>  &lt;!-- log4j2 to slf4j adapter --&gt;<br/>  &lt;dependency&gt;<br/>    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;<br/>    &lt;artifactId&gt;log4j-to-slf4j&lt;/artifactId&gt;<br/>    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;<br/>    &lt;scope&gt;runtime&lt;/scope&gt;<br/>  &lt;/dependency&gt;<br/>&lt;/dependencies&gt;</pre><h2 id="Logging-ApacheLog4j2.xwithnativebridges">Apache Log4j 2.x with native bridges</h2><pre><code>&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+    &lt;artifactId&gt;tika-parsers-standard-package&lt;/artifactId&gt;
+    &lt;exclusions&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+        &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-reload4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+        &lt;artifactId&gt;logback-core&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+        &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;ch.qos.reload4j&lt;/groupId&gt;
+        &lt;artifactId&gt;reload4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+
+      &lt;!-- Additionally exclude slf4j bridges --&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifaftId&gt;jul-to-slf4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifaftId&gt;jul-to-slf4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifaftId&gt;jcl-over-slf4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifaftId&gt;log4j-over-slf4j&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- slf4j implementation to forward logs to log4j 2.x --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-slf4j2-impl&lt;/artifactId&gt; &lt;!-- for slf4j 1.7.x use log4j-slf4j-impl instead --&gt;
+    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- log4j 2.x bridges to forward java.util.logging, jcl/commons-logging and log4j 1.2.x to log4j 2.x --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-jul&lt;/artifactId&gt;
+    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-jcl&lt;/artifactId&gt;
+    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-1.2-api&lt;/artifactId&gt;
+    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+
+  &lt;!-- logging backend: log4j 2.x --&gt;
+  &lt;!-- this dependency declarations are optional since org.apache.logging.log4j:log4j-slf4j-impl depends on them transitively --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
+    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+    &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+    &lt;!-- version is omitted since there's org.apache.logging.log4j:log4j-bom in the dependencyManagement section --&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><h1 id="Logging-ExampleconfigurationforApacheTika2.5.0+(Gradle)">Example configuration for Apache Tika 2.5.0+ (Gradle)</h1><h2 id="Logging-Commonsections.1">Common sections</h2><pre>dependencies {<br/>  // Import Maven BOM for Tika and Log4j 2.x.<br/>  // Depending on your setup `api` could be used instead of `implementation` when `java-library` plugin is activated.<br/>  implementation(platform(&quot;org.apache.tika:tika-bom:2.6.0&quot;))<br/>  implementation(platform(&quot;org.apache.logging.log4j:log4j-bom:2.19.0&quot;))<br/>  <br/>  constraints {<br/>    // versions from constraints work like a dependencyManagement section in Maven<br/>    implementation(&quot;org.slf4j:slf4j-api:2.0.3&quot;)<br/>    implementation(&quot;org.slf4j:jul-to-slf4j:2.0.3&quot;)<br/>    implementation(&quot;org.slf4j:jcl-over-slf4j:2.0.3&quot;)<br/>    implementation(&quot;org.slf4j:log4j-over-slf4j:2.0.3&quot;)    <br/>  }<br/><br/>  implementation(&quot;org.apache.tika:tika-core&quot;)<br/>  implementation(&quot;org.apache.tika:tika-parsers-standard-package&quot;)<br/>}<br/><br/>configurations.all {<br/>  // remove if using Apache Log4j 2.x log4j-jcl native bridge instead of jcl-over-slf4j<br/>  exclude(&quot;commons-logging&quot;, &quot;commons-logging&quot;)<br/>}</pre><h2 id="Logging-ApacheLog4j2.xwithslf4jbridges.1">Apache Log4j 2.x with slf4j bridges</h2><pre>// merge with common section above<br/>dependencies {<br/>  // versions from platform/BOM<br/>  implementation(&quot;org.apache.logging.log4j:log4j-api&quot;)<br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-core&quot;) <br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-slf4j2-impl&quot;) // for slf4j 1.7.x use log4j-slf4j-impl instead<br/>  <br/>  implementation(&quot;org.slf4j:jul-to-slf4j&quot;) // java.util.logging to slf4j, requires additional configuration, see <a class="external-link" href="https://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html" rel="nofollow">https://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html</a><br/>  runtimeOnly(&quot;org.slf4j:jcl-over-slf4j&quot;) // commons-logging (JCL) to slf4j<br/>  runtimeOnly(&quot;org.slf4j:log4j-over-slf4j&quot;) // log4j 1.2.x to slf4j<br/>}</pre><h2 id="Logging-Logback.1">Logback</h2><pre>// merge with common section above<br/>dependencies {<br/>  constraints {<br/>    // 1.4.x for slf4j 2.x &amp; Jakarta EE 9+, 1.3.x for slf4j 2.x &amp; Jakarta EE 8/Java EE 8, and 1.2.x for slf4j 1.7.x<br/>    implementation(&quot;ch.qos.logback:logback-core:1.4.4&quot;)<br/>    implementation(&quot;ch.qos.logback:logback-classic:1.4.4&quot;)<br/>  }<br/><br/>  runtimeOnly(&quot;ch.qos.logback:logback-classic&quot;) // slf4j logging backend<br/><br/>  implementation(&quot;org.slf4j:jul-to-slf4j&quot;) // java.util.logging to slf4j, requires additional configuration, see <a class="external-link" href="https://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html" rel="nofollow">https://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html</a><br/>  runtimeOnly(&quot;org.slf4j:jcl-over-slf4j&quot;) // commons-logging (JCL) to slf4j<br/>  runtimeOnly(&quot;org.slf4j:log4j-over-slf4j&quot;) // log4j 1.2.x to slf4j<br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-to-slf4j&quot;) // log4j 2.x to slf4j adapter<br/>}</pre><h2 id="Logging-ApacheLog4j2.xwithnativebridges.1">Apache Log4j 2.x with native bridges</h2><pre>dependencies {<br/>  // versions from platform/BOM<br/>  implementation(&quot;org.apache.logging.log4j:log4j-api&quot;)<br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-core&quot;)<br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-slf4j2-impl&quot;) // for slf4j 1.7.x use log4j-slf4j-impl instead<br/><br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-jul&quot;) // java.util.logging to log4j 2.x adapter, requires additional configuration see <a class="external-link" href="https://logging.apache.org/log4j/2.x/log4j-jul/index.html" rel="nofollow">https://logging.apache.org/log4j/2.x/log4j-jul/index.html</a><br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-jcl&quot;) // commons-logging (JCL) to log4j 2.x bridge<br/>  runtimeOnly(&quot;org.apache.logging.log4j:log4j-1.2-api&quot;) // log4j 1.2.x to log4j 2.x bridge<br/>}</pre><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

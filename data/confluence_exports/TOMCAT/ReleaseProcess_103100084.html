@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : ReleaseProcess</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : ReleaseProcess
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified by <span class='editor'> Christopher Schultz</span> on мар 04, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ReleaseProcess-ApacheTomcatReleaseProcess">Apache Tomcat Release Process</h1><h2 id="ReleaseProcess-Introduction">Introduction</h2><p>This is written primarily for Apache Tomcat release managers although it may also be of interest to anyone looking to validate and/or replicate the release process. This page uses Tomcat 9 as an example but the same process applies to later versions as well.</p><h2 id="ReleaseProcess-Pre-requisites">Pre-requisites</h2><ul><li>A git client installed and on your path</li><li>Apache Ant installed and on your path (see BUILDING.txt in the root of the code repository for version requirements)</li><li>The latest release of the minimum Java version that the Tomcat version runs on installed and on your path</li><li>Operating system<ul><li>Windows just works</li><li>Linux also requires wine (standard package manager version should be fine)</li><li>MacOS also requires wine (see below)</li></ul></li><li>GnuPG installed</li><li>A public key that is part of the Apache web of trust</li><li>A reasonable internet connection (you will need to upload ~100MB)</li></ul><p>The above can be accomplished on a Windows 10 Virtual Machine from <a class="external-link" href="https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/" rel="nofollow">Microsoft's Edge Development resources</a>. Download + unpack the archive for your VM software and launch the VM. Login, open a PowerShell.exe window as Administrator, and installed <a class="external-link" href="https://chocolatey.org/install#individual" rel="nofollow">Chocolatey</a>:</p><p style="margin-left: 30.0px;"><code>PS C:\Users\IEUser&gt; Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('<span class="nolink">https://chocolatey.org/install.ps1</span>'))</code></p><p>Once Chocolatey is installed, you can install all the above prerequisites at once:</p><p style="margin-left: 30.0px;"><code>PS C:\Users\ISUser&gt; choco install git svn adoptopenjdk11 ant gnupg sed xsltproc</code></p><p>This command will run for a while, and ask you repeatedly if it's okay to run &quot;chocolateyInstall.ps1&quot;, which you will have to do to proceed. Once the above command has completed, you have all the software prerequisites installed and on your PATH. Well, once you quit PowerShell and launch a new CMD.EXE or PowerShell window, of course <img class="emoticon emoticon-wink" src="images/icons/emoticons/wink.svg" data-emoticon-name="wink" alt="(подмигивание)"/></p><h3 id="ReleaseProcess-wineonMacOS"><span style="color: rgb(0,51,102);">wine on MacOS</span></h3><p><span style="color: rgb(0,51,102);">This is for 11.x.x (Big Sur)</span></p><p><span style="color: rgb(0,51,102);">You will need to install <a class="external-link" href="https://brew.sh/" rel="nofollow">homebrew</a> if you haven't already.</span></p><p><span style="color: rgb(0,51,102);">Then install wine-crossover from <a class="external-link" href="https://github.com/Gcenx/homebrew-wine" rel="nofollow">https://github.com/Gcenx/homebrew-wine</a> </span></p><p><span style="color: rgb(0,51,102);">Configure a 32-bit wine environment using:</span></p><pre>WINEARCH=win32 WINEPREFIX=~/.wine32 winecfg</pre><p>Then before you start the release ensure the following environment variables are set:</p><pre>export WINEARCH=win32<br/>export WINEPREFIX=~/.wine32</pre><h2 id="ReleaseProcess-Preliminarychecks">Preliminary checks</h2><ul><li>Check that the version numbers have been incremented after the previous release, as expected. (e.g. <a class="external-link" href="https://github.com/apache/tomcat/commit/cec14f9c33af9da271c9681bf6b343c61b6d055a" rel="nofollow">https://github.com/apache/tomcat/commit/cec14f9c33af9da271c9681bf6b343c61b6d055a</a>)</li><li>Check that the changelog file mentions your login name as release manager for this release (e.g. &quot;Tomcat 9.0.94 (markt)&quot;).</li><li>Check whether the <code>KEYS</code> file differs from <code>
+      <a class="external-link" href="https://dist.apache.org/repos/dist/release/tomcat/tomcat-9/KEYS" rel="nofollow">https://dist.apache.org/repos/dist/release/tomcat/tomcat-9/KEYS</a>
+    </code> one. The latter one will be replaced after you do a release. Check that the <code>KEYS</code> file contains your public key.</li><li>Check that the full build still works (ant release, preferably). Check that Buildbot builds (<a class="external-link" href="https://tomcat.apache.org/ci.html#Buildbot" rel="nofollow">https://tomcat.apache.org/ci.html#Buildbot</a>) are green.</li><li>Prepare your build environment:<br/><ul><li>Add a build.properties file (or, better yet, keep this file in your ~/build.properties if you have a dedicated build machine) with the following configuration (adjust paths for your environment)</li><li><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>execute.validate=true
+
+execute.test.bio=true
+execute.test.nio=true
+execute.test.apr=true
+
+test.haltonfailure=true
+
+gpg.exec=C:/Program Files (x86)/GNU/GnuPG/gpg2.exe
+#gpg.exec=/usr/bin/gpg
+
+base.path=C:/temp/libs
+#base.path=~/tomcat-libs
+# Enable the following if the DigiCert ONE magic is all set up, including ~/.digicertone/pkcs11properties.cfg
+codesigning.storepass=apikey|keystorepath|keystorepassword
+do.codesigning=true
+
+</pre>
+</div></div></li></ul></li></ul><h2 id="ReleaseProcess-Buildtherelease+creategittag">Build the release + create git tag</h2><p>The aim is to create a copy of the current trunk but without the &quot;-dev&quot; appended to the end of the version number. All artifacts required for repeatable builds will be included as well.</p><ul><li>Perform an git clone and switch to the correct branch<ul><li><code>git clone <a class="external-link" href="https://github.com/apache/tomcat" rel="nofollow">https://github.com/apache/tomcat</a> <span>/c/releases/</span>asf-tomcat</code> or <code>git clone -b 9.0.x git clone <a class="external-link" href="https://github.com/apache/tomcat" rel="nofollow">https://github.com/apache/tomcat</a> <span>/c/releases/</span>asf-tomcat</code></li><li><code>cd <span>/c/releases/</span>asf-tomcat</code></li><li><code>git checkout 9.0.x</code></li><li><code>git pull</code></li></ul></li><li>(Hint: using <code>ant pre-release</code>  may save you the following step, plus steps 2-3 in the Maven release process.)</li><li><p>Edit &quot;build.properties.default&quot; and change the lines after &quot;# ----- Reproducible builds -----&quot; to a new value. (NOTE: this is done by 'ant pre-release')</p><ul><li>Note that the value of <code>ant.tstamp.now</code> property is in seconds (unlike the value returned by <code>System.currentTimeMillis()</code> method which is milliseconds, see <a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=65527" rel="nofollow">bug 65527</a> for how this happened for Tomcat<span> 8.5.70</span>).<br/>The value can be printed in a Bash shell with the following command:<br/><code>date +%s</code> <br/>To print seconds since epoch, and date and time in human-readable format in UTC time zone:<br/><code>date -u '+%s %Y-%m-%d %H:%M:%S %Z'</code></li></ul></li><li><p>Edit &quot;build.properties.default&quot; and change the line version.dev=-dev to version.dev= (NOTE: this is done by 'ant pre-release')</p><ul><li>This can be done with <code>sed -i.bak &quot;s/^version.dev=.*/version.dev=/&quot; build.properties.default</code></li></ul></li><li>Edit &quot;webapps/docs/changelog.xml&quot; and replace rtext=&quot;in development&quot; with rtext=&quot;Release in progress&quot; for the version being released (NOTE: this is done by 'ant pre-release')<br/><ul><li>Remember that notepad.exe will remove UTF-8 Byte-Order Marks (BOMs). Use write.exe or Notepad++ instead.</li></ul></li><li>Build the release<ul><li><pre>ant release</pre></li></ul></li><li>Commit these changes<ul><li><pre>git add-A (to pick-up the repeatable build artifacts in addition to the content-changes from above)</pre></li><li><code>git commit -a -m &quot;Tag 9.0.94&quot;</code></li><li><code>git tag 9.0.94</code></li><li><code>git push origin 9.0.94</code></li></ul></li><li>Check the diff mailed to the dev list</li></ul><p>Notes:</p><ul><li>GPG should be configured to use your Apache code signing key by default</li><li>I always ensured <code>c:/temp/libs</code> was empty so that the build had to download all the dependencies</li><li>This does not include the signing of the Windows installer, which must be done using <a class="external-link" href="https://one.digicert.com/" rel="nofollow">https://one.digicert.com/</a> and <a class="external-link" href="https://infra.apache.org/digicert-use.html" rel="nofollow">https://infra.apache.org/digicert-use.html</a> which is automated during the build process once the Tomcat PMC key is accessible by using jsign. (Working! Try setting <code>do.codesigning=true</code> in build.properties).</li><li>The logs for the Windows signing are in ~/.signingmanager/logs on Linux</li><li>If you get an error signing the installer/uninstaller &quot;Cannot load keystore ~/.digicertone/pkcs11properties.cfg&quot; then you probably don't have your environment variables (or <code>codesigning.storepass</code> property) set properly.</li></ul><h2 id="ReleaseProcess-Uploadtherelease">Upload the release</h2><p>Upload the contents of <code>TOMCAT_9_0_XX/output/release</code> to <a class="external-link" href="https://dist.apache.org/repos/dist/dev/tomcat/tomcat-9/" rel="nofollow">https://dist.apache.org/repos/dist/dev/tomcat/tomcat-9/</a></p><ul><li><code>svn checkout <a class="external-link" href="https://dist.apache.org/repos/dist/dev/tomcat/tomcat-9" rel="nofollow">https://dist.apache.org/repos/dist/dev/tomcat/tomcat-9</a>
+    </code></li><li>cp -r TOMCAT_9_0_XX/output/release/* tomcat-9</li><li>cd tomcat-9 &amp;&amp; svn add v* &amp;&amp; svn commit -m &quot;Upload vX.Y.Z for voting&quot;</li></ul><h2 id="ReleaseProcess-GeneratetheMavenartifacts">Generate the Maven artifacts</h2><p>See <a class="external-link" href="https://github.com/apache/tomcat/blob/9.0.x/res/maven/README.txt" rel="nofollow">https://github.com/apache/tomcat/blob/9.0.x/res/maven/README.txt</a> steps 1 to 3 for the release (not step 4 until the vote passes !)</p><h2 id="ReleaseProcess-Callavote">Call a vote</h2><ul><li>E.g. <a class="external-link" href="http://markmail.org/message/gvmbwocspnwb2dfe" rel="nofollow">http://markmail.org/message/gvmbwocspnwb2dfe</a></li><li>Increment the version number ready for the next tag (e.g. <a class="external-link" href="https://svn.apache.org/viewvc?view=revision&amp;revision=1500094" rel="nofollow">https://svn.apache.org/viewvc?view=revision&amp;revision=1500094</a>)</li></ul><h2 id="ReleaseProcess-CleaningUp">Cleaning Up</h2><ul><li>Reset to the 9.0.x branch (<code>git reset HEAD~ &amp;&amp; git checkout build.properties.default &amp;&amp; git checkout webapps/docs/changelog.xml &amp;&amp; rm -f build.properties.release res/maven/mvn.properties.release</code>)</li></ul><p>I found it simplest to keep this clone for tagging to ensure no other edits found their way into the tag.</p><p>To get a clean copy of the release (e.g. for testing):</p><ul><li><span>mkdir /c/releases/TOMCAT_9_0_94</span></li><li>git archive 9.0.94 | tar -x -C /c/releases/TOMCAT_9_0_94/</li></ul><p>I'm using Git Bash for the above. Adjust as necessary for you choice of tools.</p><p><br/></p><p><br/></p><h2 id="ReleaseProcess-Ifthevotepasses">If the vote passes</h2><ul><li>Send a recap &quot;[VOTE][RESULT]&quot; email to the vote thread on the dev list with the vote counts.</li><li><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> svn mv https://dist.apache.org/repos/dist/dev/tomcat/tomcat-9/v9.0.XX https://dist.apache.org/repos/dist/release/tomcat/tomcat-9/v9.0.XX</pre>
+</div></div></li><li><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> svn checkout --depth immediates https://dist.apache.org/repos/dist/release/tomcat/tomcat-9/ </pre>
+</div></div><p class="auto-cursor-target">and update the <code>KEYS</code> file there to be the same as the one used for release. (The download page has links pointing to this file).</p></li><li>Release the Maven artifacts (<a class="external-link" href="https://github.com/apache/tomcat/blob/9.0.x/res/maven/README.txt" rel="nofollow">https://github.com/apache/tomcat/blob/9.0.x/res/maven/README.txt</a> step 4)</li><li>Wait for the release artifacts to appear in these locations:<ul><li><a class="external-link" href="https://downloads.apache.org/tomcat/tomcat-8/" rel="nofollow">https://downloads.apache.org/tomcat/tomcat-[v]/</a></li><li><a class="external-link" href="https://dlcdn.apache.org/tomcat/tomcat-8/" rel="nofollow">https://dlcdn.apache.org/tomcat/tomcat-[v]/</a></li></ul></li><li>Update the website (e.g. <a class="external-link" href="https://svn.apache.org/viewvc?view=revision&amp;revision=1901819" rel="nofollow">https://svn.apache.org/viewvc?view=revision&amp;revision=1901819</a>)<br/>Note: <em>only</em> modify the <code>xdocs</code>/ files, then use <code>ant docs</code>  to generate the HTML.<br/>Note: the index and oldnews pages are sorted by date. Thus the new announcement pops up to the top of the page.<br/>Note: using <em>tools/update-version.sh oldver newver releasedate</em> from the 'site' project may help you with almost all of the website updates below.<ul><li>Update the build.properties.default file to ensure the correct release is listed.</li><li>Update <em>download</em> page (update &quot;[define v]&quot; macro for the new version)</li><li>Update <em>whichversion</em> page (the current version number).</li><li>Update <em>doap_Tomcat.rdf</em> file (version number and release date).</li><li>Update docs/tomcat-[v]-doc/changelog.html to set the release date to the date the files were copied to the release area in yyyy-MM-dd format (&quot;beta, 2007-02-28&quot; for betas).</li><li>Update <em>migration</em> page (versions in &quot;configuration file differences&quot; comparison form).<ul><li>Notable changes that change behaviour and may require action when upgrading from the previous release may be added to the &quot;noteable changes&quot; section on the <em>migration</em> page.</li></ul></li><li>Move old announcement to the top of the <em>oldnews</em> page.</li><li>Add announcement for the new release to the top of the front page (<em>index</em>).</li><li><p>Update the javadocs (see <a class="external-link" href="https://svn.apache.org/repos/asf/tomcat/site/trunk/README.txt" rel="nofollow">https://svn.apache.org/repos/asf/tomcat/site/trunk/README.txt</a>)</p></li></ul></li><li>Announce the release (e.g. <a class="external-link" href="http://markmail.org/message/xyantb3ozzmucdjt" rel="nofollow">http://markmail.org/message/xyantb3ozzmucdjt</a>) to users@t.a.o, cc dev@t.a.o, announce@t.a.o, announce@a.o</li><li>Add the version number in Bugzilla (<a class="external-link" href="https://bz.apache.org/bugzilla/" rel="nofollow">https://bz.apache.org/bugzilla/</a> → Administration → Products / <a class="external-link" href="https://bz.apache.org/bugzilla/editversions.cgi" rel="nofollow">versions</a>)</li><li>Drop the artifacts for the previous release from <a class="external-link" href="https://dist.apache.org/repos/dist/release/tomcat/tomcat-9/" rel="nofollow">https://dist.apache.org/repos/dist/release/tomcat/tomcat-[v]/</a></li><li>Add release data (version and date) to reporter.apache.org - <a class="external-link" href="https://reporter.apache.org/addrelease.html?tomcat" rel="nofollow">https://reporter.apache.org/addrelease.html?tomcat</a></li></ul><h2 id="ReleaseProcess-Ifthevotedoesnotpass">If the vote does not pass</h2><ul><li>Update the release date in the changelog to &quot;not released&quot;</li><li>Drop the artifacts from <a class="external-link" href="https://dist.apache.org/repos/dist/dev/tomcat/tomcat-9/" rel="nofollow">https://dist.apache.org/repos/dist/dev/tomcat/tomcat-9/</a></li><li>Drop the maven artifacts from the staged maven repository</li></ul>
+                    </div>
+
+                                                            <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/103100084/181309981.xsl">release.xsl</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/103100084/181309988.xsl">release.xsl</a> (application/x-upload-data)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/103100084/181309978.xsl">release.xsl</a> (application/x-upload-data)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

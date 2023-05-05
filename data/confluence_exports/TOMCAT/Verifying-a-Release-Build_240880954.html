@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Verifying a Release Build</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Verifying a Release Build
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Christopher Schultz</span>, last modified on янв 12, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Recent (c. fall of 2022 and later) Apache Tomcat releases should be fully-reproducible as long as you follow some rules. This page describes how to perform a verification of a release. This process can be performed by <em>anybody, anywhere, at any time</em>. It's not just something that Tomcat committers, PMC members, or release-managers can do.</p><p>We encourage the community at large to verify these builds themselves to ensure we are doing them properly and that they have not been tampered with in any way. You should be able to verify a proposed release during the <em>voting</em> period for that release, or verify a released version once the voting has ended (and the vote has passed).</p><h2 id="VerifyingaReleaseBuild-VerifiableItems">Verifiable Items</h2><p>All release artifacts should be verifiable. That includes <code>apache-tomcat-*.zip</code>, <code>apache-tomcat-*.tar.gz</code>, in both source and binary distributions, as well as the Windows .exe installer and uninstaller binaries.</p><h2 id="VerifyingaReleaseBuild-Prerequisites">Prerequisites</h2><p>There are several things which you will need in order to perform a Tomcat release build.</p><ol><li>A build environment running on x86 or x86-64 architecture. This is required to build the Windows installer and uninstaller binaries which require NSIS which is an x86-only product. Use of Microsoft Windows is not required; builds can be completed on MacOS or Linux with wine installed. Please see <a href="ReleaseProcess_103100084.html">Tomcat's Release Process</a> for how to install and configure wine if you choose this option.</li><li>A Java Development Kit (JDK) which matches the version used to build the release. This version information can be found in each release's source artifact in the build.properties.release file.</li><li>Apache Ant which matches the version used to build the release. This version information can be found in each release's source artifact in the build.properties.release file.</li><li>GnuPG and your own private key. You will be asked to sign the release that you build locally during the build process.</li></ol><p>You will need to configure your build environment. The easiest way to do that is to create a <code>build.properties</code>  file in your user's home directory which contains the following configuration:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">gpg.exec=(full path to gpg.exe on your system)
+base.path=(full path to a temporary directory where Tomcat can download dependencies e.g. /tmp/tomcat-build-libs)
+</pre>
+</div></div><h2 id="VerifyingaReleaseBuild-HowtoVerify">How to Verify</h2><p>You will need to download the source distribution of the release. This is the apache-tomcat-x.y.z-src.zip or apache-tomcat-x.y.z-src.tar.gz file which you can find in the downloads area for Apache Tomcat. For example, the source ZIP file for Apache Tomcat 10.1.5 can be found at <a class="external-link" href="https://dist.apache.org/repos/dist/dev/tomcat/tomcat-10/v10.1.5/src/apache-tomcat-10.1.5-src.zip" rel="nofollow">https://dist.apache.org/repos/dist/dev/tomcat/tomcat-10/v10.1.5/src/apache-tomcat-10.1.5-src.zip</a></p><p>Expand the ZIP or tar.gz archive and <code>cd</code>  into that directory. Inspect the <code>build.properties.release</code> file to ensure you are using the same versions of both the JDK and Apache Ant.</p><p>Perform a release build:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">ant release</pre>
+</div></div><p>This will take some time, but when it has completed you should have a number of release artifacts in the <code>output/release</code>  directory. These are the artifacts you will be verifying.</p><p>To verify release artifact files, you will need to download those files you wish to verify. You have already downloaded the source artifact, so that one is very easy to verify:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">diff output/release/apache-tomcat-x.y.z-src.zip ../apache-tomcat-x.y.z-src.zip</pre>
+</div></div><p>Or</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">diff output/release/apache-tomcat-x.y.z-src.tar.gz ../apache-tomcat-x.y.z-src.tar.gz</pre>
+</div></div><p>If you have downloaded all the release artifacts to a directory called <code>release-verification</code>  then you should be able to run this command on UNIX-like systems (or in Windows using bash):</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">(cd output/bin ; find . \( -name &quot;*.asc&quot; -prune \) -o \( -type f -exec diff -qs &quot;/path/to/release-verification/{}&quot; &quot;{}&quot; \; \) )
+(cd output/src ; find . \( -name &quot;*.asc&quot; -prune \) -o \( -type f -exec diff -qs &quot;/path/to/release-verification/{}&quot; &quot;{}&quot; \; \) )</pre>
+</div></div><p>This will print out the names of all files compared and whether or not they match each other. We skip the <code>.asc</code>  files because those were produced by the release manager using their private GPG key and will not be reproducible by you.</p><h2 id="VerifyingaReleaseBuild-Howdoesallthiswork?">How does all this work?</h2><p>When the release-manager performs the release, all parts of the build are tweaked so that reproducibility is possible. There is support from Apache Ant, the javac compiler, and other parts of the toolchain to ensure that every file generated during the build is identical.</p><p>This begins by using the same versions of the toolchain that were used by the release-manager. It's possible that two different versions of e.g. javac willl generate different output, so it's necessary to use the same versions for verification.</p><p>The second step is found within <code>build.properties.release</code>  which contains the timestamp that the release was prepared by the release-manager. This ensures that all files generated during the build process have consistent file timestamps which is especially important when they are put into archives which store those file timestamps.</p><p>The third step is with the file signature-generation. Apache Tomcat releases have several different types of file signatures:</p><ul><li>Simple hashes, such as files with names ending in <code>.sha512</code> . These are directly reproducible by re-hashing the files once built, and verifiable with <code>diff</code> .</li><li>GPG signatures, which are not reproducible but still verifiable with <code>gpg --verify</code> .</li><li>Windows .exe digital signatures, which are the most complicated. The release-manager generates so-called detached signatures (because the file contains the signature only) and bundles these in the release tag in revision-control, as well as in the source release. You got a copy of these files when you expanded the source archive. When <em>you</em> perform a release-build, the release process uses the existing detached signature files to merge with the unsigned .exe files and the result is a byte-for-byte copy of the signed installer and uninstalled binaries. You can verify these with <code>diff</code> or by asking Windows to confirm the digital signature of the files.</li></ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

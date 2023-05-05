@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaEvalJdbc</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaEvalJdbc
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaEvalJdbc-Connectingtika-evaltoyourowndbviaJDBC">Connecting tika-eval to your own db via JDBC</h1>
+
+<p>As default, tika-eval uses an in-memory H2 database, specified by <code>-db</code> on the commandline.</p>
+
+<p>However, you can also specify a jdbc connection string with <code>-jdbc</code>.</p>
+
+<p><strong>NOTE: We will try to keep the SQL used in <code>Profile</code> and <code>Compare</code> simple enough to apply generally through jdbc.  However, we cannot support all the flavors of SQL in our default <code>Report</code> tool.  If you choose to use <code>-jdbc</code>, you are on your own for translating the report SQL to your dialect.</strong></p>
+
+<p>So far, I've only tested the jdbc connection with postgresql, derby in memory and H2 in memory.  Please open a JIRA issue if you find problems with <code>Profile</code> or <code>Compare</code> with other flavors of SQL.</p>
+
+<h1 id="TikaEvalJdbc-Examples">Examples</h1>
+<p>First, make sure to put the appropriate db driver jar on your classpath.  In the following, we assume that you have the driver jar and the <code>tika-eval.jar</code> in <code>bin/</code>.</p>
+
+<h2 id="TikaEvalJdbc-BasicProfile">Basic Profile</h2>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    java -cp &quot;bin/*&quot; org.apache.tika.eval.TikaEvalCLI Profile -jdbc &quot;jdbc:postgresql:tika_eval?user=user&amp;password=superSecret&quot; -extracts extracts
+</pre>
+</div></div>
+
+<h2 id="TikaEvalJdbc-BasicProfilewithCustomTablePrefixes">Basic Profile with Custom Table Prefixes</h2>
+
+<p>Now, let's say you want to profile 3 separate runs of OCR with different settings, say <code>quality=1.0</code>, <code>quality=0.5</code> and <code>quality=0.1</code>. You'll need to prefix your tables with a different prefix for each run.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    java -cp &quot;bin/*&quot; org.apache.tika.eval.TikaEvalCLI Profile -jdbc &quot;jdbc:postgresql:tika_eval?user=user&amp;password=superSecret&quot; -extracts extracts10 -tablePrefix o10
+</pre>
+</div></div>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    java -cp &quot;bin/*&quot; org.apache.tika.eval.TikaEvalCLI Profile -jdbc &quot;jdbc:postgresql:tika_eval?user=user&amp;password=superSecret&quot; -extracts extracts05 -tablePrefix o05
+</pre>
+</div></div>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    java -cp &quot;bin/*&quot; org.apache.tika.eval.TikaEvalCLI Profile -jdbc &quot;jdbc:postgresql:tika_eval?user=user&amp;password=superSecret&quot; -extracts extracts01 -tablePrefix o01
+</pre>
+</div></div>
+
+<p>This will leave you with 24 tables, 7 for each run and then 3 reference tables.</p>
+
+<p>Then, let's say you want to compare the number of &quot;common tokens&quot; in each table for each container file. Unfortunately, the &quot;ids&quot; are unique <em>per run</em>, so you can really only focus on the container files, and you must join them by the file path.</p>
+
+<p>So, step 1 is to build indices on the file path:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    create unique index path01_idx on o01_containers(file_path);
+    create unique index path05_idx on o05_containers(file_path);
+    create unique index path10_idx on o10_containers(file_path);
+</pre>
+</div></div>
+
+<p>Then, join on the file_path to get the paths, and then add in the contents tables for each run:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    select o10c.file_path,
+        o10ct.num_common_tokens,
+        o05ct.num_common_tokens,
+        o01ct.num_common_tokens
+
+    from o10_containers o10c
+        left join o05_containers o05c on o05c.file_path=o10c.file_path
+	left join o01_containers o01c on o01c.file_path=o10c.file_path
+
+        left join o10_contents o10ct on o10c.container_id=o10ct.id
+        left join o05_contents o05ct on o05c.container_id=o05ct.id
+        left join o01_contents o01ct on o01c.container_id=o01ct.id
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

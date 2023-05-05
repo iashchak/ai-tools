@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Troubleshooting Tika</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Troubleshooting Tika
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Tim Allison</span> on дек 06, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TroubleshootingTika-TroubleshootingApacheTika">Troubleshooting Apache Tika</h1><p>Apache Tika is great when it works, but by default can be silently forgiving of configuration mistakes. Here we'll try to cover some of the main problems, and how to go about diagnosing them</p><p>Note that while the underlying cause is often the same no matter how you call Tika, the way of telling what's wrong can vary between them.</p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040428446 {padding: 0px;}
+div.rbtoc1683040428446 ul {margin-left: 0px;}
+div.rbtoc1683040428446 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040428446'>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingTika-TroubleshootingApacheTika'>Troubleshooting Apache Tika</a>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingTika-WrongContentExtracted'>Wrong Content Extracted</a></li>
+<li><a href='#TroubleshootingTika-NoContentExtracted'>No Content Extracted</a></li>
+<li><a href='#TroubleshootingTika-WrongParserUsed'>Wrong Parser Used</a></li>
+<li><a href='#TroubleshootingTika-ContentIncorrectlyDetected'>Content Incorrectly Detected</a></li>
+<li><a href='#TroubleshootingTika-ParsersMissing'>Parsers Missing</a></li>
+<li><a href='#TroubleshootingTika-DetectorsMissing'>Detectors Missing</a></li>
+<li><a href='#TroubleshootingTika-MimeTypeMissing'>Mime Type Missing</a></li>
+<li><a href='#TroubleshootingTika-IdentifyingyourTikaVersion'>Identifying your Tika Version</a>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingTika-TikaApp'>Tika App</a></li>
+<li><a href='#TroubleshootingTika-TikaServer'>Tika Server</a></li>
+<li><a href='#TroubleshootingTika-TikaFacade'>Tika Facade</a></li>
+<li><a href='#TroubleshootingTika-TikaJavaclasses'>Tika Java classes</a></li>
+</ul>
+</li>
+<li><a href='#TroubleshootingTika-IdentifyingwhatMimeTypesyourTikainstallsupports'>Identifying what Mime Types your Tika install supports</a>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingTika-TikaApp.1'>Tika App</a></li>
+<li><a href='#TroubleshootingTika-TikaServer.1'>Tika Server</a></li>
+<li><a href='#TroubleshootingTika-TikaFacade.1'>Tika Facade</a></li>
+<li><a href='#TroubleshootingTika-TikaJavaclasses.1'>Tika Java classes</a></li>
+</ul>
+</li>
+<li><a href='#TroubleshootingTika-IdentifyingwhatParsersyourTikainstallsupports'>Identifying what Parsers your Tika install supports</a>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingTika-TikaApp.2'>Tika App</a></li>
+<li><a href='#TroubleshootingTika-TikaServer.2'>Tika Server</a></li>
+<li><a href='#TroubleshootingTika-TikaFacade.2'>Tika Facade</a></li>
+<li><a href='#TroubleshootingTika-TikaJavaclasses.2'>Tika Java classes</a></li>
+</ul>
+</li>
+<li><a href='#TroubleshootingTika-IdentifyingwhatDetectorsyourTikainstallsupports'>Identifying what Detectors your Tika install supports</a>
+<ul class='toc-indentation'>
+<li><a href='#TroubleshootingTika-TikaApp.3'>Tika App</a></li>
+<li><a href='#TroubleshootingTika-TikaServer.3'>Tika Server</a></li>
+<li><a href='#TroubleshootingTika-TikaFacade.3'>Tika Facade</a></li>
+<li><a href='#TroubleshootingTika-TikaJavaclasses.3'>Tika Java classes</a></li>
+</ul>
+</li>
+<li><a href='#TroubleshootingTika-IdentifyingifanyParsersfailedtobeloaded'>Identifying if any Parsers failed to be loaded</a></li>
+<li><a href='#TroubleshootingTika-IdentifyingifanyDetectorsfailedtobeloaded'>Identifying if any Detectors failed to be loaded</a></li>
+<li><a href='#TroubleshootingTika-PDFTextProblems'>PDF Text Problems</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h2 id="TroubleshootingTika-WrongContentExtracted">Wrong Content Extracted</h2><ul><li>Make sure you're passing Tika the source file you meant to pass, and it hasn't been corrupted in the transfer process</li><li>Make sure Tika is able to correctly detect your file's type, see <strong>Content Incorrectly Detected</strong></li><li>Make sure Tika used the parser you meant it to, see <strong>Wrong Parser Used</strong></li><li>Make sure you're actually using the version of Tika you meant to use! See <strong>Identifying your Tika Version</strong></li><li>Problems with a PDF? See <strong>PDF Text Problems</strong> </li></ul><h2 id="TroubleshootingTika-NoContentExtracted">No Content Extracted</h2><ul><li>Make sure Tika is able to correctly detect your file's type, see <strong>Content Incorrectly Detected</strong></li><li>Make sure Tika has the parser for your format, and its dependencies, available and working. See <strong>Parsers Missing</strong></li><li>Make sure you're actually using the version of Tika you meant to use! See <strong>Identifying your Tika Version</strong> </li></ul><h2 id="TroubleshootingTika-WrongParserUsed">Wrong Parser Used</h2><ul><li>Make sure Tika is able to correctly detect your file's type, see <strong>Content Incorrectly Detected</strong></li><li>Make sure the parser you wanted to use is available to Tika. See <strong>Identifying what Parsers your Tika install supports</strong>, <strong>Parsers Missing</strong> and <strong>Identifying is any Parsers failed to be loaded</strong> </li></ul><h2 id="TroubleshootingTika-ContentIncorrectlyDetected">Content Incorrectly Detected</h2><p>Tika detects content types based on mime magic, format (normally container) specific detectors, content type hints and filename hints.</p><p>Things to check:</p><ul><li>Does Tika know about your type? See <strong>Identifying what Mime Types your Tika install supports</strong></li><li>If the mime type isn't listed there, see <strong>Mime Type Missing</strong></li><li>Does Tika have all its detectors? See <strong>Identifying what Detectors your Tika install supports</strong> and <strong>Detectors Missing</strong></li><li>Is your file a different version of the format? Check the first few hundred bytes in a hex editor, and compare to the built-in mime type </li></ul><h2 id="TroubleshootingTika-ParsersMissing">Parsers Missing</h2><p>In order for a Parser to be loaded by Apache Tika, it needs:</p><ul><li>The parser class to be on the classpath <em>at runtime</em></li><li>And all of its dependencies</li><li>For most parsers, that means the <em>tika-parsers</em> jar and dependencies</li><li>One of:<ul><li>a Tika Config which explicitly lists the parser class</li><li>a Tika Config (eg default one) which uses <a class="unresolved" href="#">DefaultParser</a> <em>and</em> a service file for the parser <em>and</em> no exclusion of that parser or parser's type </li></ul></li></ul><p>To check what parsers you have, see <strong>Identifying what Parsers your Tika install supports</strong></p><p>To check if any parsers were defined but failed to load see <strong>Identifying if any Parsers failed to be loaded</strong></p><p>To create a service file for auto-loading, see <a class="external-link" href="http://tika.apache.org/1.9/parser_guide.html#List_the_new_parser" rel="nofollow">the quickstart guide</a></p><h2 id="TroubleshootingTika-DetectorsMissing">Detectors Missing</h2><p>In order for a Detector to be loaded by Apache Tika, it needs:</p><ul><li>The detector class to be on the classpath <em>at runtime</em></li><li>And all of its dependencies</li><li>For most detectors, that means the <em>tika-parsers</em> jar and dependencies (the container detectors are generally stored along with the parsers)</li><li>One of:<ul><li>a Tika Config which explicitly lists the detector class</li><li>a Tika Config (eg default one) which uses <a class="unresolved" href="#">DefaultDetector</a> <em>and</em> a service file for the detector </li></ul></li></ul><p>To check what detectors you have, see <strong>Identifying what Detectors your Tika install supports</strong></p><p>To check if any detectors were defined but failed to load see <strong>Identifying if any Detectors failed to be loaded</strong></p><h2 id="TroubleshootingTika-MimeTypeMissing">Mime Type Missing</h2><ul><li>If Tika doesn't out of the box, you need to add a custom mimetypes file. See <a class="external-link" href="http://tika.apache.org/1.9/parser_guide.html#Add_your_MIME-Type" rel="nofollow">the quick guide</a> for how</li><li>If you have written a custom mimetypes file, it needs to be present on your classpath at runtime with the <em>exact</em> name of <code>org/apache/tika/mime/custom-mimetypes.xml</code> . Double check you added it to your classpath, it has exactly that name (no typos, no prefix directories, no suffixes etc), and use <strong>Identifying what Mime Types your Tika install supports</strong> to see if you've loaded it or not </li></ul><h2 id="TroubleshootingTika-IdentifyingyourTikaVersion">Identifying your Tika Version</h2><h3 id="TroubleshootingTika-TikaApp">Tika App</h3><p><code>java -jar tika-app-blah.jar --version</code></p><h3 id="TroubleshootingTika-TikaServer">Tika Server</h3><p>Go to <code><a class="external-link" href="http://localhost:9998/version" rel="nofollow">http://localhost:9998/version</a></code></p><h3 id="TroubleshootingTika-TikaFacade">Tika Facade</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Get your Tika object, eg
+Tika tika = new Tika();
+// Call toString() to get the version
+String version = tika.toString();
+</pre>
+</div></div><h3 id="TroubleshootingTika-TikaJavaclasses">Tika Java classes</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Get your Tika Config, eg
+TikaConfig config = TikaConfig.getDefaultConfig();
+// Go via the Tika Facade
+String version = (new Tika(config)).toString();
+</pre>
+</div></div><h2 id="TroubleshootingTika-IdentifyingwhatMimeTypesyourTikainstallsupports">Identifying what Mime Types your Tika install supports</h2><h3 id="TroubleshootingTika-TikaApp.1">Tika App</h3><p><code>java -jar tika-app-blah.jar --list-supported-types</code></p><h3 id="TroubleshootingTika-TikaServer.1">Tika Server</h3><p>Go to <code><a class="external-link" href="http://localhost:9998/mime-types" rel="nofollow">http://localhost:9998/mime-types</a></code></p><h3 id="TroubleshootingTika-TikaFacade.1">Tika Facade</h3><p>This is not directly possible from the Tika Facade class. Instead, follow the <strong>Tika Java classes</strong> route below</p><h3 id="TroubleshootingTika-TikaJavaclasses.1">Tika Java classes</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Get your Tika Config, eg
+TikaConfig config = TikaConfig.getDefaultConfig();
+// Get the registry
+MediaTypeRegistry registry = config.getMediaTypeRegistry();
+// List
+for (MediaType type : registry.getTypes()) {
+   String typeStr = type.toString();
+}
+</pre>
+</div></div><h2 id="TroubleshootingTika-IdentifyingwhatParsersyourTikainstallsupports">Identifying what Parsers your Tika install supports</h2><h3 id="TroubleshootingTika-TikaApp.2">Tika App</h3><p><code>java -jar tika-app-blah.jar --list-parsers</code></p><h3 id="TroubleshootingTika-TikaServer.2">Tika Server</h3><p>Go to <code><a class="external-link" href="http://localhost:9998/parsers" rel="nofollow">http://localhost:9998/parsers</a></code></p><h3 id="TroubleshootingTika-TikaFacade.2">Tika Facade</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Get your Tika object, eg
+Tika tika = new Tika();
+// Get the root parser
+CompositeParser parser = (CompositeParser)parser.getParser();
+// Fetch the types it supports
+for (MediaType type : parser.getSupportedTypes(new ParseContext())) {
+   String typeStr = type.toString();
+}
+// Fetch the parsers that make it up (note - may need to recurse if any are a CompositeParser too)
+for (Parser p : parser.getAllComponentParsers()) {
+   String parserName = p.getClass().getName();
+}
+</pre>
+</div></div><h3 id="TroubleshootingTika-TikaJavaclasses.2">Tika Java classes</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Get your Tika Config, eg
+TikaConfig config = TikaConfig.getDefaultConfig();
+// Get the root parser
+CompositeParser parser = (CompositeParser)parser.getParser();
+// Fetch the types it supports
+for (MediaType type : parser.getSupportedTypes(new ParseContext())) {
+   String typeStr = type.toString();
+}
+// Fetch the parsers that make it up (note - may need to recurse if any are a CompositeParser too)
+for (Parser p : parser.getAllComponentParsers()) {
+   String parserName = p.getClass().getName();
+   if (p instanceof CompositeParser) {
+      // Check child ones too
+   }
+}
+</pre>
+</div></div><h2 id="TroubleshootingTika-IdentifyingwhatDetectorsyourTikainstallsupports">Identifying what Detectors your Tika install supports</h2><h3 id="TroubleshootingTika-TikaApp.3">Tika App</h3><p><code>java -jar tika-app-blah.jar --list-detectors</code></p><h3 id="TroubleshootingTika-TikaServer.3">Tika Server</h3><p>Go to <code><a class="external-link" href="http://localhost:9998/detectors" rel="nofollow">http://localhost:9998/detectors</a></code></p><h3 id="TroubleshootingTika-TikaFacade.3">Tika Facade</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Get your Tika object, eg
+Tika tika = new Tika();
+// Get the root detector
+CompositeDetector detector = (CompositeDetector)parser.getDetector();
+// Fetch the detectors that make it up (note - may need to recurse if any are a CompositeDetector too)
+for (Detector d : parser.getDetectors()) {
+   String detectorName = d.getClass().getName();
+}
+</pre>
+</div></div><h3 id="TroubleshootingTika-TikaJavaclasses.3">Tika Java classes</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Get your Tika Config, eg
+TikaConfig config = TikaConfig.getDefaultConfig();
+// Get the root detector
+CompositeDetector detector = (CompositeDetector)parser.getDetector();
+// Fetch the detectors that make it up (note - may need to recurse if any are a CompositeDetector too)
+for (Detector d : parser.getDetectors()) {
+   String detectorName = d.getClass().getName();
+   if (d instanceof CompositeDetector) {
+      // Check child ones too
+   }
+}
+</pre>
+</div></div><p>d</p><h2 id="TroubleshootingTika-IdentifyingifanyParsersfailedtobeloaded">Identifying if any Parsers failed to be loaded</h2><p>When staring your JVM, if you pass in <code>-Dorg.apache.tika.service.error.warn=true</code> then you'll get warnings logged if any Parsers or Detectors couldn't be loaded. With the default logging configuration, you'll see things like this printed to your standard output of the JVM:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>WARNING: Unable to load org.apache.tika.parser.microsoft.OfficeParser
+java.lang.NoClassDefFoundError: org/apache/poi/poifs/filesystem/DirectoryEntry
+	at java.lang.Class.getDeclaredConstructors0(Native Method)
+	at java.lang.Class.privateGetDeclaredConstructors(Class.java:2585)
+	at java.lang.Class.getConstructor0(Class.java:2885)
+	at java.lang.Class.newInstance(Class.java:350)
+	at org.apache.tika.config.ServiceLoader.loadStaticServiceProviders(ServiceLoader.java:315)
+	at org.apache.tika.parser.DefaultParser.getDefaultParsers(DefaultParser.java:52)
+	at org.apache.tika.parser.DefaultParser.&lt;init&gt;(DefaultParser.java:61)
+	at org.apache.tika.parser.DefaultParser.&lt;init&gt;(DefaultParser.java:66)
+	at org.apache.tika.config.TikaConfig.getDefaultParser(TikaConfig.java:76)
+	at org.apache.tika.config.TikaConfig.&lt;init&gt;(TikaConfig.java:182)
+	at org.apache.tika.config.TikaConfig.getDefaultConfig(TikaConfig.java:291)
+	at org.apache.tika.Tika.&lt;init&gt;(Tika.java:115)
+	at org.apache.tika.cli.TikaCLI.version(TikaCLI.java:629)
+	at org.apache.tika.cli.TikaCLI.process(TikaCLI.java:365)
+	at org.apache.tika.cli.TikaCLI.main(TikaCLI.java:134)
+Caused by: java.lang.ClassNotFoundException: org.apache.poi.poifs.filesystem.DirectoryEntry
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+	... 15 more
+</pre>
+</div></div><p>In this case, the error is telling us that we're missing the Apache POI jars which are a required dependency of Tika Parsers, and of the org.apache.tika.parser.microsoft.OfficeParser parser.</p><p><em>TODO describe how to use a <a class="unresolved" href="#">ServiceLoader</a>.LoadErrorHandler.ERROR to trigger an exception</em></p><h2 id="TroubleshootingTika-IdentifyingifanyDetectorsfailedtobeloaded">Identifying if any Detectors failed to be loaded</h2><p>When staring your JVM, if you pass in <code>-Dorg.apache.tika.service.error.warn=true</code> then you'll get warnings logged if any Parsers or Detectors couldn't be loaded. With the default logging configuration, you'll see things like this printed to your standard output of the JVM:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>WARNING: Unable to load org.apache.tika.parser.microsoft.POIFSContainerDetector
+java.lang.NoClassDefFoundError: org/apache/poi/poifs/filesystem/DirectoryEntry
+	at java.lang.Class.getDeclaredConstructors0(Native Method)
+	at java.lang.Class.privateGetDeclaredConstructors(Class.java:2585)
+	at java.lang.Class.getConstructor0(Class.java:2885)
+	at java.lang.Class.newInstance(Class.java:350)
+	at org.apache.tika.config.ServiceLoader.loadStaticServiceProviders(ServiceLoader.java:315)
+	at org.apache.tika.detect.DefaultDetector.getDefaultDetectors(DefaultDetector.java:55)
+	at org.apache.tika.detect.DefaultDetector.&lt;init&gt;(DefaultDetector.java:66)
+	at org.apache.tika.config.TikaConfig.getDefaultDetector(TikaConfig.java:71)
+	at org.apache.tika.config.TikaConfig.&lt;init&gt;(TikaConfig.java:183)
+	at org.apache.tika.config.TikaConfig.getDefaultConfig(TikaConfig.java:291)
+	at org.apache.tika.Tika.&lt;init&gt;(Tika.java:115)
+	at org.apache.tika.cli.TikaCLI.version(TikaCLI.java:629)
+	at org.apache.tika.cli.TikaCLI.process(TikaCLI.java:365)
+	at org.apache.tika.cli.TikaCLI.main(TikaCLI.java:134)
+Caused by: java.lang.ClassNotFoundException: org.apache.poi.poifs.filesystem.DirectoryEntry
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+	... 14 more
+</pre>
+</div></div><p>In this case, the error is telling us that we're missing the Apache POI jars which are a required dependency of Tika Parsers, and of the org.apache.tika.parser.microsoft.POIFSContainerDetector detector.</p><p><em>TODO describe how to use a <a class="unresolved" href="#">ServiceLoader</a>.LoadErrorHandler.ERROR to trigger an exception</em></p><h2 id="TroubleshootingTika-PDFTextProblems">PDF Text Problems</h2><p>If Tika isn't extracting the right text from a PDF, and/or is giving errors, the first thing to do is identify if this is a Tika issue, or an issue with the underlying Apache PDFBox library used, or an issue with the PDF itself.</p><p>To check, grab the latest <a class="external-link" href="http://pdfbox.apache.org/download.cgi" rel="nofollow">Apache PDFBox pdfbox-app jar</a> and use the <a class="external-link" href="http://pdfbox.apache.org/2.0/commandline.html#extracttext" rel="nofollow">ExtractText command line tool</a> on your problematic PDF:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -jar pdfbox-app.X.Y.jar ExtractText problematicPDF.pdf
+</pre>
+</div></div><p>If PDFBox reports that there are unmapped Unicode characters or other problems, there may be a problem with the PDF itself.  Try opening it in, for example, Adobe Reader and &quot;saving as text&quot; or copying and pasting the text. </p><p>If the &quot;saved text&quot; is just as errorful as what Tika was extracting, there's a problem with the PDF file itself.</p><p>If the &quot;saved text&quot; is in good shape, then there may be a problem in PDFBox.  In which case, please <a class="external-link" href="http://pdfbox.apache.org/support.html" rel="nofollow">file an Apache PDFBox bug report</a> and attach at least one failing file to the bug. When that gets fixed, Tika will pick up the new release and will get the fix.</p><p>If PDFBox ExtractText works fine, it may* be a Tika bug. Please <a class="external-link" href="http://tika.apache.org/contribute.html" rel="nofollow">report an Apache Tika bug</a>, attach at least one failing file, and mention that PDFBox ExtractText doesn't have the issue.</p><p>*PDFBox's <a class="unresolved" href="#">ExtractText</a> does not pull text from Annotations or Acroforms, so it is possible that a problem not encountered by PDFBox's <a class="unresolved" href="#">ExtractText</a> reveals a bug in Annotations or Acroforms; might be a bug in Tika, too. When in doubt, ask.</p><p>See also: <a class="external-link" href="https://wiki.apache.org/tika/PDFParser%20%28Apache%20PDFBox%29" rel="nofollow">PDFParser notes</a>.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

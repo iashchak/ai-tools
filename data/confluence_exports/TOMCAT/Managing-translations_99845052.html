@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Managing translations</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Managing translations
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on дек 10, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/vIPzBQ" rel="nofollow">https://cwiki.apache.org/confluence/x/vIPzBQ</a></p><p>The Tomcat project uses <a class="external-link" href="https://poeditor.com/" rel="nofollow">POEditor</a> to manage translations.</p><p>Links:</p><ul><li><a class="external-link" href="https://poeditor.com/join/project/NUTIjDWzrl" rel="nofollow">Join</a> Tomcat translations project.<br/>A public link, available to everyone. Once you join the project, you can access it via Dashboard page at POEditor site.</li><li><a class="external-link" href="https://poeditor.com/projects/view?id=221603" rel="nofollow">View</a> Tomcat translations project.<br/>This page lists translation status for each language and provides additional controls.<br/><em>Note</em>: Accessing this page requires additional privileges. If you do not have them, an error 404 is shown after your sign-in.</li></ul><p>Key points:</p><ul><li>The Export/Import code that copies to/from POEditor prefixes each property key with the package name to ensure that the keys are always unique.</li><li>In POEditor the keys are known as terms.</li><li>The POEditor import/export process automatically handles any necessary escaping/unescaping.</li><li>The Manager and Host Manager applications use messages that start with &quot;OK - &quot; to indicate success of an operation. This prefix has to be preserved when translating. See <a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=63141" rel="nofollow">Bug 63141</a> for details.</li></ul><p>The process to synchronize the Tomcat source code with POEditor needs to be performed by a committer. The process works as follows:</p><ol><li>Update English translations in Tomcat:<br/>Add or remove keys (terms) to the English LocalStrings.properties files.<br/>Make any changes required to the values in the English LocalStrings.properties files.</li><li>Export the translations from Tomcat:<br/>run <code>org.apache.tomcat.buildutil.translate.Export</code></li><li>Import the terms with English translations to POEditor.</li><li>Update the translations for other languages on POEditor web site.</li><li>Export one or more languages (<em>Note</em>: only export translated terms).</li><li>Import the translations into Tomcat:<br/>run <code>org.apache.tomcat.buildutil.translate.Import</code></li></ol><p>It is recommended that one language is imported at a time and that steps 5 and 6 are repeated for each language to be imported.</p><p>Steps 1 to 3 are only required when adding terms, removing terms or changing the English translation.</p><p>For small changes it is possible to make the change in both git repository and POEditor - effectively keeping the two in sync manually - and not use the Import/Export process. Care needs to be taken to ensure that the two systems remain synchronized.</p><p>Changes are typically imported from POEditor by the release manager shortly before a release is tagged.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : TomcatTrackUs09 PMC Sessions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Conference-Parent-Page_107970686.html">Conference Parent Page</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TomcatTrackUs09_103100645.html">TomcatTrackUs09</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : TomcatTrackUs09 PMC Sessions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on сен 20, 2009
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><a href="TomcatTrackUs09_103100645.html">TomcatTrackUs09</a> Sessions Here are the proposals for the PMC (extracted for an email discussion):</p>
+
+
+<p>The idea is to have a day of Tomcat in the mean <a class="unresolved" href="#">ApacheCon</a>US2009 track (Wednesday) and then to have a day in one small (50 people) room with more technical tracks (Thursday). Additionally we will run BOFs or Meetups on  Thrusday evening.</p>
+
+
+<p>So something like:</p>
+
+<p> 1 - Have an introduction (something like what Mladen (See below mturk) proposed).</p>
+
+<p> 2 - Have more details presentation on the new tech (Tomcat7, Servlet 3.0)</p>
+
+<p> 3 - Have a remainder of the existing new stuff (Bayeux, Comet, jdbc-pool, tomcat-lite).</p>
+
+<p> 4 - Have well known stuff, like admin/conf stuff, mod_jk/mod_proxy and clustering.</p>
+
+<p> 5 - A bunch of technical presentations.</p>
+
+
+<h4 id="TomcatTrackUs09PMCSessions-Tomcatcommunityoverview">Tomcat community overview</h4>
+<p>by Mladen Turk</p>
+
+<p>Presentation - 60 minutes. The presentation gives current overview of the Apache Tomcat Project and directions it is heading.</p>
+
+<p>It explains how we work as a community of developers and how we interact with our community of users. It gives brief overview of each technology Apache Tomcat Project is developing and maintaining</p>
+
+
+<ul class="alternate">
+	<li>Tomcat versions</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Connectors</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Security</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Bugzilla</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Development</li>
+</ul>
+
+
+
+
+<p>Audience should be both generic (at least for the technical and community overview I plan to do) and technical for an in-depth presentations offered by Mark, Filip and Rainer.</p>
+
+
+<p>Presenter</p>
+
+<p>Mladen Turk is a Principal Software Engineer at JBoss, a division of Red Hat (Switzerland), where he is responsible for Native Integration, Enterprise Web Services and Multiplatform technologies. He is member of JBoss Application Server team and gives more then 20 years of experience in client/server technologies. Mladen is currently acting as Apache Tomcat PMC chair, and beside Tomcat, he actively contributes to APR, Httpd and Commons projects.</p>
+
+
+<h4 id="TomcatTrackUs09PMCSessions-Allyouwanttoknowaboutreverseproxies">All you want to know about reverse proxies</h4>
+<p>By Rainer Jung</p>
+
+
+<h4 id="TomcatTrackUs09PMCSessions-mod_jkindepth">mod_jk in depth</h4>
+<p>By Rainer Jung</p>
+
+
+<p> Based on some users list feedback: I could either present on mod_jk (in case there's no conflict with Mladen), or - thinking about André's suggestion, I could give a &quot;Reverse Proxies&quot; talk.</p>
+
+<p>That talk would be more for sys admins, not for developers, and would explain the special situation a reverse proxy is in:</p>
+
+
+<ul class="alternate">
+	<li>Request Routing</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Loadbalancing/Stickyness procedures</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Changing URLs, Cookies, etc.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Content rewriting</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>AJP protocol</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Keep-Alive issues</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Resource issues (blocking)</li>
+</ul>
+
+
+
+<p>etc. It would include examples from mod_jk, mod_proxy_*, mod_substitute/mod_sed, mod_proxy_html (a module done by Nick Kew) and if available then even the GSOC Tomcat reverse proxy.</p>
+
+<p>I think it would be fun, doing a talk that is not directly related to one single software component or project but more focused on a real-life topic and solution ingredients.<br/>
++++<br/>
+ Yes, for the two proposals coming from me (working titles):</p>
+
+
+<ul class="alternate">
+	<li>All you want to know about reverse proxies</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>mod_jk in depth</li>
+</ul>
+
+
+
+<p>Both of my talks are more directed to admins.</p>
+
+<h4 id="TomcatTrackUs09PMCSessions-SecuringyourTomcatinstallation">Securing your Tomcat installation</h4>
+<p>By Tim Funk</p>
+
+<p>Whether you are new to Tomcat or used it for a long time, we'll walk through ways to make your installation more secure. Even though we make Tomcat secure out of the box, you will make configuration changes. In this talk, we'll give you hints to make sure your changes don't expose you to security issues. We'll also cover items developers should and should not do in their code to keep the installation secure. Out of scope in this discussion: SSL.</p>
+
+
+<p>Presenter</p>
+
+<p>Tim Funk has been a Tomcat user for over 7 years and committer since 2003. Tim currently resides in Pennsylvania and works for Armstrong World Industries performing a range of roles, enjoying the role of developer the most. Tim has a Masters of Software Engineering from Penn State.</p>
+
+<h4 id="TomcatTrackUs09PMCSessions-mod_jk/mod_proxyandothers">mod_jk / mod_proxy and others</h4>
+<p>By Mladen Turk/Rainer Jung/Jean-Frederic Clere</p>
+
+<p>Tomcat is often used as a cluster and/or is the back-end server of a front-end reserve proxy.</p>
+
+<p>Several front-end can be used, mod_jk, mod_proxy, mod_serf and mod_cluster, quick presentation of each of them, featuring: loadbalancing, failover, QoS etc.  &quot;Inktomi Traffic Server&quot; if incubated will be presented too.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

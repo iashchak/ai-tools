@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Tomcat and IIS Howto</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OS_107970699.html">OS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Tomcat and IIS Howto
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on апр 12, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h3 id="TomcatandIISHowto-Permissions">Permissions</h3>
+<p>The official documentation lacks a few important bits around file permissions  that must be set if the application pool identity the connector is running under  does not have global permissions to the servers file system:</p>
+
+<ul>
+	<li>The directory with your isapi_redirect.dll and associated .properties files  must be at least read only to the application pool identity account</li>
+	<li>If you have logging enabled  for the filter then the application pool  identity must have read &amp; write access to the log file</li>
+	<li>If you use the registry for the configuration then the application pool  identity must have read access to the keys If you miss any of the above then the filter simply will not work and you  will not receive any form of error messages to tell you it has not  worked.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h3 id="TomcatandIISHowto-Windows2008/IIS7StepbyStep">Windows 2008 / IIS 7 Step by Step</h3>
+<p>The following steps detail setting up IIS to function correctly with the  connector, it assumes you have already completed the .properties or registry  configuration:</p>
+
+<p><strong>Allow ISAPI Filter to run:</strong></p>
+
+<ul>
+	<li>In the IIS Manager console select the computer node</li>
+	<li>Open the &quot;ISAPI and CGI&quot; restrictions panel</li>
+	<li>Click the &quot;Add&quot; button</li>
+	<li>Under &quot;ISAPI or CGI path&quot; enter the full path to the Connector ISAPI  dll</li>
+	<li>Under &quot;Description&quot; add something meaningful such as &quot;Tomcat&quot;</li>
+	<li>Check &quot;Allow extension path to execute&quot;</li>
+	<li>Click &quot;Ok&quot;
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p><strong>Enable ISAPI Filter for individual  sites:</strong></p>
+
+<ul>
+	<li>In the IIS Manager console open the computer node and select the website to  add the ISAPI filter to</li>
+	<li>Right click on the website node and add a new virtual directory pointing to  the directory containing the dll and associated .properties files</li>
+	<li>Open the &quot;ISAPI Filters&quot; panel</li>
+	<li>Click the &quot;Add&quot; button</li>
+	<li>Under &quot;Filter Name&quot; add something meaningful such as &quot;Tomcat&quot;</li>
+	<li>Under &quot;Executable&quot; enter the full path to the Connector ISAPI dll</li>
+	<li>Click &quot;Ok&quot;
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>If you are using the website for hosting other technologies (such as asp.net)  the order of execution for the filters may have to be changed for everything to  work as expected. In order to do this click &quot;View Ordered List&quot; in the &quot;ISAPI  Filters&quot; panel for a website and then use the &quot;Move Up&quot; and &quot;Move Down&quot; buttons  to reorganise the execution order. If you would like asp.net to handle cases  such as 404's then the Tomcat filter should appear BEFORE those for .net. If you  are using specialist authentication filters (such as CA <a class="unresolved" href="#">SiteMinder</a>) then these  should appear before Tomcat so that requests are correctly authenticated prior  to being received by the connector.</p>
+
+<h3 id="TomcatandIISHowto-Setup">Setup</h3>
+<p>Configuring Tomcat and IIS is documented at <a class="external-link" href="http://tomcat.apache.org/connectors-doc/webserver_howto/iis.html" rel="nofollow">the IIS Howto page</a> . The instructions there work fine, but there is a <a class="external-link" href="http://archive.apache.org/dist/tomcat/tomcat-connectors/jk/binaries/win32/jk-1.2.15/isapi_redirect.msi" rel="nofollow">setup program</a> which allows you to skip steps 1 through 7 in the &quot;Configuring the ISAPI Redirector&quot; section of this page. Also, step 8 can be done using a VBScript file like this:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&#39;Taken from http://msdn.microsoft.com/library/en-us/iissdk/html/8fcd5343-07cb-49e9-a206-0c65a988dcca.asp?frame=true and
+&#39; http://msdn.microsoft.com/library/default.asp?url=/library/en-us/iissdk/html/425ff52d-9998-44a9-95dd-b46b2e390db8.asp
+&#39; or Google the Microsoft web site for &quot;Creating Sites and Virtual Directories Using ADSI&quot; and &quot;Enabling ISAPI Filters Using ADSI&quot;
+&#39; with http://www.google.com/search?q=%22Creating+Sites+and+Virtual+Directories+Using+ADSI%22+site%3Amsdn.microsoft.com
+&#39; and http://www.google.com/search?q=%22Enabling+ISAPI+Filters+Using+ADSI%22+site%3Amsdn.microsoft.com
+
+Option Explicit
+Dim IIsPath
+Dim ConnectorPath
+
+Dim FiltersObj
+Dim FilterObj
+Dim LoadOrder
+Dim Name &#39;of the filter and the virtual directory
+Dim DLLName
+
+&#39;Double-check this path
+ConnectorPath = &quot;C:\Program Files\Apache Software Foundation\Jakarta Isapi Redirector\bin\&quot;
+
+&#39;Configure the first (default) web site on a machine. Change to &quot;2&quot; for the second web site, etc.
+IIsPath = &quot;IIS://LocalHost/W3SVC/1/&quot;
+
+&#39;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+&#39;SHOULDN&#39;T NEED TO CHANGE ANYTHING BELOW THIS LINE
+&#39;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Name = &quot;jakarta&quot;
+DLLName = &quot;isapi_redirect.dll&quot;
+
+&#39;Configure the filter order (add it at the bottom of the list)
+Set FiltersObj = GetObject(IIsPath &amp; &quot;Filters&quot;)
+LoadOrder = FiltersObj.FilterLoadOrder
+If LoadOrder &lt;&gt; &quot;&quot; Then
+  LoadOrder = LoadOrder &amp; &quot;,&quot;
+End If
+LoadOrder = LoadOrder &amp; Name
+FiltersObj.FilterLoadOrder = LoadOrder
+FiltersObj.SetInfo
+
+&#39;Actually create the filter
+&#39;ToDo: set priority. This might be possible with the FilterFlags property, but the IIS doc says:
+&#39; &quot;Because this property is internally configured by IIS, you should consider it to be read-only. Do not configure this property.&quot;
+Set FilterObj = FiltersObj.Create(&quot;IIsFilter&quot;, Name)
+FilterObj.FilterPath = ConnectorPath &amp; DLLName
+FilterObj.SetInfo
+</pre>
+</div></div>
+<p>Save this script to a file with a VBS extension. Open it in Notepad and verify that the <a class="unresolved" href="#">ConnectorPath</a> variable is correct for your connector installation. Then open a command prompt and run it with the cscript interpreter: <code>cscript filename.vbs</code> . Restart IIS, and test the connector as mentioned in the Howto (go to <a class="external-link" href="http://localhost/servlets-examples/" rel="nofollow">http://localhost/servlets-examples/</a> ).</p>
+
+<p>Corrections on the above script and suggestions on how to get it into the Setup program are welcome.</p>
+
+<p>You still need to do the other steps on the <a class="external-link" href="http://tomcat.apache.org/connectors-doc/webserver_howto/iis.html" rel="nofollow">IIS Howto page</a>, such as adding your contexts, etc.</p>
+
+<hr/>
+<p>Added by <a class="unresolved" href="#">SkyBristol</a> on 4/11/2006</p>
+
+<p>The setup file included here and the script to add the ISAPI filter work just fine in IIS6, but there is one additional step needed. You must also allow access to the filter through the Web Service Extensions part of IIS. To do this graphically, do the following:</p>
+
+<p>1) open the IIS Manager and go to the Web Service Extensions item under the appropriate server 2) Click the &quot;Add a new Web service extension&quot; item under &quot;Tasks&quot; 3) Give it a name like &quot;jakarta&quot; 4) Browse to the isapi_redirect.dll file you installed above as a &quot;Required File&quot; 5) Check the box to enable this extension</p>
+
+<p>Added by Tony.Britton on 12/11/2009:</p>
+
+<p>To add the Jakarta WSE programmatically, run the following line at a command prompt:  (Change the File Path/File Name as appropriate)</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>cscript.exe //NOLOGO iisext.vbs /AddFile &quot;C:\Program Files\Apache Software Foundation\Jakarta Isapi Redirector\bin\isapi_redirect.dll&quot; 1 jakarta 1 jakarta
+</pre>
+</div></div>
+<hr/>
+<p>Added by <a class="unresolved" href="#">MaiPiu</a> on 12 May 2006</p>
+
+<p>IIS and Tomcat: you found also in Other links see here <a href="UsefulLinks_103100724.html">UsefulLinks</a>. Little notice: Using the present help, I made working IIS 6.0 , Jk, Tomcat 5.0 on Windows2003 server... (but in link before you found works also with jk2!)</p>
+
+
+<hr/>
+<p>Added by <a class="unresolved" href="#">JohnJames</a> on 12 April 2011:</p>
+
+<p>I have used the .net based <a class="external-link" href="http://tomcatiis.riaforge.org" rel="nofollow">BonCode</a> JK connector rather than the ISAPI redirector to connect IIS6 and IIS7 to Apache Tomcat 6. This worked very easily. There is GUI installer in the distribution package that worked for me. There are also videos on how to do the setup.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

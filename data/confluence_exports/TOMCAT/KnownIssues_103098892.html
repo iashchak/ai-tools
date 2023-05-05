@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : KnownIssues</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : KnownIssues
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on окт 06, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="KnownIssues-FAQ/KnownIssues">FAQ / Known Issues</h1><p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/DColBg" rel="nofollow">https://cwiki.apache.org/confluence/x/DColBg</a></p><h2 id="KnownIssues-Questions">Questions</h2><ol><li><a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=109445158#KnownIssues-TomcatIssues">What are the known issues in any given Tomcat version?</a></li><li><a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=109445158#KnownIssues-OracleJREIssues">What are the known issues with the Oracle JRE?</a></li><li><a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=109445158#KnownIssues-OpenJDKIssues">What are the known issues with the OpenJDK?</a></li><li><a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=109445158#KnownIssues-ImageIOIssues">I'm using the Java ImageIO to dynamically serve images and get strange Exceptions from time to time. Is this a bug in Tomcat?</a></li></ol><h2 id="KnownIssues-Answers">Answers</h2><h3 id="KnownIssues-TomcatIssuesWhataretheknownissuesinanygivenTomcatversion?"><span class="confluence-anchor-link" id="KnownIssues-TomcatIssues"></span>What are the known issues in any given Tomcat version?</h3><p>To determine the known issues for any given Tomcat version, you'll need to review the following:</p><ul><li>The currently open bugs and enhancement requests in Bugzilla</li><li>The latest (from svn) change log entries for all newer versions</li></ul><p>See chapter <a class="external-link" href="https://tomcat.apache.org/bugreport.html#Looking_for_known_issues" rel="nofollow">Looking for known issues</a> on Tomcat web site.</p><h3 id="KnownIssues-OracleJREIssuesWhataretheknownissueswiththeOracleJRE?"><span class="confluence-anchor-link" id="KnownIssues-OracleJREIssues"></span>What are the known issues with the Oracle JRE?</h3><ul><li><a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=50518" rel="nofollow">jps.exe and jvisualvm.exe cannot detect tomcat using jdk1.6.0_23 onwards</a> — Fixed in Java 1.6.0_25.</li></ul><h3 id="KnownIssues-OpenJDKIssuesWhataretheknownissueswiththeOpenJDK?"><span class="confluence-anchor-link" id="KnownIssues-OpenJDKIssues"></span>What are the known issues with the OpenJDK?</h3><ul><li>There have been reports that java.util.logging does not work properly in OpenJDK 1.7.0.9 and OpenJDK6 1.6.0_32. The symptom is &quot;<code>java.lang.ClassNotFoundException: 1catalina.org.apache.juli.FileHandler</code>&quot; errors when you start Tomcat. See these threads from <a class="external-link" href="https://marc.info/?t=136253269400001&amp;r=1&amp;w=2" rel="nofollow">March 2013</a> and <a class="external-link" href="https://marc.info/?t=137371445700004&amp;r=1&amp;w=2" rel="nofollow">July 2013</a>. This issue was absent in earlier versions and should be fixed in a later version of those JDKs.</li></ul><h3 id="KnownIssues-ImageIOIssuesI&#39;musingtheJavaImageIOtodynamicallyserveimagesandgetstrangeExceptionsfromtimetotime.IsthisabuginTomcat?"><span class="confluence-anchor-link" id="KnownIssues-ImageIOIssues"></span>I'm using the Java ImageIO to dynamically serve images and get strange Exceptions from time to time. Is this a bug in Tomcat?</h3><p>Imagine you have a servlet which dynamically generates images and serves them via javax.imageio.ImageIO. To write the image to the OutputStream, perhaps you are doing something like this:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        BufferedImage img = createMyImage(); // makes a BufferedImage
+        
+        response.setContentType(&quot;image/png&quot;);
+        try (OutputStream out = response.getOutputStream()) { // try-with-resources
+            ImageIO.write(img, &quot;PNG&quot;, out);
+        } catch (IOException ex) {
+            // Client aborted connection
+        }
+    }</pre>
+</div></div><p>Now, although there shouldn't be any Exception logged (because the IOException which occurs when the client aborted the connection is ignored), you see strange Exceptions in Tomcat's log which may belong to other Servlets/JSP (at least with Sun/Oracle JVM on Windows), saying that the response has already been committed, although you didn't write anything to it at that time. For example:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>13.07.2011 00:13:51 org.apache.catalina.core.StandardWrapperValve invoke
+SEVERE: Servlet.service() for servlet [myApp.MyServlet] in context with path [] threw exception
+java.lang.IllegalStateException: Cannot create a session after the response has been committed
+	at org.apache.catalina.connector.Request.doGetSession(Request.java:2734)
+        ...</pre>
+</div></div><p>or maybe you use the ISAPI Redirector for IIS on Windows, and get these logs:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[Tue Jul 12 06:04:49.812 2011] [4124:2444] [error] ajp_connection_tcp_get_message::jk_ajp_common.c (1296): wrong message format 0xdaed from 127.0.0.1:8019</pre>
+</div></div><h4 id="KnownIssues-IsthisabuginTomcat?">Is this a bug in Tomcat?</h4><p>Actually, it's a bug (or at least a strange behavior) in the Java ImageIO. When the ImageIO writes to an OutputStream and gets an IOException during writing, it could happen that some later time, when the ImageWriter is garbage-collected, the flush() method is called on that OutputStream. Tomcat recycles OutputStream objects to save resources, so it could be that when flush() is called from the ImageIO, the particular OutputStream object already belongs to another Response, which can produce the above errors, when the Servlet tries to get a Session for example, or can generally lead to broken responses.</p><p>See also <a class="external-link" href="https://nerd.dk/blogs/bug-tomcat-or-java2d" rel="nofollow">here</a> or this <a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=37516" rel="nofollow">Bug report</a>.</p><h4 id="KnownIssues-Sohowtoresolvetheerrors?">So how to resolve the errors?</h4><p>To resolve this, I'm using an OutputStream decorator class which decorates Tomcat's OutputStream and prevents any flush() calls. Additionally, when close() is called on that Stream, it nulls-out the reference to Tomcat's OutputStream and prevents any other operations:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">/**
+ * A OutputStream which can be used to write Images
+ * with the ImageIO in servlets.
+ */
+public class MyImageIOOutputStream extends OutputStream {
+
+    private OutputStream out;
+    private volatile boolean isActive = true;
+
+    public MyImageIOOutputStream(OutputStream out) {
+        this.out = out;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (isActive) {
+            isActive = false; // deactivate
+            try {
+                out.close();
+            } finally {
+                out = null;
+            }
+        }
+    }
+
+    @Override
+    public void flush() throws IOException {
+      if(isActive) {
+        out.flush();
+      }
+      // otherwise do nothing (prevent polluting the stream)
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        if (isActive)
+            out.write(b, off, len);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        if (isActive)
+            out.write(b);
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+        if (isActive)
+            out.write(b);
+    }
+}</pre>
+</div></div><p>Now you just have to use this Decorater class instead of using Tomcat's OutputStream directly:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">    response.setContentType(&quot;image/png&quot;);
+    try (OutputStream out = new MyImageIOOutputStream(response.getOutputStream())) {
+        ImageIO.write(img, &quot;PNG&quot;, out);
+    } catch (IOException ex) {
+        // Client aborted connection
+    }</pre>
+</div></div><p>and the errors should be gone away.</p><p>An alternative would be to write the Image contents to a ByteArrayOutputStream, and using its writeTo() method to write the contents to the Servlet's Response. However that would require some additional memory, as the contents have to be buffered.</p><h4 id="KnownIssues-PD4MLArethereanyothercorrespondingcasesofthisbug?"><span class="confluence-anchor-link" id="KnownIssues-PD4ML"></span>Are there any other corresponding cases of this bug?</h4><p>The third party PDF generating software module PD4ML has had a corresponding problem when calling the render() methods in class org.zefer.pd4ml.PD4ML with response.getOutputStream() as argument. That causes the response stream to be closed from a finalizer() method of a class called PD4Device. When using an Apache/Tomcat connector, this unexpected stream close from the finalizer thread has occationally caused responses to be sent to wrong requestor (request/response mix up). The workarounds described above for ImageIO works perfectly in this case too.</p><p>A general way to protect the response output streams from misbehaving web applications is to set the system property org.apache.catalina.connector.RECYCLE_FACADES=true, since that makes Tomcat create new stream instances for each request (of course at the cost of performance).</p><p>PD4ML has fixed this bug in their latest releases, but sites using older versions of the library can still be affected. PD4ML version 3.2.3 definitely has this flaw, but the currently latest version 3.8.0 is fixed. The release notes document gives no clues where in between the problem was fixed, and the vendor was not able to tell either in <a class="external-link" href="https://pd4ml.com/support/pdf-generation-troubleshooting-f4/pd4device-finalize-closes-output-stream-and-causes-mixup-t543.html" rel="nofollow">this bug report</a>.</p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

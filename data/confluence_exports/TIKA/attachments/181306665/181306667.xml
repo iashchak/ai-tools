@@ -1,0 +1,92 @@
+<properties>
+    <parsers>
+        <parser class="org.apache.tika.parser.DefaultParser">
+            <parser-exclude class="org.apache.tika.parser.ocr.TesseractOCRParser"/>
+            <parser-exclude class="org.apache.tika.parser.pdf.PDFParser"/>
+            <parser-exclude class="org.apache.tika.parser.microsoft.ooxml.OOXMLParser"/>
+            <parser-exclude class="org.apache.tika.parser.microsoft.OfficeParser"/>
+        </parser>
+        <parser class="org.apache.tika.parser.pdf.PDFParser">
+            <params>
+                <param name="extractActions" type="bool">true</param>
+                <param name="checkExtractAccessPermissions" type="bool">true</param>
+                <!--                <param name="allowExtractionForAccessibility" type="bool">false</param>-->
+            </params>
+        </parser>
+        <parser class="org.apache.tika.parser.microsoft.ooxml.OOXMLParser">
+            <params>
+                <param name="includeDeletedContent" type="bool">true</param>
+                <param name="includeMoveFromContent" type="bool">true</param>
+                <param name="extractMacros" type="bool">true</param>
+            </params>
+        </parser>
+        <parser class="org.apache.tika.parser.microsoft.OfficeParser">
+            <params>
+                <param name="extractMacros" type="bool">true</param>
+            </params>
+        </parser>
+    </parsers>
+    <metadataFilters>
+        <metadataFilter class="org.apache.tika.metadata.filter.FieldNameMappingFilter">
+            <params>
+                <excludeUnmapped>true</excludeUnmapped>
+                <mappings>
+                    <mapping from="X-TIKA:content" to="content"/>
+                    <mapping from="Content-Length" to="length"/>
+                    <mapping from="dc:creator" to="creators"/>
+                    <mapping from="dc:title" to="title"/>
+                    <mapping from="Content-Type" to="mime"/>
+                    <mapping from="X-TIKA:EXCEPTION:container_exception" to="tika-exception"/>
+                </mappings>
+            </params>
+        </metadataFilter>
+    </metadataFilters>
+    <async>
+        <params>
+            <maxForEmitBatchBytes>10000</maxForEmitBatchBytes>
+            <emitMaxEstimatedBytes>100000</emitMaxEstimatedBytes>
+            <emitWithinMillis>60000</emitWithinMillis>
+            <numEmitters>1</numEmitters>
+            <numClients>8</numClients>
+            <tikaConfig>tika-pipes-config.xml</tikaConfig>
+            <forkedJvmArgs>
+                <arg>-Xmx1g</arg>
+                <arg>-XX:ParallelGCThreads=2</arg>
+                <arg>-XX:+ExitOnOutOfMemoryError</arg>
+            </forkedJvmArgs>
+            <timeoutMillis>60000</timeoutMillis>
+        </params>
+    </async>
+    <fetchers>
+        <fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher">
+            <params>
+                <name>fsf</name>
+                <basePath>/path/to/docs</basePath>
+            </params>
+        </fetcher>
+    </fetchers>
+    <emitters>
+    <emitter class="org.apache.tika.pipes.emitter.solr.SolrEmitter">
+      <params>
+        <name>solr1</name>
+        <url>http://localhost:8983/solr/tika-integration-example</url>
+        <attachmentStrategy>concatenate-content</attachmentStrategy>
+        <contentField>content</contentField>
+        <commitWithin>10</commitWithin>
+      </params>
+    </emitter>
+        <emitter class="org.apache.tika.pipes.emitter.fs.FileSystemEmitter">
+            <params>
+                <name>fse</name>
+                <basePath>/path/to/extracts</basePath>
+            </params>
+        </emitter>
+    </emitters>
+    <pipesIterator class="org.apache.tika.pipes.pipesiterator.FileSystemPipesIterator">
+        <params>
+            <basePath>/path/to/docs</basePath>
+            <fetcherName>fsf</fetcherName>
+            <emitterName>solr1</emitterName>
+        </params>
+    </pipesIterator>
+</properties>

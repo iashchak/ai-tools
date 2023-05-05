@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Hadoop Java Versions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Hadoop Java Versions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Akira Ajisaka</span>, last modified on окт 19, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="HadoopJavaVersions-SupportedJavaVersions">Supported Java Versions</h2><ul><li>Apache Hadoop 3.3 and upper supports Java 8 and Java 11 (runtime only)<ul><li>Please compile Hadoop with Java 8. Compiling Hadoop with Java 11 is not supported: 
+<span class="jira-issue" data-jira-key="HADOOP-16795" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-16795?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HADOOP-16795</a>
+                            -
+            <span class="summary">Java 11 compile support</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+</li></ul></li><li>Apache Hadoop from 3.0.x to 3.2.x now supports only Java 8</li><li>Apache Hadoop from 2.7.x to 2.10.x support both Java 7 and 8</li></ul><h2 id="HadoopJavaVersions-SupportedJDKs/JVMs">Supported JDKs/JVMs</h2><ul><li>Now Apache Hadoop community is using OpenJDK for the build/test/release environment, and that's why OpenJDK should be supported in the community.<ul><li><a class="external-link" href="https://github.com/apache/hadoop/blob/rel/release-3.2.1/dev-support/docker/Dockerfile#L92" rel="nofollow">https://github.com/apache/hadoop/blob/rel/release-3.2.1/dev-support/docker/Dockerfile#L92</a></li></ul></li><li>Other jdks/jvms should work well. If you find they don't work as expected, please file a JIRA.</li></ul><h2 id="HadoopJavaVersions-JavaIncompatibleChanges">Java Incompatible Changes</h2><p>This document is for users who upgrade Java version of their Hadoop cluster. It documents the incompatible changes of Java that affect Apache Hadoop.</p><h3 id="HadoopJavaVersions-Java8">Java 8</h3><div class="table-wrap"><table class="relative-table wrapped confluenceTable" style="width: 98.4766%;"><colgroup><col style="width: 4.64345%;"/><col style="width: 76.7828%;"/><col style="width: 7.13101%;"/><col style="width: 11.4428%;"/></colgroup><tbody><tr><th class="confluenceTh">Versions</th><th class="confluenceTh">Incompatible changes</th><th colspan="1" class="confluenceTh">Related JDK bug system tickets</th><th colspan="1" class="confluenceTh">Related JIRAs</th></tr><tr><td colspan="1" class="confluenceTd">1.8.0_242</td><td colspan="1" class="confluenceTd"><p>The visibility of sun.nio.ch.SocketAdaptor is changed from public to package-private. <span style="color: rgb(34,34,34);">TestIPC#testRTEDuringConnectio</span><span style="color: rgb(34,34,34);">nSetup is affected.</span> </p></td><td colspan="1" class="confluenceTd"><a class="external-link" href="https://bugs.openjdk.java.net/browse/JDK-8237177" rel="nofollow">JDK-8237177</a></td><td colspan="1" class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue resolved" data-jira-key="HADOOP-15787" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-15787?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>HADOOP-15787</a>
+                            -
+            <span class="summary">[JDK11] TestIPC.testRTEDuringConnectionSetup fails</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+</p></div></td></tr><tr><td colspan="1" class="confluenceTd">1.8.0_242</td><td colspan="1" class="confluenceTd">Kerberos Java client will fail by &quot;Message stream modified (41)&quot; when the client requests a renewable ticket and the KDC returns a non-renewable ticket. If your principal is not allowed to obtain a renewable ticket, you must remove &quot;renew_lifetime&quot; setting from your krb5.conf.</td><td colspan="1" class="confluenceTd"><a class="external-link" href="https://bugs.openjdk.java.net/browse/JDK-8131051" rel="nofollow">JDK-8131051</a></td><td colspan="1" class="confluenceTd"><br/></td></tr><tr><td class="confluenceTd">1.8.0_191</td><td class="confluenceTd"><p>All DES cipher suites were disabled. If you are explicitly using DES cipher suites, you need to change cipher suite to a strong one.</p></td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue resolved" data-jira-key="HADOOP-16016" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-16016?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HADOOP-16016</a>
+                            -
+            <span class="summary">TestSSLFactory#testServerWeakCiphers sporadically fails in precommit builds</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+</p></div></td></tr><tr><td class="confluenceTd">1.8.0_171</td><td class="confluenceTd"><div class="content-wrapper"><p>In Apache Hadoop 2.7.0 to 2.7.6, 2.8.0 to 2.8.4, 2.9.0 to 2.9.1, 3.0.0 to 3.0.2, and 3.1.0, KMS fails by java.security.UnrecoverableKeyException due to <a class="external-link" href="https://www.oracle.com/technetwork/java/javase/8u171-relnotes-4308888.html#JDK-8189997" rel="nofollow">Enhanced KeyStore Mechanisms</a>. You need to set the system property &quot;jceks.key.serialFilter&quot; to the following value to avoid this error:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java.lang.Enum;java.security.KeyRep;java.security.KeyRep$Type;javax.crypto.spec.SecretKeySpec;org.apache.hadoop.crypto.key.JavaKeyStoreProvider$KeyMetadata;!*&quot;</pre>
+</div></div></div></td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue resolved" data-jira-key="HADOOP-15473" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-15473?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HADOOP-15473</a>
+                            -
+            <span class="summary">Configure serialFilter in KeyProvider to avoid UnrecoverableKeyException caused by JDK-8189997</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+</p></div></td></tr></tbody></table></div><h2 class="auto-cursor-target" id="HadoopJavaVersions-DailyBuilds">Daily Builds</h2><ul><li>Java 11: <a class="external-link" href="https://ci-hadoop.apache.org/job/hadoop-qbt-trunk-java11-linux-x86_64/" rel="nofollow">https://ci-hadoop.apache.org/job/hadoop-qbt-trunk-java11-linux-x86_64/</a></li></ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

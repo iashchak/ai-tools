@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Open Preservation Foundation Talk -- 21 September 2022</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Open Preservation Foundation Talk -- 21 September 2022
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on сен 20, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="OpenPreservationFoundationTalk21September2022-&quot;Embeddedfiles:Risk,ChallengesandOptions&quot;">&quot;Embedded files: Risk, Challenges and Options&quot;</h1><p>Registration: <a class="external-link" href="https://openpreservation.org/events/embedded-files-risk-challenges-and-options/?q=4664" rel="nofollow">https://openpreservation.org/events/embedded-files-risk-challenges-and-options/?q=4664</a></p><p>This talk will be a traditional talk with slides.  However, if you'd like to get your hands on some tools and some files, please follow the directions below.  If you have files you'd like to share please email me: tallison <a class="unresolved" href="#">AT</a> apache.org</p><h2 id="OpenPreservationFoundationTalk21September2022-Data">Data</h2><p><a class="external-link" href="https://corpora.tika.apache.org/base/share/opf-embedded-files-data-20220920.tgz" rel="nofollow">https://corpora.tika.apache.org/base/share/opf-embedded-files-data-20220920.tgz</a></p><p>Read the <code>notes.txt</code> file for sources of the data.</p><h2 id="OpenPreservationFoundationTalk21September2022-Tools">Tools</h2><h3 id="OpenPreservationFoundationTalk21September2022-Prerequisites">Prerequisites</h3><ul><li>Must have Java &gt;= 8 installed. </li><li>If you have tesseract installed, you may want to move it/turn it off (e.g. <code>sudo mv /usr/local/bin/tesseract /usr/local/bin/tesseract2</code>)</li><li>A json viewer: Notepad++ or Sublime Text or ....?</li></ul><h3 id="OpenPreservationFoundationTalk21September2022-Download">Download</h3><ul><li>tika-app: <a class="external-link" href="https://dlcdn.apache.org/tika/2.4.1/tika-app-2.4.1.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.4.1/tika-app-2.4.1.jar</a></li><li>optional: <a class="external-link" href="https://repo1.maven.org/maven2/com/github/jai-imageio/jai-imageio-jpeg2000/1.4.0/jai-imageio-jpeg2000-1.4.0.jar" rel="nofollow">https://repo1.maven.org/maven2/com/github/jai-imageio/jai-imageio-jpeg2000/1.4.0/jai-imageio-jpeg2000-1.4.0.jar</a></li></ul><h2 id="OpenPreservationFoundationTalk21September2022-Commandlines">Commandlines</h2><ol><li>Use the simple UI: java -jar tika-app-2.4.1.jar. Then drag and drop <code>opf-embedded-files-data-20220920/ooxml/test_recursive_embedded.docx</code> into the window and select &quot;Recursive JSON.&quot;       <span class="confluence-embedded-file-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image" draggable="false" height="250" src="attachments/228495105/228495112.png" data-image-src="attachments/228495105/228495112.png" data-unresolved-comment-count="0" data-linked-resource-id="228495112" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="Screen Shot 2022-09-20 at 10.50.51 AM.png" data-base-url="https://cwiki.apache.org/confluence" data-linked-resource-content-type="image/png" data-linked-resource-container-id="228495105" data-linked-resource-container-version="5" alt=""></span><span class="confluence-embedded-file-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image" draggable="false" height="250" src="attachments/228495105/228495113.png" data-image-src="attachments/228495105/228495113.png" data-unresolved-comment-count="0" data-linked-resource-id="228495113" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="Screen Shot 2022-09-20 at 10.51.06 AM.png" data-base-url="https://cwiki.apache.org/confluence" data-linked-resource-content-type="image/png" data-linked-resource-container-id="228495105" data-linked-resource-container-version="5" alt=""></span></li><li>Run Tika against a single file, pipe output to a json file:<code> java -jar tika-app-2.4.1.jar -J -t opf-embedded-files-data-20220920/ooxml/test_recursive_embedded.docx &gt; test_recursive.json</code></li><li>Run Tika in batch mode: <code>java -jar tika-app-2.4.1.jar -J -t -i opf-embedded-files-data-20220920 -o opf-embedded-files-data-20220920-extracts</code></li><li>To extract the literal embedded files (first level only!):<code> java -jar tika-app-2.4.1.jar --extract-dir=261779-attachments -z opf-embedded-files-data-20220920/ppt/govdocs1/261779.ppt</code></li></ol><p><br/></p><h2 id="OpenPreservationFoundationTalk21September2022-Advanced">Advanced</h2><p>Because of license issues, Tika cannot bundle the <a class="external-link" href="https://repo1.maven.org/maven2/com/github/jai-imageio/jai-imageio-jpeg2000/1.4.0/jai-imageio-jpeg2000-1.4.0.jar" rel="nofollow">jpeg2000 parser</a>.  The <code>digitally_signed_3D_Portfolio.pdf</code> file contains jpeg2000. If the jpeg2000 parser's license is acceptable to you, put it in and the tika-app.X.Y.Z.jar in a <code>bin</code> directory and call tika-app's main class: <code>java -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI --extract-dir=portfolio-files -z opf-embedded-files-data-20220920/pdfs/OPF-format-corpus/digitally_signed_3D_Portfolio.pdf</code></p><p><br/></p><p><br/></p>
+                    </div>
+
+                                                            <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/228495105/228495112.png">Screen Shot 2022-09-20 at 10.50.51 AM.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/228495105/228495113.png">Screen Shot 2022-09-20 at 10.51.06 AM.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

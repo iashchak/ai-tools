@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : EXIFToolParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : EXIFToolParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Tika supports EXIFTool now through the External parser. Read on to find out how to use it.</p>
+
+<h1 id="EXIFToolParser-DownloadandinstallEXIFTool">Download and install EXIFTool</h1>
+
+<p><a class="external-link" href="http://www.sno.phy.queensu.ca/~phil/exiftool/" rel="nofollow">EXIFTool</a> is a wonderful tool that reads videos, images, audio and other media files and that extracts EXIF metadata from them. If you're lucky, you can install EXIFTool with the following commands.</p>
+
+<h2 id="EXIFToolParser-OnMac">On Mac</h2>
+
+<p><code>brew install exiftool</code></p>
+
+<h2 id="EXIFToolParser-OnLinux(CentOS)">On Linux (CentOS)</h2>
+
+<p><code>sudo yum install perl-Image-ExifTool</code></p>
+
+<p>To verify that EXIFTool works correctly, run:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>exiftool -ver
+</pre>
+</div></div>
+
+<p>which should output something like: <code>9.72</code></p>
+
+<h1 id="EXIFToolParser-UsingEXIFToolwithTika">Using EXIFTool with Tika</h1>
+
+<p>To use EXIFTool you'll need a custom Tika config that will override Tika's default MP4 parser (if you are dealing with MP4 files). You can do so by creating a file such as the one below:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;parsers&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;&gt;
+    &lt;/parser&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.mp4.MP4Parser&quot;&gt;
+      &lt;mime-exclude&gt;video/mp4&lt;/mime-exclude&gt;
+    &lt;/parser&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.external.CompositeExternalParser&quot;&gt;
+      &lt;mime&gt;video/mp4&lt;/mime&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;
+&lt;/properties&gt;
+</pre>
+</div></div>
+
+<p>Note that this config file initializes the <a class="unresolved" href="#">DefaultParser</a> a <a class="unresolved" href="#">CompositeParser</a>, and the <a class="unresolved" href="#">CompositeExternalParser</a>, and the MP4Parser. For the MP4Parser, it uses a new directive, mime-exclude, to exclude that parser from the <code>video/mp4</code> type, and then to declare that <a class="unresolved" href="#">CompositeExternalParser</a> will support <code>video/mp4</code>. Since EXIFTool is an <a class="unresolved" href="#">ExternalParser</a> this configuration will make sure it gets called.</p>
+
+<p>Once you have the config file made above, save it as a file, e.g., <code>exif-tika-config.xml</code> in the current directory. Then to call Tika, you can use Tika-App and/or Tika Server.</p>
+
+<h2 id="EXIFToolParser-UsingTika-App">Using Tika-App</h2>
+
+<p>Use the following command on a file, e.g., <code>spaghetti-to-sushi.mp4</code>:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -Dtika.config=exif-tika-config.xml -classpath tika-app/target/tika-app-1.9-SNAPSHOT.jar org.apache.tika.cli.TikaCLI -m spaghetti-to-sushi.mp4
+</pre>
+</div></div>
+
+<p>This should output:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Audio Bits Per Sample: 16
+Audio Channels: 2
+Audio Format: mp4a
+Audio Sample Rate: 22050
+Average Bitrate: 0
+Avg Bitrate: 1.26 Mbps
+Balance: 0
+Bit Depth: 24
+Buffer Size: 0
+Compatible Brands: mp41
+Compressor ID: avc1
+Compressor Name: h264
+Content Create Date: created.with.SUPER(C).v2006.19
+Content Create Date (ja): created.with.SUPER(C).v2006.19
+Content-Length: 353985630
+Content-Type: video/mp4
+Create Date: 2006:12:17 18:50:47
+Current Time: 0 s
+Duration: 0:37:19
+Elementary Stream Track: 201 101
+ExifTool Version Number: 9.72
+File Access Date/Time: 2015:05:25 21:18:08-07:00
+File Inode Change Date/Time: 2014:09:26 20:32:27-07:00
+File Modification Date/Time: 2011:07:28 13:01:54-07:00
+File Name: spaghetti-to-sushi.mp4
+File Permissions: rwxr-xr-x
+File Size: 338 MB
+File Type: MP4
+Graphics Mode: srcCopy
+Handler Description: GPAC MPEG-4 BIFS Handler
+Handler Type: Metadata
+Handler Vendor ID: Apple
+Image Height: 480
+Image Size: 640x480
+Image Width: 640
+MIME Type: video
+Major Brand: MP4 v2 [ISO 14496-14]
+Matrix Structure: 1 0 0 0 1 0 0 0 1
+Max Bitrate: 0
+Media Create Date: 2006:12:16 20:07:48
+Media Duration: 1.00 s
+Media Header Version: 0
+Media Language Code: und
+Media Modify Date: 2006:12:16 20:07:48
+Media Time Scale: 90000
+Minor Version: 0.0.1
+Modify Date: 2006:12:17 18:50:47
+Movie Data Offset: 473003
+Movie Data Size: 353512586
+Movie Header Version: 0
+Next Track ID: 201
+Op Color: 0 0 0
+Other Format: mp4s
+Poster Time: 0 s
+Preferred Rate: 1
+Preferred Volume: 100.00
+Preview Duration: 0 s
+Preview Time: 0 s
+Rotation: 0
+Selection Duration: 0 s
+Selection Time: 0 s
+Source Image Height: 480
+Source Image Width: 720
+Time Scale: 90000
+Title: From Spaghetti to Sushi.mpeg
+Title (ja): From Spaghetti to Sushi.mpeg
+Track Create Date: 2006:12:17 18:50:47
+Track Duration: 0:37:19
+Track Header Version: 0
+Track ID: 201
+Track Layer: 0
+Track Modify Date: 2006:12:16 20:07:48
+Track Volume: 0.00
+Vendor ID: FFmpeg
+Video Frame Rate: 25
+X Resolution: 72
+X-Parsed-By: org.apache.tika.parser.CompositeParser
+X-Parsed-By: org.apache.tika.parser.external.CompositeExternalParser
+X-Parsed-By: org.apache.tika.parser.external.ExternalParser
+Y Resolution: 72
+resourceName: spaghetti-to-sushi.mp4
+</pre>
+</div></div>
+
+<h2 id="EXIFToolParser-UsingTikaServer">Using Tika Server</h2>
+
+<p>You can also use Tika-Server. First, start it up:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -Dtika.config=exif-tika-config.xml -classpath tika-server/target/tika-server-1.9-SNAPSHOT.jar org.apache.tika.server.TikaServerCli
+</pre>
+</div></div>
+
+<p>Now, PUT a file to it, e.g., <code>spaghetti-to-sushi.mp4</code>:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T $HOME/Movies/spaghetti-to-sushi.mp4 -H &quot;Content-Disposition: attachment;filename=spaghetti-to-sushi.mp4&quot; http://localhost:9998/rmeta
+</pre>
+</div></div>
+
+<p>Which should return:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+   {
+      &quot;Audio Bits Per Sample&quot;:&quot;16&quot;,
+      &quot;Audio Channels&quot;:&quot;2&quot;,
+      &quot;Audio Format&quot;:&quot;mp4a&quot;,
+      &quot;Audio Sample Rate&quot;:&quot;22050&quot;,
+      &quot;Average Bitrate&quot;:&quot;0&quot;,
+      &quot;Avg Bitrate&quot;:&quot;1.26 Mbps&quot;,
+      &quot;Balance&quot;:&quot;0&quot;,
+      &quot;Bit Depth&quot;:&quot;24&quot;,
+      &quot;Buffer Size&quot;:&quot;0&quot;,
+      &quot;Compatible Brands&quot;:&quot;mp41&quot;,
+      &quot;Compressor ID&quot;:&quot;avc1&quot;,
+      &quot;Compressor Name&quot;:&quot;h264&quot;,
+      &quot;Content Create Date&quot;:&quot;created.with.SUPER(C).v2006.19&quot;,
+      &quot;Content Create Date (ja)&quot;:&quot;created.with.SUPER(C).v2006.19&quot;,
+      &quot;Content-Type&quot;:&quot;video/mp4&quot;,
+      &quot;Create Date&quot;:&quot;2006:12:17 18:50:47&quot;,
+      &quot;Current Time&quot;:&quot;0 s&quot;,
+      &quot;Duration&quot;:&quot;0:37:19&quot;,
+      &quot;Elementary Stream Track&quot;:&quot;201 101&quot;,
+      &quot;ExifTool Version Number&quot;:&quot;9.72&quot;,
+      &quot;File Access Date/Time&quot;:&quot;2015:05:25 21:20:47-07:00&quot;,
+      &quot;File Inode Change Date/Time&quot;:&quot;2015:05:25 21:20:46-07:00&quot;,
+      &quot;File Modification Date/Time&quot;:&quot;2015:05:25 21:20:46-07:00&quot;,
+      &quot;File Name&quot;:&quot;apache-tika-3052147227532168299.tmp&quot;,
+      &quot;File Permissions&quot;:&quot;rw-r--r--&quot;,
+      &quot;File Size&quot;:&quot;338 MB&quot;,
+      &quot;File Type&quot;:&quot;MP4&quot;,
+      &quot;Graphics Mode&quot;:&quot;srcCopy&quot;,
+      &quot;Handler Description&quot;:&quot;GPAC MPEG-4 BIFS Handler&quot;,
+      &quot;Handler Type&quot;:&quot;Metadata&quot;,
+      &quot;Handler Vendor ID&quot;:&quot;Apple&quot;,
+      &quot;Image Height&quot;:&quot;480&quot;,
+      &quot;Image Size&quot;:&quot;640x480&quot;,
+      &quot;Image Width&quot;:&quot;640&quot;,
+      &quot;MIME Type&quot;:&quot;video&quot;,
+      &quot;Major Brand&quot;:&quot;MP4 v2 [ISO 14496-14]&quot;,
+      &quot;Matrix Structure&quot;:&quot;1 0 0 0 1 0 0 0 1&quot;,
+      &quot;Max Bitrate&quot;:&quot;0&quot;,
+      &quot;Media Create Date&quot;:&quot;2006:12:16 20:07:48&quot;,
+      &quot;Media Duration&quot;:&quot;1.00 s&quot;,
+      &quot;Media Header Version&quot;:&quot;0&quot;,
+      &quot;Media Language Code&quot;:&quot;und&quot;,
+      &quot;Media Modify Date&quot;:&quot;2006:12:16 20:07:48&quot;,
+      &quot;Media Time Scale&quot;:&quot;90000&quot;,
+      &quot;Minor Version&quot;:&quot;0.0.1&quot;,
+      &quot;Modify Date&quot;:&quot;2006:12:17 18:50:47&quot;,
+      &quot;Movie Data Offset&quot;:&quot;473003&quot;,
+      &quot;Movie Data Size&quot;:&quot;353512586&quot;,
+      &quot;Movie Header Version&quot;:&quot;0&quot;,
+      &quot;Next Track ID&quot;:&quot;201&quot;,
+      &quot;Op Color&quot;:&quot;0 0 0&quot;,
+      &quot;Other Format&quot;:&quot;mp4s&quot;,
+      &quot;Poster Time&quot;:&quot;0 s&quot;,
+      &quot;Preferred Rate&quot;:&quot;1&quot;,
+      &quot;Preferred Volume&quot;:&quot;100.00&quot;,
+      &quot;Preview Duration&quot;:&quot;0 s&quot;,
+      &quot;Preview Time&quot;:&quot;0 s&quot;,
+      &quot;Rotation&quot;:&quot;0&quot;,
+      &quot;Selection Duration&quot;:&quot;0 s&quot;,
+      &quot;Selection Time&quot;:&quot;0 s&quot;,
+      &quot;Source Image Height&quot;:&quot;480&quot;,
+      &quot;Source Image Width&quot;:&quot;720&quot;,
+      &quot;Time Scale&quot;:&quot;90000&quot;,
+      &quot;Title&quot;:&quot;From Spaghetti to Sushi.mpeg&quot;,
+      &quot;Title (ja)&quot;:&quot;From Spaghetti to Sushi.mpeg&quot;,
+      &quot;Track Create Date&quot;:&quot;2006:12:17 18:50:47&quot;,
+      &quot;Track Duration&quot;:&quot;0:37:19&quot;,
+      &quot;Track Header Version&quot;:&quot;0&quot;,
+      &quot;Track ID&quot;:&quot;201&quot;,
+      &quot;Track Layer&quot;:&quot;0&quot;,
+      &quot;Track Modify Date&quot;:&quot;2006:12:16 20:07:48&quot;,
+      &quot;Track Volume&quot;:&quot;0.00&quot;,
+      &quot;Vendor ID&quot;:&quot;FFmpeg&quot;,
+      &quot;Video Frame Rate&quot;:&quot;25&quot;,
+      &quot;X Resolution&quot;:&quot;72&quot;,
+      &quot;X-Parsed-By&quot;:[
+         &quot;org.apache.tika.parser.CompositeParser&quot;,
+         &quot;org.apache.tika.parser.external.CompositeExternalParser&quot;,
+         &quot;org.apache.tika.parser.external.ExternalParser&quot;
+      ],
+      &quot;X-TIKA:parse_time_millis&quot;:&quot;3638&quot;,
+      &quot;Y Resolution&quot;:&quot;72&quot;,
+      &quot;resourceName&quot;:&quot;spaghetti-to-sushi.mp4&quot;
+   }
+]
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

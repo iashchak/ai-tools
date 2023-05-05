@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Developing</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Developing
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Christopher Schultz</span> on фев 07, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/8CklBg" rel="nofollow">https://cwiki.apache.org/confluence/x/8CklBg</a></p><h2 id="Developing-About">About</h2><p>This section of the FAQ discusses common questions related to Tomcat development.</p><h2 id="Developing-Questions">Questions</h2><ol><li><a href="#Developing-Hacking">Hacking</a><ol><li><a href="#Developing-Q5">How do I start hacking Tomcat in Eclipse?</a></li></ol></li><li><a href="#Developing-Debugging">Debugging</a><ol><li><a href="#Developing-Q1">How do I configure Tomcat to support remote debugging?</a></li><li><a href="#Developing-Q2">How do I remotely debug Tomcat using Eclipse?</a></li><li><a href="#Developing-Q3">How do I remotely debug Tomcat using NetBeans?</a></li></ol></li><li>Other<ol><li><a href="#Developing-Q4">How do I change the monitoring interval for modified resources and application reloading?</a></li><li><a href="#Developing-Q6">Official Eclipse IDE Web Tools FAQ for Tomcat</a></li></ol></li></ol><h2 id="Developing-Answers">Answers</h2><h3 id="Developing-Hacking">Hacking</h3><p><span class="confluence-anchor-link" id="Developing-Q5"></span></p><h4 id="Developing-HowdoIstarthackingTomcatinEclipse?">How do I start hacking Tomcat in Eclipse?</h4><p>Briefly:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ git clone https://github.com/apache/tomcat.git
+  (or whatever branch you want: clearly, this would be better
+  to do directly from within Eclipse but it&#39;s easier to describe
+  as a command)
+
+$ cd tomcat
+
+$ echo &quot;base.path=/path/to/where/tomcat/can/put/its/3rd-party/libs&quot; &gt; build.properties
+
+$ ant ide-eclipse
+</pre>
+</div></div><p>Then, in Eclipse, go to Preferences | Java/Build Path/Classpath Variables and set the following variables:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>ANT_HOME=path to your Ant install (where lib/ant.jar can be found)
+TOMCAT_LIBS_BASE=[whatever you set base.path to above]
+</pre>
+</div></div><p>If you look in (project root)/res/ide-support/eclipse/java-compiler-errors-warnings.txt, you'll see a set of compiler warnings and import organization rules that you will have to set up manually in your project. If you set those up properly, you are more likely to submit cleaner patches.</p><p>A full explanation for Tomcat in Eclipse can be found here:</p><ul><li>Tomcat 9.0.x: <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/building.html#Building_with_Eclipse" rel="nofollow">https://tomcat.apache.org/tomcat-9.0-doc/building.html#Building_with_Eclipse</a></li><li>Tomcat 8.5.x: <a class="external-link" href="https://tomcat.apache.org/tomcat-8.5-doc/building.html#Building_with_Eclipse" rel="nofollow">https://tomcat.apache.org/tomcat-8.5-doc/building.html#Building_with_Eclipse</a></li><li>Tomcat 7.0.x: <a class="external-link" href="https://tomcat.apache.org/tomcat-7.0-doc/building.html#Building_with_Eclipse" rel="nofollow">https://tomcat.apache.org/tomcat-7.0-doc/building.html#Building_with_Eclipse</a></li></ul><h3 id="Developing-Debugging">Debugging</h3><p><span class="confluence-anchor-link" id="Developing-Q1"></span></p><h4 id="Developing-HowdoIconfigureTomcattosupportremotedebugging?">How do I configure Tomcat to support remote debugging?</h4><p>The short answer is to add the following options when the JVM is started:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n
+</pre>
+</div></div><p>There are a number of ways you can do this depending on how you normally start Tomcat:</p><ul><li><p class="auto-cursor-target">If you are using <strong>shell scripts</strong> to start Tomcat, start it with the following command:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> catalina jpda start </pre>
+</div></div><p class="auto-cursor-target">It will start Tomcat so that a remote debugger can be connected to port 8000. <br class="atl-forced-newline"/>The above mentioned options can be provided by setting certain environment variables. See the comments at the top of <code>catalina.sh</code> or <code>.bat</code> file for details. <br class="atl-forced-newline"/>For example, the port number and JPDA transport implementation can be set with <code>JPDA_ADDRESS=8000</code> and <code>JPDA_TRANSPORT=dt_socket</code>.</p></li><li>If you run Tomcat using <strong>service wrapper</strong>, add the above JVM options before any other JVM options. Check the documentation for the service wrapper to determine how to set JVM options.</li><li>If you start Tomcat from within an IDE, check the documentation for the IDE to determine how to set the required JVM options.</li></ul><p>The port does not need to be set to 8000, it may be any value appropriate for your system.</p><p>If you need to debug Tomcat startup or the auto-deployment of an application (where a breakpoint set in a debugger would be reached before you have time to connect with the debugger), then set the parameter <code>suspend=y</code> instead of <code>suspend=n</code>. Doing this will cause the JVM to pause execution very early in the launch process and wait until a debugger is attached before proceeding.</p><p>Whilst this is very useful in development it should not be used in production because of both security and performance implications.</p><p><span class="confluence-anchor-link" id="Developing-Q2"></span></p><h4 id="Developing-HowdoIremotelydebugTomcatusingEclipse?">How do I remotely debug Tomcat using Eclipse?</h4><p>This answer assumes that you have a project set up and have some idea of what you are doing in this respect. If not then that is really outside the scope of this topic and you need to go to <a class="external-link" href="https://eclipse.org/" rel="nofollow">eclipse.org</a> and read up on how to use your IDE, and maybe practice a little bit before you come back to this. We are also going to assume that you have some idea of what a debugger is and how to use one.</p><ul><li>Make sure that Tomcat is started in remote debugging mode as described above and that your app is deployed.</li><li>Make sure that you have the sources for the code that you are trying to debug in your IDE. For the libraries and for Tomcat itself you can &quot;attach&quot; the sources to the jar files: open a class file and then click &quot;Attach Source...&quot; button.</li><li>If you have a servlet or something, set a breakpoint where it is sure to hit on the next request.</li><li>Go to &quot;Run-&gt;Debug Configurations...&quot;. Click on &quot;Remote Java Applications&quot;, then click &quot;New&quot;. Type in the title. Note that port 8000 from the Tomcat instructions. Save and run.</li><li>Eclipse will connect to the JVM that Tomcat is running under. Wow, that was easy!</li></ul><p>Now go type the url to submit to your servlet or whatever in your browser. Boom you hit the breakpoint right? Have fun!</p><p><span class="confluence-anchor-link" id="Developing-Q3"></span></p><h4 id="Developing-HowdoIremotelydebugTomcatusingNetBeans?">How do I remotely debug Tomcat using NetBeans?</h4><p>This answer assumes that you know how to work with a NetBeans Project, and also how to use the NetBeans debugger. If not, please go to <a class="external-link" href="http://www.netbeans.org/kb/using-netbeans/40/debug.html" rel="nofollow">http://www.netbeans.org/kb/using-netbeans/40/debug.html</a> and read up on how to use NetBeans and its debugger.</p><p>Starting with Tomcat trunk revision 1484409, the Tomcat source includes Ant tasks to configure your source directory as a NetBeans Free-Form Project. After you have successfully run Ant with the default build target (<em>deploy</em>), you can then run the <em>ide-netbeans</em> target. This task will configure your sandbox copy of Tomcat so the source can be inspected, maintained and debugged under the NetBeans IDE. You should follow the detailed instructions in the README.txt file that will have been installed in your new nbproject directory.</p><p>Make sure that Tomcat is started in debug mode as described above, that your application is deployed, and that the sources are all defined as resources in your application. If you have a servlet or JSP file, set a breakpoint where you think a problem might be occurring. Go to &quot;Run-&gt;Attach Debugger&quot;. A dialog pops up to let you specify the following options:</p><ul><li>Debugger: JPDA Debugger</li><li>Connector: SocketAttach</li><li>Host: The IP address of the host your Tomcat installation is running on (127.0.0.1 if it is your local machine).</li><li>Port: The port of your Tomcat debugging interface, which should be 8000 if you've followed the instructions above.</li></ul><p>When you press OK, you have a debugging connection very similar to local debugging.</p><p>Note that NetBeans has a second option – you can debug JSP files and servlets locally using a Tomcat server that is bundled with the IDE. When you debug a JSP file or servlet in the IDE, the bundled Tomcat server automatically starts in debug mode, and the debugger connects to it.</p><p>The Tomcat NetBeans targets have not yet been back-ported to Tomcat 7. You can copy the files from your copy of the trunk and they should only require minimal editing of paths to work with older versions of Tomcat.</p><h3 id="Developing-Other">Other</h3><p><span class="confluence-anchor-link" id="Developing-Q4"></span></p><h4 id="Developing-HowdoIchangethemonitoringintervalformodifiedresourcesandapplicationreloading?">How do I change the monitoring interval for modified resources and application reloading?</h4><p>Monitoring interval for application reloading is controlled by the <code>backgroundProcessorDelay</code> property on <code>Context</code> element or on its parent containers: <code>Host</code> and <code>Engine</code>. See <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/config/index.html" rel="nofollow">Tomcat Configuration Reference</a> for details. By default there is a single background processing thread that is run by Engine. See its <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/config/engine.html" rel="nofollow">configuration</a> for the default delay value.</p><p>Interval that controls reloading of the changed JSP pages is set in the <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/jasper-howto.html" rel="nofollow">Jasper configuration</a> in <code>web.xml</code>.</p><p><span class="confluence-anchor-link" id="Developing-Q6"></span></p><h4 id="Developing-OfficialEclipseIDEWebToolsFAQforTomcat">Official Eclipse IDE Web Tools FAQ for Tomcat</h4><p>Eclipse IDE has support for development of Web applications and running them on Apache Tomcat. This support is provided by <a class="external-link" href="https://projects.eclipse.org/projects/webtools" rel="nofollow">Eclipse Web Tools Platform Project</a>. An easy way to get Web Tools is to download &quot;for Java EE Developers&quot; edition of <a class="external-link" href="https://www.eclipse.org/downloads/" rel="nofollow">Eclipse IDE</a>.</p><p>The Web Tools project has a FAQ page.</p><ul><li><a class="external-link" href="https://wiki.eclipse.org/WTP_Tomcat_FAQ" rel="nofollow">WTP Tomcat FAQ</a></li><li>In <a class="external-link" href="https://help.eclipse.org/" rel="nofollow">Eclipse Help</a> see &quot;Web Tools Platform User Guide&quot; &gt; &quot;Using the server tools&quot; &gt; &quot;Testing and publishing on your server&quot;</li></ul><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

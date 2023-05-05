@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Clustering</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Clustering
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 23, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/xCklBg" rel="nofollow">https://cwiki.apache.org/confluence/x/xCklBg</a></p><h2 id="Clustering-Preface">Preface</h2><p>This page discusses cluster- and clustering-related questions. Please make sure to read the Clustering HowTo page in the main Tomcat documentation bundle as well.</p><h2 id="Clustering-Questions">Questions</h2><ol><li><a href="#Clustering-Q1">Can I configure a cluster at the Engine level?</a></li><li><a href="#Clustering-Q2">Show me a simple cluster configuration example.</a></li><li><a href="#Clustering-Q3">How do I turn on transport logging?</a></li><li><a href="#Clustering-Q4">How do I use JMX to monitor the cluster?</a></li><li><a href="#Clustering-Q5">Can I pause the message sending?</a></li><li><a href="#Clustering-Q6">Can I add more senders (pooled mode)?</a></li><li><a href="#Clustering-Q7">What happens when I pull the network cable?</a></li><li><a href="#Clustering-Q8">On my windows laptop without network my cluster doesn't work.</a></li><li><a href="#Clustering-Q9">The cluster doesn't work under Linux with two nodes on two boxes.</a></li><li><a href="#Clustering-Q10">I get &quot;localhost&quot; rather than &quot;eth0&quot; or another interface when using tcpListenAddress=&quot;auto&quot;.</a></li></ol><h2 id="Clustering-Answers">Answers</h2><h3 id="Clustering-Q1CanIconfigureaclusterattheEnginelevel?"><span class="confluence-anchor-link" id="Clustering-Q1"></span>Can I configure a cluster at the Engine level?</h3><p>Yes, beginning with Tomcat 5.5.10 you can configure clusters at both the Engine and Host levels. This helps support clustering for web hosting companies.</p><h3 id="Clustering-Q2Showmeasimpleclusterconfigurationexample."><span class="confluence-anchor-link" id="Clustering-Q2"></span>Show me a simple cluster configuration example.</h3><p>For Tomcat 5.5.10 and later:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;Cluster className=&quot;org.apache.catalina.cluster.tcp.SimpleTcpCluster&quot; defaultMode=&quot;true&quot; /&gt;
+</pre>
+</div></div><h3 id="Clustering-Q3HowdoIturnontransportlogging?"><span class="confluence-anchor-link" id="Clustering-Q3"></span>How do I turn on transport logging?</h3><p>(<strong>FIXME</strong>: The text below needs an update, The logging categories are <code>org.apache.catalina.ha</code> and <code>org.apache.catalina.tribes</code> nowadays. What else is needed? There no &quot;clusterLog&quot; attribute.)</p><ul><li>Use &quot;org.apache.catalina.cluster&quot; as logger category and switch to info, debug or trace as log level.</li><li>Configure the clusterLog attribute (logging category) to get and send and receive message log. <br class="atl-forced-newline"/><br class="atl-forced-newline"/></li></ul><h3 id="Clustering-Q4HowdoIuseJMXtomonitorthecluster?"><span class="confluence-anchor-link" id="Clustering-Q4"></span>How do I use JMX to monitor the cluster?</h3><p>Since Java 5 you can use the jconsole application to look inside the runnnig cluster: please see the JMX configuration section in the Clustering HowTo document. In fastasyncmode replication mode you can get more information with sender attributes doProcessingStats=&quot;true&quot; and queueDoStats=&quot;true&quot;. Finally, with the new JMX remote Ant task you can access the state and call operations.</p><h3 id="Clustering-Q5CanIpausethemessagesending?"><span class="confluence-anchor-link" id="Clustering-Q5"></span>Can I pause the message sending?</h3><p>Yes, the async senders buffer the messages, but make sure the membership ping is active. With fastasyncqueue mode you can limit the max queue size.</p><h3 id="Clustering-Q6CanIaddmoresenders(pooledmode)?"><span class="confluence-anchor-link" id="Clustering-Q6"></span>Can I add more senders (pooled mode)?</h3><p>Yes, with sender attribute maxPoolSocketLimit=&quot;40&quot; you can have more than the default 25 sockets to transfer more parallel messages.</p><h3 id="Clustering-Q7WhathappenswhenIpullthenetworkcable?"><span class="confluence-anchor-link" id="Clustering-Q7"></span>What happens when I pull the network cable?</h3><p>The other members will remove the instance from the cluster, but when you insert the cable again, the Tomcat instance might have completely flipped out. This is because the OS might start using 100% of the CPU when a multicast message is sent. There has not yet been a good solution for this, I will let you know when I have come up with one. (pero: I test this and I works correct with java 5 and exists when you use the cluster with JDK 1.4.x)</p><h3 id="Clustering-Q8Onmywindowslaptopwithoutnetworkmyclusterdoesn&#39;twork."><span class="confluence-anchor-link" id="Clustering-Q8"></span>On my windows laptop without network my cluster doesn't work.</h3><p>The Membership attribute mcastBindAddress=&quot;127.0.0.1&quot; must be set!</p><h3 id="Clustering-Q9Theclusterdoesn&#39;tworkunderLinuxwithtwonodesontwoboxes."><span class="confluence-anchor-link" id="Clustering-Q9"></span>The cluster doesn't work under Linux with two nodes on two boxes.</h3><p>Check the the following:</p><ul><li>Is your network interface enabled for multicast? ifconfig eth0 MULTICAST</li><li>Exists a multicast route to your network interface? route add -host 228.0.0.4 dev eth0</li><li>Is your firewall active? Then check that multicast port is on your UDP open list and the receiver TCP port is also for both machines open!</li></ul><h3 id="Clustering-Q10Iget&quot;localhost&quot;ratherthan&quot;eth0&quot;oranotherinterfacewhenusingtcpListenAddress=&quot;auto&quot;."><span class="confluence-anchor-link" id="Clustering-Q10"></span>I get &quot;localhost&quot; rather than &quot;eth0&quot; or another interface when using tcpListenAddress=&quot;auto&quot;.</h3><p>Change /etc/hosts so that the localhost domain resolves to the actual IP address of the NIC, eth0. Please see Bugzilla for more.</p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

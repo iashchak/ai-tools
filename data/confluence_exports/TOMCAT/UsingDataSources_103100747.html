@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : UsingDataSources</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Database_103098844.html">Database</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : UsingDataSources
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 24, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/SzElBg" rel="nofollow">https://cwiki.apache.org/confluence/x/SzElBg</a></p><h2 id="UsingDataSources-HowdoIuseDataSourceswithTomcat?">How do I use DataSources with Tomcat?</h2><p>When developing JavaEE web applications, the task of database connection management can be daunting. Best practice involves using a JavaEE DataSource to provide connection pooling, but configuring DataSources in web application servers and connecting your application to them is often a cumbersome process and poorly documented.</p><p>The usual procedure requires the application developer to set up a DataSource in the web application server, specifying the driver class, JDBC URL (connect string), username, password, and various pooling options. Then, the developer must reference the DataSource in his application's web.xml configuration file, and then access it properly in his servlet or JSP. Particularly during development, setting all of this up is tedious and error-prone.</p><p>With Tomcat the process is vastly simplified. Tomcat allows you to configure DataSources for your JavaEE web application in a context.xml file that is stored in your web application project. You don't have to mess with configuring the DataSource separately in the Tomcat server.xml, or referencing it in your application's web.xml file. Here's how:</p><h3 id="UsingDataSources-InstalltheJDBCDriver">Install the JDBC Driver</h3><p>Install the .jar file(s) containing the JDBC driver in Tomcat's <code>$CATALINA_BASE/lib</code> folder. You do not need to put them in your application's <code>WEB-INF/lib</code> folder. When working with JavaEE DataSources, the web application server manages connections for your application.</p><h3 id="UsingDataSources-CreateMETA-INF/context.xml">Create META-INF/context.xml</h3><p>In the root of your web app directory structure, create a folder named META-INF (all caps). Inside that folder, create a file named context.xml that contains a Resource like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;Context&gt;
+
+  &lt;Resource name=&quot;jdbc/WallyDB&quot; auth=&quot;Container&quot;
+            type=&quot;javax.sql.DataSource&quot; username=&quot;wally&quot; password=&quot;wally&quot;
+            driverClassName=&quot;com.microsoft.sqlserver.jdbc.SQLServerDriver&quot; 
+            url=&quot;jdbc:sqlserver://localhost;DatabaseName=mytest;SelectMethod=cursor;&quot;
+            maxActive=&quot;8&quot; 
+            /&gt;
+
+&lt;/Context&gt;
+</pre>
+</div></div><p>This example shows how to configure a DataSource for a SQL Server database named mytest located on the development machine. Simply edit the Resource name, driverClassName, username, password, and url to provide values appropriate for your JDBC driver.</p><h3 id="UsingDataSources-AccesstheDataSourceinYourApplication">Access the DataSource in Your Application</h3><h4 id="UsingDataSources-FromaServlet">From a Servlet</h4><p>Here's how you might access the data in a servlet:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  InitialContext ic = new InitialContext();
+  DataSource ds = (DataSource) ic.lookup(&quot;java:comp/env/jdbc/WallyDB&quot;);
+  Connection c = ds.getConnection();
+  ...
+  c.close();
+</pre>
+</div></div><p>Notice that, when doing the DataSource lookup, you must prefix the JNDI name of the resource with <em>java:comp/env/</em></p><h3 id="UsingDataSources-SampleProject">Sample Project</h3><p>Here's a sample web application project that shows where all the files go. This one shows how to access data from from a JSP page: <a class="unresolved" href="#">datasourcedemo.war</a></p><h3 id="UsingDataSources-Known-WorkingexamplesforotherDatabases">Known-Working examples for other Databases</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;Resource name=&quot;jdbc/denali&quot; auth=&quot;Container&quot; type=&quot;javax.sql.DataSource&quot;
+              username=&quot;denali&quot; url=&quot;jdbc:postgresql://localhost:5432/demo&quot;
+              factory=&quot;org.apache.commons.dbcp.BasicDataSourceFactory&quot;
+              driverClassName=&quot;org.postgresql.Driver&quot;
+              maxActive=&quot;20&quot; maxIdle=&quot;10&quot;/&gt;
+</pre>
+</div></div><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;Resource name=&quot;jdbc/ccsdatasource&quot; auth=&quot;Container&quot; type=&quot;javax.sql.DataSource&quot;
+              username=&quot;ccs&quot; password=&quot;secret&quot; url=&quot;jdbc:mysql://localhost:3306/ccs&quot;
+              driverClassName=&quot;com.mysql.jdbc.Driver&quot;
+              maxActive=&quot;20&quot; maxIdle=&quot;10&quot;/&gt;
+</pre>
+</div></div><h3 id="UsingDataSources-PleaseNote">Please Note</h3><p>This technique is Tomcat-specific. If you deploy your web application to another application server, you will need to configure the database according to your application server's documentation, and reference it in your application's web.xml.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

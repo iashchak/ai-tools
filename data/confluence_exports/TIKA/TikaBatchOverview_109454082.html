@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaBatchOverview</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaBatchOverview
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    
+<h1 id="TikaBatchOverview-Documentationforthetika-batchmodule">Documentation for the tika-batch module</h1>
+<p>This module is currently available in trunk and will be available in Tika 1.8.  The code has been under development for a while, but there may be surprises.  Please test early and often and submit issues when you find them.  tika-batch is available as a standalone module, and it is integrated into tika-app.</p>
+
+<h2 id="TikaBatchOverview-TheNeed">The Need</h2>
+<p>William Palmer <a class="external-link" href="http://www.openplanetsfoundation.org/blogs/2014-03-21-tika-ride-characterising-web-content-nanite" rel="nofollow">documents</a> what many integrators of Tika face – Tika works very well on most documents, but it can run into problems. As Nick Burch <a class="external-link" href="http://www.slideshare.net/gagravarr/1s-and-0s" rel="nofollow">notes</a> on slides 47-55, even if Tika fails catastrophically on a small percentage of documents, a small percentage of a lot of documents is still a lot of documents, and &quot;you need to plan for failures&quot;.  Some types of catastrophic failures include:</p>
+
+<ul>
+	<li>Permanent hangs (runaway parsers)</li>
+	<li>Out-of-Memory Errors</li>
+	<li>Memory leaks
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>Running Tika efficiently and making it robust against these problems are non-trivial issues, and it will be helpful to have a framework that the community can use, fix and improve so that each integrator doesn't have to reinvent these solutions.</p>
+
+<h2 id="TikaBatchOverview-TheBasicDesign">The Basic Design</h2>
+<p>The basic design of the tika-batch module is intended for conventional processing – if anything can be reused/modified for hadoop, please contribute!</p>
+
+<p>The overall design is a producer/consumer design pattern.  The producer and consumers share an ArrayBlockingQueue.</p>
+
+<p>Given a wide range of use cases for Tika, it would be great if the batch process were highly configurable.  The current implementation includes an xml config file and relies on builders.  This will allow developers to add their own components into the current framework as long as they also include builders.</p>
+
+<p>Tika-batch has far more code than I originally envisioned, but multi-threading, multi-processing, robust logging and configurability are common culprits for code-bloat.  Any input into code-pruning is welcome!</p>
+
+<h3 id="TikaBatchOverview-BatchProcess#"><a class="unresolved" href="#">BatchProcess</a></h3>
+<p>A BatchProcess manages a single process for: a ResourceCrawler, ResourceConsumers, an Interrupter and a StatusReporter.  Each ResourceConsumer runs in its own thread, and the user can specify the number of consumer threads.</p>
+
+<h4 id="TikaBatchOverview-ResourceCrawler#"><a class="unresolved" href="#">ResourceCrawler</a></h4>
+<p>Generically, a ResourceCrawler adds potential files for processing onto the queue.  The initial implementation of tika-batch offers two: one crawls a file system directory, and one reads a list of files to be processed in a file system directory.</p>
+
+<p>Some other implementations of a ResourceCrawler might include a directory listener or a database exporter.  Anything else?</p>
+
+<h4 id="TikaBatchOverview-ResourceConsumers#"><a class="unresolved" href="#">ResourceConsumers</a></h4>
+<p>A ResourceConsumer pulls a resource from the queue and consumes it. A resource should be a lightweight pointer to a file resource (not the actual bytes!), and it returns an InputStream and a Metadata object.</p>
+
+<h4 id="TikaBatchOverview-Interrupter">Interrupter</h4>
+<p>An interrupter runs in a separate thread and allows users to ask the BatchProcess to shut down gracefully.</p>
+
+<h4 id="TikaBatchOverview-StatusReporter#"><a class="unresolved" href="#">StatusReporter</a></h4>
+<p>A StatusReporter runs in a separate thread.  It has visibility into the crawler and the consumers, and it periodically reports on how many files have been processed, how many exceptions, and so on.</p>
+
+<h4 id="TikaBatchOverview-StaleChecker#"><a class="unresolved" href="#">StaleChecker</a></h4>
+
+<p>This is an inner class within BatchProcess that periodically checks for stale consumers.  It will cause the BatchProcess to shut down if it finds a stale consumer.  In earlier versions of the code, the user could specify the maximum number of stale threads before BatchProcess shutdown, however, in practice, a single stale consumer can tie up a huge amount of resources.  For now, BatchProcess will shutdown if it finds one stale consumer.</p>
+
+<h3 id="TikaBatchOverview-ProcessDriver#"><a class="unresolved" href="#">ProcessDriver</a></h3>
+<p>This initiates the BatchProcess and monitors it to make sure that it is still alive when it should be.  If the BatchProcess sends a restart signal via stderr or a restart exit code to the ProcessDriver, the ProcessDriver will restart the BatchProcess.</p>
+
+<h2 id="TikaBatchOverview-FileSystem(FS)Batch,Step1">File System (FS) Batch, Step 1</h2>
+<p>The initial use case for tika-batch is to process a directory of files recursively and generate an output file for each input file.  The output directory has the same structure/hierarchy as the input folder, and each output file has a file suffix appended to it depending on the ContentHandler (&quot;.xml&quot;, &quot;.txt&quot;, &quot;.json&quot;, etc).</p>
+
+<h3 id="TikaBatchOverview-FSResourceCrawlers">FS Resource Crawlers</h3>
+<p>For FSBatch, the directory crawler starts with a root directory and crawls all files.  Bells and whistles include:</p>
+
+<ul>
+	<li>The directory crawler can start with a root directory and a file list, and it will &quot;crawl&quot; all of the files on the list relative to the root directory.  This is very useful for testing or for processing a subset of documents.</li>
+	<li>The directory crawler uses a Tika DocumentSelector to determine whether or not to add a file to the queue.  The only metadata available to the directory crawler at this point in the processing is the file name and the length of the file in bytes.  The user can specify a regex for files to include (based on filename) and a regex for files to exclude (based on filename); the user can also specify a max bytes limit.</li>
+	<li>The directory crawler also has the idea of a start directory.  This is a child directory of the root directory.  This allows users another way to process a subset of a directory structure.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>I've also added a strawman driver that runs multiple threads but kicks off a single app.jar process for every file.</p>
+
+<h3 id="TikaBatchOverview-FSResourceConsumers">FS Resource Consumers</h3>
+<p>The tika-batch package includes an abstract ResourceConsumer class that handles much of the multi-threading burden.  Concrete classes of resource consumer only have to implement processFileResource(FileResource fileResource).  Concrete classes should also handle all exceptions that they want to handle and make appropriate calls to incrementHandledExceptions().</p>
+
+<p>There are two consumers currently.</p>
+
+<ul>
+	<li>One handles traditional Tika processing with the ToTextContentHandler, the ToHtmlContentHandler or the ToXMLContentHandler.  The user can specify a write limit and whether or not to process documents recursively.</li>
+	<li>The other offers handling by the (to be added) RecursiveParserWrapper.  For each input file, the output is a json-formatted list of Metadata items, with a special key for the content.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>FSResourceConsumers rely on a ContentHandlerFactory to get the user-specified handler and an OutputStreamFactory to get the FileOutputStream to write to.</p>
+
+<h4 id="TikaBatchOverview-ContentHandlerFactory#"><a class="unresolved" href="#">ContentHandlerFactory</a></h4>
+<p>This is a simple class that builds a handler for the three basic types mentioned above the ToXXXContentHandler and optionally specifies a write limit.</p>
+
+<h4 id="TikaBatchOverview-OutputStreamFactory#"><a class="unresolved" href="#">OutputStreamFactory</a></h4>
+<p>This calculates the output (target) file location and name, builds the requisite parent directories and returns the OutputStream to the consumer.</p>
+
+<p>If a target file exists, this will do one of three things:</p>
+
+<ul>
+	<li>Skip it – return a null OutputStream. The consumers know to avoid parsing a file if the returned OutputStream is null.</li>
+	<li>Rename the file – add e.g. (1) to the end of the file name (before the suffix) until there is a new file.</li>
+	<li>Overwrite the existing file.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="TikaBatchOverview-USAGE">USAGE</h2>
+<p>See <a href="TikaBatchUsage_109454083.html">TikaBatchUsage</a>.</p>
+
+<h2 id="TikaBatchOverview-TODO">TODO</h2>
+<p>Any design recommendations at this point?  See <a class="external-link" href="http://issues.apache.org/jira/i#browse/TIKA-1330" rel="nofollow">TIKA-1330</a>.</p>
+
+<h3 id="TikaBatchOverview-TikaServerClient">Tika Server Client</h3>
+<h3 id="TikaBatchOverview-TikaBatchHadoop">Tika Batch Hadoop</h3>
+<p>See <a href="TikaInHadoop_109454094.html">TikaInHadoop</a>.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

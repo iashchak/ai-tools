@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaOCR</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaOCR
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Tim Allison</span> on окт 14, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>With <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-93" rel="nofollow">TIKA-93</a> you can now use the awesome Tesseract OCR parser within Tika!</p><p>First some instructions on getting it installed. See Tesseract's <a class="external-link" href="https://github.com/tesseract-ocr/tesseract/wiki" rel="nofollow">readme</a>.</p><h1 id="TikaOCR-MacInstallationInstructions">Mac Installation Instructions</h1><h1 id="TikaOCR-brewinstalltesseracttesseract-lang"><span style="font-family: SFMono-Medium , &quot;SF Mono&quot; , &quot;Segoe UI Mono&quot; , &quot;Roboto Mono&quot; , &quot;Ubuntu Mono&quot; , Menlo , Courier , monospace;font-size: 14.0px;letter-spacing: 0.0px;">brew install tesseract tesseract-lang</span></h1><h2 id="TikaOCR-IssueswithInstallingviaBrew">Issues with Installing via Brew</h2><p>If you have trouble installing via Brew, you can try installing Tesseract <a class="external-link" href="https://tesseract-ocr.googlecode.com" rel="nofollow">from source</a>.</p><h2 id="TikaOCR-Tesseractwon&#39;tworkwithTIFFfiles">Tesseract won't work with TIFF files</h2><p>If you are having trouble getting Tesseract to work with TIFF files, read this <a class="external-link" href="https://gist.github.com/henrik/1967035" rel="nofollow">link</a>. Summary:</p><ol><li>uninstall tesseract: <code>brew uninstall tesseract</code></li><li>uninstall leptonica: <code>brew uninstall leptonica</code></li><li>install leptonica with tiff support: <code>brew install leptonica --with-libtiff</code></li><li>install tesseract: <code>brew install tesseract tesseract-lang</code></li></ol><h1 id="TikaOCR-InstallingTesseractonRHEL">Installing Tesseract on RHEL</h1><ol><li>Add &quot;epel&quot; to your yum repositories if it isn't already installed <br class="atl-forced-newline"/>1a. <code>wget <a class="external-link" href="https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" rel="nofollow">https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</a></code> (or appropriate version) <br class="atl-forced-newline"/>1b. <code>rpm -Uvh epel-release-latest-7.noarch.rpm</code> <br class="atl-forced-newline"/>2. <code>yum install tesseract</code> 3. To add language packs, see what's available <code>yum search tesseract</code> then, e.g. <code>yum install tesseract-langpack-ara</code></li></ol><h1 id="TikaOCR-InstallingTesseractonUbuntu">Installing Tesseract on Ubuntu</h1><ol><li><code>sudo apt-get update</code></li><li><code>sudo apt-get install tesseract-ocr</code></li><li>To add language packs, see what's available then, e.g. <code>sudo apt-get install tesseract-ocr-fra</code> <br class="atl-forced-newline"/><br class="atl-forced-newline"/></li></ol><h1 id="TikaOCR-InstallingTesseractonWindows">Installing Tesseract on Windows</h1><p>See <a class="external-link" href="https://github.com/UB-Mannheim/tesseract/wiki" rel="nofollow">UB-Mannheim</a>.</p><h1 id="TikaOCR-OptimizingTesseract">Optimizing Tesseract</h1><p>There's some advice on the Tesseract github issues + wiki on ways to speed it up, eg <a class="external-link" href="https://github.com/tesseract-ocr/tesseract/issues/263" rel="nofollow">#263</a> and <a class="external-link" href="https://github.com/tesseract-ocr/tesseract/issues/1171" rel="nofollow">#1171</a> and <a class="external-link" href="https://github.com/tesseract-ocr/tesseract/wiki/4.0-Accuracy-and-Performance" rel="nofollow">this wiki page</a>.</p><h1 id="TikaOCR-UsingTikaandTesseract">Using Tika and Tesseract</h1><p>Once you have Tesseract installed, you should test it to make sure it's working. A nice command line test:</p><p><code>tesseract -psm 3 /path/to/tiff/file.tiff out.txt</code></p><p>You should see the output of the text extraction in out.txt.</p><p><code>cat out.txt</code></p><p>Look for the text extracted by Tesseract.</p><p>Once you have confirmed Tesseract is working, then you can simply use the Tika-app, built with 1.7-SNAPSHOT or later to use Tika OCR. For example, try that same file above with Tika:</p><p><code>tika -t /path/to/tiff/file.tiff</code></p><p>That's it! You should see the text extracted by Tesseract and flowed through Tika.</p><h1 id="TikaOCR-UsingTikaServerandTesseract">Using Tika Server and Tesseract</h1><p>Once you have Tesseract and a fresh build of Tika 1.7-SNAPSHOT (including Tika server), you can easily use Tika-Server with Tesseract. For example, to post a TIFF file to the server and get back its OCR extracted text, run the following commands:</p><h3 id="TikaOCR-inanotherwindow,startTikaserver">in another window, start Tika server</h3><p><code>java -jar /path/to/tika-server-1.7-SNAPSHOT.jar</code></p><h3 id="TikaOCR-inanotherwindow,issueacURLrequest">in another window, issue a cURL request</h3><p><code>curl -T /path/to/tiff/image.tiff <a class="external-link" href="http://localhost:9998/tika" rel="nofollow">http://localhost:9998/tika</a> --header &quot;Content-type: image/tiff&quot;</code></p><h2 id="TikaOCR-Overridingtheconfiguredlanguageaspartofyourrequest">Overriding the configured language as part of your request</h2><p>Different requests may need processing using different language models. These can be specified for specific requests using the <em>X-Tika-OCRLanguage</em> custom header. An example of this is shown below:</p><p><code>curl -T /path/to/tiff/image.jpg <a class="external-link" href="http://localhost:9998/tika" rel="nofollow">http://localhost:9998/tika</a> --header &quot;X-Tika-OCRLanguage: eng&quot;</code></p><p>Or for multiple languages:</p><p><code>curl -T /path/to/tiff/image.jpg <a class="external-link" href="http://localhost:9998/tika" rel="nofollow">http://localhost:9998/tika</a> --header &quot;X-Tika-OCRLanguage: eng+fra&quot;</code></p><h1 id="TikaOCR-OverridingDefaultConfiguration">Overriding Default Configuration</h1><p>In Tika 2.x, users can modify configurations via a <code>tika-config.xml</code>. With the exceptions of the paths, we document the defaults in the following:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>TesseractOCR Configuration</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;properties&gt;
+  &lt;parsers&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;&gt;
+      &lt;!-- this is not formally necessary, but prevents loading of unnecessary parser --&gt;
+      &lt;parser-exclude class=&quot;org.apache.tika.parser.ocr.TesseractOCRParser&quot;/&gt;
+    &lt;/parser&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.ocr.TesseractOCRParser&quot;&gt;
+      &lt;params&gt;
+        &lt;!-- these are the defaults; you only need to specify the ones you want
+             to modify --&gt;
+        &lt;param name=&quot;applyRotation&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;colorSpace&quot; type=&quot;string&quot;&gt;gray&lt;/param&gt;
+        &lt;param name=&quot;density&quot; type=&quot;int&quot;&gt;300&lt;/param&gt;
+        &lt;param name=&quot;depth&quot; type=&quot;int&quot;&gt;4&lt;/param&gt;
+        &lt;param name=&quot;enableImagePreprocessing&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;filter&quot; type=&quot;string&quot;&gt;triangle&lt;/param&gt;
+        &lt;param name=&quot;imageMagickPath&quot; type=&quot;string&quot;&gt;/my/custom/imageMagicPath&lt;/param&gt;
+        &lt;param name=&quot;language&quot; type=&quot;string&quot;&gt;eng&lt;/param&gt;
+        &lt;param name=&quot;maxFileSizeToOcr&quot; type=&quot;long&quot;&gt;2147483647&lt;/param&gt;
+        &lt;param name=&quot;minFileSizeToOcr&quot; type=&quot;long&quot;&gt;0&lt;/param&gt;
+        &lt;param name=&quot;pageSegMode&quot; type=&quot;string&quot;&gt;1&lt;/param&gt;
+        &lt;param name=&quot;pageSeparator&quot; type=&quot;string&quot;&gt;&lt;/param&gt;
+        &lt;param name=&quot;preserveInterwordSpacing&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;resize&quot; type=&quot;int&quot;&gt;200&lt;/param&gt;
+        &lt;param name=&quot;skipOcr&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;tessdataPath&quot; type=&quot;string&quot;&gt;/my/custom/data&lt;/param&gt;
+        &lt;param name=&quot;tesseractPath&quot; type=&quot;string&quot;&gt;/my/custom/path&lt;/param&gt;
+        &lt;param name=&quot;timeoutSeconds&quot; type=&quot;int&quot;&gt;120&lt;/param&gt;
+      &lt;/params&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;
+&lt;/properties&gt;</pre>
+</div></div><h1 id="TikaOCR-OCRandPDFs">OCR and PDFs</h1><p>See also <a class="external-link" href="https://wiki.apache.org/tika/PDFParser%20%28Apache%20PDFBox%29" rel="nofollow">PDFParser notes</a> for more details on options for performing OCR on PDFs.</p><p>Note: With Tika server 1.x, the PDFConfig is generated for each document, so any configurations that you may specify in the tika-config.xml file that you pass to the tika-server on startup are overwritten.  This behavior is changed in Tika 2.x, where the PDFConfig remembers settings from tika-config.xml and will only temporarily update custom configs sent via headers.</p><p>To go with option 1 for OCR'ing PDFs (run OCR against inline images), you need to specify configurations for the PDFParser like so:</p><p><code>curl -T testOCR.pdf <a class="external-link" href="http://localhost:9998/rmeta/text" rel="nofollow">http://localhost:9998/rmeta/text</a> --header &quot;X-Tika-PDFextractInlineImages: true&quot;</code></p><p>To go with option 2 (render each page and then run OCR on that rendered image), you need to specify the ocr strategy:<br/><code>curl -T testOCR.pdf <a class="external-link" href="http://localhost:9998/tika" rel="nofollow">http://localhost:9998/tika</a> --header &quot;X-Tika-PDFOcrStrategy: ocr_only&quot;</code></p><p>Note: These two options are independent.  If you set <code>extractInlineImages</code> to true and select an <code>OcrStrategy</code> that includes OCR on the rendered page, Tika will run OCR on the extracted inline images <em>and</em>  the rendered page. </p><h1 id="TikaOCR-DisableOCRinTikadisable-ocr">Disable OCR in Tika<span class="confluence-anchor-link" id="TikaOCR-disable-ocr"></span></h1><p>Tika's OCR will trigger on images embedded within, say, office documents in addition to images you upload directly. Because OCR slows down Tika, you might want to disable it if you don't need the results. You can disable OCR by simply uninstalling tesseract, but if that's not an option, here is a tika.xml config file that disables OCR:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;parsers&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;&gt;
+      &lt;parser-exclude class=&quot;org.apache.tika.parser.ocr.TesseractOCRParser&quot;/&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;
+&lt;/properties&gt;
+</pre>
+</div></div><p class="auto-cursor-target">In Tika 2.x, you can selectively turn off OCR per parse programmatically by setting <code>skipOcr</code>  on a <code>TesseractOCRConfig</code>. This will only affect that one call to parse.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>        TesseractOCRConfig config = new TesseractOCRConfig();
+        config.setSkipOcr(true);
+        ParseContext context = new ParseContext();
+        context.set(TesseractOCRConfig.class, config);
+        
+        Parser parser = new AutoDetectParser();
+        parser.parse(inputStream, handler, metadata, context);</pre>
+</div></div><p class="auto-cursor-target">In Tika 2.x,  with <code>tika-server</code>, add this header to skip OCR per request: <code>X-Tika-OCRskipOcr: true</code></p><h1 class="auto-cursor-target" id="TikaOCR-OptionalDependencies">Optional Dependencies</h1><p>Tika will run preprocessing of images (rotation detection and image normalizing with ImageMagick) before sending the image to tesseract if the user has included dependencies (listed below) and if the user opts to include these preprocessing steps.</p><h2 id="TikaOCR-Toidentifyrotation">To identify rotation</h2><p>python must be installed with scikit-image and numpy</p><p><code>pip3 install numpy</code></p><p><code>pip3 install scikit-image</code></p><p>(As of January 5, 2021, there's a bug in the most recent numpy for Windows, specify 1.19.3: <code>pip3 install numpy==1.19.3</code>)</p><p>In Tika 2.0, <code>python3</code> must be installed and callable as <code>python3</code>.</p><h2 id="TikaOCR-InstallImageMagick">Install ImageMagick</h2><p>See: <a class="external-link" href="https://imagemagick.org/script/download.php" rel="nofollow">https://imagemagick.org/script/download.php</a></p><p>iOS: brew install imagemagick</p><p>Ubuntu: sudo apt install imagemagick</p><p>Windows: download the binary installer from the above page, e.g. <a class="external-link" href="https://imagemagick.org/download/binaries/ImageMagick-7.0.10-55-Q16-HDRI-x64-dll.exe" rel="nofollow">https://imagemagick.org/download/binaries/ImageMagick-7.0.10-55-Q16-HDRI-x64-dll.exe</a></p><p><br/></p><p>TODO: document how to configure these options in Tika</p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

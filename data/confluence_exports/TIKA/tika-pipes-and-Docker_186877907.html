@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : tika-pipes and Docker</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="tika-pipes_181306665.html">tika-pipes</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : tika-pipes and Docker
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on фев 22, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Until we come up with a cleaner way of releasing pipes artifacts, users will have to grab the jars from maven central as in the Dockerfile below.</p><h2 id="tikapipesandDocker-Exampleusingthetika-fetcher-httpmodulewiththe/tikaendpoint">Example using the tika-fetcher-http module with the /tika endpoint</h2><p>Docker file: <a href="attachments/186877907/186877909" data-linked-resource-id="186877909" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="Dockerfile" data-linked-resource-content-type="application/octet-stream" data-linked-resource-container-id="186877907" data-linked-resource-container-version="2">Dockerfile</a> (based on <a class="external-link" href="https://github.com/LogicalSpark/docker-tikaserver/tree/2.0.0" rel="nofollow">https://github.com/LogicalSpark/docker-tikaserver/tree/2.0.0</a>)</p><p>tika-config file: <a href="attachments/186877907/186877908.xml" data-linked-resource-id="186877908" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="tika-config.xml" data-nice-type="XML File" data-linked-resource-content-type="text/xml" data-linked-resource-container-id="186877907" data-linked-resource-container-version="2">tika-config.xml</a></p><p>Start tika-server with Docker: <code>docker run --name my-tika-container -v $(pwd):/config -p 9998:9998 my-tika -c ./config/tika-config.xml</code></p><p>CURL a request: <code>curl -X PUT <a class="external-link" href="http://localhost:9998/tika" rel="nofollow">http://localhost:9998/tika</a> -H &quot;fetcherName: http&quot; -H &quot;fetchKey:<a class="external-link" href="http://tika.apache.org" rel="nofollow">http://tika.apache.org</a>&quot;</code></p>
+                    </div>
+
+                                                            <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/186877907/186877908.xml">tika-config.xml</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/186877907/199535929">Dockerfile</a> (application/octet-stream)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/186877907/186877909">Dockerfile</a> (application/octet-stream)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

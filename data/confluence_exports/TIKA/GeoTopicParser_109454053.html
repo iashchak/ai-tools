@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : GeoTopicParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : GeoTopicParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Chris Mattmann</span> on мар 26, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="GeoTopicParser-GeoTopicParserGeoTopicParser_109454053.html"><a href="GeoTopicParser_109454053.html">GeoTopicParser</a></h1><p>The <a href="GeoTopicParser_109454053.html">GeoTopicParser</a> combines a Gazetteer (a lookup dictionary of names/places to latitudes, longitudes) and a Named Entity Recognition (NER) modeling technique that identifies names and places in text to provide a way to geo tag documents and text i.e., to identify places in the text, and then to look up the latitude/longitude pairs for those places.</p><p><a href="GeoTopicParser_109454053.html">GeoTopicParser</a> uses <a class="external-link" href="http://geonames.org/" rel="nofollow">Geonames.org</a>, <a class="external-link" href="http://lucene.apache.org/" rel="nofollow">Apache Lucene</a> and <a class="external-link" href="http://opennlp.apache.org/" rel="nofollow">Apache OpenNLP</a> to provide its capabilities.</p><p>The work is based on this paper:</p><h5 class="service-heading" id="GeoTopicParser-AnAutomaticApproachforDiscoveringandGeocodingLocationsinDomain-SpecificWebData">An Automatic Approach for Discovering and Geocoding Locations in Domain-Specific Web Data</h5><p class="text-muted">In Proceedings of the IEEE International Conference on Information Reuse and Integration, Pittsburgh, Pennsylvania, USA, July 28-30, 2016 |<span> </span><a class="external-link" href="https://memex.jpl.nasa.gov/IRI16-Gazetteer.pdf" rel="nofollow" style="text-decoration: none;">Read this article</a></p><p class="col-md-12">Authors: Chris A. Mattmann, Madhav Sharan</p><h2 id="GeoTopicParser-InstallingtheLuceneGazetteer">Installing the Lucene Gazetteer</h2><p>First you will need to download the <a class="external-link" href="http://github.com/chrismattmann/lucene-geo-gazetteer" rel="nofollow">Lucene Geo Gazetteer</a> project and to install it. You can do so by:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ cd $HOME/src
+$ git clone https://github.com/chrismattmann/lucene-geo-gazetteer.git
+$ cd lucene-geo-gazetteer
+$ mvn install assembly:assembly
+$ add $HOME/src/lucene-geo-gazetteer/src/main/bin to your PATH environment variable
+</pre>
+</div></div><p>Once done, you can verify that the installation worked by running the following command:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ lucene-geo-gazetteer --help
+usage: lucene-geo-gazetteer
+ -b,--build &lt;gazetteer file&gt;           The Path to the Geonames
+                                       allCountries.txt
+ -c,--count &lt;number of results&gt;        Number of best results to be
+                                       returned for one location
+ -h,--help                             Print this message.
+ -i,--index &lt;directoryPath&gt;            The path to the Lucene index
+                                       directory to either create or read
+ -json,--json                          Formats output in well defined json
+                                       structure
+ -s,--search &lt;set of location names&gt;   Location names to search the
+                                       Gazetteer for
+ -server,--server                      Launches Geo Gazetteer Service
+
+</pre>
+</div></div><p>You will now need to build a Gazetteer using the Geonames.org dataset. Instructions are provided below. Note that you will need least 1.2 GB disk space for building Lucene Index for the Gazetteer.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ cd $HOME/src/lucene-geo-gazetteer
+$ curl -O http://download.geonames.org/export/dump/allCountries.zip
+$ unzip allCountries.zip
+$ lucene-geo-gazetteer -i geoIndex -b allCountries.txt
+</pre>
+</div></div><p>You can verify that the Gazetteer build worked by searching e.g., for Pasadena, and/or Texas:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ lucene-geo-gazetteer -s Pasadena Texas -json
+{
+    &quot;Pasadena&quot;: [
+        {
+            &quot;admin1Code&quot;: &quot;CA&quot;,
+            &quot;admin2Code&quot;: &quot;037&quot;,
+            &quot;countryCode&quot;: &quot;US&quot;,
+            &quot;latitude&quot;: 34.14778,
+            &quot;longitude&quot;: -118.14452,
+            &quot;name&quot;: &quot;Pasadena&quot;
+        }
+    ],
+    &quot;Texas&quot;: [
+        {
+            &quot;admin1Code&quot;: &quot;TX&quot;,
+            &quot;admin2Code&quot;: &quot;&quot;,
+            &quot;countryCode&quot;: &quot;US&quot;,
+            &quot;latitude&quot;: 31.25044,
+            &quot;longitude&quot;: -99.25061,
+            &quot;name&quot;: &quot;Texas&quot;
+        }
+    ]
+}
+</pre>
+</div></div><p>Now you need to start REST service of lucene-geo-gazetteer. Tika uses this service internally</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ lucene-geo-gazetteer -server
+</pre>
+</div></div><p>You can verify that the REST API is responding by searching e.g., for Pasadena, and/or Texas:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl &quot;http://localhost:8765/api/search?s=Pasadena&amp;s=Texas&quot;
+{
+    &quot;Pasadena&quot;: [
+        {
+            &quot;admin1Code&quot;: &quot;CA&quot;,
+            &quot;admin2Code&quot;: &quot;037&quot;,
+            &quot;countryCode&quot;: &quot;US&quot;,
+            &quot;latitude&quot;: 34.14778,
+            &quot;longitude&quot;: -118.14452,
+            &quot;name&quot;: &quot;Pasadena&quot;
+        }
+    ],
+    &quot;Texas&quot;: [
+        {
+            &quot;admin1Code&quot;: &quot;TX&quot;,
+            &quot;admin2Code&quot;: &quot;&quot;,
+            &quot;countryCode&quot;: &quot;US&quot;,
+            &quot;latitude&quot;: 31.25044,
+            &quot;longitude&quot;: -99.25061,
+            &quot;name&quot;: &quot;Texas&quot;
+        }
+    ]
+}
+</pre>
+</div></div><p>Note that we used the convenience script <code>lucene-geo-gazetteer</code> which assumes that you created an indexed named geoIndex in the $HOME/src/lucene-geo-gazetter/geoIndex directory. We could have also used the pure Java command line to search. The return from the Gazetteer is a JSON List of Object structures in which the structure is a key-&gt;Object List map. The key is the location name given and the Object List is a list of most popular location objects in the Gazetteer for that name.</p><h2 id="GeoTopicParser-InstallinganddownloadinganNERmodel">Installing and downloading an NER model</h2><p>The next thing you'll need is a Named Entity Recognition model for places. The <a href="GeoTopicParser_109454053.html">GeoTopicParser</a> uses Apache OpenNLP and with its 1.5 version, OpenNLP provides already trained models for location names in text data. You can download the <a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-location.bin" rel="nofollow">en-ner-location.bin</a> file already pre-trained by the OpenNLP folks. One thing to note is that OpenNLP's default name finder is not accurate, so building your own NER location model is highly recommended. In this case, please follow <a class="external-link" href="http://opennlp.apache.org/documentation/1.5.3/manual/opennlp.html#tools.namefind.training" rel="nofollow">these instructions</a>.</p><p>The model needs to be placed on the classpath for your Tika installation in the following directory:</p><p><code>org/apache/tika/parser/geo/</code></p><p>The following instructions show how to download the model and place it on the right path:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ mkdir $HOME/src/location-ner-model &amp;&amp; cd $HOME/src/location-ner-model
+$ curl -O https://opennlp.sourceforge.net/models-1.5/en-ner-location.bin
+$ mkdir -p org/apache/tika/parser/geo/
+$ mv en-ner-location.bin org/apache/tika/parser/geo/
+</pre>
+</div></div><h2 id="GeoTopicParser-Testoutthe">Test out the <a href="GeoTopicParser_109454053.html">GeoTopicParser</a></h2><p>Now you can run Tika and try out the <a href="GeoTopicParser_109454053.html">GeoTopicParser</a>. At the moment since it's a Parser and not a Content-Handler (hopefully will develop it later), the parser is mapped to the MIME type application/geotopic which is a sub-class of text/plain. So, there are two steps to try the parser out now.</p><ol><li><p class="auto-cursor-target">Create a .geot file, you can use this sample <a class="external-link" href="https://raw.githubusercontent.com/chrismattmann/geotopicparser-utils/master/geotopics/polar.geot" rel="nofollow">file</a> from the <a class="external-link" href="http://github.com/chrismattmann/trec-dd-polar" rel="nofollow">NSF Polar data contributed to TREC</a>. 2. Tell Tika about the application/geotopic MIME type. You can download this <a class="external-link" href="https://raw.githubusercontent.com/chrismattmann/geotopicparser-utils/master/mime/org/apache/tika/mime/custom-mimetypes.xml" rel="nofollow">file</a> and place it on the classpath in the <code>org/apache/tika/mime</code> directory, e.g., by doing:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ mkdir $HOME/src/geotopic-mime &amp;&amp; cd $HOME/src/geotopic-mime
+$ mkdir -p org/apache/tika/mime
+$ curl -O https://raw.githubusercontent.com/chrismattmann/geotopicparser-utils/master/mime/org/apache/tika/mime/custom-mimetypes.xml
+$ mv custom-mimetypes.xml org/apache/tika/mime
+</pre>
+</div></div></li></ol><p>With those files in place, let's use the <a href="GeoTopicParser_109454053.html">GeoTopicParser</a> using Tika-App:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ java -classpath tika-app/target/tika-app-&lt;LATEST-VERSION&gt;-SNAPSHOT.jar:tika-parsers/tika-parsers-ml/tika-parser-nlp-package/target/tika-parser-nlp-package-&lt;LATEST-VERSION&gt;-SNAPSHOT.jar:$HOME/src/location-ner-model:$HOME/src/geotopic-mime org.apache.tika.cli.TikaCLI -m polar.geot
+</pre>
+</div></div><p>This should output:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Content-Length: 881
+Content-Type: application/geotopic
+Geographic_LATITUDE: 27.33931
+Geographic_LONGITUDE: -108.60288
+Geographic_NAME: China
+Optional_LATITUDE1: 39.76
+Optional_LONGITUDE1: -98.5
+Optional_NAME1: United States
+X-Parsed-By: org.apache.tika.parser.DefaultParser
+X-Parsed-By: org.apache.tika.parser.geo.topic.GeoParser
+resourceName: polar.geot
+</pre>
+</div></div><p>The output will output 3-tuples of {<code>Name, Latitude, Longitude</code>}. The *best* match for the location is the one that occurs most frequently in the text, and that is provided as <code>Geographic_NAME</code>, along with its corresponding <code>Geographic_LATITUDE</code> and <code>Geographic_LONGITUDE</code>. Places also identified as entities by the NER model in the provide text are also listed as <code>Optional_NAME*N*</code>, e.g., <code>Optional_NAME1</code> for the 1st alternative location identified and its corresponding <code>Optional_LATITUDE1</code> and <code>Optional_LONGITUDE1</code>.</p><h2 id="GeoTopicParser-WillthisworkfromTikaServer?">Will this work from Tika Server?</h2><p>It sure will! When you start Tika Server, make sure that the NER model file and the custom MIME type are on your classpath, and that the lucene-geo-gazetteer is on the <code>$PATH</code> where Tika-Server is started, and you can post all the .geot files that you'd like and Tika-Server will happily call the <a href="GeoTopicParser_109454053.html">GeoTopicParser</a> to provide you location information.</p><p>First, start up the Tika server with your NER model and .geot MIME type definition on the classpath:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -classpath $HOME/src/location-ner-model:$HOME/src/geotopic-mime:tika-server/tika-server-standard/target/tika-server-standard-&lt;LATEST-VERSION&gt;-SNAPSHOT.jar:tika-parsers/tika-parsers-ml/tika-parser-nlp-package/target/tika-parser-nlp-package-&lt;LATEST-VERSION&gt;-SNAPSHOT.jar org.apache.tika.server.core.TikaServerCli
+</pre>
+</div></div><p>Then, try calling the <code>/rmeta</code> service to get the returned metadata:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T $HOME/src/geotopicparser-utils/geotopics/polar.geot -H &quot;Content-Disposition: attachment; filename=polar.geot&quot; http://localhost:9998/rmeta
+</pre>
+</div></div><p>And then look for it to return the following, that's it!</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+   {
+      &quot;Content-Type&quot;:&quot;application/geotopic&quot;,
+      &quot;Geographic_LATITUDE&quot;:&quot;39.76&quot;,
+      &quot;Geographic_LONGITUDE&quot;:&quot;-98.5&quot;,
+      &quot;Geographic_NAME&quot;:&quot;United States&quot;,
+      &quot;Optional_LATITUDE1&quot;:&quot;27.33931&quot;,
+      &quot;Optional_LONGITUDE1&quot;:&quot;-108.60288&quot;,
+      &quot;Optional_NAME1&quot;:&quot;China&quot;,
+      &quot;X-Parsed-By&quot;:[
+         &quot;org.apache.tika.parser.DefaultParser&quot;,
+         &quot;org.apache.tika.parser.geo.topic.GeoParser&quot;
+      ],
+      &quot;X-TIKA:parse_time_millis&quot;:&quot;1634&quot;,
+      &quot;resourceName&quot;:&quot;polar.geot&quot;
+   }
+]
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

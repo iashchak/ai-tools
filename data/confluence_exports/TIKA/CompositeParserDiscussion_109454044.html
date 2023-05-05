@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : CompositeParserDiscussion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : CompositeParserDiscussion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="CompositeParserDiscussion-CompositeParserDiscussion">Composite Parser Discussion</h1>
+
+<p>A given mime type may be supported by several parsers.  Work on <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1445" rel="nofollow">TIKA-1445</a> (adding metadata back into OCR'd text) raised the prominence of this issue.  Currently, the <a class="unresolved" href="#">CompositeParser</a> picks the first parser that supports a given mime type.  In discussion on TIKA-1445 other potential use cases were identified.</p>
+
+<p>The purpose of this page is to track a unified vision of the strategies that we'll implement in Tika.</p>
+
+<p>The JIRA issue for this is <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1509" rel="nofollow">TIKA-1509</a>.</p>
+
+<p><strong>This page is just a start.  Please contribute</strong></p>
+
+<h1 id="CompositeParserDiscussion-Strategies">Strategies</h1>
+<h2 id="CompositeParserDiscussion-Classic">Classic</h2>
+<p>Sort the parsers by non-tika vs tika and then alphabetically by class name.  Pick the first parser that will handle a given mime type.</p>
+
+<h2 id="CompositeParserDiscussion-Supplementary/Additive">Supplementary/Additive</h2>
+<p>Concatenate the results (metadata and content) for several parsers</p>
+
+<p>For Metadata, this merging should be configurable if multiple parsers output the same Metadata Key, between:</p>
+<ul>
+	<li>First/earliest parser's value(s) win</li>
+	<li>Last/latest parser's value(s) win</li>
+	<li>Capture all and return multiple values
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p><em>TODO</em> For Content, decide how we could support appending or resetting of the SAX stream</p>
+
+<p>We need a better name for this!</p>
+
+<h2 id="CompositeParserDiscussion-Back-off">Back-off</h2>
+<p>Try one parser and if the output doesn't meet some criterion, apply another.  One use case for this might be: if a file is identified as XML, try the XMLParser and if that throws an exception, try the HTMLParser. </p>
+
+<h2 id="CompositeParserDiscussion-PicktheBestOutput">Pick the Best Output</h2>
+<p>One use case for this: the charset detector identifies two equally likely charsets.  Apply both and use the wished-for junk detector (TIKA-1443) to determine which output is more likely to be not junk.</p>
+
+<h2 id="CompositeParserDiscussion-Fastest">Fastest</h2>
+<p>If there are two parsers, use the faster one even if it might mean lower quality (eg avoid OCR)</p>
+
+<h1 id="CompositeParserDiscussion-Mimetypehierarchies">Mime type hierarchies</h1>
+<p>Consider a case like:</p>
+
+<ul>
+	<li>application/vnd.ms-excel
+	<ul>
+		<li>application/x-tika-msoffice
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+</ul>
+
+
+<p>Or</p>
+
+<ul>
+	<li>application/dita+xml;format=concept
+	<ul>
+		<li>application/dita+xml;format=topic
+		<ul>
+			<li>application/dita+xml
+<br class="atl-forced-newline"/></li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+</ul>
+
+
+<p>If there were two parsers available for application/vnd.ms-excel, and another for application/x-tika-msoffice, should it be possible to specify in a strategy that a parser for the parent type also be used? Should it be possible to set a strategy like &quot;use the dita concept, then the general dita, then the dita topic&quot;, hopping around up and down the hierarchy? </p>
+
+<p>Or do we keep the current behaviour where once a point in the hierachy with a parser is found, it is parsed at that point?</p>
+
+<h1 id="CompositeParserDiscussion-AllowingtheUsertoselectastrategy">Allowing the User to select a strategy</h1>
+<p>The right strategy for one user may not be the right for another. The right strategy for one file may not be the right one for another. We therefore need to allow users to pick their strategy, on an overall basis, and on a per-file basis</p>
+
+<h2 id="CompositeParserDiscussion-From">From <a class="unresolved" href="#">TikaConfig</a></h2>
+<p>Currently, a great many Tika users just call <code>TikaConfig.getDefaultConfig()</code> and go with that.</p>
+
+<p>It might be nice if they could also do things like <code>TikaConfig.getMaxiumMetadataConfig()</code> or <code>TikaConfig.getTryEachInTurnConfig()</code> to pick a different strategy</p>
+
+<p>(Naming TBC, align with above)</p>
+
+<h2 id="CompositeParserDiscussion-WithaTikaConfigurationfile">With a Tika Configuration file</h2>
+<p>Users may wish to have full control over what parsers are used, what strategies are used for which mime types etc</p>
+
+<p>For example, they might want default behaviour for most types, but to send XML through a fallback parser, and combine Image + GDAL + OCR for jpeg. The configuration file needs to support this</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  &lt;parsers&gt;
+    &lt;!-- Most things can use the default --&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;&gt;
+      &lt;!-- Don&#39;t use DefaultParser for these mimetypes, alternate config below --&gt;
+      &lt;mime-exclude&gt;image/jpeg&lt;/mime-exclude&gt;
+      &lt;mime-exclude&gt;application/xml&lt;/mime-exclude&gt;
+      &lt;mime-exclude&gt;application/pdf&lt;/mime-exclude&gt;
+      &lt;!-- Exclude (blacklist) these parsers, have them ignored by DefaultParser --&gt;
+      &lt;parser-exclude class=&quot;org.apache.tika.parser.jdbc.SQLite3Parser&quot;/&gt;
+      &lt;parser-exclude class=&quot;org.apache.tika.parser.executable.ExecutableParser&quot;/&gt;
+    &lt;/parser&gt;
+
+    &lt;!-- No PDF, thank you! --&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.EmptyParser&quot;&gt;
+      &lt;mime&gt;application/pdf&lt;/mime&gt;
+    &lt;/parser&gt;
+
+    &lt;!-- JPEG needs special handling - try+combine everything --&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.(suppliment)&quot;&gt;
+       &lt;params&gt;
+          &lt;!-- If several parsers output the same metadata key, first parser to do so wins --&gt;
+          &lt;param name=&quot;metadataPolicy&quot; value=&quot;FIRST_WINS&quot; /&gt;
+          &lt;!-- If several parsers output the same metadata key, last parser to do so wins --&gt;
+          &lt;!--
+          &lt;param name=&quot;metadataPolicy&quot; value=&quot;LAST_WINS&quot; /&gt;
+           --&gt;
+          &lt;!-- If several parsers output the same metadata key, store all their values --&gt;
+          &lt;!--
+          &lt;param name=&quot;metadataPolicy&quot; value=&quot;KEEP_ALL&quot; /&gt;
+           --&gt;
+       &lt;/params&gt;
+       &lt;parser class=&quot;org.apache.tika.parser.ocr.TesseractOCRParser&quot; /&gt;
+       &lt;parser class=&quot;org.apache.tika.parser.image.ImageParser&quot; /&gt;
+       &lt;parser class=&quot;org.apache.tika.parser.jpeg.JpegParser&quot; /&gt;
+       &lt;parser class=&quot;org.apache.tika.parser.gdal.GDALParser&quot; /&gt;
+       &lt;!-- TODO DO we need to give mimetypes here too? Or can we get implicitly? --&gt;
+    &lt;/parser&gt;
+
+    &lt;!-- XML needs special handling - use fallbacks to get something --&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.(fallback)&quot;&gt;
+       &lt;params&gt;
+          &lt;!-- If we move onto a second/third/etc parser, discard metadata from previous parsers --&gt;
+          &lt;param name=&quot;metadataPolicy&quot; value=&quot;DISCARD&quot; /&gt;
+          &lt;!-- If we move onto a second parser, and both output the same metadata key, earlier parser wins --&gt;
+          &lt;!--
+          &lt;param name=&quot;metadataPolicy&quot; value=&quot;FIRST_WINS&quot; /&gt;
+           --&gt;
+          &lt;!-- If we move onto a second parser, and both output the same metadata key, later parser wins --&gt;
+          &lt;!--
+          &lt;param name=&quot;metadataPolicy&quot; value=&quot;LAST_WINS&quot; /&gt;
+           --&gt;
+          &lt;!-- If move onto a second parser, and both output the same metadata key, store all their values --&gt;
+          &lt;!--
+          &lt;param name=&quot;metadataPolicy&quot; value=&quot;KEEP_ALL&quot; /&gt;
+           --&gt;
+       &lt;/params&gt;
+       &lt;parser class=&quot;my.custom.xml.parser&quot; /&gt;
+       &lt;parser class=&quot;org.apache.tika.parser.xml.XMLParser&quot; /&gt;
+       &lt;parser class=&quot;org.apache.tika.parser.html.HTMLParser&quot; /&gt;
+       &lt;parser class=&quot;org.apache.tika.parser.txt.TXTParser&quot; /&gt;
+       &lt;mime&gt;application/xml&lt;/mime&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;
+</pre>
+</div></div>
+
+<h2 id="CompositeParserDiscussion-InCode">In Code</h2>
+<p>Whatever we do, this must be available from code too, much as how today people can create custom <code>CompositeParser</code> instances, or wrap things up with custom <code>ParserDecorator</code> instances</p>
+
+<p>We also need examples for all of these, not only in unit tests, but also in the examples package.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

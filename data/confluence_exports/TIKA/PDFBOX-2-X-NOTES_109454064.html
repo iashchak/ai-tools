@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : PDFBOX 2 X NOTES</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : PDFBOX 2 X NOTES
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="PDFBOX2XNOTES-UpgradingtoPDFBox2.0">Upgrading to PDFBox 2.0</h1>
+
+<p>PDFBox is on its way to releasing 2.0.  This version represents a major shift from the 1.8.x branch.  We'll document some expected differences from a user/consumer perspective on the upgrade.  The issue to track progress is <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1285" rel="nofollow">TIKA-1285</a>.</p>
+
+<h2 id="PDFBOX2XNOTES-NonseqParser#"><a class="unresolved" href="#">NonseqParser</a></h2>
+<p>With 2.x, the older parser is gone, and the <a class="unresolved" href="#">NonSequential</a> parser is the main/only parser available.  In 1.8.x, users of Tika can configure the use of the <a class="unresolved" href="#">NonSequential</a> parser via the config file.  This choice will disappear in 2.x.</p>
+
+<h2 id="PDFBOX2XNOTES-Speed/Memory">Speed/Memory</h2>
+<p>This is still in a state of flux.  With some changes over the last few days, the speed appears to be equivalent between 1.8.x and the non-sequential parser and 2.x – that said, the speed is slightly slower with the nonsequential parser (TODO: benchmarks);</p>
+
+<p>Memory use configuration is currently going through some upgrades. It looks like the clients will be able to set a threshold and PDFBox will choose when to buffer to disk to stay under the desired memory threshold.</p>
+
+<h2 id="PDFBOX2XNOTES-CharacterEncodings">Character Encodings</h2>
+<ul>
+	<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>I've noticed a handful of cases where ligatures in 1.8 are "spelled out" in 2.0 &#8211; e.g. "identi[fi]cation" in 1.8 has become "identification" in 2.0 (at least in 003403.pdf from govdocs1).
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+</ul>
+
+
+<h2 id="PDFBOX2XNOTES-TIFFExtraction">TIFF Extraction</h2>
+<p>Tiffs are no longer extracted by PDFBox without supplementary, non-Apache friendly libraries added to the classpath by consumers.  For now, with straight Tika+PDFBox, if &quot;extractInlineImages&quot; is set to true, and a TIFF is encountered, a zero-byte inputstream will be sent to the embedded (TIFF) parser.  This in turn throws an exception.  With the standard <a class="unresolved" href="#">AutoDetectParser</a>(), this embedded doc exception is caught, swallowed and ignored.  The <a href="RecursiveParserWrapper_181309139.html">RecursiveParserWrapper</a> will catch these exceptions and allow users to see how many TIFFs they aren't getting, and allow users to see which files contain TIFFs.</p>
+
+<p>To get a sense of the external libraries you'll need to add, take a look at this <a class="external-link" href="http://svn.apache.org/repos/asf/pdfbox/trunk/tools/pom.xml" rel="nofollow">pom</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

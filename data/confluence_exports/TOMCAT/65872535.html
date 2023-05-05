@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Building the isapi_redirect (mod_jk) binaries for Windows</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Building-the-native-Tomcat-components-for-Windows_65872529.html">Building the native Tomcat components for Windows</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Building the isapi_redirect (mod_jk) binaries for Windows
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on фев 19, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="line874"><span class="anchor">This page describes the process for building the isapi_redirect.dll (mod_jk) for Windows. This is the native <span class="anchor">plug-in for IIS that provides broadly the same functionality as mod_jk does for httpd.<br class="anchor"/></span></span></p><p class="line874"><span class="anchor"><span class="anchor">These instructions assume that you have configured the <a href="https://cwiki.apache.org/confluence/display/TOMCAT/Common+Native+Build+Environment" rel="nofollow">common build environment</a>.</span> </span>  <span class="anchor"><br/></span></p><h2 id="Buildingtheisapi_redirect(mod_jk)binariesforWindows-Building">Building</h2><p class="line867">The isapi_redirector.dll requires no other external dependencies (it does depend on PCRE but this is included in the source). Obtain the tcnative source from one of:</p><ul><li class="line867">the win32-src.zip source bundle for the version you wish to build;</li><li class="line867"><a class="external-link" href="https://svn.apache.org/repos/asf/tomcat/jk" rel="nofollow">https://svn.apache.org/repos/asf/tomcat/jk</a></li></ul><p class="line867">E.g.: To build the latest 1.2.x development build from trunk</p><p class="line867">Obtain the source code:</p><pre> c:
+<span class="anchor"> </span>cd \
+<span class="anchor"> </span>svn co https://svn.apache.org/repos/asf/tomcat/jk/trunk/ tomcat-jk-1.2.x
+<span class="anchor"> </span>cd tomcat-jk-1.2.x\native\iis</pre><p><br/></p><p>Build<span class="anchor"> </span> isapi_redirector.dll:<span class="anchor"><br/></span></p><pre> c:\cmsc\setenv.bat /x86 <br/> nmake -f Makefile.x86
+ 
+ c:\cmsc\setenv.bat /x64
+ nmake -f Makefile.amd64
+</pre><p><br/>Tomcat isapi_redirect DLLs may then be found in C:\tomcat-jk-1.2.x\native\iis\<span class="anchor">Release_[amd64|x86].</span></p><p>Construct the binary distributions <span class="anchor"> </span> <span class="anchor"> </span></p><pre class="anchor"> set VER=1.2.43
+<span class="anchor"> </span>mkdir tomcat-connectors-%VER%-windows-i386-iis
+<span class="anchor"> </span>copy ..\..\LICENSE tomcat-connectors-%VER%-windows-i386-iis\
+<span class="anchor"> </span>copy ..\..\NOTICE tomcat-connectors-%VER%-windows-i386-iis\
+<span class="anchor"> </span>copy README tomcat-connectors-%VER%-windows-i386-iis\<br/> copy Release_x86\isapi_redirect.dll tomcat-connectors-%VER%-windows-i386-iis\</pre><pre class="anchor"><span class="anchor"> </span>mkdir tomcat-connectors-%VER%-windows-x86_64-iis<span class="anchor"><br/> </span>copy ..\..\LICENSE tomcat-connectors-%VER%-windows-x86_64-iis\
+<span class="anchor"> </span>copy ..\..\NOTICE tomcat-connectors-%VER%-windows-x86_64-iis\
+<span class="anchor"> </span>copy README tomcat-connectors-%VER%-windows-x86_64-iis\<br/> copy Release_amd64\isapi_redirect.dll tomcat-connectors-%VER%-windows-x86_64-iis\</pre><pre> mkdir tomcat-connectors-%VER%-windows-i386-symbols<br/> copy ..\..\LICENSE tomcat-connectors-%VER%-windows-i386-symbols<br/> copy ..\..\NOTICE tomcat-connectors-%VER%-windows-i386-symbols<br/> copy Release_x86\isapi_redirect.pdb tomcat-connectors-%VER%-windows-i386-symbols\</pre><pre> mkdir tomcat-connectors-%VER%-windows-x86_64-symbols<br/> copy ..\..\LICENSE tomcat-connectors-%VER%-windows-x86_64-symbols<br/> copy ..\..\NOTICE tomcat-connectors-%VER%-windows-x86_64-symbols<br/> copy Release_amd64\isapi_redirect.pdb tomcat-connectors-%VER%-windows-x86_64-symbols\</pre><pre class="anchor"><span class="anchor"><span class="anchor"> </span>SET JAVA_HOME=C:\Java\adopt-8.0.242.09-x64</span>
+<span class="anchor"> </span>set PATH=%PATH%;%JAVA_HOME%\bin
+<span class="anchor"> </span>cd tomcat-connectors-%VER%-windows-i386-iis
+<span class="anchor"> </span>jar -cMf ..\tomcat-connectors-%VER%-windows-i386-iis.zip *
+<span class="anchor"> </span>cd ..\tomcat-connectors-%VER%-windows-x86_64-iis
+<span class="anchor"> </span>jar -cMf ..\tomcat-connectors-%VER%-windows-x86_64-iis.zip *</pre><pre class="anchor"> cd ..\tomcat-connectors-%VER%-windows-i386-symbols<br/><span class="anchor"> </span>jar -cMf ..\tomcat-connectors-%VER%-windows-i386-symbols.zip *<br/> cd ..\tomcat-connectors-%VER%-windows-x86_64-symbols<br/> jar -cMf ..\tomcat-connectors-%VER%-windows-x86_64-symbols.zip *</pre><p><br/></p><p class="line862">The Windows binary distributions may then be found in C:\tomcat-jk-1.2.x\native\iis<span class="anchor"><br class="line862"/></span></p><p class="line874">These need to be signed and hashed before uploading for the release vote.<span class="anchor"> </span><span class="anchor"> </span></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

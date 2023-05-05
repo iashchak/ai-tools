@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Apache Tika Meetups</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Apache Tika Meetups
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on янв 24, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="ApacheTikaMeetups-1)Hands-ontika-evalmoduleworkshop,Part1">1) Hands-on tika-eval module workshop, Part 1</h2><h3 id="ApacheTikaMeetups-November9,2021,Tuesday11amEST/4pmUTC">November 9, 2021, Tuesday 11am EST/4pm UTC</h3><p>The dial-in information is available to those who register via Meetup.</p><p>This workshop is designed for hands-on tech folks who can run Tika from the commandline or can <code>curl</code> to a local tika-server.</p><p>Stay tuned for prerequisites, resources and an agenda!</p><p>The following is all a work in progress.  Please check back right before the workshop!</p><h5 id="ApacheTikaMeetups-Prerequisites:">Prerequisites:</h5><ol><li>java &gt;= 8</li><li>tika-eval app and tika-app jars: <a class="external-link" href="https://dlcdn.apache.org/tika/2.1.0/tika-eval-app-2.1.0.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.1.0/tika-eval-app-2.1.0.jar</a> and <a class="external-link" href="https://dlcdn.apache.org/tika/2.1.0/tika-app-2.1.0.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.1.0/tika-app-2.1.0.jar</a></li><li>JSON editor/viewer (<code>jq</code> should be sufficient. I like Sublime with the PrettyJSON plugin <a class="external-link" href="https://github.com/dzhibas/SublimePrettyJson" rel="nofollow">https://github.com/dzhibas/SublimePrettyJson</a>)</li><li>XLSX viewer (Excel or Open/LibreOffice)</li></ol><h5 id="ApacheTikaMeetups-Optionalmaterials:">Optional materials:</h5><ol><li>tika-server-standard jar: <a class="external-link" href="https://dlcdn.apache.org/tika/2.1.0/tika-server-standard-2.1.0.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.1.0/tika-server-standard-2.1.0.jar</a></li><li>tika-eval-core.jar: <a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-eval-core/2.1.0/tika-eval-core-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-eval-core/2.1.0/tika-eval-core-2.1.0.jar</a></li><li>If you'd like to experiment with tesseract, make sure that tesseract is installed and callable as 'tesseract' from your commandline.</li><li>Some knowledge of SQL</li></ol><h5 id="ApacheTikaMeetups-Exampledocs,extractsandconfigfiles:">Example docs, extracts and config files: <a href="attachments/191336977/191337118.tgz" data-linked-resource-id="191337118" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="tika-eval-workshop-20211109.tgz" data-linked-resource-content-type="application/gzip" data-linked-resource-container-id="191336977" data-linked-resource-container-version="47">tika-eval-workshop-20211109.tgz</a></h5><p>Before the class, you should unzip the tika-eval-workshop-20211109.tgz (<code>tar -xzvf tika-eval-workshop-20211109.tgz</code>), move the <code>tika-app-2.1.0.jar</code> into the <code>tika-eval-workshop-20211109/ </code>folder and  run tika-app on the <code>docs</code> directory:<code> java -jar tika-app-2.1.0.jar -J -t -i docs -o extracts/my_extracts</code> </p><p><br/></p><p>Note: There's a bug in the default logging configuration for tika-app in batch mode (e.g. <code>&quot;No configuration found for '4b85612c' at 'null' in 'null'...&quot;</code>).  This is fixed in the latest tika-app and will be available in the next release 2.1.1.</p><p><br/></p><h2 id="ApacheTikaMeetups-2)Hands-ontika-pipesmoduleworkshop">2) Hands-on tika-pipes module workshop</h2><h3 id="ApacheTikaMeetups-December2,2021,Thursday12pm(NOON)EST/5pmUTC">December 2, 2021, Thursday 12pm (NOON) EST/5pm UTC</h3><p>The dial-in information is available to those who register via Meetup.</p><p>I'm currently working on this, and it should be ready by 11am EST/4pm UTC – an hour before the start</p><p>Useful documentation: <a href="tika-pipes_181306665.html">tika-pipes</a></p><h4 id="ApacheTikaMeetups-Prerequisites:.1">Prerequisites:</h4><ol><li>java &gt;= 8</li><li>curl (or postman or something similar)</li><li>Unzip <a href="attachments/191336977/195729276.zip" data-linked-resource-id="195729276" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="tika-pipes-tutorial-20211202.zip" data-nice-type="Zip Archive" data-linked-resource-content-type="application/zip" data-linked-resource-container-id="191336977" data-linked-resource-container-version="47">tika-pipes-tutorial-20211202.zip</a> </li><li>In <code>tika-pipes-tutorial-20211202/app-bin/</code>:<ol><li><a class="external-link" href="https://dlcdn.apache.org/tika/2.1.0/tika-app-2.1.0.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.1.0/tika-app-2.1.0.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.1.0/tika-emitter-fs-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.1.0/tika-emitter-fs-2.1.0.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.1.0/tika-emitter-solr-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.1.0/tika-emitter-solr-2.1.0.jar</a> <strong>OR </strong><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.1.0/tika-emitter-opensearch-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.1.0/tika-emitter-opensearch-2.1.0.jar</a></li><li><a href="attachments/191336977/195729160.jar" data-linked-resource-id="195729160" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="tika-core-2.1.1-SNAPSHOT-test-jar-with-dependencies.jar" data-nice-type="Java Archive" data-linked-resource-content-type="application/java-archive" data-linked-resource-container-id="191336977" data-linked-resource-container-version="47">tika-core-2.1.1-SNAPSHOT-test-jar-with-dependencies.jar</a></li></ol></li><li>In <code>tika-pipes-tutorial-20211202/server-bin/</code>:<ol><li>tika-server-standard jar: <a class="external-link" href="https://dlcdn.apache.org/tika/2.1.0/tika-server-standard-2.1.0.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.1.0/tika-server-standard-2.1.0.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.1.0/tika-emitter-fs-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.1.0/tika-emitter-fs-2.1.0.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.1.0/tika-emitter-solr-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.1.0/tika-emitter-solr-2.1.0.jar</a> <strong>OR</strong> <a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.1.0/tika-emitter-opensearch-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.1.0/tika-emitter-opensearch-2.1.0.jar</a></li><li><a href="attachments/191336977/195729160.jar" data-linked-resource-id="195729160" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="tika-core-2.1.1-SNAPSHOT-test-jar-with-dependencies.jar" data-nice-type="Java Archive" data-linked-resource-content-type="application/java-archive" data-linked-resource-container-id="191336977" data-linked-resource-container-version="47">tika-core-2.1.1-SNAPSHOT-test-jar-with-dependencies.jar</a></li></ol></li><li>Installation of Apache Solr (~8.9.x) and/or OpenSearch (~1.x) and/or Elasticsearch (7.x)</li></ol><h4 id="ApacheTikaMeetups-Advanced/Optional:">Advanced/Optional:</h4><ol><li><code>jq</code> or similar</li></ol><h4 id="ApacheTikaMeetups-Exercises">Exercises</h4><ol><li>Use fetcher in traditional <code>/tika /rmeta</code> endpoints<ol><li><p class="auto-cursor-target">update <code>configs/tika-config-basic.xml</code> &lt;<code>basePath</code>&gt; element to get the full path to <code>tika-pipes-tutorial-20211202/docs: </code> </p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemFetcher</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default">  &lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+    &lt;params&gt;
+      &lt;name&gt;fsf&lt;/name&gt;
+  &nbsp;   &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/fetcher&gt;</pre> 
+ </div>
+</div></li><li><span style="color: rgb(34,34,34);">start the server: <code>java -cp &quot;server-bin/*&quot; org.apache.tika.server.core.Ti</code></span><code><span style="color: rgb(34,34,34);">kaServerCli -c </span></code><code><span style="color: rgb(34,34,34);">configs/tika-config-basic.xml</span></code></li><li><p class="p1"><code><span class="s1">curl -X PUT <a class="external-link" href="http://localhost:9998/rmeta" rel="nofollow">http://localhost:9998/rmeta</a> -H &quot;fetcherName:fsf&quot; -H &quot;fetchKey:testPDF.pdf&quot; | jq --sort-keys</span></code></p></li></ol></li><li>Use /pipes handler to read from and write to a local file share<ol><li><p class="auto-cursor-target">update <code>configs/tika-config-basic.xml</code> &lt;<code>basePath</code>&gt; element to get the full path to <code>tika-pipes-tutorial-20211202/docs: </code> </p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemEmitter</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default">  &lt;emitters&gt;
+    &lt;emitter class="org.apache.tika.pipes.emitter.fs.FileSystemEmitter"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fse&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/extracts&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/emitter&gt;
+  &lt;/emitters&gt;</pre> 
+ </div>
+</div></li><li><span style="color: rgb(34,34,34);">start the server: <code>java -cp &quot;server-bin/*&quot; org.apache.tika.server.core.Ti</code></span><code><span style="color: rgb(34,34,34);">kaServerCli -c </span></code><code><span style="color: rgb(34,34,34);">configs/tika-config-basic.xml</span></code></li><li><p class="p1"><code><span class="s1">curl -X POST -H &quot;Content-Type: application/json&quot; -d @configs/pipes-request-minimal.json <a class="external-link" href="http://localhost:9998/pipes" rel="nofollow">http://localhost:9998/pipes</a></span></code></p></li></ol></li><li>Configure metadata filters and rerun 2.<ol><li><p class="auto-cursor-target">Copy this and paste it into <code>configs/tika-config-basic.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">Metadata Filters</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default">&lt;metadataFilters&gt;
+  &lt;!-- depending on the file format, some dates do not have a timezone. This
+         filter arbitrarily assumes dates have a UTC timezone and will format all
+         dates as yyyy-MM-dd'T'HH:mm:ss'Z' whether or not they actually have a timezone.
+    --&gt;
+  &lt;metadataFilter class="org.apache.tika.metadata.filter.DateNormalizingMetadataFilter"/&gt;
+  &lt;metadataFilter class="org.apache.tika.metadata.filter.FieldNameMappingFilter"&gt;
+    &lt;params&gt;
+      &lt;excludeUnmapped&gt;true&lt;/excludeUnmapped&gt;
+      &lt;mappings&gt;
+        &lt;mapping from="X-TIKA:content" to="content_s"/&gt;
+        &lt;mapping from="Content-Length" to="length_i"/&gt;
+        &lt;mapping from="dc:creator" to="creators_ss"/&gt;
+        &lt;mapping from="dc:title" to="title_s"/&gt;
+        &lt;mapping from="Content-Type" to="mime_s"/&gt;
+        &lt;mapping from="X-TIKA:EXCEPTION:container_exception" to="tika_exception_s"/&gt;
+      &lt;/mappings&gt;
+    &lt;/params&gt;
+  &lt;/metadataFilter&gt;
+&lt;/metadataFilters&gt;</pre> 
+ </div>
+</div></li><li>Restart the server</li><li>Rerun the curl command and look at the output (<code>cat extracts/testPDF.pdf.json | jq --sort-keys</code>)</li></ol></li><li>Use <code>/async</code> handler file share to file share<ol><li><p class="p1"><code><span class="s1">curl -X POST -H &quot;Content-Type: application/json&quot; -d @configs/async-request-minimal.json <a class="external-link" href="http://localhost:9998/async" rel="nofollow">http://localhost:9998/async</a></span></code></p></li><li><p class="p1"><code><span class="s1">curl -X POST -H &quot;Content-Type: application/json&quot; -d @configs/async-request-full.json <a class="external-link" href="http://localhost:9998/async" rel="nofollow">http://localhost:9998/async</a></span></code></p></li></ol></li><li>Run the async processor via tika-app<ol><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesIterator</code> and <code>FileSystemPipesIterator</code> in <code>configs/tika-config-app.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default"> &nbsp; &nbsp;&lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/docs&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt; 
+  &lt;pipesIterator class="org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator"&gt;
+    &lt;params&gt;
+      &lt;fetcherName&gt;fsf&lt;/fetcherName&gt;
+      &lt;emitterName&gt;fse&lt;/emitterName&gt;
+      &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/pipesIterator&gt;</pre> 
+ </div>
+</div></li><li><p class="p1"><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/tika-config-app.xml</span></code></p></li></ol></li><li><p class="p1">Configure Solr/OpenSearch/ElasticSearch emitter and run <code>/pipes</code> handler</p></li></ol><p><br/></p><h3 id="ApacheTikaMeetups-SolrExample(filesharetoSolr)">Solr Example (fileshare to Solr)</h3><ol><li>From the solr directory<ol><li><code>bin/solr start</code></li><li><code><span style="color: rgb(23,43,77);">bin/solr create -c tika-example &amp;&amp; bin/solr config -c tika-example -p 8983 -action set-user-property -property update.autoCreateFields -value false</span></code></li></ol></li><li><p class="p1"><span class="s1">From the tika-pipes-tutorial directory</span></p><ol><li><p class="p1">Set the schema in Solr: <code><span class="s1">curl -F 'data=@configs/solr/solr-parent-child-schema.json' <a class="external-link" href="http://localhost:8983/solr/tika-example/schema" rel="nofollow">http://localhost:8983/solr/tika-example/schema</a></span></code></p></li><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesIterator</code> and <code>FileSystemFetcher</code> in <code>configs/solr/tika-config-solr.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default"> &nbsp;  &lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/docs&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+...
+  &lt;pipesIterator class="org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator"&gt;
+    &lt;params&gt;
+      &lt;fetcherName&gt;fsf&lt;/fetcherName&gt;
+      &lt;emitterName&gt;solr1&lt;/emitterName&gt;
+      &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/pipesIterator&gt;</pre> 
+ </div>
+</div></li><li><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/solr/tika-config-solr.xml</span></code></li></ol></li></ol><h3 id="ApacheTikaMeetups-OpenSearch/ElasticsearchExample(filesharetoOpenSearch/ElasticSearch)">OpenSearch/Elasticsearch Example (fileshare to OpenSearch/ElasticSearch)</h3><ol><li class="p1"><span class="s1">Start opensearch via Docker:</span><ol><li class="p1"><span class="s1">docker pull opensearchproject/opensearch:1.2.0</span></li><li class="p1">docker run <span class="nt" style="color: rgb(38,139,210);">-p</span><span style="font-family: SFMono-Medium , &quot;SF Mono&quot; , &quot;Segoe UI Mono&quot; , &quot;Roboto Mono&quot; , &quot;Ubuntu Mono&quot; , Menlo , Courier , monospace;letter-spacing: 0.0px;"> 9200:9200 </span><span class="nt" style="color: rgb(38,139,210);">-p</span><span style="font-family: SFMono-Medium , &quot;SF Mono&quot; , &quot;Segoe UI Mono&quot; , &quot;Roboto Mono&quot; , &quot;Ubuntu Mono&quot; , Menlo , Courier , monospace;letter-spacing: 0.0px;"> 9600:9600 </span><span class="nt" style="color: rgb(38,139,210);">-e</span><span style="font-family: SFMono-Medium , &quot;SF Mono&quot; , &quot;Segoe UI Mono&quot; , &quot;Roboto Mono&quot; , &quot;Ubuntu Mono&quot; , Menlo , Courier , monospace;letter-spacing: 0.0px;"> </span><span class="s2" style="color: rgb(42,161,152);">&quot;discovery.type=single-node&quot;</span><span style="font-family: SFMono-Medium , &quot;SF Mono&quot; , &quot;Segoe UI Mono&quot; , &quot;Roboto Mono&quot; , &quot;Ubuntu Mono&quot; , Menlo , Courier , monospace;letter-spacing: 0.0px;"> opensearchproject/opensearch:1.2.0</span></li></ol></li><li class="p1">Curl schema to opensearch: <p class="p1"><code><span class="s1">curl -k -T configs/opensearch/opensearch-parent-child-mappings.json -u admin:admin -H &quot;Content-Type:application/json&quot; <a class="external-link" href="https://localhost:9200/tika-test" rel="nofollow">https://localhost:9200/tika-test</a></span></code></p></li><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesIterator</code> a nd <code>FileSystemFetcher in</code> <code>configs/opensearch/tika-config-opensearch.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default"> &nbsp;  &lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/docs&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+....
+  &lt;pipesIterator class="org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator"&gt;
+    &lt;params&gt;
+      &lt;fetcherName&gt;fsf&lt;/fetcherName&gt;
+      &lt;emitterName&gt;ose&lt;/emitterName&gt;
+      &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20211202/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/pipesIterator&gt;</pre> 
+ </div>
+</div></li></ol><h4 id="ApacheTikaMeetups-Helpfulcommands">Helpful commands</h4><ol><li>delete a collection in solr: <p style="margin-left: 0.0px;"><code>bin/solr delete -c collection_name<br/></code></p></li><li>Show all docs in OpenSearch/Elasticsearch:<code> <a class="external-link" href="https://localhost:9200/tika-test/_search?pretty=true&amp;q=*:*" rel="nofollow">https://localhost:9200/tika-test/_search?pretty=true&amp;q=*:*</a></code></li></ol><p><br/></p><h2 id="ApacheTikaMeetups-3)Hands-ontika-pipesmoduleworkshop">3) Hands-on tika-pipes module workshop</h2><h3 id="ApacheTikaMeetups-January24,2022,Monday11amEST/4pmUTC">January 24, 2022, Monday 11am EST/4pm UTC</h3><p>The dial-in information is available to those who register via Meetup.</p><p>I'm currently working on this, and it should be ready by 10:30am EST/4:30pm UTC – a half hour before the start</p><p>Useful documentation: <a href="tika-pipes_181306665.html">tika-pipes</a></p><h4 id="ApacheTikaMeetups-Prerequisites:.2">Prerequisites:</h4><ol><li>java &gt;= 8</li><li>curl (or postman or something similar)</li><li>Unzip <a href="attachments/191336977/199532807.tgz" data-linked-resource-id="199532807" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="tika-pipes-tutorial-20220124.tgz" data-linked-resource-content-type="application/gzip" data-linked-resource-container-id="191336977" data-linked-resource-container-version="47">tika-pipes-tutorial-20220124.tgz</a></li><li>In <code>tika-pipes-tutorial-20220124/app-bin/</code>:<ol><li><a class="external-link" href="https://dlcdn.apache.org/tika/2.2.1/tika-app-2.2.1.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.2.1/tika-app-2.2.1.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.2.1/tika-emitter-fs-2.2.1.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.2.1/tika-emitter-fs-2.2.1.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.2.1/tika-emitter-solr-2.2.1.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.2.1/tika-emitter-solr-2.2.1.jar</a> <strong>OR </strong><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.2.1/tika-emitter-opensearch-2.2.1.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.2.1/tika-emitter-opensearch-2.2.1.jar</a></li><li><a class="external-link" href="https://ci-builds.apache.org/job/Tika/job/tika-main-jdk8/437/org.apache.tika$tika-core/artifact/org.apache.tika/tika-core/2.2.2-20220124.115541-55/tika-core-2.2.2-20220124.115541-55-test-jar-with-dependencies.jar" rel="nofollow">https://ci-builds.apache.org/job/Tika/job/tika-main-jdk8/437/org.apache.tika$tika-core/artifact/org.apache.tika/tika-core/2.2.2-20220124.115541-55/tika-core-2.2.2-20220124.115541-55-test-jar-with-dependencies.jar</a></li></ol></li><li><strong>Optional</strong>: In <code>tika-pipes-tutorial-20220124/server-bin/</code>:<ol><li>tika-server-standard jar: <a class="external-link" href="https://dlcdn.apache.org/tika/2.2.1/tika-server-standard-2.2.1.jar" rel="nofollow">https://dlcdn.apache.org/tika/2.2.1/tika-server-standard-2.2.1.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.2.1/tika-emitter-fs-2.2.1.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-fs/2.2.1/tika-emitter-fs-2.2.1.jar</a></li><li><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.2.1/tika-emitter-solr-2.2.1.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-solr/2.2.1/tika-emitter-solr-2.2.1.jar</a> <strong>OR </strong><a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.2.1/tika-emitter-opensearch-2.2.1.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-opensearch/2.2.1/tika-emitter-opensearch-2.2.1.jar</a></li><li><a class="external-link" href="https://ci-builds.apache.org/job/Tika/job/tika-main-jdk8/437/org.apache.tika$tika-core/artifact/org.apache.tika/tika-core/2.2.2-20220124.115541-55/tika-core-2.2.2-20220124.115541-55-test-jar-with-dependencies.jar" rel="nofollow">https://ci-builds.apache.org/job/Tika/job/tika-main-jdk8/437/org.apache.tika$tika-core/artifact/org.apache.tika/tika-core/2.2.2-20220124.115541-55/tika-core-2.2.2-20220124.115541-55-test-jar-with-dependencies.jar</a></li></ol></li><li>Installation of Apache Solr (~8.9.x) and/or OpenSearch (~1.x) and/or Elasticsearch (7.x)</li></ol><h3 id="ApacheTikaMeetups-A)FilesharetoFilesharewarmup">A) Fileshare to Fileshare warm up</h3><ol><li>Run the async processor via tika-app<ol><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesIterator</code> and <code>FileSystemPipesIterator</code> in <code>configs/tika-config-app-fs-to-fs.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default"> &nbsp; &nbsp;&lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt; 
+  &lt;pipesIterator class="org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator"&gt;
+    &lt;params&gt;
+      &lt;fetcherName&gt;fsf&lt;/fetcherName&gt;
+      &lt;emitterName&gt;fse&lt;/emitterName&gt;
+      &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/pipesIterator&gt;</pre> 
+ </div>
+</div></li><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesEmitter</code> in <code>configs/tika-config-app-fs-to-fs.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default">  &lt;emitters&gt;
+    &lt;emitter class="org.apache.tika.pipes.emitter.fs.FileSystemEmitter"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fse&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/extracts&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/emitter&gt;
+  &lt;/emitters&gt;</pre> 
+ </div>
+</div></li><li><p class="p1"><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/tika-config-app-fs-to-fs.xml</span></code></p></li></ol></li></ol><h3 id="ApacheTikaMeetups-B)OpenSearch/ElasticsearchParent-ChildExample(filesharetoOpenSearch/ElasticSearch)">B) OpenSearch/Elasticsearch Parent-Child Example (fileshare to OpenSearch/ElasticSearch)</h3><ol><li class="p1"><span class="s1">Start opensearch via Docker:</span><ol><li class="p1"><span class="s1">docker pull opensearchproject/opensearch:1.2.4</span></li><li class="p1">docker run<span> </span><span class="nt" style="color: rgb(38,139,210);">-p</span><span> 9200:9200 </span><span class="nt" style="color: rgb(38,139,210);">-p</span><span> 9600:9600 </span><span class="nt" style="color: rgb(38,139,210);">-e</span><span> </span><span class="s2" style="color: rgb(42,161,152);">&quot;discovery.type=single-node&quot;</span><span> opensearchproject/opensearch:1.2.4</span></li></ol></li><li class="p1">Curl schema to opensearch: <p class="p1"><code><span class="s1">curl -k -T configs/opensearch/opensearch-parent-child-mappings.json -u admin:admin -H &quot;Content-Type:application/json&quot;<span> </span><a class="external-link" href="https://localhost:9200/tika-test-parent-child" rel="nofollow">https://localhost:9200/tika-test-parent-child</a></span></code></p></li><li><p class="auto-cursor-target" style="text-align: left;">Configure the<span> </span><code>basePath</code><span> </span>element in<span> </span><code>FileSystemPipesIterator</code><span> and</span><span> </span><code>FileSystemFetcher in</code> <code>configs/opensearch/tika-config-fs-to-opensearch-parent-child.xml</code></p></li><li><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/opensearch/tika-config-fs-to-opensearch-parent-child.xml</span></code></li></ol><h3 id="ApacheTikaMeetups-B)SolrParent-ChildExample(filesharetoSolr)">B) Solr Parent-Child Example (fileshare to Solr)</h3><ol><li>From the solr directory<ol><li><code>bin/solr start</code></li><li><code><span style="color: rgb(23,43,77);">bin/solr create -c tika-example-parent-child &amp;&amp; bin/solr config -c tika-example-parent-child -p 8983 -action set-user-property -property update.autoCreateFields -value false</span></code></li></ol></li><li><p class="p1"><span class="s1">From the tika-pipes-tutorial directory</span></p><ol><li><p class="p1">Set the schema in Solr: <code><span class="s1">curl -F 'data=@configs/solr/solr-parent-child-schema.json' <a class="external-link" href="http://localhost:8983/solr/tika-example-parent-child/schema" rel="nofollow">http://localhost:8983/solr/tika-example-parent-child/schema</a></span></code></p></li><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesIterator</code> and <code>FileSystemFetcher</code> in <code>configs/solr/tika-config-solr-parent-child.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default"> &nbsp;  &lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+...
+  &lt;pipesIterator class="org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator"&gt;
+    &lt;params&gt;
+      &lt;fetcherName&gt;fsf&lt;/fetcherName&gt;
+      &lt;emitterName&gt;solr1&lt;/emitterName&gt;
+      &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/pipesIterator&gt;</pre> 
+ </div>
+</div></li><li><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/solr/tika-config-solr-parent-child.xml</span></code></li></ol></li></ol><h3 id="ApacheTikaMeetups-C)OpenSearch/ElasticsearchIndividualFilesExample(filesharetoOpenSearch/ElasticSearch)">C) OpenSearch/Elasticsearch Individual Files Example (fileshare to OpenSearch/ElasticSearch)</h3><ol><li class="p1"><span class="s1">Start opensearch via Docker:</span><ol><li class="p1"><span class="s1">docker pull opensearchproject/opensearch:1.2.4</span></li><li class="p1">docker run<span> </span><span class="nt" style="color: rgb(38,139,210);">-p</span><span> 9200:9200 </span><span class="nt" style="color: rgb(38,139,210);">-p</span><span> 9600:9600 </span><span class="nt" style="color: rgb(38,139,210);">-e</span><span> </span><span class="s2" style="color: rgb(42,161,152);">&quot;discovery.type=single-node&quot;</span><span> opensearchproject/opensearch:1.2.4</span></li></ol></li><li class="p1">Curl schema to opensearch: <p class="p1"><code><span class="s1">curl -k -T configs/opensearch/opensearch-indiv-files-mappings.json -u admin:admin -H &quot;Content-Type:application/json&quot;<span> </span><a class="external-link" href="https://localhost:9200/tika-test-indiv-files" rel="nofollow">https://localhost:9200/tika-test-indiv-files</a></span></code></p></li><li><p class="auto-cursor-target" style="text-align: left;">Configure the<span> </span><code>basePath</code><span> </span>element in<span> </span><code>FileSystemPipesIterator</code><span> and</span><span> </span><code>FileSystemFetcher in</code> <code>configs/opensearch/tika-config-fs-to-opensearch-indiv-files.xml</code></p></li><li><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/opensearch/tika-config-fs-to-opensearch-indiv-files.xml</span></code></li></ol><h3 id="ApacheTikaMeetups-C)SolrIndivFilesExample(filesharetoSolr)">C) Solr Indiv Files Example (fileshare to Solr)</h3><ol><li>From the solr directory<ol><li><code>bin/solr start</code></li><li><code><span style="color: rgb(23,43,77);">bin/solr create -c tika-example-indiv-files &amp;&amp; bin/solr config -c tika-example-indiv-files -p 8983 -action set-user-property -property update.autoCreateFields -value false</span></code></li></ol></li><li><p class="p1"><span class="s1">From the tika-pipes-tutorial directory</span></p><ol><li><p class="p1">Set the schema in Solr: <code><span class="s1">curl -F 'data=@configs/solr/solr-indiv-files-schema.json' <a class="external-link" href="http://localhost:8983/solr/tika-example-indiv-files/schema" rel="nofollow">http://localhost:8983/solr/tika-example-indiv-files/schema</a></span></code></p></li><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesIterator</code> and <code>FileSystemFetcher</code> in <code>configs/solr/tika-config-solr-indiv-files.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default"> &nbsp;  &lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+...
+  &lt;pipesIterator class="org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator"&gt;
+    &lt;params&gt;
+      &lt;fetcherName&gt;fsf&lt;/fetcherName&gt;
+      &lt;emitterName&gt;solr1&lt;/emitterName&gt;
+      &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/pipesIterator&gt;</pre> 
+ </div>
+</div></li><li><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/solr/tika-config-solr-indiv-files.xml</span></code></li></ol></li></ol><h3 id="ApacheTikaMeetups-D)OpenSearch/ElasticsearchLegacyExample(filesharetoOpenSearch/ElasticSearch)">D) OpenSearch/Elasticsearch Legacy Example (fileshare to OpenSearch/ElasticSearch)</h3><ol><li class="p1"><span class="s1">Start opensearch via Docker:</span><ol><li class="p1"><span class="s1">docker pull opensearchproject/opensearch:1.2.4</span></li><li class="p1">docker run<span> </span><span class="nt" style="color: rgb(38,139,210);">-p</span><span> 9200:9200 </span><span class="nt" style="color: rgb(38,139,210);">-p</span><span> 9600:9600 </span><span class="nt" style="color: rgb(38,139,210);">-e</span><span> </span><span class="s2" style="color: rgb(42,161,152);">&quot;discovery.type=single-node&quot;</span><span> opensearchproject/opensearch:1.2.4</span></li></ol></li><li class="p1">Curl schema to opensearch:<code> curl -k -T configs/opensearch/opensearch-legacy-mappings.json -u admin:admin -H &quot;Content-Type:application/json&quot; <a class="external-link" href="https://localhost:9200/tika-test-legacy" rel="nofollow">https://localhost:9200/tika-test-legacy</a></code><br/><p class="p1"><br/></p></li><li><p class="auto-cursor-target" style="text-align: left;">Configure the<span> </span><code>basePath</code><span> </span>element in<span> </span><code>FileSystemPipesIterator</code><span> and</span><span> </span><code>FileSystemFetcher in</code> <code>configs/opensearch/tika-config-fs-to-opensearch-legacy.xml</code></p></li><li><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/opensearch/tika-config-fs-to-opensearch-legacy.xml</span></code></li></ol><p><br/></p><h3 id="ApacheTikaMeetups-D)SolrLegacyExample(filesharetoSolr)">D) Solr Legacy Example (fileshare to Solr)</h3><ol><li>From the solr directory<ol><li><code>bin/solr start</code></li><li><code><span style="color: rgb(23,43,77);">bin/solr create -c tika-example-legacy &amp;&amp; bin/solr config -c tika-example-legacy -p 8983 -action set-user-property -property update.autoCreateFields -value false</span></code></li></ol></li><li><p class="p1"><span class="s1">From the tika-pipes-tutorial directory</span></p><ol><li><p class="p1">Set the schema in Solr: <code><span class="s1">curl -F 'data=@configs/solr/solr-legacy-schema.json' <a class="external-link" href="http://localhost:8983/solr/tika-example-legacy/schema" rel="nofollow">http://localhost:8983/solr/tika-example-legacy/schema</a></span></code></p></li><li><p class="auto-cursor-target">Configure the <code>basePath</code> element in <code>FileSystemPipesIterator</code> and <code>FileSystemFetcher</code> in <code>configs/solr/tika-config-solr-legacy.xml</code></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">FileSystemPipesIterator</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default"> &nbsp;  &lt;fetcher class="org.apache.tika.pipes.fetcher.fs.FileSystemFetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+...
+  &lt;pipesIterator class="org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator"&gt;
+    &lt;params&gt;
+      &lt;fetcherName&gt;fsf&lt;/fetcherName&gt;
+      &lt;emitterName&gt;solr1&lt;/emitterName&gt;
+      &lt;basePath&gt;/Users/allison/Desktop/tika-pipes-tutorial-20220124/docs&lt;/basePath&gt;
+    &lt;/params&gt;
+  &lt;/pipesIterator&gt;</pre> 
+ </div>
+</div></li><li><code><span class="s1">java -cp &quot;app-bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=configs/solr/tika-config-solr-legacy.xml</span></code></li></ol></li></ol><p><br/></p><p><br/></p>
+                    </div>
+
+                                                            <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/191336977/191337095.tgz">tika-eval-workshop-docs.tgz</a> (application/gzip)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/191336977/195726238.tgz">tika-eval-workshop-20211109.tgz</a> (application/gzip)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/191336977/191337118.tgz">tika-eval-workshop-20211109.tgz</a> (application/gzip)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/191336977/195729160.jar">tika-core-2.1.1-SNAPSHOT-test-jar-with-dependencies.jar</a> (application/java-archive)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/191336977/195729275.zip">tika-pipes-tutorial-20221202.zip</a> (application/zip)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/191336977/195729276.zip">tika-pipes-tutorial-20211202.zip</a> (application/zip)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/191336977/199532807.tgz">tika-pipes-tutorial-20220124.tgz</a> (application/gzip)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

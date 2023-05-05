@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : AddOns</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : AddOns
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on фев 12, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025319809 {padding: 0px;}
+div.rbtoc1683025319809 ul {margin-left: 0px;}
+div.rbtoc1683025319809 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025319809'>
+<ul class='toc-indentation'>
+<li><a href='#AddOns-Filters'>Filters</a>
+<ul class='toc-indentation'>
+<li><a href='#AddOns-UrlRewrite#'>UrlRewrite</a></li>
+<li><a href='#AddOns-SecurityFilter'>Security Filter</a></li>
+<li><a href='#AddOns-ApacheShiro'>Apache Shiro</a></li>
+<li><a href='#AddOns-SpringSecurity'>Spring Security</a></li>
+</ul>
+</li>
+<li><a href='#AddOns-Realms'>Realms</a>
+<ul class='toc-indentation'>
+<li><a href='#AddOns-OrientDBRealm'>OrientDB Realm</a></li>
+</ul>
+</li>
+<li><a href='#AddOns-PropertySource#'>PropertySource</a>
+<ul class='toc-indentation'>
+<li><a href='#AddOns-Vault'>PicketLink Vault</a></li>
+</ul>
+</li>
+<li><a href='#AddOns-WebApplications'>Web Applications</a>
+<ul class='toc-indentation'>
+<li><a href='#AddOns-PSIProbemanagerapplication'>PSI Probe manager application</a></li>
+</ul>
+</li>
+<li><a href='#AddOns-Logging'>Logging</a>
+<ul class='toc-indentation'>
+<li><a href='#AddOns-LoggingtoSyslog'>Logging to Syslog</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p>Here is a list of known useful third-party tools and add-ons that are not included in the main distribution.</p>
+
+<h1 id="AddOns-Filters">Filters</h1>
+
+<h2 id="AddOns-UrlRewrite#"><a class="unresolved" href="#">UrlRewrite</a></h2>
+
+<p><a class="external-link" href="http://www.tuckey.org/urlrewrite/" rel="nofollow">UrlRewriteFilter</a> by Paul Tuckey (also hosted on <a class="external-link" href="https://github.com/paultuckey/urlrewritefilter/wiki" rel="nofollow">GitHub</a>) is a Filter that performs URL rewriting and redirections, and other typical tasks, like setting request attributes, headers or cookies.</p>
+
+<p>It is similar to <code>mod_rewrite</code> module of Apache HTTPD server.</p>
+
+<h2 id="AddOns-SecurityFilter">Security Filter</h2>
+
+<p><a class="external-link" href="http://securityfilter.sourceforge.net/" rel="nofollow">SecurityFilter</a> is a Filter that mimics container managed security.</p>
+
+<h2 id="AddOns-ApacheShiro">Apache Shiro</h2>
+
+<p><a class="external-link" href="http://shiro.apache.org/" rel="nofollow">Apache Shiro</a> is a Java security framework that performs authentication, authorization, cryptography, and session management. It can be configured as a Filter to secure a web application.</p>
+
+<h2 id="AddOns-SpringSecurity">Spring Security</h2>
+
+<p><a class="external-link" href="http://projects.spring.io/spring-security/" rel="nofollow">Spring Security</a> is a powerful and highly customizable authentication and access-control framework. It is usually used with <a class="external-link" href="http://projects.spring.io/spring-framework/" rel="nofollow">Spring Framework</a>. In simple configuration it may be used as a filter to perform both authentication and authorization. It also can be used to perform authorization control at business methods of an application, and to implement domain object security.</p>
+
+<hr/>
+
+<h1 id="AddOns-Realms">Realms</h1>
+
+<h2 id="AddOns-OrientDBRealm">OrientDB Realm</h2>
+
+<ul>
+	<li><a href="https://cwiki.apache.org/confluence/display/TOMCAT/OrientDBRealm">OrientDBRealm</a> - Realms for Tomcat 6 and 7 that connect to an OrientDB
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<hr/>
+
+<h1 id="AddOns-PropertySource#"><a class="unresolved" href="#">PropertySource</a></h1>
+
+<h2 id="AddOns-Vault"><a class="unresolved" href="#">PicketLink</a> Vault</h2>
+
+<ul>
+	<li><a class="external-link" href="https://github.com/picketbox/tomcat-vault" rel="nofollow">PicketLink Vault extension for Apache Tomcat</a> - Provides a custom <code>PropertySource</code> that can be used with Tomcat. See <a class="unresolved" href="#">FAQ/Password</a>.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<hr/>
+
+<h1 id="AddOns-WebApplications">Web Applications</h1>
+
+<h2 id="AddOns-PSIProbemanagerapplication">PSI Probe manager application</h2>
+
+<p><a class="external-link" href="https://github.com/psi-probe/psi-probe/wiki" rel="nofollow">PSI Probe</a> is advanced manager and monitor web application for Apache Tomcat.</p>
+
+<p>(Historically, the name is a tribute to Lambda Probe project, which they continued as a fork. The original Lambda Probe project (www.lambdaprobe.org) closed more than 10 years ago (2006) and is not applicable to current versions of Tomcat).</p>
+
+<hr/>
+
+<h1 id="AddOns-Logging">Logging</h1>
+
+<h2 id="AddOns-LoggingtoSyslog">Logging to Syslog</h2>
+
+<ul>
+	<li>See a <a class="external-link" href="https://stackoverflow.com/questions/2311697/is-there-a-robust-java-util-logging-handler-implementation-of-syslog" rel="nofollow">StackOverflow question</a> and <a class="external-link" href="http://rusv.github.io/agafua-syslog/" rel="nofollow">Agafua-syslog</a> project (<a class="external-link" href="https://github.com/rusv/agafua-syslog/tree/master" rel="nofollow">GitHub</a>).
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : MockParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : MockParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Tim Allison</span> on апр 19, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="MockParser-MockParserhttps://cwiki.apache.org/confluence/pages/viewpage.action?pageId=113707915"><a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=113707915">MockParser</a></h1><h2 id="MockParser-Background">Background</h2><p>So, you've integrated Apache Tika into your framework, tried it on a couple of thousand files and all works well. Problem solved!</p><p>No.</p><p>In very, very rare cases, Tika can do some really bad things. We try to fix these problems when we can, but if history is any indication (e.g. <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1132" rel="nofollow">TIKA-1132</a> and <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2040" rel="nofollow">TIKA-2040</a> to name a few), if you are processing millions/billions of files from the wild, you'll need to defend against:</p><ol><li>Regular catchable exceptions</li><li>OutOfMemory errors which can put the jvm in an unreliable state</li><li>Permanent hangs (Tika can chew up massive amounts of resources and go <em>forever</em>)</li><li>Security vulnerabilities (e.g. <a class="external-link" href="http://seclists.org/bugtraq/2016/Nov/40" rel="nofollow">CVE-2016-6809</a> and <a class="external-link" href="http://seclists.org/oss-sec/2016/q2/413" rel="nofollow">CVE-2016-4434</a>)</li></ol><p>Please note that for 3., permanent hangs – you cannot terminate the Thread. Thread's <em>stop</em>, <em>suspend</em>, <em>destroy</em> sound like they'll do the trick, but they won't. <strong>You need to kill the entire process.</strong> See <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-456" rel="nofollow">TIKA-456</a>.</p><p>As of Tika 1.15, we added a <a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=113707915">MockParser</a> in the tika-core-tests.jar that will allow you to test your framework against items 1-3. Simply add that jar to your class path and then include a &lt;mock&gt; xml file in your set of test documents, and crash, crash away.</p><p>If you'd like to test 4., you can do that too! While you should be protected from an XXE (let us know if you're not!), you could create a deserialization attack...just create your own malicious Throwable class, add it to the classpath and send in a mock file that includes:</p><p><code>&lt;throw class=&quot;my.evil.DeserializationAttack&quot;&gt;bwahahaha&lt;/throw&gt;</code></p><h2 id="MockParser-Usage">Usage</h2><p>Below are several options for adding the dependency.</p><h3 id="MockParser-Includingthetika-core-testsdependencyinyourproject">Including the tika-core-tests dependency in your project</h3><pre>&lt;<span style="color: rgb(0,51,179);">dependency</span>&gt;<br/>  &lt;<span style="color: rgb(0,51,179);">groupId</span>&gt;${project.groupId}&lt;/<span style="color: rgb(0,51,179);">groupId</span>&gt;<br/>  &lt;<span style="color: rgb(0,51,179);">artifactId</span>&gt;tika-core&lt;/<span style="color: rgb(0,51,179);">artifactId</span>&gt;<br/>  &lt;<span style="color: rgb(0,51,179);">version</span>&gt;${project.version}&lt;/<span style="color: rgb(0,51,179);">version</span>&gt;<br/>  &lt;<span style="color: rgb(0,51,179);">type</span>&gt;test-jar&lt;/<span style="color: rgb(0,51,179);">type</span>&gt;<br/>  &lt;<span style="color: rgb(0,51,179);">scope</span>&gt;test&lt;/<span style="color: rgb(0,51,179);">scope</span>&gt;<br/>&lt;/<span style="color: rgb(0,51,179);">dependency</span>&gt;</pre><h3 id="MockParser-Tika-app">Tika-app</h3><p>Place the tika-app.jar and the tika-core-tests.jar in a &quot;bin&quot; directory.</p><p><code>java -cp &quot;bin/*&quot; org.apache.tika.TikaCLI mock_example.xml</code></p><h3 id="MockParser-Tika-server">Tika-server</h3><p>Place the tika-server.jar and the tika-core-tests.jar in a &quot;bin&quot; directory.</p><p><code>java -cp &quot;bin/*&quot; org.apache.tika.server.TikaServerCli</code></p><p>Then curl away:</p><p><code>curl -T mock_example.xml <a class="external-link" href="http://localhost:9998/rmeta/text" rel="nofollow">http://localhost:9998/rmeta/text</a></code></p><h3 id="MockParser-YourFramework">Your Framework</h3><p>Place the tika-core-tests.jar on your class path (NOT IN PRODUCTION!!!) and then add some mock.xml files to your batch of documents.</p><h3 id="MockParser-Mockoptions">Mock options</h3><p>See the mock example.xml file in tika-parsers/src/test/resources/test-documents/mock.</p><p>This shows all of the examples of what you can do.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+
+&lt;mock&gt;
+    &lt;!-- this file offers all of the options as documentation.
+    Parsing will stop at an IOException, of course
+    --&gt;
+
+    &lt;!-- action can be &quot;add&quot; or &quot;set&quot; --&gt;
+    &lt;metadata action=&quot;add&quot; name=&quot;author&quot;&gt;Nikolai Lobachevsky&lt;/metadata&gt;
+
+    &lt;!-- element is the name of the sax event to write, p=paragraph
+        if the element is not specified, the default is &lt;p&gt; --&gt;
+
+    &lt;write element=&quot;p&quot;&gt;some content&lt;/write&gt;
+
+    &lt;!-- write something to System.out --&gt;
+    &lt;print_out&gt;writing to System.out&lt;/print_out&gt;
+
+    &lt;!-- write something to System.err --&gt;
+    &lt;print_err&gt;writing to System.err&lt;/print_err&gt;
+
+    &lt;!-- hang
+        millis: how many milliseconds to pause.  The actual hang time will probably
+            be a bit longer than the value specified.        
+        heavy: whether or not the hang should do something computationally expensive.
+            If the value is false, this just does a Thread.sleep(millis).
+            This attribute is optional, with default of heavy=false.
+        pulse_millis: (required if &quot;heavy&quot; is true), how often to check to see
+            whether the thread was interrupted or that the total hang time exceeded the millis
+        interruptible: whether or not the parser will check to see if its thread
+            has been interrupted; this attribute is optional with default of true
+    --&gt;
+    &lt;hang millis=&quot;100&quot; heavy=&quot;true&quot; pulse_millis=&quot;10&quot; interruptible=&quot;true&quot; /&gt;
+
+    &lt;!-- As of Tika 1.27/2.0, we&#39;ve integrated FakeLoad (https://github.com/msigwart/fakeload)
+         which enables much more precision for resource consumption than does 
+         &quot;hang&quot;
+    
+         millis = milliseconds to run, cpu is an integer % of the cpu to peg 
+         and mb is the integer amount of memory to consume in megabytes --&gt;
+    &lt;fakeload millis=&quot;100&quot; cpu=&quot;10&quot; mb=&quot;10&quot;/&gt;
+    
+    &lt;!-- throw an exception or error; optionally include a message or not --&gt;
+    &lt;throw class=&quot;java.io.IOException&quot;&gt;not another IOException&lt;/throw&gt;
+    
+    &lt;!-- perform a genuine OutOfMemoryError --&gt;
+    &lt;oom/&gt;
+
+    &lt;!-- perform a system exit...what parser would do that?!  We had one once... --&gt;
+    &lt;system_exit/&gt;
+
+    &lt;!-- interrupt the thread --&gt;
+    &lt;thread_interrupt/&gt;
+
+    &lt;!-- print to stdout --&gt;
+    &lt;print_out&gt;some junk&lt;/print_out&gt;
+
+    &lt;!-- print to stderr --&gt;
+    &lt;print_err&gt;some junk&lt;/print_err&gt;
+
+&lt;/mock&gt;
+
+</pre>
+</div></div><h2 id="MockParser-References">References</h2><ol><li><a class="external-link" href="http://openpreservation.org/blog/2014/03/21/tika-ride-characterising-web-content-nanite/" rel="nofollow">Tika to Ride</a> 2. <a class="external-link" href="http://events.linuxfoundation.org/sites/events/files/slides/TikaEval_ACNA15_allison_herceg_v2.pdf" rel="nofollow">Evaluating Text Extraction</a></li></ol>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

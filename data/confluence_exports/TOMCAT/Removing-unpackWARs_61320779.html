@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Removing unpackWARs</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Removing unpackWARs
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on сен 25, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="line867"><span class="anchor"> </span>This page is intended to collect the reasons for and against the removal of this feature. The main purpose is to review use cases for using unpackWARs to ensure that a suitable alternative would be available if the feature was removed but all arguments for and against the feature are welcome. <span class="anchor"> </span><span class="anchor"> </span></p><h2 id="RemovingunpackWARs-Background">Background</h2><p class="line867">Prior to Tomcat 8 unpackWARs=false did not result in the web application running entirely from the WAR. For performance reasons, any JARs in WEB-INF/lib were unpacked to the work directory and accessed from there. Tomcat 8 introduced a new resources implementation that did not perform this unpacking. This had a significant (e.g. 3x to 10x slower application start) performance impact - <a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=57251" rel="nofollow">Bug 57251</a>. One of the options suggested in the discussion on that bug was the removal of the unpackWARs feature. <span class="anchor"> </span><span class="anchor"> </span></p><h2 id="RemovingunpackWARs-UseCasesforunpackWARs=false">Use Cases for unpackWARs=false</h2><h3 id="RemovingunpackWARs-SimplerdeploymentwhileTomcatisstopped">Simpler deployment while Tomcat is stopped</h3><p class="line874">If unpackWARs=true and a WAR is updated while Tomcat is stopped, Tomcat will not realise that the unpacked directory structure is from an older version of the WAR and will continue to use it. The current work-arounds are: <span class="anchor"> </span></p><ul><li>ensure that the exploded directory is deleted when the WAR is replaced <span class="anchor"> </span></li><li>deploy an exploded directory rather than a WAR <span class="anchor"> </span></li><li>use unpackWARs=false <span class="anchor"> </span><span class="anchor"> </span></li></ul><p class="line874">The last of these work-arounds is often viewed as the simplest and would not be available if the unpackWARs option was removed. Work is in progress to handle this use case within the existing automatic deployment code so WARs updated while Tomcat is shut-down result in the old directory being removed and the new WAR expanded in its place. <span class="anchor"> </span><span class="anchor"> </span></p><h3 id="RemovingunpackWARs-Security-makeappBaseread-only">Security - make appBase read-only</h3><p class="line874">Note that this discussions assumes a pre-existing application or Tomcat vulnerability that permits writing files into Tomcat's appBase. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line874">If the appBase is writeable by the Tomcat user and automatic deployment is enabled then it makes it easier for an attacker to deploy a malicious application by placing it in the appBase. Using unpackWARs=false and a read-only appBase defeats this particular attack vector in Tomcat 8. In Tomcat 7 the protection is provides is less than complete since the location where the JARs are copied to remains writable. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line874">The removal of unpackWARs would effectively require the deployment of web applications as exploded directories if the appBase was to remain read-only to the Tomcat user. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line867">An alternative to removing uppackWARs in this case might be to move the location of the unpacked WAR files: the appBase is still the *source* of all WAR data, but unpacked WAR files would be unpacked elsewhere -- such as into the work directory, etc. This would allow a read-only appBase and still allow unpackWARs=true. From a security point of view, the work directory itself is still vulnerable, but it would not be possible (given a pre-existing application or container vulnerability) for an attacker to deploy a completely new WAR onto the container. <span class="anchor"> </span><span class="anchor"> </span><span class="anchor"> </span></p><h3 id="RemovingunpackWARs-Actuallyread-onlyfilesystem">Actually read-only filesystem</h3><p class="line874">If the filesystem is actually read-only (or effectively so, where the effective Tomcat user has no file-write rights whatsoever), then unpackWARs must be false in order to deploy. If all JSPs are pre-compiled and logs are not written to disk, Tomcat should be able to run on a read-only filesystem. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line867">Deploying an exploded WAR file with pre-compiled JSPs would also meet this requirement. <span class="anchor"> </span><span class="anchor"> </span></p><h3 id="RemovingunpackWARs-Testing-configurationwithgetRealPath()returningnull">Testing - configuration with getRealPath() returning null</h3><p class="line867">When unpackWARs=&quot;false&quot; the SevletContext.getRealPath() method always returns null. This configuration can be used to test that a web application is programmed correctly and can function without relying on getRealPath() method. <span class="anchor"> </span><span class="anchor"> </span></p><h3 id="RemovingunpackWARs-Otherusecases">Other use cases</h3><p><span class="anchor"> </span><span class="anchor"> </span>Additional use cases welcome. Either directly on this page or via the users mailing list.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Common Native Build Environment</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Building-the-native-Tomcat-components-for-Windows_65872529.html">Building the native Tomcat components for Windows</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Common Native Build Environment
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on ноя 23, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The instructions on this page reference specific versions of numerous tools and dependencies. The versions referenced on this page are known to work. Other versions may work. Where information is available on the suitability (or otherwise) of alternative versions it is provided. All installations use default settings unless explicitly noted otherwise. Non-default settings in <em>italics</em> are provided for completeness but are believed not to impact on the success of the build process. Non-default settings in standard type may, or may not, impact the success of the build process. <span class="anchor"> </span> <span class="anchor"> </span></p><h2 id="CommonNativeBuildEnvironment-Hardware">Hardware</h2><p class="line874"><span class="anchor"> </span>Known working configurations include: <span class="anchor"> </span></p><ol><li>VMware virtual machine <span class="anchor"> </span><ul><li><p class="line891"><em>60GB HDD</em> <span class="anchor"> </span></p></li><li><p class="line891"><em>2 processors</em> <span class="anchor"> </span></p></li><li><p class="line891"><em>2GB RAM</em> <span class="anchor"> </span></p></li><li><p class="line891"><em>No USB</em> <span class="anchor"> </span></p></li><li><p class="line891"><em>No sound</em> <span class="anchor"> </span></p></li><li><p class="line891"><em>Bridged networking</em> <span class="anchor"> </span></p></li></ul></li><li>Others TBD <span class="anchor"> </span> <span class="anchor"> </span></li></ol><h2 id="CommonNativeBuildEnvironment-OperatingSystem">Operating System</h2><p class="line874">Known working configurations include: <span class="anchor"> </span></p><ol><li>Windows 10<ul><li><p class="line891"><em>Static IP address</em> <span class="anchor"> </span></p></li><li><p class="line891"><em>1600x1200 screen resolution</em> <span class="anchor"> </span></p></li><li><p class="line891"><em>UTC timezone</em> <span class="anchor"> </span></p></li><li>Install VMware Tools <span class="anchor"> </span></li><li><p class="line891"><em>Apply all updates</em> <span class="anchor"> </span></p></li></ul></li><li>Others TBD <span class="anchor"> </span> <span class="anchor"> </span></li></ol><h2 id="CommonNativeBuildEnvironment-Buildtools">Build tools</h2><ol><li>Git for windows (<a class="external-link" href="http://git-scm.com/" rel="nofollow">http://git-scm.com/</a>) 2.24.0.windows.2<span class="anchor"><br/></span></li><li><span class="anchor">Mladen's Custom Microsoft Compiler Toolkit Compilation<br/>You can either download a binary distribution of CMSC from github or build one from source using the following steps  </span><ul><li><p class="line891">Checkout <a class="external-link" href="https://github.com/mturk/cmsc" rel="nofollow">https://github.com/mturk/cmsc</a> (I used 132baba36d88279e7a9950e7e5e8456ce757b78a, latest tag should also be fine)</p></li><li><a class="external-link" href="https://download.cnet.com/Windows-Server-2003-R2-Platform-SDK-ISO-Download/3000-10248_4-10731094.html" rel="nofollow">Download</a> (sha256: 3d2f97178e72cabe0a972b14c4d0aae80f7ed99ec73be9970cc95f42a31bfdb6) and install the Windows Server 2003 R2 Platform SDK<br/>Note: This isn't the official Microsoft download. It appears it is only available via MSDN subscription at the moment. The hash matches the version from MSDN.<br/><ul><li>no documentation</li><li>No samples</li></ul></li><li><a class="external-link" href="https://www.microsoft.com/en-us/download/details.aspx?id=8442" rel="nofollow">Download</a> and install the Windows 7 SDK<ul><li>no documentation <span class="anchor"> </span></li><li>No samples <span class="anchor"> </span></li><li>Complete set of developer tools <span class="anchor"> </span></li></ul></li><li><a class="external-link" href="https://www.microsoft.com/en-us/download/details.aspx?id=11800" rel="nofollow">Download</a> and install the Windows DDK<span class="anchor"> 7.1.0</span><ul><li>Build environments <span class="anchor"> </span></li><li>Tools <span class="anchor"> </span></li></ul></li><li><p class="line862">Compile as per &lt;cmsc-root&gt;/tools/README.txt <span class="anchor"> </span></p></li><li><p class="line862">Install Perl as per &lt;cmsc-root&gt;/tools/README.txt <span class="anchor"> </span></p></li></ul></li><li>7-Zip 19.00 64-bit <span class="anchor"> </span></li><li>Adopt OpenJDK jdk8u242-b08 64-bit <span class="anchor"> </span><span class="anchor"> </span></li></ol><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

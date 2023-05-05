@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Release Process for tika-helm</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Release Process for tika-helm
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lewis John McGibbney</span>, last modified on мар 10, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429470 {padding: 0px;}
+div.rbtoc1683040429470 ul {margin-left: 0px;}
+div.rbtoc1683040429470 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429470'>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikahelm-Audience'>Audience</a></li>
+<li><a href='#ReleaseProcessfortikahelm-Questions/Troubleshooting'>Questions/Troubleshooting</a></li>
+<li><a href='#ReleaseProcessfortikahelm-Prerequisites'>Prerequisites</a>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikahelm-ApacheJFrogArtifactoryRepositoryandAccess'>Apache JFrog Artifactory Repository and Access</a></li>
+<li><a href='#ReleaseProcessfortikahelm-tika-helmrepo'>tika-helm repo</a></li>
+</ul>
+</li>
+<li><a href='#ReleaseProcessfortikahelm-GeneralInformation'>General Information</a>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikahelm-tika-dockerImageTypes'>tika-docker Image Types</a></li>
+</ul>
+</li>
+<li><a href='#ReleaseProcessfortikahelm-ReleaseProcess'>Release Process</a>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikahelm-CreatingGitRelease'>Creating Git Release</a></li>
+<li><a href='#ReleaseProcessfortikahelm-PromotingReleasetotheApacheJFrogArtifactoryRepository'>Promoting Release to the Apache JFrog Artifactory Repository</a>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikahelm-Prerequisites.1'>Prerequisites</a></li>
+<li><a href='#ReleaseProcessfortikahelm-PromotingtheRelease'>Promoting the Release</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#ReleaseProcessfortikahelm-Conclusion'>Conclusion</a></li>
+</ul>
+</div></p><h1 id="ReleaseProcessfortikahelm-Audience">Audience</h1><p>Apache Tika Committer or PMC who want to release <a class="external-link" href="https://github.com/apache/tika-helm" rel="nofollow">tika-helm</a>.</p><h1 id="ReleaseProcessfortikahelm-Questions/Troubleshooting">Questions/Troubleshooting</h1><p>Reach out to lewismc[at]apache[dot]org and also on dev@tika mailing list.</p><h1 id="ReleaseProcessfortikahelm-Prerequisites">Prerequisites</h1><h2 id="ReleaseProcessfortikahelm-ApacheJFrogArtifactoryRepositoryandAccess">Apache JFrog Artifactory Repository and Access</h2><p>You need permissions to release the Apache Tika Helm chart to the Apache Infra Artifactory instance. This is controlled by the ASF Infra team and can be requested through a <a class="external-link" href="https://issues.apache.org/jira/browse/INFRA" rel="nofollow">INFRA JIRA ticket</a>. Make sure to tag the ticket with the <em><strong>Artifactory</strong></em> label.</p><h2 id="ReleaseProcessfortikahelm-tika-helmrepo">tika-helm repo</h2><p>This <a class="external-link" href="https://github.com/apache/tika-helm" rel="nofollow">Github repository</a> contains the Chart which needs to be configured for minimal and full Tika Docker images. If you are an Apache Tika Committer or PMC you should already have access to this repository. If not, then you will want to check over on the dev@tika mailing list.</p><h1 id="ReleaseProcessfortikahelm-GeneralInformation">General Information</h1><h2 id="ReleaseProcessfortikahelm-tika-dockerImageTypes">tika-docker Image Types</h2><p>There are two image types:</p><ul><li>Minimal - containing just Apache Tika and it's base dependencies (i.e. Java)</li><li>Full - containing Apache Tika, it's dependencies, as well as Tesseract and GDAL.</li></ul><p>This is to say that for every stable release of the Apache Tika source binaries, two (minimal and full) Docker images are released.</p><h1 id="ReleaseProcessfortikahelm-ReleaseProcess">Release Process</h1><h2 id="ReleaseProcessfortikahelm-CreatingGitRelease">Creating Git Release</h2><p>Based on the above general information, we therefore make two releases of the corresponding Helm Chart. In order to do this, we need to update 3 lines of code, namely</p><ul><li><a class="external-link" href="https://github.com/apache/tika-helm/blob/main/Chart.yaml#L22" rel="nofollow">https://github.com/apache/tika-helm/blob/main/Chart.yaml#L22</a></li><li><a class="external-link" href="https://github.com/apache/tika-helm/blob/main/Chart.yaml#L23" rel="nofollow">https://github.com/apache/tika-helm/blob/main/Chart.yaml#L23</a></li><li><a class="external-link" href="https://github.com/apache/tika-helm/blob/main/values.yaml#L26" rel="nofollow">https://github.com/apache/tika-helm/blob/main/values.yaml#L26</a></li></ul><p><em><strong>appVersion </strong></em>needs to match the corresponding upstream tika-docker release tag.</p><p>Once you have examined the changes, you can commit them to <em><strong>main</strong> </em>branch. Then tag them from there and push the tag to the tika-helm repository.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Tag and pushb to tika-helm origin</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: Default" data-theme="Default">$ git add -A
+$ git commit -m &quot;Release branch for tika-helm ${target_version}&quot;
+$ git push origin main
+$ git tag -a ${target_version} -m &quot;Release tika-helm ${target_version}&quot;
+$ git push --tags</pre>
+</div></div><p>Once this is done, you can <a class="external-link" href="https://github.com/apache/tika-helm/tags" rel="nofollow">navigate to the <em><strong>${target_version}</strong></em> tag you just pushed </a>and 'release' it (by clicking on the three dots button on the right hand side).</p><h2 id="ReleaseProcessfortikahelm-PromotingReleasetotheApacheJFrogArtifactoryRepository">Promoting Release to the Apache JFrog Artifactory Repository</h2><p><strong>N.B.</strong> You should still be in the <em><strong>${target_version}</strong> </em>branch</p><h3 id="ReleaseProcessfortikahelm-Prerequisites.1">Prerequisites</h3><ul><li><a class="external-link" href="https://helm.sh/docs/intro/install/" rel="nofollow">Helm</a></li><li><a class="external-link" href="https://github.com/belitre/helm-push-artifactory-plugin" rel="nofollow">helm-push-artifactory-plugin</a> (if you are using Helm v3 (recommended) then add <code>--version 1.0.2</code>), for example</li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>Install prerequisites</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: Default" data-theme="Default"># Assuming Mac
+$ brew install helm # Which will install Helm &gt;=3.X
+$ helm plugin install https://github.com/belitre/helm-push-artifactory-plugin --version 1.0.2 # Which is required for &gt;= Helm 3.X
+...
+Installing plugin for Helm v3...
+Downloading and installing helm-push-artifactory v1.0.2 ...
+https://github.com/belitre/helm-push-artifactory-plugin/releases/download/v1.0.2/helm-push-artifactory-v1.0.2-darwin-amd64.tar.gz
+Installed plugin: push-artifactory</pre>
+</div></div><h3 class="auto-cursor-target" id="ReleaseProcessfortikahelm-PromotingtheRelease">Promoting the Release</h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: Default" data-theme="Default"># Add the tika Helm repository
+$ helm repo add tika https://apache.jfrog.io/artifactory/tika
+
+# Push the tika helm artifact to Artifactory
+$ helm push-artifactory . https://apache.jfrog.io/artifactory/tika --username &#39;${username}&#39; --password &quot;${password}&quot;
+...
+Pushing tika-1.26-full.tgz to https://apache.jfrog.io/artifactory/tika/tika/tika-1.26-full.tgz...
+Done.
+Reindex helm repository tika...</pre>
+</div></div><h1 class="auto-cursor-target" id="ReleaseProcessfortikahelm-Conclusion">Conclusion</h1><p>Congratulations, by this stage you've just released the tika-helm Helm Chart. Go ahead and make some release announcements... probably on user@ and dev@ tika.apache.org mailing list.</p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

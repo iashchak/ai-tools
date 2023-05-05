@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaServer</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaServer
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on фев 15, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaServer-IntroductiontoTikaserver">Introduction to Tika server</h1><p>This page is documentation on accessing Tika as a RESTful API via the Tika server (tika-server module).  See <a href="TikaServer-in-Tika-2.x_191334866.html">TikaServer in Tika 2.x</a> for details in changes in <code>tika-server</code> when moving from 1.x to 2.x. See <a href="https://cwiki.apache.org/confluence/display/TIKA/TikaServerEndpointsCompared" rel="nofollow">TikaServerEndpointsCompared</a> for a summary of differences across the endpoints.</p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040428563 {padding: 0px;}
+div.rbtoc1683040428563 ul {margin-left: 0px;}
+div.rbtoc1683040428563 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040428563'>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-IntroductiontoTikaserver'>Introduction to Tika server</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-InstallationofTikaServer'>Installation of Tika Server</a></li>
+<li><a href='#TikaServer-Buildingfromsource'>Building from source</a></li>
+<li><a href='#TikaServer-RunningtheTikaServerasaJarfile'>Running the Tika Server as a Jar file</a></li>
+<li><a href='#TikaServer-UsingprebuiltDockerimage'>Using prebuilt Docker image</a></li>
+<li><a href='#TikaServer-RunningTikaServerasUnixService'>Running Tika Server as Unix Service</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-ConfiguringTikaserverin2.x'>Configuring Tika server in 2.x</a></li>
+<li><a href='#TikaServer-TikaServerServices'>Tika Server Services</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-MetadataResource'>Metadata Resource</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-MultipartSupport'>Multipart Support</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-TikaResource'>Tika Resource</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-GetHELLOmessageback'>Get HELLO message back</a></li>
+<li><a href='#TikaServer-GettheTextofaDocument'>Get the Text of a Document</a></li>
+<li><a href='#TikaServer-MultipartSupport.1'>Multipart Support</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-DetectorResource'>Detector Resource</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-PUTanRTFfileandgetbackRTF'>PUT an RTF file and get back RTF</a></li>
+<li><a href='#TikaServer-PUTaCSVfilewithoutfilenamehintandgetbacktext/plain'>PUT a CSV file without filename hint and get back text/plain</a></li>
+<li><a href='#TikaServer-PUTaCSVfilewithfilenamehintandgetbacktext/csv'>PUT a CSV file with filename hint and get back text/csv</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-LanguageResource'>Language Resource</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-PUTaTXTfilewithEnglishThisisEnglish!andgetbacken'>PUT a TXT file with English This is English! and get back en</a></li>
+<li><a href='#TikaServer-PUTaTXTfilewithFrenchcommeçicommeçaandgetbackfr'>PUT a TXT file with French comme çi comme ça and get back fr</a></li>
+<li><a href='#TikaServer-PUTastringwithEnglishThisisEnglish!andgetbacken'>PUT a string with English This is English! and get back en</a></li>
+<li><a href='#TikaServer-PUTastringwithFrenchcommeçicommeçaandgetbackfr'>PUT a string with French comme çi comme ça and get back fr</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-TranslateResource'>Translate Resource</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-PUTaTXTfilenamedsentenceswithSpanishmefaltaprácticaenEspañolandgetbacktheEnglishtranslationusingLingo24'>PUT a TXT file named sentences with Spanish me falta práctica en Español and get back the English translation using Lingo24</a></li>
+<li><a href='#TikaServer-PUTaTXTfilenamedsentenceswithSpanishmefaltaprácticaenEspañolandgetbacktheEnglishtranslationusingMicrosoft'>PUT a TXT file named sentences with Spanish me falta práctica en Español and get back the English translation using Microsoft</a></li>
+<li><a href='#TikaServer-PUTaTXTfilenamedsentenceswithSpanishmefaltaprácticaenEspañolandgetbacktheEnglishtranslationusingGoogle'>PUT a TXT file named sentences with Spanish me falta práctica en Español and get back the English translation using Google</a></li>
+<li><a href='#TikaServer-PUTaTXTfilenamedsentences2withFrenchcommeçicommeçaandgetbacktheEnglishtranslationusingGoogleauto-detectingthelanguage'>PUT a TXT file named sentences2 with French comme çi comme ça and get back the English translation using Google auto-detecting the language</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-RecursiveMetadataandContent'>Recursive Metadata and Content</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-MultipartSupport.2'>Multipart Support</a></li>
+<li><a href='#TikaServer-SpecifyingLimits'>Specifying Limits</a></li>
+<li><a href='#TikaServer-FilteringMetadataKeys'>Filtering Metadata Keys</a></li>
+<li><a href='#TikaServer-FilteringMetadataObjects'>Filtering Metadata Objects</a></li>
+<li><a href='#TikaServer-Integrationwithtika-eval'>Integration with tika-eval</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-UnpackResource'>Unpack Resource</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-PUTzipfileandgetbackmetfilezip'>PUT zip file and get back met file zip</a></li>
+<li><a href='#TikaServer-PUTdocfileandgetbackmetfiletar'>PUT doc file and get back met file tar</a></li>
+<li><a href='#TikaServer-PUTdocfileandgetbackthecontentandmetadata'>PUT doc file and get back the content and metadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#TikaServer-InformationServices'>Information Services</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-AvailableEndpoints'>Available Endpoints</a></li>
+<li><a href='#TikaServer-DefinedMimeTypes'>Defined Mime Types</a></li>
+<li><a href='#TikaServer-AvailableDetectors'>Available Detectors</a></li>
+<li><a href='#TikaServer-AvailableParsers'>Available Parsers</a></li>
+<li><a href='#TikaServer-SpecifyingaURLInsteadofPuttingBytesinTika2.x'>Specifying a URL Instead of Putting Bytes in Tika 2.x</a></li>
+<li><a href='#TikaServer-SpecifyingaURLInsteadofPuttingBytesinTika1.x'>Specifying a URL Instead of Putting Bytes in Tika 1.x</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-Transfer-LayerCompression'>Transfer-Layer Compression</a></li>
+<li><a href='#TikaServer-MakingTikaServerRobusttoOOMs,InfiniteLoopsandMemoryLeaksinTika2.x'>Making Tika Server Robust to OOMs, Infinite Loops and Memory Leaks in Tika 2.x</a></li>
+<li><a href='#TikaServer-MakingTikaServerRobusttoOOMs,InfiniteLoopsandMemoryLeaksinTika1.x'>Making Tika Server Robust to OOMs, Infinite Loops and Memory Leaks in Tika 1.x</a></li>
+<li><a href='#TikaServer-Logging'>Logging</a></li>
+<li><a href='#TikaServer-Monitoring'>Monitoring</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaServer-ServerStatus'>ServerStatus</a></li>
+</ul>
+</li>
+<li><a href='#TikaServer-SSL(Beta)'>SSL (Beta)</a></li>
+<li><a href='#TikaServer-ConfiguringParsersatParsetime/perfile'>Configuring Parsers at Parse time/per file</a></li>
+<li><a href='#TikaServer-Architecture'>Architecture</a></li>
+</ul>
+</div></p><h2 id="TikaServer-InstallationofTikaServer">Installation of Tika Server</h2><p>The current installation process for Tika server post 1.23 and prior to 1.24 is a bit in flux.  Read on below for some options:</p><h2 id="TikaServer-Buildingfromsource">Building from source</h2><p>If you need to customize Tika server in some way, and/or need the very latest version to try out a fix, then to build from source:</p><ol><li>Checkout the source from SVN as detailed on the <a class="external-link" href="http://tika.apache.org/contribute.html" rel="nofollow">Apache Tika contributions page</a> or retrieve the latest code from <a class="external-link" href="https://github.com/apache/tika" rel="nofollow">Github</a>,</li><li>Build source using Maven</li><li>Run the Apache Tika JAXRS server runnable jar.</li></ol><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>git clone https://github.com/apache/tika.git tika-trunk
+cd ./tika-trunk/
+mvn install
+cd ./tika-server/target/
+java -jar tika-server-x.x.jar
+</pre>
+</div></div><p>Remember to replace x.x with the version you have built.</p><h2 id="TikaServer-RunningtheTikaServerasaJarfile">Running the Tika Server as a Jar file</h2><p>The Tika Server binary is a standalone runnable jar.  Download the latest stable release binary from the <a class="external-link" href="http://tika.apache.org/download.html" rel="nofollow">Apache Tika downloads page</a>, via your favorite local mirror. You want the <em>tika-server-1.x.jar</em> file, e.g. <em>tika-server-1.24.jar</em></p><p>You can start it by calling java with the <code>-jar</code> option, eg something like <code>java -jar tika-server-1.24.jar</code></p><p>You will then see a message such as the following:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ java -jar tika-server-1.24-SNAPSHOT.jar
+19-Jan-2015 14:23:36 org.apache.tika.server.TikaServerCli main
+INFO: Starting Apache Tika 1.8-SNAPSHOT server
+19-Jan-2015 14:23:36 org.apache.cxf.endpoint.ServerImpl initDestination
+INFO: Setting the server&#39;s publish address to be http://localhost:9998/
+19-Jan-2015 14:23:36 org.slf4j.impl.JCLLoggerAdapter info
+INFO: jetty-8.y.z-SNAPSHOT
+19-Jan-2015 14:23:36 org.slf4j.impl.JCLLoggerAdapter info
+INFO: Started SelectChannelConnector@localhost:9998
+19-Jan-2015 14:23:36 org.apache.tika.server.TikaServerCli main
+INFO: Started
+</pre>
+</div></div><p>Which lets you know that it started correctly.</p><p>You can specify additional information to change the host name and port number:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -jar tika-server-x.x.jar --host=intranet.local --port=12345
+</pre>
+</div></div><p>Once the server is running, you can visit the server's URL in your browser (eg <code><a class="external-link" href="http://localhost:9998/" rel="nofollow">http://localhost:9998/</a></code>), and the basic welcome page will confirm that the Server is running, and give links to the various endpoints available.</p><p>Below is some basic documentation on how to interact with the services using cURL and HTTP.</p><h2 id="TikaServer-UsingprebuiltDockerimage">Using prebuilt Docker image</h2><p>Official image for Tika can be found at <a class="external-link" href="https://hub.docker.com/r/apache/tika" rel="nofollow">DockerHub</a>.  You can download and start it with:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>docker run -d -p 9998:9998 apache/tika:&lt;version&gt;</pre>
+</div></div><p>Full set of documentation can be found at <a class="external-link" href="https://github.com/apache/tika-docker" rel="nofollow">Github</a>.</p><h2 id="TikaServer-RunningTikaServerasUnixService">Running Tika Server as Unix Service</h2><p>Shipping in Tika 1.24 is a new Service Installation Script that lets you install Tika server as a service on Linux.  This script was heavily influenced by the <a class="external-link" href="https://lucene.apache.org/solr/guide/8_4/taking-solr-to-production.html#taking-solr-to-production" rel="nofollow">Apache Solr</a> project's script, so read up on that documentation if you want to customize the script.</p><p>Currently the script only supports CentOS, Debian, Red Hat, Suse and Ubuntu Linxu distributions. Before running the script, you need to determine a few parameters about your setup. Specifically, you need to decide where to install Tika server and which system user should be the owner of the Tika files and process</p><p>To run the scripts, you'll need the 1.24 (or later) <a class="external-link" href="https://www.apache.org/dyn/closer.cgi/tika/tika-server-1.24-bin.tgz" rel="nofollow">Tika distribution</a>.  It will have a <code>-bin</code> suffix e.g. <code>tika-server-1.24-bin.tgz</code>.  Extract the installation script from the distribution via:</p><p><br/></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>tar xzf tika-server-1.24-bin.tgz tika-server-1.24-bin/bin/install_tika_service.sh --strip-components=2</pre>
+</div></div><p>This will extract the install_tika_service.sh script from the archive into the current directory.  If installing on Red Hat, please make sure <strong>lsof</strong> is installed before running the Tika installation script (<code>sudo yum install lsof</code>). The installation script must be run as root:</p><pre class="rouge highlight"><code class="language-bash">sudo bash ./install_tika_service.sh tika-server-1.24-bin.tgz</code></pre><p>By default, the script extracts the distribution archive into <code>/opt/tika</code>, configures Tika to write files into <code>/var/tika</code>, and runs Tika as the <code>tika</code> user on the default port. Consequently, the following command produces the same result as the previous command:</p><pre class="rouge highlight"><code class="language-bash">sudo bash ./install_tika_service.sh tika-server-1.24-bin -i /opt -d /var/tika -u tika -s tika -p 9998</code></pre><p>You can customize the service name, installation directories, port, and owner using options passed to the installation script. To see available options, simply do:</p><pre class="rouge highlight"><br/></pre><pre class="highlight"><code>sudo bash ./install_tika_service.sh -help</code></pre><pre class="rouge highlight"><br/></pre><p>Once the script completes, Tika server will be installed as a service and running in the background on your server (on port 9998). To verify, you can do:</p><pre class="rouge highlight"><br/></pre><pre class="highlight"><code>sudo service tika status</code></pre><pre class="rouge highlight"><br/></pre><p>Your specific customization to Tika server setup are stored in the<code> /etc/init.d/tika</code> file.</p><h1 id="TikaServer-ConfiguringTikaserverin2.x">Configuring Tika server in 2.x</h1><p>See <a href="TikaServer-in-Tika-2.x_191334866.html">TikaServer in Tika 2.x</a> for the details of configuring tika-server in 2.x.</p><h1 id="TikaServer-TikaServerServices">Tika Server Services</h1><p>All services that take files use HTTP &quot;PUT&quot; requests. When &quot;PUT&quot; is used, the original file must be sent in request body without any additional encoding (do not use multipart/form-data or other containers).</p><p>Additionally, <a class="unresolved" href="#">TikaResource</a>, Metadata and <a href="RecursiveMetadata_109454069.html">RecursiveMetadata</a> Services accept POST multipart/form-data requests, where the original file is sent as a single attachment.</p><p>Information services (e.g. defined mimetypes, defined parsers etc) work with HTML &quot;GET&quot; requests.</p><p>You may optionally specify content type in &quot;Content-Type&quot; header. If you do not specify mime type, Tika will use its detectors to guess it.</p><p>You may specify additional identifier in URL after resource name, like &quot;/tika/my-file-i-sent-to-tika-resource&quot; for &quot;/tika&quot; resource. Tikaserver uses this name only for logging, so you may put there file name, UUID or any other identifier (do not forget to url-encode any special characters).</p><p>Resources may return following HTTP codes:</p><ul><li>200 Ok - request completed sucessfully</li><li>204 No content - request completed sucessfully, result is empty</li><li>422 Unprocessable Entity - Unsupported mime-type, encrypted document &amp; etc</li><li>500 Error - Error while processing document</li></ul><p><strong>NOTE:</strong> Please see <a href="https://cwiki.apache.org/confluence/display/TIKA/TikaServerEndpointsCompared" rel="nofollow">TikaServerEndpointsCompared</a> for a quick comparison of the features of some of these endpoints.</p><h2 id="TikaServer-MetadataResource">Metadata Resource</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/meta
+</pre>
+</div></div><p>HTTP PUTs a document to the /meta service and you get back &quot;text/csv&quot; of the metadata.</p><p>Some Example calls with cURL:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-ascii @zipcode.csv http://localhost:9998/meta --header &quot;Content-Type: text/csv&quot;
+$ curl -T price.xls http://localhost:9998/meta
+</pre>
+</div></div><p>Returns:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&quot;Content-Encoding&quot;,&quot;ISO-8859-2&quot;
+&quot;Content-Type&quot;,&quot;text/plain&quot;
+</pre>
+</div></div><p>Get metadata as JSON:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T test_recursive_embedded.docx http://localhost:9998/meta --header &quot;Accept: application/json&quot;
+</pre>
+</div></div><p>Or XMP:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T test_recursive_embedded.docx http://localhost:9998/meta --header &quot;Accept: application/rdf+xml&quot;
+</pre>
+</div></div><p>Get specific metadata key's value as simple text string:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T test_recursive_embedded.docx http://localhost:9998/meta/Content-Type --header &quot;Accept: text/plain&quot;
+</pre>
+</div></div><p>Returns:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>application/vnd.openxmlformats-officedocument.wordprocessingml.document
+</pre>
+</div></div><p>Get specific metadata key's value(s) as CSV:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T test_recursive_embedded.docx http://localhost:9998/meta/Content-Type --header &quot;Accept: text/csv&quot;
+</pre>
+</div></div><p>Or JSON:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T test_recursive_embedded.docx http://localhost:9998/meta/Content-Type --header &quot;Accept: application/json&quot;
+</pre>
+</div></div><p>Or XMP:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T test_recursive_embedded.docx http://localhost:9998/meta/Content-Type --header &quot;Accept: application/rdf+xml&quot;
+</pre>
+</div></div><p><strong>Note: when requesting specific metadata keys value(s) in XMP, make sure to request the XMP name, e.g. &quot;dc:creator&quot; vs. &quot;Author&quot;</strong></p><h3 id="TikaServer-MultipartSupport">Multipart Support</h3><p>Metadata Resource also accepts the files as multipart/form-data attachments with POST. Posting files as multipart attachments may be beneficial in cases when the files are too big for them to be PUT directly in the request body. Note that Tika JAX-RS server makes the best effort at storing some of the multipart content to the disk while still supporting the streaming:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -F upload=@price.xls URL http://localhost:9998/meta/form
+</pre>
+</div></div><p>Note that the address has an extra &quot;/form&quot; path segment.</p><h2 id="TikaServer-TikaResource">Tika Resource</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/tika
+</pre>
+</div></div><p>HTTP PUTs a document to the /tika service and you get back the extracted text in text, html or &quot;body&quot; format (see below). See also the <code>/rmeta</code>  endpoint for text and metadata of embedded objects.  </p><p>HTTP GET prints a greeting stating the server is up.</p><p>Some Example calls with cURL:</p><h3 id="TikaServer-GetHELLOmessageback">Get HELLO message back</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X GET http://localhost:9998/tika
+This is Tika Server. Please PUT
+</pre>
+</div></div><h3 id="TikaServer-GettheTextofaDocument">Get the Text of a Document</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @GeoSPARQL.pdf http://localhost:9998/tika --header &quot;Content-type: application/pdf&quot;
+$ curl -T price.xls http://localhost:9998/tika --header &quot;Accept: text/html&quot;
+$ curl -T price.xls http://localhost:9998/tika --header &quot;Accept: text/plain&quot;
+</pre>
+</div></div><p>Use the Boilerpipe handler (equivalent to tika-app's <code>--text-main</code>) with text output:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T price.xls http://localhost:9998/tika/main --header &quot;Accept: text/plain&quot;
+</pre>
+</div></div><p><br/></p><p>With Tika 1.27 and greater, you can get the text and metadata of a file in json format with:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T price.xls http://localhost:9998/tika --header &quot;Accept: application/json&quot;</pre>
+</div></div><p>To specify whether you want the content to be text (vs. html) specify the handler type after <code>/tika</code>:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T price.xls http://localhost:9998/tika/text --header &quot;Accept: application/json&quot;</pre>
+</div></div><p><br/></p><h3 id="TikaServer-MultipartSupport.1">Multipart Support</h3><p>Tika Resource also accepts the files as multipart/form-data attachments with POST. Posting files as multipart attachments may be beneficial in cases when the files are too big for them to be PUT directly in the request body. Note that Tika JAX-RS server makes the best effort at storing some of the multipart content to the disk while still supporting the streaming:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -F upload=@price.xls URL http://localhost:9998/tika/form
+</pre>
+</div></div><p>Note that the address has an extra &quot;/form&quot; path segment.</p><h2 id="TikaServer-DetectorResource">Detector Resource</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/detect/stream
+</pre>
+</div></div><p>HTTP PUTs a document and uses the Default Detector from Tika to identify its MIME/media type. The caveat here is that providing a hint for the filename can increase the quality of detection.</p><p>Default return is a string of the Media type name.</p><p>Some Example calls with cURL:</p><h3 id="TikaServer-PUTanRTFfileandgetbackRTF">PUT an RTF file and get back RTF</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @TODO.rtf http://localhost:9998/detect/stream
+</pre>
+</div></div><h3 id="TikaServer-PUTaCSVfilewithoutfilenamehintandgetbacktext/plain">PUT a CSV file without filename hint and get back text/plain</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --upload-file foo.csv http://localhost:9998/detect/stream
+</pre>
+</div></div><h3 id="TikaServer-PUTaCSVfilewithfilenamehintandgetbacktext/csv">PUT a CSV file with filename hint and get back text/csv</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT -H &quot;Content-Disposition: attachment; filename=foo.csv&quot; --upload-file foo.csv http://localhost:9998/detect/stream
+</pre>
+</div></div><h2 id="TikaServer-LanguageResource">Language Resource</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/language/stream
+</pre>
+</div></div><p>HTTP PUTs or POSTs a UTF-8 text file to the <a class="unresolved" href="#">LanguageIdentifier</a> to identify its language. </p><p><strong>NOTE: This endpoint does not parse files.  It runs detection on a UTF-8 string.</strong></p><p>Default return is a string of the 2 character identified language.</p><p>Some Example calls with cURL:</p><h3 id="TikaServer-PUTaTXTfilewithEnglishThisisEnglish!andgetbacken">PUT a TXT file with English This is English! and get back en</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @foo.txt http://localhost:9998/language/stream
+en
+</pre>
+</div></div><h3 id="TikaServer-PUTaTXTfilewithFrenchcommeçicommeçaandgetbackfr">PUT a TXT file with French comme çi comme ça and get back fr</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -X PUT --data-binary @foo.txt http://localhost:9998/language/stream
+fr
+</pre>
+</div></div><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/language/string
+</pre>
+</div></div><p>HTTP PUTs or POSTs a text string to the <a class="unresolved" href="#">LanguageIdentifier</a> to identify its language.</p><p>Default return is a string of the 2 character identified language.</p><p>Some Example calls with cURL:</p><h3 id="TikaServer-PUTastringwithEnglishThisisEnglish!andgetbacken">PUT a string with English This is English! and get back en</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data &quot;This is English!&quot; http://localhost:9998/language/string
+en
+</pre>
+</div></div><h3 id="TikaServer-PUTastringwithFrenchcommeçicommeçaandgetbackfr">PUT a string with French comme çi comme ça and get back fr</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -X PUT --data &quot;comme çi comme ça&quot; http://localhost:9998/language/string
+fr
+</pre>
+</div></div><h2 id="TikaServer-TranslateResource">Translate Resource</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/translate/all/translator/src/dest
+</pre>
+</div></div><p>HTTP PUTs or POSTs a document to the identified *translator* and translates from *src* language to *dest*</p><p>Default return is the translated string if successful, else the original string back.</p><p>Note that: * *translator* should be a fully qualified Tika class name (with package) e.g., org.apache.tika.language.translate.Lingo24Translator * *src* should be the 2 character short code for the source language, e.g., 'en' for English * *dest* should be the 2 character short code for the dest language, e.g., 'es' for Spanish.</p><p>Some Example calls with cURL:</p><h3 id="TikaServer-PUTaTXTfilenamedsentenceswithSpanishmefaltaprácticaenEspañolandgetbacktheEnglishtranslationusingLingo24">PUT a TXT file named sentences with Spanish me falta práctica en Español and get back the English translation using Lingo24</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @sentences http://localhost:9998/translate/all/org.apache.tika.language.translate.Lingo24Translator/es/en
+lack of practice in Spanish
+</pre>
+</div></div><h3 id="TikaServer-PUTaTXTfilenamedsentenceswithSpanishmefaltaprácticaenEspañolandgetbacktheEnglishtranslationusingMicrosoft">PUT a TXT file named sentences with Spanish me falta práctica en Español and get back the English translation using Microsoft</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @sentences http://localhost:9998/translate/all/org.apache.tika.language.translate.MicrosoftTranslator/es/en
+I need practice in Spanish
+</pre>
+</div></div><h3 id="TikaServer-PUTaTXTfilenamedsentenceswithSpanishmefaltaprácticaenEspañolandgetbacktheEnglishtranslationusingGoogle">PUT a TXT file named sentences with Spanish me falta práctica en Español and get back the English translation using Google</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @sentences http://localhost:9998/translate/all/org.apache.tika.language.translate.GoogleTranslator/es/en
+I need practice in Spanish
+</pre>
+</div></div><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/translate/all/src/dest
+</pre>
+</div></div><p>HTTP PUTs or POSTs a document to the identified *translator* and auto-detects the *src* language using <a class="unresolved" href="#">LanguageIdentifiers</a>, and then translates *src* to *dest*</p><p>Default return is the translated string if successful, else the original string back.</p><p>Note that: * *translator* should be a fully qualified Tika class name (with package) e.g., org.apache.tika.language.translate.Lingo24Translator * *dest* should be the 2 character short code for the dest language, e.g., 'es' for Spanish.</p><h3 id="TikaServer-PUTaTXTfilenamedsentences2withFrenchcommeçicommeçaandgetbacktheEnglishtranslationusingGoogleauto-detectingthelanguage">PUT a TXT file named sentences2 with French comme çi comme ça and get back the English translation using Google auto-detecting the language</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @sentences2 http://localhost:9998/translate/all/org.apache.tika.language.translate.GoogleTranslator/en
+so so
+</pre>
+</div></div><h2 id="TikaServer-RecursiveMetadataandContent">Recursive Metadata and Content</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/rmeta
+</pre>
+</div></div><p>Returns a JSONified list of Metadata objects for the container document and all embedded documents. The text that is extracted from each document is stored in the metadata object under &quot;X-TIKA:content&quot;.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T test_recursive_embedded.docx http://localhost:9998/rmeta
+</pre>
+</div></div><p>Returns:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+ {&quot;Application-Name&quot;:&quot;Microsoft Office Word&quot;,
+  &quot;Application-Version&quot;:&quot;15.0000&quot;,
+  &quot;X-Parsed-By&quot;:[&quot;org.apache.tika.parser.DefaultParser&quot;,&quot;org.apache.tika.parser.microsoft.ooxml.OOXMLParser&quot;],
+  &quot;X-TIKA:content&quot;:&quot;embed_0 &quot;
+  ...
+ },
+ {&quot;Content-Encoding&quot;:&quot;ISO-8859-1&quot;,
+  &quot;Content-Length&quot;:&quot;8&quot;,
+  &quot;Content-Type&quot;:&quot;text/plain; charset=ISO-8859-1&quot;
+  &quot;X-TIKA:content&quot;:&quot;embed_1b&quot;,
+  ...
+ }
+ ...
+]
+</pre>
+</div></div><p>The default format for &quot;X-TIKA:content&quot; is XML. However, you can select &quot;text only&quot; with</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/rmeta/text
+</pre>
+</div></div><p>HTML with</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/rmeta/html
+</pre>
+</div></div><p>and no content (metadata only) with</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/rmeta/ignore
+</pre>
+</div></div><h3 id="TikaServer-MultipartSupport.2">Multipart Support</h3><p>Metadata Resource also accepts the files as multipart/form-data attachments with POST. Posting files as multipart attachments may be beneficial in cases when the files are too big for them to be PUT directly in the request body. Note that Tika JAX-RS server makes the best effort at storing some of the multipart content to the disk while still supporting the streaming:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -F upload=@test_recursive_embedded.docx URL http://localhost:9998/rmeta/form
+</pre>
+</div></div><p>Note that the address has an extra &quot;/form&quot; path segment.</p><h3 id="TikaServer-SpecifyingLimits">Specifying Limits</h3><p>As of Tika 1.25, you can limit the maximum number of embedded resources and the write limit per handler.</p><p>To specify the maximum number of embedded documents, set the <code>maxEmbeddedResources</code> in the header.  Note that the container document does not count towards this number.  The following will return the results for the container document only.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T test_recursive_embedded.docx --header &quot;maxEmbeddedResources: 0&quot; http://localhost:9998/rmeta</pre>
+</div></div><p><br/></p><p>To specify a write limit per handler, set the <code>writeLimit</code>  parameter in a header.   This limit applies to each handler (each embedded document).  If this is triggered, the parse will continue on to the next embedded object and store  <code>X-TIKA:Exception:write_limit_reached</code> = <code>&quot;true&quot;</code>  in the metadata object for the embedded file that triggered the write limit.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T test_recursive_embedded.docx --header &quot;writeLimit: 1000&quot; http://localhost:9998/rmeta</pre>
+</div></div><p><strong>NOTE:</strong> In Tika 2.0, the writeLimit applies to the full document including the embedded files, not to each handler.</p><h3 id="TikaServer-FilteringMetadataKeys">Filtering Metadata Keys</h3><p>The <code>/rmeta</code>  endpoint can return far more metadata fields than a user might want to process.   As of Tika 1.25, users can configure a MetadataFilter that either <code>includes</code>  or <code>excludes</code>  fields by name.  </p><p><strong>Note:</strong> the <code>MetadataFilters</code> only work with the <code>/rmeta</code>  endpoint.  Further, they do not shortcut metadata extraction within Parsers.  They only delete the unwanted fields after the parse.  This still can save resources in storage and network bandwidth.</p><p>A user can map Tika field names to names they prefer. If <code>excludeUnmapped</code> is set to true, only those fields that are included in the mapping are passed back to the client.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>FieldNameMappingFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.FieldNameMappingFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;excludeUnmapped&gt;true&lt;/excludeUnmapped&gt;
+        &lt;mappings&gt;
+          &lt;mapping from=&quot;X-TIKA:content&quot; to=&quot;content&quot;/&gt;
+          &lt;mapping from=&quot;a&quot; to=&quot;b&quot;/&gt;
+        &lt;/mappings&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><p><br/></p><p>A user can set the following in a <code>tika-config.xml</code> file to have the <code>/rmeta</code>  end point only return three fields:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>IncludeFieldMetadataFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.IncludeFieldMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;include&gt;
+          &lt;field&gt;X-TIKA:content&lt;/include&gt;
+          &lt;field&gt;extended-properties:Application&lt;/include&gt;
+          &lt;field&gt;Content-Type&lt;/include&gt;
+        &lt;/param&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><p>To exclude those three fields but include all other fields:</p><p><br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ExcludeFieldMetadataFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.ExcludeFieldMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;exclude&gt;
+          &lt;field&gt;X-TIKA:content&lt;/field&gt;
+          &lt;field&gt;extended-properties:Application&lt;/field&gt;
+          &lt;field&gt;Content-Type&lt;/field&gt;
+        &lt;/param&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 id="TikaServer-FilteringMetadataObjects">Filtering Metadata Objects</h3><p>A user may want to parse a file type to get at the embedded contents within it, but s/he may not want a metadata object or contents for the file type itself.  For example, <code>image/emf</code> files often contain duplicative text, but they may contain an embedded PDF file.  If the client had turned off the <code>EMFParser</code>, the embedded PDF file would not be parsed.  When the <code>/rmeta</code>  endpoint is configured with the following, it will delete the entire metadata object for files of type <code>image/emf</code> .</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ClearByMimeMetadataFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.ClearByMimeMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;mimes&gt;
+          &lt;mime&gt;image/emf&lt;/mime&gt;
+        &lt;/mimes&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 id="TikaServer-Integrationwithtika-eval">Integration with tika-eval</h3><p>As of Tika 1.25, if a user adds the <code>tika-eval</code>  jar to the server jar's classpath, the <code>/rmeta</code>  endpoint will add key &quot;profiling&quot; statistics from the <code>tika-eval</code>  module, including: language identified, number of tokens, number of alphabetic tokens and the &quot;out of vocabulary&quot; percentage.  These statistics can be used to decide to reprocess a file with OCR or to reprocess an HTML file with a different encoding detector.</p><p>To accomplish this, one may put both the tika-eval jar and the server jar in a <code>bin/ </code>directory and then run:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -cp bin/* org.apache.tika.server.TikaServerCli</pre>
+</div></div><p>See the <a href="TikaEval_109454084.html">TikaEval</a> page for more details.  Please open issues on our JIRA if you would like other statistics included or if you'd like to make the calculated statistics configurable.</p><h2 id="TikaServer-UnpackResource">Unpack Resource</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/unpack
+</pre>
+</div></div><p>HTTP PUTs an embedded document type to the /unpack service and you get back a zip or tar of the raw bytes of the embedded files.  Note that this does not operate recursively; it extracts only the child documents of the original file.</p><p>You can also use /unpack/all to get back the text and metadata from the container file.  If you want the text and metadata from all embedded files, consider using the /rmeta end point.</p><p>Default return type is ZIP (without internal compression). Use &quot;Accept&quot; header for TAR return type.</p><p>Some example calls with cURL:</p><h3 id="TikaServer-PUTzipfileandgetbackmetfilezip">PUT zip file and get back met file zip</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -X PUT --data-binary @foo.zip http://localhost:9998/unpack --header &quot;Content-type: application/zip&quot;
+</pre>
+</div></div><h3 id="TikaServer-PUTdocfileandgetbackmetfiletar">PUT doc file and get back met file tar</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T Doc1_ole.doc -H &quot;Accept: application/x-tar&quot; http://localhost:9998/unpack &gt; /var/tmp/x.tar
+</pre>
+</div></div><h3 id="TikaServer-PUTdocfileandgetbackthecontentandmetadata">PUT doc file and get back the content and metadata</h3><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ curl -T Doc1_ole.doc http://localhost:9998/unpack/all &gt; /var/tmp/x.zip
+</pre>
+</div></div><p>Text is stored in <code><span style="text-decoration: underline;">TEXT</span></code> file, metadata cvs in <code><span style="text-decoration: underline;">METADATA</span></code>. Use &quot;accept&quot; header if you want TAR output.</p><h1 id="TikaServer-InformationServices">Information Services</h1><h2 id="TikaServer-AvailableEndpoints">Available Endpoints</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/
+</pre>
+</div></div><p>Hitting the route of the server in your web browser will give a basic report of all the endpoints defined in the server, what URL they have etc</p><h2 id="TikaServer-DefinedMimeTypes">Defined Mime Types</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/mime-types
+</pre>
+</div></div><p>Mime types, their aliases, their supertype, and the parser. Available as plain text, json or human readable HTML</p><h2 id="TikaServer-AvailableDetectors">Available Detectors</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/detectors
+</pre>
+</div></div><p>The top level Detector to be used, and any child detectors within it. Available as plain text, json or human readable HTML</p><h2 id="TikaServer-AvailableParsers">Available Parsers</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/parsers
+</pre>
+</div></div><p>Lists all of the parsers currently available</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/parsers/details
+</pre>
+</div></div><p>List all the available parsers, along with what mimetypes they support</p><h2 id="TikaServer-SpecifyingaURLInsteadofPuttingBytesinTika2.x">Specifying a URL Instead of Putting Bytes in Tika 2.x</h2><p>In Tika 2.x, use a FileSystemFetcher, a UrlFetcher or or an HttpFetcher. See: <a href="tika-pipes_181306665.html#tikapipes-FetchersInClassicServerEndpoints">tika-pipes (FetchersInClassicServerEndpoints)</a></p><p>We have entirely removed the <code>-enableFileUrl </code>capability that we had in 1.x.</p><h2 id="TikaServer-SpecifyingaURLInsteadofPuttingBytesinTika1.x">Specifying a URL Instead of Putting Bytes in Tika 1.x</h2><p>In Tika 1.10, we removed this capability because it posed a security vulnerability (CVE-2015-3271). Anyone with access to the service had the server's access rights; someone could request local files via <code><a class="external-link" href="file:///" rel="nofollow">file:///</a></code> or pages from an intranet that they might not otherwise have access to.</p><p>In Tika 1.14, we added the capability back, but the user has to acknowledge the security risk by including two commandline arguments:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ java -jar tika-server-x.x.jar -enableUnsecureFeatures -enableFileUrl
+</pre>
+</div></div><p>This allows the user to specify a <code>fileUrl</code> in the header:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -i -H &quot;fileUrl:http://tika.apache.org&quot; -H &quot;Accept:text/plain&quot; -X PUT http://localhost:9998/tika
+</pre>
+</div></div><p>or</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -i -H &quot;fileUrl:file:///C:/data/my_test_doc.pdf&quot; -H &quot;Accept:text/plain&quot; -X PUT http://localhost:9998/tika
+</pre>
+</div></div><p>By adding back this capability, we did not remove the security vulnerability. Rather, if a user is confident that only authorized clients are able to submit a request, the user can choose to operate tika-server with this insecure setting. <strong>BE CAREFUL!</strong></p><p>Also, please be polite. This feature was added as a convenience. Please consider using a robust crawler (instead of our simple <code>TikaInputStream.get(new URL(fileUrl))</code>) that will allow for better configuration of redirects, timeouts, cookies, etc.; and a robust crawler will respect robots.txt!</p><h1 id="TikaServer-Transfer-LayerCompression">Transfer-Layer Compression</h1><p>As of Tika 1.24.1, users can turn on <code>gzip</code> compression for either files on their way to <code>tika-server</code>  or the output from <code>tika-server</code>.</p><p>If you want to <code>gzip</code> your files before sending to <code>tika-server</code> , add</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T test_my_doc.pdf -H &quot;Content-Encoding: gzip&quot; http://localhost:9998/rmeta</pre>
+</div></div><p><br/></p><p>If you want <code>tika-server</code>  to compress the output of the parse:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T test_my_doc.pdf -H &quot;Accept-Encoding: gzip&quot; http://localhost:9998/rmeta</pre>
+</div></div><p><br/></p><h1 id="TikaServer-MakingTikaServerRobusttoOOMs,InfiniteLoopsandMemoryLeaksinTika2.x">Making Tika Server Robust to OOMs, Infinite Loops and Memory Leaks in Tika 2.x</h1><p>See below.  In Tika 2.x, the <code>-spawnChild</code> functionality is turned on by default.  This has the effect that tika-server may occasionally be unavailable when it is restarting.  Clients should have logic to wait for a restart if tika-server has had to restart.</p><p>To turn off this behavior and to go back to the more dangerous legacy behavior, start tika-server with the <code>--noFork </code>option. </p><h1 id="TikaServer-MakingTikaServerRobusttoOOMs,InfiniteLoopsandMemoryLeaksinTika1.x">Making Tika Server Robust to OOMs, Infinite Loops and Memory Leaks in Tika 1.x</h1><p>As of Tika 1.19, users can make tika-server more robust by running it with the <code>-spawnChild</code> option. This starts tika-server in a child process, and if there's an OOM, a timeout or other catastrophic problem with the child process, the parent process will kill and/or restart the child process.</p><p>The following options are available only with the <code>-spawnChild</code> option.</p><ul><li><code>-maxFiles</code>: restart the child process after it has processed <code>maxFiles</code>. If there is a slow building memory leak, this restart of the JVM should help. The default is 100,000 files. To turn off this feature: <code>-maxFiles -1</code>. The child and/or parent will log the cause of the restart as <code>HIT_MAX</code> when there is a restart because of this threshold.</li><li><code>-taskTimeoutMillis</code> and <code>-taskPulseMillis</code>: <code>taskPulseMillis</code> specifies how often to check to determine if a parse/detect task has timed out <code>taskTimeoutMillis</code></li><li><code>-pingTimeoutMillis</code> and <code>-pingPulseMillis</code>: <code>pingPulseMillis</code> specifies how often for the parent process to ping the child process to check status. <code>pingTimeoutMillis</code> how long the parent process should wait to hear back from the child process before restarting it and/or how long the child process should wait to receive a ping from the parent process before shutting itself down.</li></ul><p>If the child process is in the process of shutting down, and it gets a new request it will return <code>503 -- Service Unavailable</code>. If the server times out on a file, the client will receive an IOException from the closed socket. Note that all other files that are being processed will end with an IOException from a closed socket when the child process shuts down; e.g. if you send three files to tika-server concurrently, and one of them causes a catastrophic problem requiring the child to shut down, you won't be able to tell which file caused the problems. In the future, we may implement a gentler shutdown than we currently have.</p><p><strong>NOTE 1</strong>: <code>-spawnChild</code> has become the default in Tika 2.x.  If you need to return to the legacy 1.x behavior, configure tika-server element in the tika-config.xml with<code> &lt;noFork&gt;true&lt;/noFork&gt;</code> or add <code>--noFork</code> as the commandline argument.</p><p><strong>NOTE 2</strong>: In Tika 1.x, to specify the JVM args for the child process, prepend the arguments with <code>-J</code> as in <code>-JXmx4g</code> after the <code>-jar tika-server.x.x.jar</code> call as in:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ java -Dlog4j.configuration=file:log4j_server.xml -jar tika-server-x.x.jar -spawnChild -JXmx4g -JDlog4j.configuration=file:log4j_child.xml}}
+</pre>
+</div></div><p><strong>NOTE 3: </strong>Before Tika 1.27, we strongly encourage <code>-JXX:+ExitOnOutOfMemoryError</code>, which admittedly has limitations: <a class="external-link" href="https://bugs.openjdk.java.net/browse/JDK-8155004" rel="nofollow">https://bugs.openjdk.java.net/browse/JDK-8155004.</a>  When a JVM is struggling with memory, it is possible that the final trigger for the OOM happens in reading bytes from the client or writing bytes to the client NOT during the parse.  In short, OOMs can happen outside of Tika's code, and our internal watcher can't see/respond to some OOMs.  In 1.27 and later (and in 2.x), we added a shutdown hook in TesseractOCRParser to decrease the chances of orphaning tesseract.  The use of <code>-JXX:+ExitOnOutOfMemoryError</code> prevents the shutdown hooks from working, and tesseract processes may more easily be orphaned on an out of memory error.</p><p><strong>NOTE 4: </strong>When using the <code>-spawnChild</code> option, clients will need to be aware that the server could be unavailable temporarily while it is restarting.  Clients will need to have a retry logic.</p><h1 id="TikaServer-Logging">Logging</h1><p>In Tika 1.x, you can customize logging via the usual <code>log4j</code> commandline argument, e.g. <code>-Dlog4j.configuration=file:log4j_server.xml</code>. If using <code>-spawnChild</code>, specify the configuration for the child process with the <code>-J</code> prepended as in <code>java -jar tika-server-X.Y-jar -spawnChild -JDlog4j.configuration=file:log4j_server.xml</code>. Some important notes for logging in the child process in versions &lt;= 1.19.1: 1) make sure that the <code>debug</code> option is off, and 2) do not log to stdout (this is used for interprocess communication between the parent and child!).</p><p>The default level of logging is <code>debug</code>, but you can also set logging to <code>info</code> via the commandline: <code>-log info</code>.</p><p>In Tika 2.x, you can set log4j2.xml configuration for the forked process in the &lt;jvmArgs/&gt; element.  See below.</p><h1 id="TikaServer-Monitoring">Monitoring</h1><h2 id="TikaServer-ServerStatus">ServerStatus</h2><p>Tika Server uses ServerStatus object to maintain and track current status of server. The data can be exported to REST resource and JMX MBean (from 1.26).</p><p>To enable REST endpoint and JMX MBean:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -jar tika-server-x.x.jar -status</pre>
+</div></div><p>REST resource to access server status:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/status
+</pre>
+</div></div><p>MBean:</p><p>Object name: org.apache.tika.server.mbean:type=basic,name=ServerStatusExporter</p><p><strong>NOTE: </strong>In Tika 2.x, this endpoint is enabled by either <code>enablingUnsecureFeatures</code> or by specifying it as an endpoint.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;server&gt;
+    &lt;params&gt;
+      &lt;enableUnsecureFeatures&gt;true&lt;/enableUnsecureFeatures&gt;
+    &lt;/params&gt;
+  &lt;/server&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;server&gt;
+    &lt;params&gt;
+      &lt;port&gt;9999&lt;/port&gt;
+      &lt;forkedJvmArgs&gt;
+        &lt;arg&gt;-Xmx2g&lt;/arg&gt;
+        &lt;arg&gt;-Dlog4j.configurationFile=my-forked-log4j2.xml&lt;/arg&gt;
+      &lt;/forkedJvmArgs&gt;
+      &lt;endpoints&gt;
+        &lt;endpoint&gt;status&lt;/endpoint&gt;
+        &lt;endpoint&gt;rmeta&lt;/endpoint&gt;
+      &lt;/endpoints&gt;
+    &lt;/params&gt;
+  &lt;/server&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><h1 id="TikaServer-SSL(Beta)">SSL (Beta)</h1><p>Tika Server now has the ability to be spawned with SSL enabled by providing a keystore/Truststore as part of the configuration, this is likely to change but is available as part of Tika 2.4.0.</p><p>Example:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">&lt;properties&gt;
+  &lt;server&gt;
+    &lt;params&gt;
+      &lt;port&gt;9999&lt;/port&gt;
+      &lt;forkedJvmArgs&gt;
+        &lt;arg&gt;-Xmx2g&lt;/arg&gt;
+      &lt;/forkedJvmArgs&gt;
+      &lt;endpoints&gt;
+        &lt;endpoint&gt;rmeta&lt;/endpoint&gt;
+      &lt;/endpoints&gt;
+    &lt;/params&gt;
+    &lt;tlsConfig&gt;
+      &lt;params&gt;
+        &lt;active&gt;true&lt;/active&gt;
+        &lt;keyStoreType&gt;myType&lt;/keyStoreType&gt;
+        &lt;keyStorePassword&gt;pass&lt;/keyStorePassword&gt;
+        &lt;keyStoreFile&gt;/something/or/other&lt;/keyStoreFile&gt;
+        &lt;trustStoreType&gt;myType2&lt;/trustStoreType&gt;
+        &lt;trustStorePassword&gt;pass2&lt;/trustStorePassword&gt;
+        &lt;trustStoreFile&gt;/something/or/other2&lt;/trustStoreFile&gt;
+      &lt;/params&gt;
+    &lt;/tlsConfig&gt;
+  &lt;/server&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><p>If you are new to TLS, see <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-server/tika-server-core/src/test/resources/ssl-keys/README.txt" rel="nofollow">our README.txt</a> for how we generated client and server keystores and truststores for our unit tests.</p><h1 id="TikaServer-ConfiguringParsersatParsetime/perfile">Configuring Parsers at Parse time/per file</h1><p>See <a href="Configuring-Parsers-At-Parse-Time-in-tika-server_240883999.html">Configuring Parsers At Parse Time in tika-server</a>.</p><h1 id="TikaServer-Architecture">Architecture</h1><p>Tika Server is based on JSR 311 for a network serve. The server package uses the <a class="external-link" href="http://cxf.apache.org/" rel="nofollow">Apache CXF</a> framework that provides an implementation of JAX-RS for Java.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

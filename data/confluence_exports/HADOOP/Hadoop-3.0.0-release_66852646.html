@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Hadoop 3.0.0 release</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="127405312.html">EOL (End-of-life) Release Branches</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Hadoop 3.0.0 release
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Andrew Wang</span>, last modified on дек 15, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Hadoop 3.0.0 has been released! Bits are available on the <a class="external-link" href="https://hadoop.apache.org/" rel="nofollow">official website</a>.</p><h2 id="Hadoop3.0.0release-Releaseschedule">Release schedule</h2><p>For Hadoop 3, we are planning to &quot;release early, release often&quot; to quickly iterate on feedback collected from downstream projects.</p><p>To this end, we will be releasing a series of alpha and beta releases leading up to an eventual Hadoop 3.0.0 GA.</p><p>This is a <strong><em>planned</em></strong> release schedule. Future release dates are subject to change.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Release</th><th class="confluenceTh">Date</th><th class="confluenceTh">Released?</th></tr><tr><td class="confluenceTd">3.0.0-alpha1</td><td class="confluenceTd">2016-09-03</td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td class="confluenceTd">3.0.0-alpha2</td><td class="confluenceTd">2017-01-25</td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td colspan="1" class="confluenceTd">3.0.0-alpha3</td><td colspan="1" class="confluenceTd">2017-05-26</td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td colspan="1" class="confluenceTd">3.0.0-alpha4</td><td colspan="1" class="confluenceTd">2017-07-07</td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td class="confluenceTd">3.0.0-beta1</td><td class="confluenceTd">2017-10-03</td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td colspan="1" class="confluenceTd">3.0.0 GA</td><td colspan="1" class="confluenceTd">2017-12-13</td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr></tbody></table></div><h1 id="Hadoop3.0.0release-Status">Status</h1><p><a class="external-link" href="https://issues.apache.org/jira/secure/Dashboard.jspa?selectPageId=12329849" rel="nofollow">JIRA Dashboard</a></p><p><a href="Hadoop-3-release-status-updates_66852920.html">Hadoop 3 release status updates</a></p><p><a class="external-link" href="https://builds.apache.org/view/H-L/view/Hadoop/job/Hadoop-trunk-JACC/" rel="nofollow">JACC compatibility report on Jenkins</a></p><p><a class="external-link" href="https://builds.apache.org/view/H-L/view/Hadoop/job/Hadoop-trunk-versions/" rel="nofollow">JIRA fix version vs. git log validation on Jenkins</a></p><h1 id="Hadoop3.0.0release-Downstreamintegrationstatus">Downstream integration status</h1><p>The goal for beta1 is for these downstreams to have their unit tests and integration tests run and triaged.</p><p>This is so we can discuss and address any burdensome incompatible changes before compatibility is locked.</p><div class="table-wrap"><table class="confluenceTable"><tbody><tr><th class="confluenceTh">Project</th><th colspan="1" class="confluenceTh">Version</th><th class="confluenceTh">compiles</th><th class="confluenceTh">unit test status</th><th colspan="1" class="confluenceTh">basic functional testing</th><th colspan="1" class="confluenceTh">non-HA insecure integration tests</th><th colspan="1" class="confluenceTh">HA secure integration tests</th></tr><tr><td class="confluenceTd">HBase</td><td colspan="1" class="confluenceTd">2.0.0</td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-warning" src="images/icons/emoticons/warning.svg" data-emoticon-name="warning" alt="(предупреждение)"/></td><td colspan="1" class="confluenceTd"> </td></tr><tr><td class="confluenceTd">Spark</td><td colspan="1" class="confluenceTd">2.0</td><td class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"> </td></tr><tr><td class="confluenceTd">Hive</td><td colspan="1" class="confluenceTd">2.1.0</td><td class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"> </td></tr><tr><td class="confluenceTd">Oozie</td><td colspan="1" class="confluenceTd">5.0</td><td class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-cross" src="images/icons/emoticons/error.svg" data-emoticon-name="cross" alt="(ошибка)"/></td><td colspan="1" class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd">Pig</td><td colspan="1" class="confluenceTd">0.16</td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-warning" src="images/icons/emoticons/warning.svg" data-emoticon-name="warning" alt="(предупреждение)"/></td><td colspan="1" class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd">Solr</td><td colspan="1" class="confluenceTd">6.x</td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"> </td></tr><tr><td colspan="1" class="confluenceTd">Kafka</td><td colspan="1" class="confluenceTd">0.10</td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td><td colspan="1" class="confluenceTd"> </td><td colspan="1" class="confluenceTd"> </td></tr></tbody></table></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:03</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

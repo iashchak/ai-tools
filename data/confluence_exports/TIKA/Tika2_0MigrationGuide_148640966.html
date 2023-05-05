@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Tika2_0MigrationGuide</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Tika2_0MigrationGuide
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Chris Mattmann</span> on мар 07, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429441 {padding: 0px;}
+div.rbtoc1683040429441 ul {margin-left: 0px;}
+div.rbtoc1683040429441 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429441'>
+<ul class='toc-indentation'>
+<li><a href='#Tika2_0MigrationGuide-Tika2.0MigrationGuide'>Tika 2.0 Migration Guide</a></li>
+<li><a href='#Tika2_0MigrationGuide-MajorChanges'>Major Changes</a>
+<ul class='toc-indentation'>
+<li><a href='#Tika2_0MigrationGuide-TikaModules'>Tika Modules</a></li>
+<li><a href='#Tika2_0MigrationGuide-TikaBundles'>Tika Bundles</a></li>
+</ul>
+</li>
+<li><a href='#Tika2_0MigrationGuide-MinorChanges'>Minor Changes</a></li>
+</ul>
+</div></p><p class="line867"><br/></p><h1 id="Tika2_0MigrationGuide-Tika2.0MigrationGuide">Tika 2.0 Migration Guide</h1><p class="line874">This page dynamically documents changes that Tika users should be aware of when they migrate to Tika 2.0. While Tika 2.0 is still very much in the early development stages, it will be helpful to gather breaking changes and other important modifications here.</p><p class="line862">This page differs from<span> </span><a class="external-link" href="https://163.172.69.106/tika/Tika2_0RoadMap" rel="nofollow" style="text-decoration: none;">Tika2_0RoadMap</a><span> </span>in that this page documents changes that have been made to the 2.x branch, while the road map documents potential changes.</p><p class="line867"><br/></p><h1 id="Tika2_0MigrationGuide-MajorChanges">Major Changes</h1><p class="line867"><br/></p><h2 id="Tika2_0MigrationGuide-TikaModules">Tika Modules</h2><p class="line874">In Tika 2.x the tika-parsers project has been split into 15 separate modules. With Tika's ever growing list of parsers the modules give developers the ability to pick and choose sub-groupings of parsers without bringing every parser dependency into a project. For example projects using Tika 1.12 parsers would include the following entry in an Apache Maven pom.xml dependency element:</p><p class="line867"><br/></p><pre>&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+    &lt;artifactId&gt;tika-parsers&lt;/artifactId&gt;
+    &lt;version&gt;1.12&lt;/version&gt;
+&lt;/dependency&gt;</pre><p class="line874">If this project were only being used to parse PDF files this could be refactored to the entry below on Tika 2.x:</p><p class="line867"><br/></p><pre>&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+    &lt;artifactId&gt;tika-parser-pdf-module&lt;/artifactId&gt;
+    &lt;version&gt;2.0&lt;/version&gt;
+&lt;/dependency&gt;</pre><p class="line862">The 2.x branch also introduces the<span> </span><a class="external-link" href="https://163.172.69.106/tika/ParserProxy" rel="nofollow" style="text-decoration: none;">ParserProxy</a>,<span> </span><a class="external-link" href="https://163.172.69.106/tika/DetectorProxy" rel="nofollow" style="text-decoration: none;">DetectorProxy</a>, and<span> </span><a class="external-link" href="https://163.172.69.106/tika/EncodingDetectorProxy" rel="nofollow" style="text-decoration: none;">EncodingDetectorProxy</a><span> </span>classes that allow developers to compose Parsers, Detectors and<span> </span><a class="external-link" href="https://163.172.69.106/tika/EncodingDetectors" rel="nofollow" style="text-decoration: none;">EncodingDetectors</a><span> </span>using classes that may or may not exist on the classpath.</p><p class="line862">For example the<span> </span><a class="external-link" href="https://163.172.69.106/tika/OutlookExtractor" rel="nofollow" style="text-decoration: none;">OutlookExtractor</a><span> </span>exists in the tika-parser-office-module. An Outlook message may contain HTML content but the user may not want to include the tika-parser-web-module that contains the<span> </span><a class="external-link" href="https://163.172.69.106/tika/HtmlParser" rel="nofollow" style="text-decoration: none;">HtmlParser</a>. By wrapping the<span> </span><a class="external-link" href="https://163.172.69.106/tika/HtmlParser" rel="nofollow" style="text-decoration: none;">HtmlParser</a><span> </span>in a<span> </span><a class="external-link" href="https://163.172.69.106/tika/ParserProxy" rel="nofollow" style="text-decoration: none;">ParserProxy</a>:</p><p class="line867"><br/></p><pre>this.htmlParserProxy = new ParserProxy(&quot;org.apache.tika.parser.html.HtmlParser&quot;, getClass().getClassLoader());</pre><p class="line862">The<span> </span><a class="external-link" href="https://163.172.69.106/tika/OutlookExtractor" rel="nofollow" style="text-decoration: none;">OutlookExtractor</a><span> </span>will only parse the HTML content if that module is included. If not the parser fails silently by default. In cases where the developer wants to be warned that a proxy has failed the developer may set the following System Property:</p><p class="line867"><br/></p><pre>org.apache.tika.service.proxy.error.warn=true</pre><p class="line874">Which will print a warning message when the class being proxied is not found.</p><p class="line867"><br/></p><h2 id="Tika2_0MigrationGuide-TikaBundles">Tika Bundles</h2><p class="line862">In addition to replacing tika-parsers the tika-bundle will also be replaced in Tika 2.x. Instead of a single tika-bundle there will be a bundle for each parser module created above. For example tika-parser-pdf-module will have a corresponding tika-parser-pdf-bundle. As in tika-bundle the dependencies in the bundle projects will be embedded in the jar file to allow OSGi unfriendly projects to be easily included. The bundles will also start up an OSGi service for each listed service in the META-INF/services/ file entries. This will allow OSGi developers an easier way to get access to individual parsers through the OSGi service registry. Finally a<span> </span><a class="external-link" href="https://163.172.69.106/tika/TikaService" rel="nofollow" style="text-decoration: none;">TikaService</a><span> </span>class will also be added to the OSGi Service registry that will serve as a means to put a document through all the parsers available in the OSGi service registry.</p><p class="line867"><br/></p><h1 id="Tika2_0MigrationGuide-MinorChanges">Minor Changes</h1>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

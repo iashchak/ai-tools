@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Building the Tomcat Native Connector binaries for Windows</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Building-the-native-Tomcat-components-for-Windows_65872529.html">Building the native Tomcat components for Windows</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Building the Tomcat Native Connector binaries for Windows
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on мая 27, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="line874"><span class="anchor">This page describes the process for building the Windows Native Connector for Windows. This is the native part of the APR/Native connector. <span class="anchor"> </span>  <span class="anchor"><br/></span></span></p><p class="line874"><span class="anchor">These instructions assume that you have configured the <a href="Common-Native-Build-Environment_65872531.html">common build environment</a>.<br/></span></p><h2 id="BuildingtheTomcatNativeConnectorbinariesforWindows-Building">Building</h2><p class="line867">While tcnative itself needs to be built <em>last</em>, we unpack it first because there are some patches in the tcnative source distribution that will need to be applied to both APR and OpenSSL. Obtain the tcnative source from one of:</p><ul><li class="line867">the win32-src.zip source bundle for the version you wish to build;</li><li class="line867"><a class="external-link" href="https://svn.apache.org/repos/asf/tomcat/native/" rel="nofollow">https://svn.apache.org/repos/asf/tomcat/native/</a></li></ul><p class="line867">E.g.: To build the latest 1.2.x development build from trunk</p><pre> c:
+<span class="anchor"> </span>cd \
+<span class="anchor"> </span>svn co https://svn.apache.org/repos/asf/tomcat/native/trunk/ tomcat-native-1.2.x
+<span class="anchor"> </span>cd tomcat-native-1.2.x\native\srclib\apr</pre><p><br/></p><p class="line862">Unpack APR 1.7.0 source distribution in this directory (C:\tomcat-native-1.2.x\native\srclib\apr). <span class="anchor"> </span> <span class="anchor"> </span></p><p class="line874">Apply the apr-enable-ipv6.patch. Note that the patch will apply but depending on exactly which revision you are working with you may need to skip the first part of the patch and an offset will probably be required. <span class="anchor"> </span> <span class="anchor"> </span></p><p class="line874">git apply apr-enable-ipv6.patch<br/>git apply win-ipv6.patch<br/><br/>Then build<br/><br/></p><pre> c:\cmsc\setenv.bat /x86<span class="anchor"> </span><br/> nmake -f NMAKEmakefile BUILD_CPU=x86 APR_DECLARE_STATIC=1
+<span class="anchor"> </span>
+<span class="anchor"> </span>c:\cmsc\setenv.bat /x64
+<span class="anchor"> </span>nmake -f NMAKEmakefile BUILD_CPU=x64 APR_DECLARE_STATIC=1
+<span class="anchor"> </span>
+<span class="anchor"> </span>cd ..\openssl</pre><h2 id="BuildingtheTomcatNativeConnectorbinariesforWindows-OpenSSL1.1.1andlater">OpenSSL 1.1.1 and later</h2><p>Unpack the OpenSSL 1.1.1k source distribution in this directory (C:\tomcat-native-1.2.x\native\srclib\openssl).</p><p>Apply openssl-msvcrt-1.1.1.patch. Note that you may need to skip and/or use an offset to get the patch to apply.</p><pre> c:\cmsc\setenv.bat /x86<br/> perl Configure no-shared VC-WIN32<br/> nmake<br/> mkdir out32-x86<br/> copy libssl.lib out32-x86\<br/> copy libcrypto.lib out32-x86\<br/> copy apps\openssl.exe out32-x86\<br/> <br/> nmake clean<br/><br/> c:\cmsc\setenv.bat /x64<br/> perl Configure no-shared VC-WIN64A<br/> nmake<br/> mkdir out32-x64<br/> copy libssl.lib out32-x64\<br/> copy libcrypto.lib out32-x64\<br/> copy apps\openssl.exe out32-x64\</pre><h2 id="BuildingtheTomcatNativeConnectorbinariesforWindows-TomcatNative">Tomcat Native</h2><p class="line874">Keeping the various libraries in versioned directories saves having to rebuild them next time if the version remains unchanged. <span class="anchor"> </span> <span class="anchor"> </span></p><pre> cd ..
+<span class="anchor"> </span>set OPENSSL_VER=1.1.1k<br/> set APR_VER=1.7.0</pre><pre><span class="anchor"> </span>
+<span class="anchor"> </span>mkdir \deps-x86\apr-%APR_VER%\include
+<span class="anchor"> </span>mkdir \deps-x86\apr-%APR_VER%\lib
+<span class="anchor"> </span>mkdir \deps-x86\openssl-%OPENSSL_VER%\include
+<span class="anchor"> </span>mkdir \deps-x86\openssl-%OPENSSL_VER%\lib
+<span class="anchor"> </span>xcopy /E \deps-x86\apr-%APR_VER% \deps-x64\apr-%APR_VER%\<br/> xcopy /E \deps-x86\openssl-%OPENSSL_VER% \deps-x64\openssl-%OPENSSL_VER%\</pre><pre><span class="anchor"> </span>
+<span class="anchor"> </span>xcopy /E apr\include \deps-x86\apr-%APR_VER%\include\
+<span class="anchor"> </span>xcopy /E apr\include \deps-x64\apr-%APR_VER%\include\
+<span class="anchor"> </span>
+<span class="anchor"> </span>copy apr\WIN7_X86_LIB_RELEASE\apr-1.lib \deps-x86\apr-%APR_VER%\lib
+<span class="anchor"> </span>copy apr\WIN7_X64_LIB_RELEASE\apr-1.lib \deps-x64\apr-%APR_VER%\lib</pre><pre> xcopy /E openssl\include\openssl \deps-x86\openssl-%OPENSSL_VER%\include\openssl\
+ xcopy /E openssl\include\openssl \deps-x64\openssl-%OPENSSL_VER%\include\openssl\</pre><p><span> copy openssl\out32-x86\*.lib \deps-x86\openssl-%OPENSSL_VER%\lib\<br/></span><span> copy openssl\out32-x64\*.lib \deps-x64\openssl-%OPENSSL_VER%\lib\</span></p><p> copy openssl\out32-x86\openssl.exe \deps-x86\openssl-%OPENSSL_VER%\<br/> copy openssl\out32-x64\openssl.exe \deps-x64\openssl-%OPENSSL_VER%\</p><pre> 
+ cd ..<br/> set JAVA_HOME=\java\adopt-8.0.242.09-x64</pre><pre> c:\cmsc\setenv.bat /x86<br/> nmake -f NMAKEMakefile WITH_APR=C:\deps-x86\apr-%APR_VER% WITH_OPENSSL=C:\deps-x86\openssl-%OPENSSL_VER% APR_DECLARE_STATIC=1 OPENSSL_NEW_LIBS=1 ENABLE_OCSP=1<br/> move WIN7_X86_DLL_RELEASE WIN7_X86_OCSP_DLL_RELEASE<br/> nmake -f NMAKEMakefile WITH_APR=C:\deps-x86\apr-%APR_VER% WITH_OPENSSL=C:\deps-x86\openssl-%OPENSSL_VER% APR_DECLARE_STATIC=1 OPENSSL_NEW_LIBS=1</pre><pre> 
+ c:\cmsc\setenv.bat /x64
+ nmake -f NMAKEMakefile WITH_APR=C:\deps-x64\apr-%APR_VER% WITH_OPENSSL=C:\deps-x64\openssl-%OPENSSL_VER% APR_DECLARE_STATIC=1 OPENSSL_NEW_LIBS=1 ENABLE_OCSP=1
+ move WIN7_X64_DLL_RELEASE WIN7_X64_OCSP_DLL_RELEASE
+ nmake -f NMAKEMakefile WITH_APR=C:\deps-x64\apr-%APR_VER% WITH_OPENSSL=C:\deps-x64\openssl-%OPENSSL_VER% APR_DECLARE_STATIC=1 OPENSSL_NEW_LIBS=1</pre><p><span class="anchor"> </span></p><p class="line874">Tomcat Native Connector DLLs may then be found in C:\tomcat-native-1.2.x\native\WIN7_*_[OCSP_]DLL_RELEASE <span class="anchor"> </span> <span class="anchor"> </span></p><p class="line874">Construct the binary distributions <span class="anchor"> </span> <span class="anchor"> </span></p><pre> set VER=1.2.24</pre><pre> mkdir tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin<br/> copy LICENSE.bin.win tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\LICENSE<br/> copy NOTICE.bin.win tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\NOTICE<br/> copy ..\README.txt tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\<br/> copy srclib\VERSIONS tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\</pre><pre><span class="anchor"> </span>mkdir tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\bin
+<span class="anchor"> </span>mkdir tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\bin\x64
+<span class="anchor"> </span>copy C:\deps-x86\openssl-%OPENSSL_VER%\openssl.exe tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\bin
+<span class="anchor"> </span>xcopy /E tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin tomcat-native-%VER%-openssl-%OPENSSL_VER%-ocsp-win32-bin\
+<span class="anchor"> </span>copy WIN7_X86_DLL_RELEASE\tcnative-1.dll tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\bin
+<span class="anchor"> </span>copy WIN7_X86_OCSP_DLL_RELEASE\tcnative-1.dll tomcat-native-%VER%-openssl-%OPENSSL_VER%-ocsp-win32-bin\bin
+<span class="anchor"> </span>copy WIN7_X86_DLL_RELEASE\tcnative-1-src.pdb tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\bin
+<span class="anchor"> </span>copy WIN7_X86_OCSP_DLL_RELEASE\tcnative-1-src.pdb tomcat-native-%VER%-openssl-%OPENSSL_VER%-ocsp-win32-bin\bin
+<span class="anchor"> </span>copy WIN7_X64_DLL_RELEASE\tcnative-1.dll tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\bin\x64
+<span class="anchor"> </span>copy WIN7_X64_OCSP_DLL_RELEASE\tcnative-1.dll tomcat-native-%VER%-openssl-%OPENSSL_VER%-ocsp-win32-bin\bin\x64
+<span class="anchor"> </span>copy WIN7_X64_DLL_RELEASE\tcnative-1-src.pdb tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin\bin\x64
+<span class="anchor"> </span>copy WIN7_X64_OCSP_DLL_RELEASE\tcnative-1-src.pdb tomcat-native-%VER%-openssl-%OPENSSL_VER%-ocsp-win32-bin\bin\x64
+<span class="anchor"> </span>
+<span class="anchor"> </span>set PATH=%PATH%;%JAVA_HOME%\bin
+<span class="anchor"> </span>cd tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin
+<span class="anchor"> </span>jar -cMf ..\tomcat-native-%VER%-openssl-%OPENSSL_VER%-win32-bin.zip *
+<span class="anchor"> </span>cd ..\tomcat-native-%VER%-openssl-%OPENSSL_VER%-ocsp-win32-bin
+<span class="anchor"> </span>jar -cMf ..\tomcat-native-%VER%-openssl-%OPENSSL_VER%-ocsp-win32-bin.zip *</pre><p><span class="anchor"> </span></p><p class="line862">The Windows binary distributions may then be found in C:\tomcat-native-1.2.x\native\ <span class="anchor"> </span> <span class="anchor"> </span></p><p class="line874">These need to be signed and hashed before uploading for the release vote. <span class="anchor"> </span> <span class="anchor"> </span></p><p class="line874">Beware of typos in the name and contents of hash files for OCSP binaries (&quot;ocsp&quot; vs &quot;oscp&quot;). Such typos happened. <span class="anchor"> </span> <span class="anchor"> </span></p><p class="line874">A correct example: <span class="anchor"> </span> <span class="anchor"> </span></p><p class="line874">tomcat-native-1.1.32-ocsp-win32-bin.zip.md5 <span class="anchor"> </span> <span class="anchor"> </span></p><pre> <span class="anchor"> </span>0b0e1e4c77b9b7051fc2c751b70d2880 *tomcat-native-1.1.32-ocsp-win32-bin.zip</pre><p class="line874">tomcat-native-1.1.32-ocsp-win32-bin.zip.sha1 <span class="anchor"> </span> <span class="anchor"> </span></p><pre> <span class="anchor"> </span>b47f96dd3153d002a529e881b6b8f524cd6e321c *tomcat-native-1.1.32-ocsp-win32-bin.zip</pre>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

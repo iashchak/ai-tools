@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : GrobidJournalParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : GrobidJournalParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The <a href="GrobidJournalParser_109454054.html">GrobidJournalParser</a> uses the <a class="external-link" href="http://grobid.readthedocs.org/en/latest/Introduction/" rel="nofollow">GROBID (or Grobid) GeneRation Of BIbliographic Data</a> machine learning framework to parse PDF files and to extract information such as  title, abstract, authors, affiliations, keywords, etc, from journal publications. The parser has been integrated into Tika. You can follow this guide to get it working on your system.</p>
+
+<h2 id="GrobidJournalParser-InstallingGROBID">Installing GROBID</h2>
+<p>Currently, to install GROBID, it's necessary to start from the source code. We are currently working with the GROBID community to get pre-build binaries into Maven central, which is being tracked with <a class="external-link" href="https://github.com/kermitt2/grobid/issues/59" rel="nofollow">issue #59</a>. For now, a git checkout of head is recommended, as detailed here.</p>
+
+<p>You should be able to install GROBID from a Git checkout such as the below.</p>
+
+<ol>
+	<li><code>cd $HOME/src</code> 2. <code>git clone <a class="external-link" href="https://github.com/kermitt2/grobid.git" rel="nofollow">https://github.com/kermitt2/grobid.git</a></code><br/>
+    <em>now wait a while, the download is ~600MB</em> 3. now build GROBID by typing <code>cd grobid &amp;&amp; mvn install</code>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>You can verify GROBID works by running its batch runner:</p>
+
+<ol>
+	<li><code>cd $HOME/src/grobid</code> 2. <code>mkdir papers &amp;&amp; mkdir out</code> and put some PDF paper files in papers. 3. <code>java -Xmx1024m -jar grobid-core/target/grobid-core-0.3.4-SNAPSHOT.one-jar.jar -gH ./grobid-home/ -gP ./grobid-home/config/grobid.properties -dIn ./papers/ -dOut out -exe processFullText</code>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>Check the <code>out</code> directory, you should see <code>*.tei.xml</code> files in there.</p>
+
+<h3 id="GrobidJournalParser-StarttheGROBIDService">Start the GROBID Service</h3>
+
+<p>To use GROBID with Tika, you need to start the <a class="external-link" href="http://grobid.readthedocs.org/en/latest/Grobid-service/" rel="nofollow">GROBID Service</a>. To do so, perform the following (note the service will start by default on port 8080, but that can be changed in the Jetty properties by going to <a class="external-link" href="https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-service/pom.xml" rel="nofollow">Grobid Service's pom.xml</a> and editing <a class="external-link" href="https://github.com/kermitt2/grobid/blob/master/grobid-service/pom.xml#L180" rel="nofollow">line 180</a>).</p>
+
+<ol>
+	<li><code>cd $HOME/src/grobid/grobid-service</code> 2. <code>mvn -Dmaven.test.skip=true jetty:run-war</code>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>Once the server is started, you're good to proceed!</p>
+
+<h2 id="GrobidJournalParser-RunningGROBIDusingTika-App">Running GROBID using Tika-App</h2>
+
+<p>Grab the latest 1.11-SNAPSHOT or later version of Tika-app and run Grobid by following the commands below.</p>
+
+<p>First we need to create the <a class="unresolved" href="#">GrobidExtractor</a>.properties file that points to the Grobid REST Service. My file looks like the following:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>grobid.server.url=http://localhost:8080
+</pre>
+</div></div>
+
+<p>You can download <a class="external-link" href="https://raw.githubusercontent.com/chrismattmann/grobidparser-resources/master/org/apache/tika/parser/journal/GrobidExtractor.properties" rel="nofollow">GrobidExtractor.properties</a> as a sample. Or better yet, you can install the following Github project and then modify the <a class="unresolved" href="#">GrobidExtractor</a>.properties file accordingly.</p>
+
+<ol>
+	<li><code>cd $HOME/src &amp;&amp; git clone <a class="external-link" href="https://github.com/chrismattmann/grobidparser-resources.git" rel="nofollow">https://github.com/chrismattmann/grobidparser-resources.git</a></code> 2. edit <code>$HOME/src/grobidparser-resources/org/apache/tika/parser/journal/GrobidExtractor.properties</code>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>Now you can run GROBID via Tika-app with the following command on a sample PDF file.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -classpath $HOME/src/grobidparser-resources/:tika-app-1.11-SNAPSHOT.jar org.apache.tika.cli.TikaCLI --config=$HOME/src/grobidparser-resources/tika-config.xml -J $HOME/src/grobid/papers/ICSE06.pdf
+</pre>
+</div></div>
+
+<p>Which should produce as output (e.g., if piped to <code>python -mjson.tool</code> for pretty printing):</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+    {
+        &quot;Author&quot;: &quot;End User Computing Services&quot;,
+        &quot;Company&quot;: &quot;ACM&quot;,
+        &quot;Content-Length&quot;: &quot;200435&quot;,
+        &quot;Content-Type&quot;: &quot;application/pdf&quot;,
+        &quot;Creation-Date&quot;: &quot;2006-02-15T21:13:58Z&quot;,
+        &quot;Last-Modified&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;Last-Save-Date&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;SourceModified&quot;: &quot;D:20060215211344&quot;,
+        &quot;X-Parsed-By&quot;: [
+            &quot;org.apache.tika.parser.CompositeParser&quot;,
+            &quot;org.apache.tika.parser.journal.JournalParser&quot;
+        ],
+        &quot;X-TIKA:content&quot;: &quot;&lt;html xmlns=\&quot;http://www.w3.org/1999/xhtml\&quot;&gt;\n&lt;head&gt;\n&lt;meta name=\&quot;access_permission:extract_for_accessibility\&quot; content=\&quot;true\&quot; /&gt;\n&lt;meta name=\&quot;meta:save-date\&quot; content=\&quot;2006-02-15T21:16:01Z\&quot; /&gt;\n&lt;meta name=\&quot;grobid:header_Affiliation\&quot; content=\&quot;1 Jet Propulsion Laboratory California Institute of Technology; 2 Computer Science Department University of Southern California\&quot; /&gt;\n&lt;meta name=\&quot;Content-Length\&quot; content=\&quot;200435\&quot; /&gt;\n&lt;meta name=\&quot;dcterms:created\&quot; content=\&quot;2006-02-15T21:13:58Z\&quot; /&gt;\n&lt;meta name=\&quot;Author\&quot; content=\&quot;End User Computing Services\&quot; /&gt;\n&lt;meta name=\&quot;date\&quot; content=\&quot;2006-02-15T21:16:01Z\&quot; /&gt;\n&lt;meta name=\&quot;access_permission:can_modify\&quot; content=\&quot;true\&quot; /&gt;\n&lt;meta name=\&quot;creator\&quot; content=\&quot;End User Computing Services\&quot; /&gt;\n&lt;meta name=\&quot;access_permission:modify_annotations\&quot; content=\&quot;true\&quot; /&gt;\n&lt;meta name=\&quot;Creation-Date\&quot; content=\&quot;2006-02-15T21:13:58Z\&quot; /&gt;\n&lt;meta name=\&quot;grobid:header_Address\&quot; content=\&quot;Pasadena, CA 91109 USA Los Angeles, CA 90089 USA \&quot; /&gt;\n&lt;meta name=\&quot;meta:author\&quot; content=\&quot;End User Computing Services\&quot; /&gt;\n&lt;meta name=\&quot;created\&quot; content=\&quot;Wed Feb 15 13:13:58 PST 2006\&quot; /&gt;\n&lt;meta name=\&quot;access_permission:fill_in_form\&quot; content=\&quot;true\&quot; /&gt;\n&lt;meta name=\&quot;grobid:header_FullAffiliations\&quot; content=\&quot;[Affiliation {orgName=Jet Propulsion Laboratory California Institute of Technology , address=Pasadena, CA 91109 USA},Affiliation {orgName=Computer Science Department University of Southern California , address=Los Angeles, CA 90089 USA}[Affiliation {orgName=Jet Propulsion Laboratory California Institute of Technology , address=Pasadena, CA 91109 USA},Affiliation {orgName=Computer Science Department University of Southern California , address=Los Angeles, CA 90089 USA}]\&quot; /&gt;\n&lt;meta name=\&quot;grobid:header_Class\&quot; content=\&quot;org.apache.tika.metadata.Metadata\&quot; /&gt;\n&lt;meta name=\&quot;dc:format\&quot; content=\&quot;application/pdf; version=1.4\&quot; /&gt;\n&lt;meta name=\&quot;access_permission:can_print\&quot; content=\&quot;true\&quot; /&gt;\n&lt;meta name=\&quot;Company\&quot; content=\&quot;ACM\&quot; /&gt;\n&lt;meta name=\&quot;xmp:CreatorTool\&quot; content=\&quot;Acrobat PDFMaker 6.0 for Word\&quot; /&gt;\n&lt;meta name=\&quot;resourceName\&quot; content=\&quot;ICSE06.pdf\&quot; /&gt;\n&lt;meta name=\&quot;Last-Save-Date\&quot; content=\..snip&quot;,
+        &quot;X-TIKA:parse_time_millis&quot;: &quot;4302&quot;,
+        &quot;access_permission:assemble_document&quot;: &quot;true&quot;,
+        &quot;access_permission:can_modify&quot;: &quot;true&quot;,
+        &quot;access_permission:can_print&quot;: &quot;true&quot;,
+        &quot;access_permission:can_print_degraded&quot;: &quot;true&quot;,
+        &quot;access_permission:extract_content&quot;: &quot;true&quot;,
+        &quot;access_permission:extract_for_accessibility&quot;: &quot;true&quot;,
+        &quot;access_permission:fill_in_form&quot;: &quot;true&quot;,
+        &quot;access_permission:modify_annotations&quot;: &quot;true&quot;,
+        &quot;created&quot;: &quot;Wed Feb 15 13:13:58 PST 2006&quot;,
+        &quot;creator&quot;: &quot;End User Computing Services&quot;,
+        &quot;date&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;dc:creator&quot;: &quot;End User Computing Services&quot;,
+        &quot;dc:format&quot;: &quot;application/pdf; version=1.4&quot;,
+        &quot;dc:title&quot;: &quot;Proceedings Template - WORD&quot;,
+        &quot;dcterms:created&quot;: &quot;2006-02-15T21:13:58Z&quot;,
+        &quot;dcterms:modified&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;grobid:header_Address&quot;: &quot;Pasadena, CA 91109 USA Los Angeles, CA 90089 USA &quot;,
+        &quot;grobid:header_Affiliation&quot;: &quot;1 Jet Propulsion Laboratory California Institute of Technology; 2 Computer Science Department University of Southern California&quot;,
+        &quot;grobid:header_Authors&quot;: &quot;Chris A Mattmann 1,2 Daniel J Crichton 1 Nenad  Medvidovic 2 Steve  Hughes 1 &quot;,
+        &quot;grobid:header_Class&quot;: &quot;org.apache.tika.metadata.Metadata&quot;,
+        &quot;grobid:header_FullAffiliations&quot;: &quot;[Affiliation {orgName=Jet Propulsion Laboratory California Institute of Technology , address=Pasadena, CA 91109 USA},Affiliation {orgName=Computer Science Department University of Southern California , address=Los Angeles, CA 90089 USA}[Affiliation {orgName=Jet Propulsion Laboratory California Institute of Technology , address=Pasadena, CA 91109 USA},Affiliation {orgName=Computer Science Department University of Southern California , address=Los Angeles, CA 90089 USA}]&quot;,
+        &quot;grobid:header_Keyword&quot;: &quot;\&quot;D2 Software Engineering, D211 Domain Specific Architectures\&quot;&quot;,
+        &quot;grobid:header_TEIJSONSource&quot;: &quot;{\&quot;TEI\&quot;:{\&quot;text\&quot;:{..snip&quot;,
+        &quot;grobid:header_TEIXMLSource&quot;: &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&lt;?xml-model href=\&quot;file:///Users/mattmann/git/grobid/grobid-home/schemas/rng/Grobid.rng\&quot; schematypens=\&quot;http://relaxng.org/ns/structure/1.0\&quot;?&gt;\n&lt;TEI xmlns=\&quot;http://www.tei-c.org/ns/1.0\&quot;&gt;\n\t&lt;teiHeader xml:lang=\&quot;en\&quot;&gt;\n\t\t&lt;fileDesc&gt;\n\t\t\t&lt;titleStmt&gt;\n\t\t\t\t&lt;title level=\&quot;a\&quot; type=\&quot;main\&quot;&gt;A Software Architecture-Based Framework for Highly Distributed and Data Intensive Scientific Applications&lt;/title&gt;\n\t\t\t&lt;/titleStmt&gt;\n\t\t\t&lt;publicationStmt&gt;\..snip&lt;/TEI&gt;\n&quot;,
+        &quot;grobid:header_Title&quot;: &quot;A Software Architecture-Based Framework for Highly Distributed and Data Intensive Scientific Applications&quot;,
+        &quot;meta:author&quot;: &quot;End User Computing Services&quot;,
+        &quot;meta:creation-date&quot;: &quot;2006-02-15T21:13:58Z&quot;,
+        &quot;meta:save-date&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;modified&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;pdf:PDFVersion&quot;: &quot;1.4&quot;,
+        &quot;pdf:encrypted&quot;: &quot;false&quot;,
+        &quot;producer&quot;: &quot;Acrobat Distiller 6.0 (Windows)&quot;,
+        &quot;resourceName&quot;: &quot;ICSE06.pdf&quot;,
+        &quot;title&quot;: &quot;Proceedings Template - WORD&quot;,
+        &quot;xmp:CreatorTool&quot;: &quot;Acrobat PDFMaker 6.0 for Word&quot;,
+        &quot;xmpTPg:NPages&quot;: &quot;10&quot;
+    }
+]
+</pre>
+</div></div>
+
+<h2 id="GrobidJournalParser-WillthisworkfromTikaServer?">Will this work from Tika Server?</h2>
+
+<p>It sure will! When you start Tika Server, use the following command.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -classpath $HOME/src/grobidparser-resources/:tika-server-1.11-SNAPSHOT.jar org.apache.tika.server.TikaServerCli --config $HOME/src/grobidparser-resources/tika-config.xml
+</pre>
+</div></div>
+
+<p>Then, PUT a file to Tika-server like so:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T $HOME/src/grobid/papers/ICSE06.pdf -H &quot;Content-Disposition: attachment;filename=ICSE06.pdf&quot; http://localhost:9998/rmeta
+</pre>
+</div></div>
+
+<p>Which will output (if e.g., using <code>python -mjson.tool</code>):</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+    {
+        &quot;Author&quot;: &quot;End User Computing Services&quot;,
+        &quot;Company&quot;: &quot;ACM&quot;,
+        &quot;Content-Type&quot;: &quot;application/pdf&quot;,
+        &quot;Creation-Date&quot;: &quot;2006-02-15T21:13:58Z&quot;,
+        &quot;Last-Modified&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;Last-Save-Date&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;SourceModified&quot;: &quot;D:20060215211344&quot;,
+        &quot;X-Parsed-By&quot;: [
+            &quot;org.apache.tika.parser.CompositeParser&quot;,
+            &quot;org.apache.tika.parser.journal.JournalParser&quot;
+        ],
+        &quot;X-TIKA:content&quot;: &quot;\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nProceedings Template - WORD\n\n\nA Software Architecture-Based Framework for Highly \nDistributed and Data Intensive Scientific Applications \n\n \nChris A. Mattmann1, 2        Daniel J. Crichton1        Nenad Medvidovic2        Steve Hughes1 \n\n \n1Jet Propulsion Laboratory \n\nCalifornia Institute of Technology \nPasadena, CA 91109, USA \n\n{dan.crichton,mattmann,steve.hughes}@jpl.nasa.gov \n\n2Computer Science Department \nUniversity of Southern California  \n\nLos Angeles, CA 90089, USA \n{mattmann,neno}@usc.edu \n\n \nABSTRACT \nModern scientific research is increasingly conducted by virtual \ncommunities of scientists distributed around the world. The data \nvolumes created by these communities are extremely large, and \ngrowing rapidly. The management of the resulting highly \ndistributed, virtual data systems is a complex task, characterized \nby a number of formidable technical challenges, many of which \nare of a software engineering nature.  In this paper we describe \nour experience over the past seven years in constructing and \ndeploying OODT, a software framework that supports large, \ndistributed, virtual scientific communities. We outline the key \nsoftware engineering challenges that we faced, and addressed, \nalong the way. We argue that a major contributor to the success of \nOODT was its explicit focus on software architecture. We \ndescribe several large-scale, real-world deployments of OODT, \nand the manner in which OODT helped us to address the domain-\nspecific challenges induced by each deployment.  \n\nCategories and Subject Descriptors \nD.2 Software Engineering, D.2.11 Domain Specific Architectures \n\nKeywords \nOODT, Data Management, Software Architecture. \n\n1. INTRODUCTION ..snip..&quot;,
+        &quot;X-TIKA:parse_time_millis&quot;: &quot;957&quot;,
+        &quot;access_permission:assemble_document&quot;: &quot;true&quot;,
+        &quot;access_permission:can_modify&quot;: &quot;true&quot;,
+        &quot;access_permission:can_print&quot;: &quot;true&quot;,
+        &quot;access_permission:can_print_degraded&quot;: &quot;true&quot;,
+        &quot;access_permission:extract_content&quot;: &quot;true&quot;,
+        &quot;access_permission:extract_for_accessibility&quot;: &quot;true&quot;,
+        &quot;access_permission:fill_in_form&quot;: &quot;true&quot;,
+        &quot;access_permission:modify_annotations&quot;: &quot;true&quot;,
+        &quot;created&quot;: &quot;Wed Feb 15 13:13:58 PST 2006&quot;,
+        &quot;creator&quot;: &quot;End User Computing Services&quot;,
+        &quot;date&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;dc:creator&quot;: &quot;End User Computing Services&quot;,
+        &quot;dc:format&quot;: &quot;application/pdf; version=1.4&quot;,
+        &quot;dc:title&quot;: &quot;Proceedings Template - WORD&quot;,
+        &quot;dcterms:created&quot;: &quot;2006-02-15T21:13:58Z&quot;,
+        &quot;dcterms:modified&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;grobid:header_Address&quot;: &quot;Pasadena, CA 91109 USA Los Angeles, CA 90089 USA &quot;,
+        &quot;grobid:header_Affiliation&quot;: &quot;1 Jet Propulsion Laboratory California Institute of Technology; 2 Computer Science Department University of Southern California&quot;,
+        &quot;grobid:header_Authors&quot;: &quot;Chris A Mattmann 1,2 Daniel J Crichton 1 Nenad  Medvidovic 2 Steve  Hughes 1 &quot;,
+        &quot;grobid:header_Class&quot;: &quot;org.apache.tika.metadata.Metadata&quot;,
+        &quot;grobid:header_FullAffiliations&quot;: &quot;[Affiliation {orgName=Jet Propulsion Laboratory California Institute of Technology , address=Pasadena, CA 91109 USA},Affiliation {orgName=Computer Science Department University of Southern California , address=Los Angeles, CA 90089 USA}[Affiliation {orgName=Jet Propulsion Laboratory California Institute of Technology , address=Pasadena, CA 91109 USA},Affiliation {orgName=Computer Science Department University of Southern California , address=Los Angeles, CA 90089 USA}]&quot;,
+        &quot;grobid:header_Keyword&quot;: &quot;\&quot;D2 Software Engineering, D211 Domain Specific Architectures\&quot;&quot;,
+        &quot;grobid:header_TEIJSONSource&quot;: &quot;{\&quot;TEI\&quot;:{\&quot;text\&quot;:{\&quot;xml:lang\&quot;:\&quot;en\&quot;},\&quot;teiHeader\&quot;: ..snip&quot;,
+        &quot;grobid:header_TEIXMLSource&quot;: &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&lt;?xml-model href=\&quot;file:///Users/mattmann/git/grobid/grobid-home/schemas/rng/Grobid.rng\&quot; schematypens=\&quot;http://relaxng.org/ns/structure/1.0\&quot;?&gt;\n&lt;TEI xmlns=\&quot;http://www.tei-c.org/ns/1.0\&quot;&gt;\n\t&lt;teiHeader xml:lang=\&quot;en\&quot;&gt;\n\t\t&lt;fileDesc&gt;\n\t\t\t&lt;titleStmt&gt;\n\t\t\t\t&lt;title level=\&quot;a\&quot; type=\&quot;main\&quot;&gt;A Software Architecture-Based Framework for Highly Distributed and Data Intensive Scientific Applications&lt;/title&gt;..snip..&lt;/TEI&gt;\n&quot;,
+        &quot;grobid:header_Title&quot;: &quot;A Software Architecture-Based Framework for Highly Distributed and Data Intensive Scientific Applications&quot;,
+        &quot;meta:author&quot;: &quot;End User Computing Services&quot;,
+        &quot;meta:creation-date&quot;: &quot;2006-02-15T21:13:58Z&quot;,
+        &quot;meta:save-date&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;modified&quot;: &quot;2006-02-15T21:16:01Z&quot;,
+        &quot;pdf:PDFVersion&quot;: &quot;1.4&quot;,
+        &quot;pdf:encrypted&quot;: &quot;false&quot;,
+        &quot;producer&quot;: &quot;Acrobat Distiller 6.0 (Windows)&quot;,
+        &quot;resourceName&quot;: &quot;ICSE06.pdf&quot;,
+        &quot;title&quot;: &quot;Proceedings Template - WORD&quot;,
+        &quot;xmp:CreatorTool&quot;: &quot;Acrobat PDFMaker 6.0 for Word&quot;,
+        &quot;xmpTPg:NPages&quot;: &quot;10&quot;
+    }
+]
+
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

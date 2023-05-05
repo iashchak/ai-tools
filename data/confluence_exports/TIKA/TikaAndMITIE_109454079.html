@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaAndMITIE</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaAndMITIE
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaAndMITIE-MITInformationExtraction(MITIE)withTika">MIT Information Extraction (MITIE) with Tika</h1>
+
+<p>MIT Information Extraction provides free state-of-the-art information extraction tools. The current release includes tools for performing named entity extraction and binary relation detection as well as tools for training custom extractors and relation detectors. </p>
+
+<p>Support for MITIE is provided as a runtime binding in Tika <code>org.apache.tika.parser.ner.mitie.MITIENERecogniser</code> class</p>
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429974 {padding: 0px;}
+div.rbtoc1683040429974 ul {margin-left: 0px;}
+div.rbtoc1683040429974 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429974'>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndMITIE-MITInformationExtraction(MITIE)withTika'>MIT Information Extraction (MITIE) with Tika</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndMITIE-Installation'>Installation</a></li>
+<li><a href='#TikaAndMITIE-RunningMITIEwithTika-App'>Running MITIE with Tika-App</a></li>
+<li><a href='#TikaAndMITIE-RunningMITIEwithTika-Server'>Running MITIE with Tika-Server</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h2 id="TikaAndMITIE-Installation">Installation</h2>
+<ol>
+	<li><strong>Simple by downloading <a class="external-link" href="https://github.com/manalishah/mitie-resources" rel="nofollow">mitie-resources</a></strong> : Use following commands to set up your mitie-resources.
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+ <em>MAC OS Requirement</em>: Download and install <a class="external-link" href="http://brew.sh/" rel="nofollow">Homebrew</a>.
+<br class="atl-forced-newline"/>
+ <em>Linux/Windows</em>: No pre-requisite.
+<br class="atl-forced-newline"/>
+ <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> git clone https://github.com/manalishah/mitie-resources
+ cd mitie-resources
+ # absolute path to mitie-resources folder 
+ export NER_RES=$PWD
+ chmod a+x install.sh
+ ./install.sh
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TikaAndMITIE-RunningMITIEwithTika-App">Running MITIE with Tika-App</h2>
+<p> For running MITIE, the following steps are essential:</p>
+<ul>
+	<li>Supply the java.library.path as absolute path to jni shared library obtained from building MITIE (required for MAC OS only)</li>
+	<li>Supply the javamitie.jar in classpath</li>
+	<li>Supply the complete model path to ner_model obtained from building MITIE</li>
+	<li>Supply the ner implementation class as MITIENERecogniser
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<ol>
+	<li>* For Mac OS*  
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> export TIKA_APP={your/path/to/tika-app}/target/tika-app-1.13-SNAPSHOT.jar
+
+ java -Djava.library.path=$NER_RES/MITIE/mitielib -Dner.mitie.model=$NER_RES/MITIE/MITIE-models/english/ner_model.dat -Dner.impl.class=org.apache.tika.parser.ner.mitie.MITIENERecogniser -classpath $NER_RES/MITIE/mitielib/javamitie.jar:$TIKA_APP org.apache.tika.cli.TikaCLI --config=$NER_RES/tika-config.xml -m $NER_RES/sample.txt
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ 2. * For LINUX/Windows*  
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> export TIKA_APP={your/path/to/tika-app}/target/tika-app-1.13-SNAPSHOT.jar
+
+ java -Dner.mitie.model=$NER_RES/MITIE/MITIE-models/english/ner_model.dat -Dner.impl.class=org.apache.tika.parser.ner.mitie.MITIENERecogniser -classpath $NER_RES/MITIE/mitielib/javamitie.jar:$TIKA_APP org.apache.tika.cli.TikaCLI --config=$NER_RES/tika-config.xml -m $NER_RES/sample.txt
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ This will output metadata keys along with named entities extracted using mitie: 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> Content-Length: 63
+ Content-Type: text/plain
+ NER_LOCATION: Los Angeles
+ NER_LOCATION: California
+ X-Parsed-By: org.apache.tika.parser.CompositeParser
+ X-Parsed-By: org.apache.tika.parser.ner.NamedEntityParser
+ resourceName: sample.txt
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TikaAndMITIE-RunningMITIEwithTika-Server">Running MITIE with Tika-Server</h2>
+
+<ol>
+	<li>* For Mac OS*  
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> export TIKA_SERVER={your/path/to/tika-server}/target/tika-server-1.13-SNAPSHOT.jar
+
+ java -Djava.library.path=$NER_RES/MITIE/mitielib -Dner.mitie.model=$NER_RES/MITIE/MITIE-models/english/ner_model.dat -Dner.impl.class=org.apache.tika.parser.ner.mitie.MITIENERecogniser -classpath $NER_RES/MITIE/mitielib/javamitie.jar:$TIKA_SERVER org.apache.tika.server.TikaServerCli --config=$NER_RES/tika-config.xml -p 9998
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ 2. * For LINUX/Windows*  
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> export TIKA_SERVER={your/path/to/tika-server}/target/tika-server-1.13-SNAPSHOT.jar
+
+ java -Dner.mitie.model=$NER_RES/MITIE/MITIE-models/english/ner_model.dat -Dner.impl.class=org.apache.tika.parser.ner.mitie.MITIENERecogniser -classpath $NER_RES/MITIE/mitielib/javamitie.jar:$TIKA_SERVER org.apache.tika.server.TikaServerCli --config=$NER_RES/tika-config.xml -p 9998
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ This will start the Tika-Server enabled with MITIE Named Entity Parser at <a class="external-link" href="http://localhost:9998" rel="nofollow">http://localhost:9998</a>
+<br class="atl-forced-newline"/>
+ To test the server try the sample.txt file provided in the mitie-resources folder
+<br class="atl-forced-newline"/>
+ <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> curl -T $NER_RES/sample.txt http://localhost:9998/meta -H &quot;Accept: application/json&quot;
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ This should return metadata keys in a JSON format: 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> {
+  &quot;Content-Type&quot;:&quot;text/plain&quot;,
+  &quot;NER_LOCATION&quot;:[&quot;Los Angeles&quot;,&quot;California&quot;],
+  &quot;X-Parsed-By&quot;:[&quot;org.apache.tika.parser.CompositeParser&quot;,&quot;org.apache.tika.parser.ner.NamedEntityParser&quot;],
+  &quot;language&quot;:&quot;sl&quot;
+ }
+ </pre>
+</div></div></li>
+</ol>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

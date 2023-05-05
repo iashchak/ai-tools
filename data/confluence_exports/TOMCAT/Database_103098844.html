@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Database</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Database
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 24, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/3CklBg" rel="nofollow">https://cwiki.apache.org/confluence/x/3CklBg</a></p><h2 id="Database-Preface">Preface</h2><p>This page is to discuss database error and DBCP. Until more content can appear here, here are some links to the mail archives to perform some searches:</p><ul><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;w=2&amp;r=1&amp;s=database&amp;q=b" rel="nofollow">database</a></li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;w=2&amp;r=1&amp;s=datasource&amp;q=b" rel="nofollow">datasource</a></li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;w=2&amp;r=1&amp;s=oracle&amp;q=b" rel="nofollow">oracle</a></li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;w=2&amp;r=1&amp;s=mysql&amp;q=b" rel="nofollow">mysql</a></li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;w=2&amp;r=1&amp;s=dbpool&amp;q=b" rel="nofollow">dbpool</a></li></ul><p>Other Links of interest:</p><ul><li><a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html" rel="nofollow">JNDI Datasource HOW-TO</a></li></ul><h2 id="Database-Questions">Questions</h2><ol><li><a href="#Database-Q1">Is it safe to use JDBC-ODBC bridge in production environment?</a></li><li><a href="#Database-Q2">How to use Orache thin driver?</a></li><li><a href="#Database-Q3">How to use JDBC 3 driver with Tomcat 8?</a></li></ol><h2 id="Database-Answers">Answers</h2><h3 id="Database-Q1IsitsafetouseJDBC-ODBCbridgeinproductionenvironment?"><span class="confluence-anchor-link" id="Database-Q1"></span>Is it safe to use JDBC-ODBC bridge in production environment?</h3><p>No, do not use JDBC-ODBC bridge bundled with Sun's JDK with Tomcat. It was never meant for a production server environment. If you ask a question about it, everyone will tell you to not use it. If you do need to use ODBC, there are 3rd party drivers which do a pretty good job at being thread safe.</p><h3 id="Database-Q2HowtouseOrachethindriver?"><span class="confluence-anchor-link" id="Database-Q2"></span>How to use Orache thin driver?</h3><p>If you use the Oracle thin driver, be sure to rename it to a jar file from a zip file. Tomcat only auto-magically loads files ending in .jar placed in a lib directory. It ignores all other file extensions.</p><h3 id="Database-Q3HowtouseJDBC3driverwithTomcat8/DBCP2?"><span class="confluence-anchor-link" id="Database-Q3"></span>How to use JDBC 3 driver with Tomcat 8 / DBCP 2?</h3><p>One of the connection pool implementations in Tomcat 8 is DBCP 2, and DBCP 2 calls Connection.isValid(int) method when no validationQuery is specified. IsValid(int) method is introduced with JDBC 4. If you must use JDBC 3 driver with Tomcat 8 / DBCP 2, make sure that you specify <code>validationQuery</code> attribute in pool configuration.</p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

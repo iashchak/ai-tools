@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : NMT-RTG</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Translate_177049143.html">Translate</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : NMT-RTG
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Thamme Gowda</span>, last modified on апр 03, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="NMTRTG-Introduction">Introduction</h2><p>The page provides details on how to translate documents (via the <a class="external-link" href="http://tika.apache.org/1.13/api/index.html?org/apache/tika/language/translate/Translator.html" rel="nofollow">Tika.translate</a> API) using Reader Translator Generator, a neural machine translation toolkit.</p><p>The benefits of using this approach for machine translation through Tika are as follows;</p><ul><li>It's free! As opposed to several other translation services currently available via Tika, NMT via RTG is free.<ul><li>You are not restricted under usage ceiling, and you don't have to allocate monthly payments. There is no paid service behind the scene, you can use this method completely unrestricted.</li></ul></li><li>You will have full control over the whole pipeline.You may either build NMT models or download pretrained models, set up server and manage backend.<br/><ul><li>Your data and documents are not sent to any services outside of your pipeline. So you can guarantee privacy of your data.</li></ul></li></ul><p>Though, you have to keep these in mind:</p><ul><li>Though you may run the model on CPU for testing, the translation will be very slow on CPUs. GPUs are highly recommended.</li><li>NMT models are not interpretable and explainable. We cannot explain or guarantee that the translations are 100% correct. This is not specific to RTG/NMT; it is generally true for all neural machine translation services.</li></ul><p><br/><a class="external-link" href="https://github.com/apache/tika/pull/419" rel="nofollow">This is relatively a new addition;</a> the following translation models are currently available:</p><ul><li><a class="external-link" href="http://rtg.isi.edu/many-eng/" rel="nofollow">Translation from 500 source languages to English </a></li></ul><p><br/>To train models for your desired translation direction, please refer to the documentation at <a class="external-link" href="https://isi-nlp.github.io/rtg/#_usage" rel="nofollow">https://isi-nlp.github.io/rtg/#_usage</a></p><h2 id="NMTRTG-Integration:Overview">Integration: Overview</h2><br/>The class <code>org.apache.tika.language.translate.RTGTranslator</code> glues Tika system with RTG REST API.<br/>By default, it interacts with <a class="external-link" href="http://localhost:6060" rel="nofollow">http://localhost:6060</a>.<br/>This URL can be customized by adding <code>translator.rtg.properties</code> file to classpath with <code>rtg.base.url</code> property.<br/><h2 id="NMTRTG-500LanguagestoEnglishTranslation">500 Languages to English Translation</h2><h3 id="NMTRTG-Step1:StartRTGTranslatorService"><br/>Step 1: Start RTG Translator Service</h3><p>500-English model can be obtained from a docker image as follows</p><p>Docker image can be run on CPU (i.e. without GPU, for testing):<br/><code>   docker run --rm -i -p 6060:6060 tgowda/rtg-model:500toEng-v1<br/></code><br/>Using GPU (e.g. Device 0) is recommended for translating a lot of documents:<br/>   <code>docker run --rm -i -p 6060:6060 --gpus '&quot;device=0&quot;' tgowda/rtg-model:500toEng-v1</code></p><p>Verify that the translator serive is actually running by accessing <a class="external-link" href="http://localhost:6060/" rel="nofollow">http://localhost:6060/</a> <br/><br/></p><h3 id="NMTRTG-Step2:StartTikaServerJar">Step 2: Start Tika Server Jar</h3><p><strong>Option 1: Obtain prebuilt jar</strong><br/>Note: This option is for the future versions. The current prebuilt jars do not have this feature integrated. Go to Option 2.</p><pre>wget <a class="external-link" href="https://www.apache.org/dyn/closer.cgi/tika/tika-server-1.26.jar" rel="nofollow">https://www.apache.org/dyn/closer.cgi/tika/tika-server-2.0.0.jar</a> </pre><p><br/></p><p><strong>Option 2: Build Tika Server from source</strong></p><pre class="copyable-terminal-content">$ git clone https://github.com/apache/tika.git<br/>$ cd tika<span class="user-select-contain"><br/></span></pre><pre class="copyable-terminal-content"><span class="user-select-contain"># if the pull request is not merged yet; please pull from this repo<br/>$ git checkout -b TIKA-3329 <br/>$ </span><span class="user-select-contain">git pull <span>https://github.com/thammegowda/tika.git</span> TIKA-3329<br/><br/># Compile and package Tika<br/></span></pre><pre>$ mvn clean package -DskipTests </pre><br/><pre># Start Tika server<br/>$ java -jar tika-server/target/tika-server-2.0.0-SNAPSHOT.jar</pre><h3 id="NMTRTG-Step3:TranslateDocumentsviaTika+RTG">Step 3:Translate Documents via Tika + RTG</h3><p><br/><code>printf &quot;Hola señor\nನಮಸ್ಕಾರ\nBonjour monsieur\nПривет\n&quot; &gt; tmp.txt </code><br/><code>$ curl <a class="external-link" href="http://localhost:9998/translate/all/org.apache.tika.language.translate.RTGTranslator/x/eng" rel="nofollow">http://localhost:9998/translate/all/org.apache.tika.language.translate.RTGTranslator/x/eng</a> -X PUT -T tmp.txt </code></p><p><code>Hi, sir.</code><br/><code>Namaskar</code><br/><code>Good morning, sir.</code><br/><code>Hi.</code></p><p><br/><strong>Optional: Change the base URL of RTG translator service</strong></p><p>You may deploy RTG service elsewhere (on a machine with GPU) and point its URL to tika.</p><p><br/>Step 1: Create a file named <code><em>translator.rtg.properties</em></code> with <em><code>rtg.base.url</code></em> property</p><pre>    echo &quot;rtg.base.url=http://&lt;myhost&gt;:&lt;port&gt;/rtg/v1&quot; &gt; translator.rtg.properties </pre><p>Step 2: Add the directory having <code>translator.rtg.properties</code> to classpath; In this case . i.e, $PWD<br/><br/>       <code>java -cp '.:tika-server/target/tika-server-2.0.0-SNAPSHOT.jar' org.apache.tika.server.TikaServerCli</code><br/><br/>Step 3: Interact with Tika Server as usual</p><p> <code>$ curl <a class="external-link" href="http://localhost:9998/translate/all/org.apache.tika.language.translate.RTGTranslator/x/eng" rel="nofollow">http://localhost:9998/translate/all/org.apache.tika.language.translate.RTGTranslator/x/eng</a> -X PUT -T tmp.txt</code></p><p><br/></p><p><br/></p><h2 id="NMTRTG-Acknowledgements">Acknowledgements</h2><p>If you wish to acknowledge or reference either RTG toolkit or  the 500-English model, please reference this article: <a class="external-link" href="https://arxiv.org/abs/2104.00290" rel="nofollow">https://arxiv.org/abs/2104.00290</a> </p><pre><br/></pre><pre>@misc{gowda2021manytoenglish,<br/>   title={Many-to-English Machine Translation Tools, Data, and Pretrained Models},<br/>   author={Thamme Gowda and Zhao Zhang and Chris A Mattmann and Jonathan May},<br/>   year={2021},<br/>   eprint={2104.00290},<br/>   archivePrefix={arXiv},<br/>   primaryClass={cs.CL}<br/>}</pre></div>
+</div>
+</div>
+<div class="columnLayout single" data-layout="single">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p><br/></p></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

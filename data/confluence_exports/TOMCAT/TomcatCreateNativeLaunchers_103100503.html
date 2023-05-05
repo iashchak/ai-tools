@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : TomcatCreateNativeLaunchers</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OS_107970699.html">OS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : TomcatCreateNativeLaunchers
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on апр 17, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="TomcatCreateNativeLaunchers-NativeTomcatLaunchers">Native Tomcat Launchers</h2>
+
+<p>Sometimes it is convinient to start Tomcat using a native launcher under Windows &amp; Mac OS X</p>
+
+<ul>
+	<li>Clear distinction between other running Tomcat instances</li>
+	<li>Integration with desktop application launchers</li>
+	<li>Shipping a Tomcat-based product
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>In my particular use case I was creating native launchers for Apache JSPWiki (see <a class="external-link" href="https://jspwiki.apache.org" rel="nofollow">https://jspwiki.apache.org</a>)</p>
+
+<h3 id="TomcatCreateNativeLaunchers-AvailableOptions">Available Options</h3>
+
+<p>What options do you have in the open-source world</p>
+
+<ul>
+	<li>for Mac OS and Oracle JDK you can use <a class="unresolved" href="#">AppBundler</a> (see <a class="external-link" href="http://docs.oracle.com/javase/7/docs/technotes/guides/jweb/packagingAppsForMac.html" rel="nofollow">http://docs.oracle.com/javase/7/docs/technotes/guides/jweb/packagingAppsForMac.html</a>)</li>
+	<li>for Windows you can use Launch4J (see <a class="external-link" href="http://launch4j.sourceforge.net" rel="nofollow">http://launch4j.sourceforge.net</a>)
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h3 id="TomcatCreateNativeLaunchers-MacOSX">Mac OS X <a class="unresolved" href="#">AppBundler</a></h3>
+
+<p>The following snippet </p>
+
+<ul>
+	<li>defines an a Ant task definition &quot;bundleappp&quot;</li>
+	<li>invokes the &quot;bundleapp&quot; tasks to create a native Mac OS X launcher</li>
+	<li>sets the executable flag of the underyling native launcher (just to make 100% sure the file is exetuable)
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;target name=&quot;woas:mac-app-oracle-jdk&quot; description=&quot;creates an Mac OS X application wrapper for Oracle JDK 1.7+&quot;&gt;
+    &lt;taskdef 
+        name=&quot;bundleapp&quot; 
+        classname=&quot;com.oracle.appbundler.AppBundlerTask&quot;
+        classpath=&quot;${basedir}/src/resources/appbundler/appbundler-1.0.jar&quot; 
+    /&gt;
+    &lt;bundleapp 
+        outputdirectory=&quot;${jspwiki.woas.assembly.dir}&quot;
+        name=&quot;woas&quot;
+        displayname=&quot;Portable JSPWiki&quot;
+        identifier=&quot;org.apache.jspwiki.jspwiki-portable&quot;
+        icon=&quot;${basedir}/src/resources/macos/jspwiki.icns&quot;
+        shortversion=&quot;${jspwiki.woas.version}&quot;
+        applicationCategory=&quot;public.app-category.developer-tools&quot;
+        mainclassname=&quot;org.apache.catalina.startup.Bootstrap&quot;&gt;
+        &lt;classpath file=&quot;${basedir}/target/unpack/tomcat/${jspwiki.tomcat.distribution}/bin/bootstrap.jar&quot;/&gt;
+        &lt;classpath file=&quot;${basedir}/target/unpack/tomcat/${jspwiki.tomcat.distribution}/bin/tomcat-juli.jar&quot;/&gt;
+        &lt;option value=&quot;-Xmx96m&quot;/&gt;
+        &lt;option value=&quot;-Duser.dir=$APP_ROOT/..&quot;/&gt;
+        &lt;option value=&quot;-Dcatalina.home=$APP_ROOT/..&quot;/&gt;
+        &lt;option value=&quot;-Dcatalina.base=$APP_ROOT/..&quot;/&gt;
+        &lt;option value=&quot;-Djava.io.tmpdir=$APP_ROOT/../temp&quot;/&gt;
+    &lt;/bundleapp&gt;
+    &lt;chmod file=&quot;${jspwiki.woas.assembly.dir}/woas.app/Contents/MacOS/JavaAppLauncher&quot; perm=&quot;ugo+x&quot;/&gt;
+&lt;/target&gt;    
+</pre>
+</div></div>
+
+<p>Some notes along the line</p>
+
+<ul>
+	<li>&quot;APP_ROOT&quot; is the directory of the Mac OS X launcher and will be expanded accordingly during run-time</li>
+	<li>The current working directory is undefined therefore all &quot;important&quot; properties must be provided</li>
+	<li>The two referenced JARs are effectively copied into the native launcher</li>
+	<li>No JRE is packaged since it assumed that the JRE is available on the target box</li>
+	<li>If you need to change the memory settings for an existing native app than you can edit the &quot;Info.plist&quot; directly</li>
+	<li>If the native app is starting at all you get no error message which is a bit annoying - as work-around you can launch at the command line to see the output, e.g &quot;./woas.app/Contents/MacOS/JavaAppLauncher&quot;
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h3 id="TomcatCreateNativeLaunchers-WindowsLaunch4J">Windows Launch4J</h3>
+
+<ul>
+	<li>Defines an a Ant task definition &quot;launch4j&quot;</li>
+	<li>Invokes the &quot;launch4j&quot; tasks to create a native Mac OS X launcher
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;target name=&quot;woas:windows-app&quot; description=&quot;creates an windows application wrapper&quot;&gt;
+    &lt;taskdef 
+      name=&quot;launch4j&quot;
+      classname=&quot;net.sf.launch4j.ant.Launch4jTask&quot;
+      classpath=&quot;${basedir}/src/resources/launch4j/launch4j-3.1.0-beta2.jar:${basedir}/src/resources/launch4j/xstream.jar&quot; 
+    /&gt;
+    &lt;launch4j&gt;
+      &lt;config 
+        headerType=&quot;console&quot; 
+        outfile=&quot;${jspwiki.woas.assembly.dir}/woas.exe&quot; 
+        errTitle=&quot;WikiOnAStick&quot; 
+        chdir=&quot;.&quot; 
+        icon=&quot;${basedir}/src/resources/windows/jspwiki.ico&quot;
+        jar=&quot;${basedir}/src/resources/tomcat/tomcat-launcher-7.0.52.jar&quot;
+        &gt;
+        &lt;singleInstance mutexName=&quot;org.apache.jspwiki.jspwiki-portable&quot; /&gt;
+        &lt;jre minVersion=&quot;1.6.0&quot; /&gt;
+        &lt;versionInfo
+          fileVersion=&quot;2.1.10.1&quot;
+          txtFileVersion=&quot;JSPWiki ${jspwiki.woas.version}&quot;
+          fileDescription=&quot;WikiOnAStick&quot;
+          copyright=&quot;Apache Software Licence 2.0&quot;
+          productVersion=&quot;2.1.10.1&quot;
+          txtProductVersion=&quot;JSPWiki ${jspwiki.woas.version}&quot;
+          productName=&quot;WikiOnAStick&quot;
+          companyName=&quot;Apache Software Foundation&quot;
+          internalName=&quot;woas&quot;
+          originalFilename=&quot;woas.exe&quot;
+        /&gt;        
+      &lt;/config&gt;  
+    &lt;/launch4j&gt;
+  &lt;/target&gt;    
+</pre>
+</div></div>
+
+<p>Some notes along the line</p>
+
+<ul>
+	<li>Launch4J allows to set the current working directory of the Tomcat instance therefore all Tomcat properties are bootstrapped for the current working directory</li>
+	<li>I cheated here by providing a manually packaged &quot;tomcat-launcher-7.0.52.jar&quot; which contains &quot;bootstrap.jar&quot; and &quot;tomcat-juli.jar&quot; - I think there is a way to avoid this but I have to test it on an Windows box
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/></li>
+</ul>
+
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

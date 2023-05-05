@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : TomcatOnSolaris10</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OS_107970699.html">OS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : TomcatOnSolaris10
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on июл 29, 2011
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    
+<h1 id="TomcatOnSolaris10-RunningTomcatonSunSolaris10">Running Tomcat on Sun Solaris 10</h1>
+<p>Solaris 10 comes pre installed with a Tomcat 5.5 installation.</p>
+
+<p>Having found little information on the setup I decided to contribute what little useful things I found here</p>
+
+<h4 id="TomcatOnSolaris10-THEENVIRONMENT">THE ENVIRONMENT</h4>
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>The following assumes you have Java already installed. java is usually installed in /usr/java. This is a symbolic link from the actual installation in /usr/jdk/jdk1.6.0_[Update]</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p><strong>THE PROBLEM</strong></p>
+
+<p>Solaris comes with apache and tomcat preinstalled, just not in the locations you would expect unless your are familiar with Solaris. Solaris 10 comes with a new method for starting and stopping services on system startup, called SMF(Service Management Facility).</p>
+
+<p>Software installation directory</p>
+
+<p><em>/usr/apache/tomcat55</em></p>
+
+<p>Configuration, logs, and deployed applications (webapps directory)</p>
+
+<p><em>/var/apache/tomcat55</em></p>
+
+<p>If you where to run multiple instances of tomcat your would want to duplicate the whole <em>/var/apache/tomcat55</em> directory, create new startup.sh shutdown.sh scripts setting a CATALINA_BASE environment variable pointing to your new instance.</p>
+
+<h2 id="TomcatOnSolaris10-ConfiguringSMFtostartandstoptomcat">Configuring SMF to start and stop tomcat</h2>
+<p>Create file in the following location. (The location does not really matter but the convention says so.)</p>
+
+<p><em>/var/svc/manifest/application/web/tomcat.xml</em></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE service_bundle SYSTEM &quot;/usr/share/lib/xml/dtd/service_bundle.dtd.1&quot;&gt;
+&lt;!--
+    tomcat_svr.xml : Tomcat service  manifest, Daniel Berg
+--&gt;
+
+&lt;service_bundle type=&#39;manifest&#39; name=&#39;Tomcat55&#39;&gt;
+&lt;service name=&#39;application/web/tomcat&#39; type=&#39;service&#39; version=&#39;1&#39;&gt;
+
+   &lt;single_instance /&gt;
+
+   &lt;exec_method
+      type=&#39;method&#39;
+      name=&#39;start&#39;
+      exec=&#39;/usr/apache/tomcat55/bin/startup.sh&#39;
+      timeout_seconds=&#39;30&#39; /&gt;
+
+   &lt;exec_method
+      type=&#39;method&#39;
+      name=&#39;stop&#39;
+      exec=&#39;/usr/apache/tomcat55/bin/shutdown.sh&#39;
+      timeout_seconds=&#39;30&#39; /&gt;
+
+   &lt;instance name=&#39;default&#39; enabled=&#39;false&#39; /&gt;
+
+   &lt;stability value=&#39;Unstable&#39; /&gt;
+
+   &lt;template&gt;
+      &lt;common_name&gt;
+         &lt;loctext xml:lang=&#39;C&#39;&gt;Apache Tomcat 5.5.27&lt;/loctext&gt;
+      &lt;/common_name&gt;
+      &lt;documentation&gt;
+         &lt;manpage title=&#39;tomcat&#39; section=&#39;1&#39; manpath=&#39;/usr/man&#39; /&gt;
+      &lt;/documentation&gt;
+   &lt;/template&gt;
+
+&lt;/service&gt;
+&lt;/service_bundle&gt;
+</pre>
+</div></div>
+<p>To import this file run</p>
+
+<p># <em>svccfg import /var/svc/manifest/application/web/tomcat.xml</em></p>
+
+<h2 id="TomcatOnSolaris10-Startingandstoppingtomcat">Starting and stopping tomcat</h2>
+<p>To start tomcat you can now run</p>
+
+<p># svcadm enable tomcat</p>
+
+<p>To stop tomcat your would run</p>
+
+<p># svcadm disable tomcat</p>
+
+<p>To se the current status:</p>
+
+<p>#- svcs -lp tomcat</p>
+
+<p>Output is something like the following</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>
+fmri         svc:/application/web/tomcat:default
+name         Apache Tomcat 5.5.27
+enabled      true
+state        online
+next_state   none
+state_time   Fri Feb 26 13:25:28 2010
+logfile      /var/svc/log/application-web-tomcat:default.log
+restarter    svc:/system/svc/restarter:default
+contract_id  183
+process      8303 /usr/jdk/jdk1.6.0_18/bin/sparcv9/java -Djava.util.logging.config.file=/var/apac
+</pre>
+</div></div>
+
+<p>You can see the log output from SMF in the filereferences as logfile in the above output for any troubleshooting.</p>
+
+<p>Running tomcat through SMF negates the need to run tomcat using nohup on Solaris.</p>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : ErrorsAndExceptions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : ErrorsAndExceptions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This page is an in-progress attempt to document best practice for <a class="external-link" href="http://tika.apache.org/1.3/api/org/apache/tika/parser/Parser.html" rel="nofollow">Parser</a> authors on how to handle problematic files</p>
+
+<h1 id="ErrorsAndExceptions-AllowedResponses">Allowed Responses</h1>
+<p>The <a class="external-link" href="http://tika.apache.org/1.19/api/org/apache/tika/parser/Parser.html#parse%28java.io.InputStream,%20org.xml.sax.ContentHandler,%20org.apache.tika.metadata.Metadata,%20org.apache.tika.parser.ParseContext%29" rel="nofollow">Parser contract</a> is that a Tika parser will populate the <a class="external-link" href="http://tika.apache.org/1.19/api/org/apache/tika/metadata/Metadata.html" rel="nofollow">Metadata</a> object, send XML events to the <a class="external-link" href="http://download.oracle.com/javase/1.5.0/docs/api/org/xml/sax/ContentHandler.html" rel="nofollow">ContentHandler</a>, or throw one of:</p>
+<ul>
+	<li>IOException - if the document stream could not be read</li>
+	<li>SAXException - if the SAX events could not be processed</li>
+	<li>TikaException - if the document could not be parsed
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="ErrorsAndExceptions-SuggestedResponses">Suggested Responses</h1>
+<h2 id="ErrorsAndExceptions-CorruptFile">Corrupt File</h2>
+<p>If the file is corrupted in some way, and cannot be processed, a CorruptedFileException (subclass of TikaException) should be thrown (see <a class="external-link" href="http://tika.apache.org/1.19/api/org/apache/tika/parser/Parser.html#parse%28java.io.InputStream,%20org.xml.sax.ContentHandler,%20org.apache.tika.metadata.Metadata,%20org.apache.tika.parser.ParseContext%29" rel="nofollow">Parser contract</a>)</p>
+
+<h2 id="ErrorsAndExceptions-Filecannotberead">File cannot be read</h2>
+<p>If an IO problem occurs when reading the document, an IOException should be thrown (see <a class="external-link" href="http://tika.apache.org/1.19/api/org/apache/tika/parser/Parser.html#parse%28java.io.InputStream,%20org.xml.sax.ContentHandler,%20org.apache.tika.metadata.Metadata,%20org.apache.tika.parser.ParseContext%29" rel="nofollow">Parser contract</a>)</p>
+
+<p>The only exception is if an underlying library throws an IOException to indicate a broken / corrupted file, in which case catching the IOException and re-throwing a CorruptedFileException <em>may</em> be done by the parser to give a more helpful error.</p>
+
+<h2 id="ErrorsAndExceptions-&quot;Empty&quot;File(NoText)">&quot;Empty&quot; File (No Text)</h2>
+<p>If there is no text in the file, either because it's empty (eg 0 byte text file), or because it's a format that doesn't have text (eg an image), then ???</p>
+
+<p><em>TBC - should the body be opened then immediately closed, or something else?</em></p>
+
+<h2 id="ErrorsAndExceptions-Fileispasswordprotected">File is password protected</h2>
+<p><a class="external-link" href="http://tika.apache.org/1.19/api/org/apache/tika/exception/EncryptedDocumentException.html" rel="nofollow">EncryptedDocumentException</a> (a subtype of TikaException) should be thrown if the file is password protected and no/incorrect password is given.</p>
+
+<p>(A PasswordProvider should be placed on the ParseContext if known, to allow the parsing to proceed without error)</p>
+
+<h2 id="ErrorsAndExceptions-Filewouldrequiretoomuchmemorytoprocess">File would require too much memory to process</h2>
+<p>Where the file format permits predicting the amount of memory required to process it (eg a length field near the start of a block that <em>must</em> be fully processed to proceed), and the parser knows this is more than available / permitted, a TikaMemoryLimitException should be thrown to abort the processing.</p>
+
+<p>If it isn't possible to detect this in advance, parsers <em>should try</em> to abort with a TikaMemoryLimitException when they spot things going wrong.</p>
+
+<p>Otherwise, there's a reason we suggest using a separate JVM via ForkParser or TikaServer or similar....</p>
+
+<h2 id="ErrorsAndExceptions-Parsercan&#39;thandleFile">Parser can't handle File</h2>
+<p>If the file is in a sub-format that the parser can't handle (eg parser supports v2 and v3, document is v1, all share the same mimetype), or uses some options that means that parser can't sensibly handle it, then a UnsupportedFormatException should be thrown</p>
+
+<p>Where possible though, the mimetype and/or detection should be updated to prevent an unsupported version of the file format ending up with the parser!</p>
+
+<h2 id="ErrorsAndExceptions-DocumentStructureisBroken">Document Structure is Broken</h2>
+<p>If something is very broken with the file / file structure, and it will be impossible to output valid XML for it for some reason, then probably a SAXException is the right thing</p>
+
+<h2 id="ErrorsAndExceptions-Documentrequestsnoextraction">Document requests no extraction</h2>
+<p>Some file formats allow extraction, but request politely that it not be done. Depending on your Tika use case (eg forensics vs user facing search), you may wish to abort processing, or you may wish to process + pass the permission details up the chain.</p>
+
+<p>To pass but inform the caller of the access restrictions, populate the <a class="external-link" href="https://tika.apache.org/1.19/api/org/apache/tika/metadata/AccessPermissions.html AccessPermissions metadata properties" rel="nofollow">https://tika.apache.org/1.19/api/org/apache/tika/metadata/AccessPermissions.html AccessPermissions metadata properties</a></p>
+
+<p>To abort, eg if the caller requested strict permissions enforcements, throw a AccessPermissionException</p>
+
+<h1 id="ErrorsAndExceptions-Tika-onlyResponses">Tika-only Responses</h1>
+<p>These Exceptions should only be thrown by the core of Tika itself, not the underlying parsers</p>
+
+<h2 id="ErrorsAndExceptions-BrokenTikaConfig">Broken Tika Config</h2>
+<p>If the user specifies some configuration for Tika, either explicitly or implicitly (eg extension resources with the right magic specific name on the classpath), and the config supplied is invalid and can't be worked around, a TikaConfigException will be thrown during the initialisation of Tika</p>
+
+<h2 id="ErrorsAndExceptions-Zerobytelengthfile">Zero byte length file</h2>
+<p>Tika can provide a suggested mime type for these, but not extract any content. Caused typically by <em>Right Click -&gt; New</em> or <em>touch</em>, or an error in getting the file to where it is now.</p>
+
+<p>If passed one of these for detection, no error should be given, and a filename-only answer supplied</p>
+
+<p>If passed one of these for parsing, a ZeroByteFileException should be thrown</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Git migration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Archive_110694813.html">Archive</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Git migration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on фев 11, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The migration was tested by performing the migration commands below against markt-asf/tomcat rather than apache/tomcat.</p><p>The commands to perform the migration are as follows:</p><pre># Make svn read only</pre><pre># Confirm all commits have replicated to git</pre><pre># Turn off the svn / git mirror</pre><pre># Switch to 'github as master'</pre><pre> </pre><pre># Clone the current trunk</pre><pre>git clone <a class="external-link" href="https://github.com/apache/tomcat.git" rel="nofollow">https://github.com/apache/tomcat.git</a> tomcat</pre><pre>cd tomcat</pre><pre># Only necessary for test repo</pre><pre>git remote set-url origin <a class="external-link" href="https://github.com/markt-asf/tomcat.git" rel="nofollow">https://github.com/markt-asf/tomcat.git</a></pre><pre> </pre><pre># Clean up the 9.0.x tags</pre><pre>git tag -d `git tag -l JDBC* | grep -E '.'`</pre><pre>git tag -d `git tag -l TOMCAT_7* | grep -E '.'`<br/>git tag -d `git tag -l TOMCAT_8* | grep -E '.'`<br/>git tag -d `git tag -l TOMCAT_N* | grep -E '.'`<br/>git tag -d TOMCAT_9_0_0_m27<br/>git tag -d TONCAT_9_0_0_M23</pre><pre>git push origin :JDBC_POOL_1_0_1 :JDBC_POOL_1_0_2 :JDBC_POOL_1_0_3 :JDBC_POOL_1_0_4 :JDBC_POOL_1_0_5 :JDBC_POOL_1_0_6 :JDBC_POOL_1_0_7 :JDBC_POOL_1_0_8</pre><pre>git push origin :JDBC_POOL_1_0_8_4 :JDBC_POOL_1_0_8_5 :JDBC_POOL_1_0_9_0 :JDBC_POOL_1_0_9_1 :JDBC_POOL_1_0_9_2 :JDBC_POOL_1_0_9_3 :JDBC_POOL_1_1_0_0 :JDBC_POOL_1_1_0_1</pre><pre>git push origin :TOMCAT_7_0_42</pre><pre>git push origin :TOMCAT_8_0_0</pre><p># :TOMCAT_8_0_0_RC1 :TOMCAT_8_0_0_RC2 :TOMCAT_8_0_0_RC3 :TOMCAT_8_0_0_RC4 :TOMCAT_8_0_0_RC5 :TOMCAT_8_0_0_RC6 :TOMCAT_8_0_0_RC7 :TOMCAT_8_0_0_RC8 :TOMCAT_8_0_0_RC9 :TOMCAT_8_0_0_RC10</p><pre>git push origin :TOMCAT_NATIVE_1_1_33 :TOMCAT_9_0_0_m27 :TONCAT_9_0_0_M23 </pre><pre> </pre><pre># Add Tomcat 8.5x</pre><pre>git remote add tomcat85 <a class="external-link" href="https://github.com/apache/tomcat85.git" rel="nofollow">https://github.com/apache/tomcat85.git</a></pre><pre>git fetch tomcat85</pre><pre>git fetch tomcat85 --tags</pre><pre>git tag -d `git tag -l TOMCAT_8_0* | grep -E '.'`</pre><pre>git checkout --orphan tomcat85</pre><pre>git rm -rf .</pre><pre>git merge tomcat85/trunk</pre><pre>git remote rm tomcat85</pre><pre>git push -u origin tomcat85</pre><pre>git push --tags</pre><p> </p><p># Add Tomcat 8.0.x</p><pre>git remote add tomcat80 <a class="external-link" href="https://github.com/apache/tomcat80.git" rel="nofollow">https://github.com/apache/tomcat80.git</a></pre><pre>git fetch tomcat80</pre><pre>git fetch tomcat80 --tags</pre><pre>git tag -f TOMAT_8_0_30</pre><pre>git checkout --orphan tomcat80</pre><pre>git rm -rf .</pre><pre>git merge tomcat80/trunk</pre><pre>git remote rm tomcat80</pre><pre>git push -u origin tomcat80</pre><pre>git push --tags</pre><p> </p><p># Add Tomcat 7.0.x</p><pre>git remote add tomcat70 <a class="external-link" href="https://github.com/apache/tomcat80.git" rel="nofollow">https://github.com/apache/tomcat70.git</a></pre><pre>git fetch tomcat70</pre><pre>git fetch tomcat70 --tags</pre><pre>git checkout --orphan tomcat70</pre><pre>git rm -rf .</pre><pre>git merge tomcat70/trunk</pre><pre>git remote rm tomcat70</pre><pre>git push -u origin tomcat70</pre><pre>git push --tags</pre><h2 id="Gitmigration-ResolvedIssues">Resolved Issues</h2><ol><li><p>Review board. Tomcat gas been removed from (technically hidden in) the ASF ReviewBoard instance</p></li><li>Config diffs in migration guide. Use gitweb. e.g.: <pre><a class="external-link" href="https://gitbox.apache.org/repos/asf?p=camel.git;a=blobdiff;f=pom.xml;hb=camel-2.20.1;hpb=camel-2.19.0" rel="nofollow">https://gitbox.apache.org/repos/asf?p=camel.git;a=blobdiff;f=pom.xml;hb=camel-2.20.1;hpb=camel-2.19.0</a></pre></li><li>Branch names. master, tc8.5, tc8.0, tc7.0 etc</li><li>PRs. Those against apache/tomcat will remain. Currently no other open PRs. Any opened between now and migration will be closed and asked to be made against apache/tomcat.</li><li>Merge strategy. Commit to master then cherry-pick to branches for older versions as required.</li><li>CI Systems. Leave them pointing at svn. Migrate to git. Once we are happy with the git repo update the CI systems to use it.</li><li>Java source code for tomcat-native. Pull in the source code from a specific tag/hash as part fo the build process.</li><li>Mail format. See recent tomcat-training emails on dev@ for examples. For further tweaks, infra have indicated patches to <a class="external-link" href="https://github.com/apache/infrastructure-puppet/blob/deployment/modules/gitbox/files/asfgit/git_multimail.py" rel="nofollow">https://github.com/apache/infrastructure-puppet/blob/deployment/modules/gitbox/files/asfgit/git_multimail.py</a> are welcome.</li><li>Make old github repos read-only. Ensure information from PRs is available on dev@ list, in BZ or similar. Copy across anything missing. Then delete old repos.</li><li>Developer process. git worktree<ol><li><a class="external-link" href="https://spin.atomicobject.com/2016/06/26/parallelize-development-git-worktrees/" rel="nofollow">https://spin.atomicobject.com/2016/06/26/parallelize-development-git-worktrees/</a></li><li><a class="external-link" href="https://blog.github.com/2015-07-29-git-2-5-including-multiple-worktrees-and-triangular-workflows/" rel="nofollow">https://blog.github.com/2015-07-29-git-2-5-including-multiple-worktrees-and-triangular-workflows/</a></li></ol></li><li>Documentation update<ol><li>Update post migration and release ASAP</li></ol></li><li>Website update<ol><li>Update post migration</li><li>Rename to source.html</li><li>Edit svn.html to link to source.html</li></ol></li></ol><p> </p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

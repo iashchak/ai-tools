@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : ServletProxy</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : ServletProxy
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on янв 30, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ServletProxy-ExistingServletProxyforJ2EEengine\[liketomcat\]"><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>Existing Servlet Proxy for J2EE engine [like tomcat ]</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></h1>
+
+<p>*_ 1)	 J2EP_*  :	J2EP is a reverse proxy running on a J2EE engine. The proxy is written in java and was originally designed with Tomcat in mind, but any engine should work fine. A set of basic mapping rules are included for reverse proxing. <br/>
+ 	A set of servers is specified to be used as mappings between the proxy and Webpages. The servers all need to include a rule that is used to match any incoming request. The rules are there to decide what server to use for each request. A round robin cluster of servers is made for servicing the requests.</p>
+
+<p>Link: <a class="external-link" href="http://sourceforge.net/projects/j2ep" rel="nofollow">http://sourceforge.net/projects/j2ep</a></p>
+
+<p>*_ 2)	Noodle_*  : 	Noodle is a set of Java classes for transparently making arbitrary changes to an HTTP request and response. You can use Noodle to create a servlet that, on every HTTP request, runs Java 'filters' that you define on the request, sends the new request off to another web server, and streams the resulting response through another set of filters.</p>
+
+<p>Link: <a class="external-link" href="http://noodle.tigris.org/" rel="nofollow">http://noodle.tigris.org/</a></p>
+
+<p>*_ 3)  	Http Proxy Servlet_* 	:	 a simple Java servlet written to allow Tomcat and Apache to both appear to occupy port 80</p>
+
+<p>Link: <a class="external-link" href="http://edwardstx.net/wiki/Wiki.jsp?page=HttpProxyServlet" rel="nofollow">http://edwardstx.net/wiki/Wiki.jsp?page=HttpProxyServlet</a></p>
+
+<p>*_ 4)  	Apache Portals <a class="unresolved" href="#">WebContent</a>-2 Reverse Proxy Module_* 	:	 The Reverse Proxy Module provides the features of Reverse Proxy, and it consists of HTTP Client builder components (using <a class="unresolved" href="#">HttpClient</a>-4), Reverse Proxy Command/Chain components (using Apache Commons Chain), and built-in or extensible Reverse Proxy Servlets and Filters.<br/>
+    With this Reverse Proxy Module, you can configure proxy mappings with YAML configuration, you can rewrite content using built-in or custom content rewriting components, and you can even customize the processing commands in the chain easily.<br/>
+    This module is part of <a class="unresolved" href="#">WebContent</a>-2 portlet web application project, but the reverse proxy jar module has been designed and working in normal servlet (non-portlet) environments independently as well. For details, see <a class="external-link" href="http://portals.apache.org/applications/webcontent2/modules-overview.html" rel="nofollow">http://portals.apache.org/applications/webcontent2/modules-overview.html</a>.</p>
+
+<p>Link:  <a class="external-link" href="http://portals.apache.org/applications/webcontent2/reverse-proxy-module.html" rel="nofollow">http://portals.apache.org/applications/webcontent2/reverse-proxy-module.html</a></p>
+
+<p>+ * These are only some of the existing proxies.*  +</p>
+
+<h3 id="ServletProxy-References:">References :</h3>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[1] J2EP documentation.</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[2] <span class="nobr"><a href="http://noodle.tigris.org/" class="external-link" rel="nofollow">http://noodle.tigris.org/<sup><img class="rendericon" src="images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>, “home page – noodle”.</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[3] <span class="nobr"><a href="http://edwardstx.net/wiki/Wiki.jsp?page=HttpProxyServlet" class="external-link" rel="nofollow">http://edwardstx.net/wiki/Wiki.jsp?page=HttpProxyServlet<sup><img class="rendericon" src="images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>, “ Http proxy Servlet –      main page”.</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[4] <span class="nobr"><a href="http://portals.apache.org/applications/webcontent2/reverse-proxy-module.html" class="external-link" rel="nofollow">http://portals.apache.org/applications/webcontent2/reverse-proxy-module.html<sup><img class="rendericon" src="images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>, “Apache Portals Web Content Application 2 - Http proxy Servlet Reverse Proxy Module”.</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+<hr/>
+<p><a href="https://cwiki.apache.org/confluence/display/TOMCAT/CategoryGSOC">CategoryGSOC</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

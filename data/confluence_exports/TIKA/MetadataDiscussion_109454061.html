@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : MetadataDiscussion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : MetadataDiscussion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    
+
+
+
+<p><strong>Index</strong></p>
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429785 {padding: 0px;}
+div.rbtoc1683040429785 ul {margin-left: 0px;}
+div.rbtoc1683040429785 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429785'>
+<ul class='toc-indentation'>
+<li><a href='#MetadataDiscussion-Introduction'>Introduction</a>
+<ul class='toc-indentation'>
+<li><a href='#MetadataDiscussion-OriginalProblem'>Original Problem</a></li>
+<li><a href='#MetadataDiscussion-GoalsforthisPage'>Goals for this Page</a></li>
+</ul>
+</li>
+<li><a href='#MetadataDiscussion-DocumentTypes'>Document Types</a>
+<ul class='toc-indentation'>
+<li><a href='#MetadataDiscussion-SimpleDocument'>Simple Document</a></li>
+<li><a href='#MetadataDiscussion-StructuredDocument'>Structured Document</a></li>
+<li><a href='#MetadataDiscussion-CompoundDocument'>Compound Document</a></li>
+<li><a href='#MetadataDiscussion-SimpleContainer'>Simple Container</a></li>
+<li><a href='#MetadataDiscussion-ContainerwithText'>Container with Text</a></li>
+</ul>
+</li>
+<li><a href='#MetadataDiscussion-UserTypes'>User Types</a></li>
+<li><a href='#MetadataDiscussion-PotentialSolutionsThatDon&#39;tWork'>Potential Solutions That Don&#39;t Work</a>
+<ul class='toc-indentation'>
+<li><a href='#MetadataDiscussion-ANaiveNon-Solution'>A Naive Non-Solution</a></li>
+<li><a href='#MetadataDiscussion-ASlightlyLessNaiveNon-Solution'>A Slightly Less Naive Non-Solution</a></li>
+<li><a href='#MetadataDiscussion-DivSections:NoPlaceforMetadata'>Div Sections: No Place for Metadata</a></li>
+</ul>
+</li>
+<li><a href='#MetadataDiscussion-PotentialSolutionsThatCouldWork'>Potential Solutions That Could Work</a>
+<ul class='toc-indentation'>
+<li><a href='#MetadataDiscussion-MetadataforImplementors:MetadataStackin'>Metadata for ContentHandler Implementors: Metadata Stack in ParseContext</a></li>
+<li><a href='#MetadataDiscussion-ASolutionforUsersWhoDon&#39;tImplement'>A Solution for Users Who Don&#39;t Implement ContentHandler</a></li>
+</ul>
+</li>
+<li><a href='#MetadataDiscussion-NextSteps'>Next Steps</a></li>
+</ul>
+</div>
+
+<h1 id="MetadataDiscussion-Introduction">Introduction</h1>
+<p>This page has been created to host a discussion on how Tika returns metadata for different kinds of documents. The goal is to make sure that Tika users have a chance to get to all of the metadata created and/or extracted by Tika.</p>
+
+<h2 id="MetadataDiscussion-OriginalProblem">Original Problem</h2>
+<p>The original inspiration for this page was a Tika user who wanted to get access to the metadata for every document in an archive (e.g. zip, tar.gz, etc.). A way to get recursive metadata is described in the <a href="RecursiveMetadata_109454069.html">RecursiveMetadata</a> article.</p>
+
+<h2 id="MetadataDiscussion-GoalsforthisPage">Goals for this Page</h2>
+<p>The goals for this page are bigger than the original problem. This page should hold a discussion about how to better meet different metadata needs for the different kinds of documents supported by Tika, and for the different kinds of users supported by Tika.</p>
+
+<p>Since the title of this page is <a href="MetadataDiscussion_109454061.html">MetadataDiscussion</a>, the page isn't limited to a particular set of goals, only to goals that relate to Tika's metadata handling. The goals for this page should at least include the following:</p>
+<ul>
+	<li>Identify different kinds of documents and their metadata needs</li>
+	<li>Identify different kinds of users and their metadata needs</li>
+	<li>Identify potential metadata solutions, attempting to satisfy the needs of as many document types and user types as is practical
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="MetadataDiscussion-DocumentTypes">Document Types</h1>
+<p>This section attempts to identify document types from the point of view of metadata. This section is not trying to identify specific formats such as zip or tar, instead it is trying to identify categories of document formats that have different metadata needs such as simple, compound, and container.</p>
+
+<p>The document types that have been identified so far are the following:</p>
+<ul>
+	<li>Simple</li>
+	<li>Structured</li>
+	<li>Compound</li>
+	<li>Simple Container</li>
+	<li>Container with Text
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="MetadataDiscussion-SimpleDocument">Simple Document</h2>
+<p>A simple document is a single document contained in a single file. Some examples of simple documents include text files, xml files as parsed by DcXMLParser, etc. Any metadata associated with a simple document is for the entire document.</p>
+
+<h2 id="MetadataDiscussion-StructuredDocument">Structured Document</h2>
+<p>Like simple documents, structured documents are single documents in single files. What makes a structured document different is that the document has internal structure, and there is metadata associated specific parts of a document. For example, a PDF document has an internal structure for representing each page of the PDF, and there may be metadata associated with individual pages instead of with the entire document.</p>
+
+<h2 id="MetadataDiscussion-CompoundDocument">Compound Document</h2>
+<p>A compound document is logically a single document that is made up of many separate files. Usually the separate files are stored inside of a single container. Examples of compound documents include the following:</p>
+<ul>
+	<li>.doc (several named streams inside of an OLE2 file)</li>
+	<li>.xlsx (several named xml files inside of a zip file)
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="MetadataDiscussion-SimpleContainer">Simple Container</h2>
+<p>A simple container is a container file that contains other files. The container itself does not contain text, and instead it contains files that could be any document types identified so far. Examples include zip, tar, tar.gz, tar.bz2, etc.</p>
+
+<h2 id="MetadataDiscussion-ContainerwithText">Container with Text</h2>
+<p>Some documents have text of their own and contain other files. Examples include the following:</p>
+<ul>
+	<li>an email with attachments</li>
+	<li>A .doc with embedded spreadsheets
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="MetadataDiscussion-UserTypes">User Types</h1>
+<p>The following users have beed identified so far:</p>
+<ul>
+	<li><a class="unresolved" href="#">ContentHandler</a> implementers</li>
+	<li>Tika class users</li>
+	<li>XHTML users</li>
+	<li>Bulk analysis users
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>For the most part the users are identified by the API they use Tika through, ranging from low level <a class="unresolved" href="#">ContentHandler</a> users to users who look at XHTML files generated by Tika.</p>
+
+<p>The bulk analysis users aren't a specific API user, and instead are a reminder for an alternate use case. Some Tika users are using Tika to extract text and metadata from millions of documents, potentially all contained in a single container file. The metadata solution used by Tika should work even with container files that contain unreasonable numbers of files.</p>
+
+<h1 id="MetadataDiscussion-PotentialSolutionsThatDon&#39;tWork">Potential Solutions That Don't Work</h1>
+<p>There are some good reasons why some seemingly good solutions don't actually work. This section captures solutions that have been rejected and why to help the discussion move on to solutions that will work.</p>
+
+<h2 id="MetadataDiscussion-ANaiveNon-Solution">A Naive Non-Solution</h2>
+<p>When I first started using Tika, I had the naive dream that I could point the <a class="unresolved" href="#">AutoDetectParser</a> at anything and it would automatically find the document boundaries that matter to me and make everything I consider a single document look like the following:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;...&lt;/title&gt;
+    &lt;thismeta&gt;...&lt;/thismeta&gt;
+    &lt;thatmeta&gt;...&lt;/thatmeta&gt;
+    &lt;theothermeta&gt;...&lt;/theothermeta&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div></div>
+
+<p>It turns out that, for lots of good reasons, the Tika developers decided not to make things work this way. Here is my understanding of why this is the case, and there is a good chance that my understanding is wrong:</p>
+<ol>
+	<li>The literal XHTML produced by Tika, and similarly the <a class="unresolved" href="#">ContentHandler</a> events generated by Tika, produce XHTML that a user could view with a browser and see something that the average person would consider the extracted text for a document.
+	<ol>
+		<li>this means that all tags must be legal XHTML</li>
+		<li>this also means that only metadata like &quot;title&quot; that a user expects to see when reading a document should appear in the XHTML in a way that a browser would display it</li>
+		<li>unfortunately since documents can be Structured, Compound, Simple Containers, or Containers with Text, short of reading a user's mind there is no way for Tika to normalize all of those documents into the above structure.
+<br class="atl-forced-newline"/></li>
+	</ol>
+	</li>
+</ol>
+
+
+<h2 id="MetadataDiscussion-ASlightlyLessNaiveNon-Solution">A Slightly Less Naive Non-Solution</h2>
+<p>This solution is like the first naive solution, except it uses legal XHTML</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;...&lt;/title&gt;
+    &lt;meta name=&quot;description&quot; content=&quot;Example XHTML&quot; /&gt;
+    &lt;meta name=&quot;author&quot; content=&quot;Paul Jakubik the Naive Programmer&quot; /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div></div>
+
+<p>This solution is better since it is legal XHTML, and since meta tags aren't displayed by a browser. Unfortunately this solution doesn't handle any of the following:</p>
+<ul>
+	<li>Structured documents with metadata associated with parts of the document</li>
+	<li>Compound documents with metadata associated with parts of the compound document</li>
+	<li>Simple containment (no representation of the contained documents and their relationship to the container)</li>
+	<li>Containers with text (same issue)
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="MetadataDiscussion-DivSections:NoPlaceforMetadata">Div Sections: No Place for Metadata</h2>
+<p>The first two non-solutions ignored that decisions have already been made about how Tika will represent structured documents and simple containers in XHTML. Tika represents a simple container document something like the following:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;...&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div class=&quot;package-entry&quot;&gt;
+      &lt;h1&gt;testfiles/5.txt&lt;/h1&gt;
+      &lt;p&gt;...&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;package-entry&quot;&gt;
+      &lt;h1&gt;testfiles/getty11.zip&lt;/h1&gt;
+      &lt;div class=&quot;package-entry&quot;&gt;
+        &lt;h1&gt;testfiles/getty11.txt&lt;/h1&gt;
+        &lt;p&gt;...&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div></div>
+
+<p>Tika uses the <code>&lt;div&gt;</code> tag to show subparts of a document. The subparts can have their own subparts by nesting <code>&lt;div&gt;</code> sections inside of other <code>&lt;div&gt;</code> sections. The result is a structured XHTML document that can show arbitrary levels of nesting and can represent the text extracted from nearly any kind of document.</p>
+
+<p>The problem is that there is no place to put the metadata that is legal XHTML. The <code>&lt;meta&gt;</code> tags can only appear in the <code>&lt;head&gt;</code> section. Even if we wanted to put all metadata in the <code>&lt;head&gt;</code> section, doing so would mean that Tika could not stream the XHTML events, and instead of have to parse entire containers in two passes: once to gather the metadata, and a second time to output all of the text.</p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>If XHTML had a way to specify arbitrary name-value pairs somewhere in the <code>&lt;div&gt;</code> section, that could be used as a place to associate metadata with a <code>&lt;div&gt;</code> section. As far as I can tell from the specification [http://www.w3schools.com/tags/tag_div.asp] there isn't a place for arbitrary name-value pairs.</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<h1 id="MetadataDiscussion-PotentialSolutionsThatCouldWork">Potential Solutions That Could Work</h1>
+<p>Hopefully we can find some solutions that actually work, and work for many kinds of users. It doesn't look like there is a way to represent metadata for nested sections or nested documents in XHTML, but there may be other ways to make metadata nested metadata available to some users.</p>
+
+<h2 id="MetadataDiscussion-MetadataforImplementors:MetadataStackin">Metadata for <a class="unresolved" href="#">ContentHandler</a> Implementors: Metadata Stack in <a class="unresolved" href="#">ParseContext</a></h2>
+<p>If you are going to the effort of implementing a <a class="unresolved" href="#">ContentHandler</a>, the <a href="RecursiveMetadata_109454069.html">RecursiveMetadata</a> page describes how you can ret access to recursive metadata.</p>
+
+<h2 id="MetadataDiscussion-ASolutionforUsersWhoDon&#39;tImplement">A Solution for Users Who Don't Implement <a class="unresolved" href="#">ContentHandler</a></h2>
+<p>If XHTML doesn't offer a legal way to associate arbitrary name-value pairs with a <code>&lt;div&gt;</code> section, then there don't seem to be options for providing full metadata in a single XHTML document. There are at least a couple of possibilities for providing a better-than-nothing solution for users who want all of the metadata without having to write their own <a class="unresolved" href="#">ContentHandler</a>.</p>
+
+<p>The possibilities identified so far are the following:</p>
+<ul>
+	<li>Add a <a class="unresolved" href="#">ConvertToMultiDocContentHandler</a> that produces multiple XHTML files, one file per line of the output file.</li>
+	<li>Add a <a class="unresolved" href="#">ConvertToXmlDocContentHandler</a> that produces an XML file that is similar to XHTML, but allows <code>&lt;meta&gt;</code> tags in each <code>&lt;div&gt;</code> section</li>
+	<li>Add a <a class="unresolved" href="#">ConvertToXmlDocContentHandler</a> that produces an XML file that is completely unlike XHTML to avoid confusion, and is capable of representing nested sections, each having their own metadata.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>Once there is a way to implement a <a class="unresolved" href="#">ContentHandler</a> and get all of the nested metadata associated with each <code>&lt;div&gt;</code> section, special content handlers could be written that translate the events into something other than a single XHTML document.</p>
+
+<p>If a <a class="unresolved" href="#">ContentHandler</a> was going to create an output file with multiple XHTML documents in it, it would have to decide where the document boundaries are (while not perfect for everyone, probably good enough for 80% of users), and it would have to have a way of encoding newlines so the each XHTML document could be put on a single line (for easy parsing later). This could be as simple as surrounding each line with <code>&lt;p&gt;&lt;/p&gt;</code> and dropping the <code>\r</code> and <code>\n</code> characters.</p>
+
+<p>Yet another alternate content handler could convert the output to XML that has a place for associating metadata with each subsection. This XML could resemble XHTML, or to avoid confusion, could be completely different from XHTML.</p>
+
+<h1 id="MetadataDiscussion-NextSteps">Next Steps</h1>
+<ul>
+	<li>Identify other use cases</li>
+	<li>Identify other solutions</li>
+	<li>Discuss pros and cons of solutions</li>
+	<li>Reach consensus on an adequate path forward for nested metadata</li>
+</ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

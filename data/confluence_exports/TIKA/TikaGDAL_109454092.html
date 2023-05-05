@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaGDAL</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaGDAL
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>With <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-605" rel="nofollow">TIKA-605</a>, you can now use Tika to parse geospatial file formats! To figure out how, read on.</p>
+
+<h1 id="TikaGDAL-InstallGDAL">Install GDAL</h1>
+
+<p>If you're lucky this will work:</p>
+
+<p><code>$ brew install gdal --complete</code></p>
+
+<h2 id="TikaGDAL-ErrorsencounteredwithbrewandMavericks">Errors encountered with brew and Mavericks</h2>
+
+<p>Note if you encounter errors while upgrading to Mavericks here, the answer is to first:</p>
+
+<p><code>$  brew rm $(join &lt;(brew leaves) &lt;(brew deps gdal --complete ))</code></p>
+
+<p>Note the above instructions are definitely Mac centric. We recommend checking out <a class="external-link" href="http://gdal.org/" rel="nofollow">GDAL's Website</a> for specific instructions on installing GDAL on your operating system.</p>
+
+<p>Once GDAL is installed, the following command should be available on your path.</p>
+
+<p><code>gdalinfo</code></p>
+
+<p>Running <code>gdalinfo</code> should produce something like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Usage: gdalinfo [--help-general] [-mm] [-stats] [-hist] [-nogcp] [-nomd]
+                [-norat] [-noct] [-nofl] [-checksum] [-proj4]
+                [-listmdd] [-mdd domain|`all`]*
+                [-sd subdataset] datasetname
+
+FAILURE: No datasource specified.
+</pre>
+</div></div>
+
+<p>If that works you are in business!</p>
+
+<h1 id="TikaGDAL-UsingTikaandGDAL">Using Tika and GDAL</h1>
+
+<p>To use Tika and GDAL grab the 1.7-SNAPSHOT latest of Tika and then grab a geospatial file, e.g., this example will use a Flexible Image Transport System (FITS) file as an example. Then run:</p>
+
+<p><code>java -jar tika-app-1.7-SNAPSHOT.jar -m WFPC2u5780205r_c0fx.fits</code></p>
+
+<p>This should produce, e.g., </p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>ALLG-MAX: 3.777701E3
+ALLG-MIN: -7.319537E1
+ATODCORR: COMPLETE
+..
+X-Parsed-By: org.apache.tika.parser.DefaultParser
+X-Parsed-By: org.apache.tika.parser.gdal.GDALParser
+</pre>
+</div></div>
+
+<p>If you see X-Parsed-By: ..GDALParser and a bunch of geospatial metadata, you are in business!</p>
+
+<h1 id="TikaGDAL-UsingTikaServerandGDAL">Using Tika Server and GDAL</h1>
+
+<p>Once you have GDAL and a fresh build of Tika 1.7-SNAPSHOT (including Tika server), you can easily use Tika-Server with GDAL.  For example, to post a FITS file to the server and get back its metadata, run the following commands:</p>
+
+<h2 id="TikaGDAL-inanotherwindow,startTikaserver">in another window, start Tika server</h2>
+
+<p><code>java -jar /path/to/tika-server-1.7-SNAPSHOT.jar</code></p>
+
+<h2 id="TikaGDAL-inanotherwindow,issueacURLrequest">in another window, issue a cURL request</h2>
+
+<p><code>curl -T /path/to/fits/image.fits <a class="external-link" href="http://localhost:9998/tika" rel="nofollow">http://localhost:9998/tika</a> --header &quot;Content-type: application/fits&quot;</code></p>
+
+<h1 id="TikaGDAL-NoteonFITSdependencies">Note on FITS dependencies</h1>
+
+<p>On TIKA-2684, Susan Borda, reports on some important steps to get a full FITS parse with GDAL. See Susan's <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2684?focusedCommentId=16534012&amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-16534012" rel="nofollow">comment</a>, and her pointer to properly loading <a class="external-link" href="https://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html" rel="nofollow">fitsio</a>.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

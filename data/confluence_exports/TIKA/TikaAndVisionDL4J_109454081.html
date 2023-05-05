@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaAndVisionDL4J</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaAndVisionDL4J
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaAndVisionDL4J-TikaandComputerVisionpoweredbyDeeplearning4j(DL4J)">Tika and Computer Vision powered by Deeplearning4j(DL4J)</h1>
+
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429991 {padding: 0px;}
+div.rbtoc1683040429991 ul {margin-left: 0px;}
+div.rbtoc1683040429991 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429991'>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndVisionDL4J-TikaandComputerVisionpoweredbyDeeplearning4j(DL4J)'>Tika and Computer Vision powered by Deeplearning4j(DL4J)</a></li>
+<li><a href='#TikaAndVisionDL4J-Java/Groovy/Scalaexample'>Java/Groovy/Scala example</a></li>
+<li><a href='#TikaAndVisionDL4J-ForPythonandTikaServerusers'>For Python and Tika Server users</a></li>
+<li><a href='#TikaAndVisionDL4J-LargeScaleImageRecognitionInSpark'>Large Scale Image Recognition In Spark</a></li>
+<li><a href='#TikaAndVisionDL4J-Configurationoptions'>Configuration options</a></li>
+<li><a href='#TikaAndVisionDL4J-Questions/Suggestions/Improvements/Feedback?'>Questions / Suggestions / Improvements / Feedback ?</a></li>
+</ul>
+</div>
+
+<p>This page describes a way to make Tika perform image recognition. Tika has many implementations of image recognition parsers. Specifically, this page provides information for an implementation powered by <a class="external-link" href="https://deeplearning4j.org/" rel="nofollow">Deeplearning4j</a>, <a class="unresolved" href="#">InceptionNet</a>-V3 model pre-trained on <a class="unresolved" href="#">ImageNet</a> dataset and now  with <a class="external-link" href="https://github.com/apache/tika/pull/182" rel="nofollow">TIKA-2298</a>, the VGG-16 model. Both modesl can detect a thousand different objects in the images. </p>
+
+<p>The advantage of this particular setting is, this implementation runs inside a Java Virtual Machine (JVM) stack without dependence on any external services. So it is perfect for the users who are trying to run image recognition on a distributed setup like Apache Hadoop or Apache Spark.</p>
+
+
+<p>Note:</p>
+<ol>
+	<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>This is a work in progress. Inception-V3 was added in Tika 1.15 and VGG-16 in 1.16. 2. At the time of writing, Tika 1.16 was not released. You have to [clone Tika repository](<span class="nobr"><a href="https://github.com/apache/tika" class="external-link" rel="nofollow">https://github.com/apache/tika<sup><img class="rendericon" src="images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>) and do <strong>mvn clean install</strong>.  3. The rest of the page uses version <strong>1.15-SNAPSHOT</strong>, however, if you are reading this after release, please use <strong>1.15</strong>, <strong>1.16</strong> or newer version.
+<br class="atl-forced-newline" />
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+</ol>
+
+
+<h1 id="TikaAndVisionDL4J-Java/Groovy/Scalaexample">Java/Groovy/Scala example</h1>
+
+<p>For maven users:<br/>
+Add Tika-parsers and tika-dl to your project</p>
+
+<p><strong>Here is an example for Apache Maven users:</strong></p>
+
+<p>{{{#!highlight xml</p>
+
+<p>    &lt;dependencies&gt;<br/>
+        &lt;dependency&gt;<br/>
+            &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;<br/>
+            &lt;artifactId&gt;tika-parsers&lt;/artifactId&gt;<br/>
+            &lt;version&gt;1.15-SNAPSHOT&lt;/version&gt;<br/>
+        &lt;/dependency&gt;<br/>
+        &lt;dependency&gt;<br/>
+            &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;<br/>
+            &lt;artifactId&gt;tika-dl&lt;/artifactId&gt;<br/>
+            &lt;version&gt;1.15-SNAPSHOT&lt;/version&gt;<br/>
+        &lt;/dependency&gt;<br/>
+    &lt;/dependencies&gt;<br/>
+}}}</p>
+
+<p><strong>A configuration, tika-config.xml, to activate Inception-V3 image recognition model:</strong></p>
+
+<p>{{{#!highlight xml<br/>
+&lt;properties&gt;<br/>
+  &lt;parsers&gt;<br/>
+    &lt;parser class=&quot;org.apache.tika.parser.recognition.ObjectRecognitionParser&quot;&gt;<br/>
+      &lt;mime&gt;image/jpeg&lt;/mime&gt;<br/>
+      &lt;params&gt;<br/>
+        &lt;param name=&quot;topN&quot; type=&quot;int&quot;&gt;10&lt;/param&gt;<br/>
+        &lt;param name=&quot;minConfidence&quot; type=&quot;double&quot;&gt;0.015&lt;/param&gt;<br/>
+        &lt;param name=&quot;class&quot; type=&quot;string&quot;&gt;org.apache.tika.dl.imagerec.DL4JInceptionV3Net&lt;/param&gt;<br/>
+      &lt;/params&gt;<br/>
+    &lt;/parser&gt;<br/>
+  &lt;/parsers&gt;<br/>
+&lt;/properties&gt;<br/>
+}}}</p>
+
+
+<p><strong>A configuration, tika-config.xml, to activate VGG-16 image recognition model:</strong></p>
+
+<p>{{{#!highlight xml<br/>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br/>
+&lt;properties&gt;<br/>
+    &lt;parsers&gt;<br/>
+        &lt;parser class=&quot;org.apache.tika.parser.recognition.ObjectRecognitionParser&quot;&gt;<br/>
+            &lt;mime&gt;image/jpeg&lt;/mime&gt;<br/>
+            &lt;params&gt;<br/>
+                &lt;param name=&quot;topN&quot; type=&quot;int&quot;&gt;2&lt;/param&gt;<br/>
+                &lt;param name=&quot;minConfidence&quot; type=&quot;double&quot;&gt;0.015&lt;/param&gt;<br/>
+                &lt;param name=&quot;class&quot; type=&quot;string&quot;&gt;org.apache.tika.dl.imagerec.DL4JVGG16Net&lt;/param&gt;<br/>
+		&lt;param name=&quot;modelType&quot; type=&quot;string&quot;&gt;VGG16&lt;/param&gt;<br/>
+		&lt;param name=&quot;serialize&quot; type=&quot;string&quot;&gt;yes&lt;/param&gt;<br/>
+            &lt;/params&gt;<br/>
+        &lt;/parser&gt;<br/>
+    &lt;/parsers&gt;<br/>
+&lt;/properties&gt; <br/>
+}}}</p>
+
+<p>Note: Refer to a later section for customizing the config.</p>
+
+
+<p><strong>Sample Java code:</strong></p>
+
+<p><p>{{</p>
+<div class="error"><span class="error">Unknown macro: {#!highlight java    //create parser as per desired parser    [TikaConfig] config;    try (InputStream stream = [ImageRecLocal].class.getClassLoader()            .getResourceAsStream(&quot;tika-config.xml&quot;)){        config = new [TikaConfig](stream);    }    Tika parser = new Tika(config);    //sample file    File imageFile = new File(&quot;data/gun.jpg&quot;);    Metadata meta = new Metadata();    parser.parse(imageFile, meta);    //retrieve objects from the metadata    System.out.println(Arrays.toString(meta.getValues(&quot;OBJECT&quot;)));    // This should print}</span> </div>
+<p>}</p></p>
+
+<h1 id="TikaAndVisionDL4J-ForPythonandTikaServerusers">For Python and Tika Server users</h1>
+
+<ol>
+	<li>Create file with name <strong>tika-config.xml</strong> by using the content shown above. 2. Clone tika repository and build the tika project 3. Add <strong>tika-dl</strong> to classpath of tika server
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+{{{#!highlight bash alias tika=&quot;java -cp tika-server/target/tika-server-1.15-SNAPSHOT.jar:tika-dl/target/tika-dl-1.15-SNAPSHOT-jar-with-dependencies.jar org.apache.tika.server.TikaServerCli &quot; tika --config=tika-config.xml # Starts server port 9998<br/>
+}}}
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>Refer to <a class="external-link" href="https://github.com/chrismattmann/tika-python" rel="nofollow">Tika-python</a> for an example usage.</p>
+
+
+<h1 id="TikaAndVisionDL4J-LargeScaleImageRecognitionInSpark">Large Scale Image Recognition In Spark</h1>
+
+<p>Coming soon! It is being tested here <a class="external-link" href="https://github.com/thammegowda/tika-dl4j-spark-imgrec" rel="nofollow">https://github.com/thammegowda/tika-dl4j-spark-imgrec</a></p>
+
+
+<h1 id="TikaAndVisionDL4J-Configurationoptions">Configuration options</h1>
+
+<p>Previously, we have used the three parameters to this parser:<br/>
+{{{#!highlight xml<br/>
+&lt;params&gt;<br/>
+    &lt;param name=&quot;topN&quot; type=&quot;int&quot;&gt;10&lt;/param&gt;<br/>
+    &lt;param name=&quot;minConfidence&quot; type=&quot;double&quot;&gt;0.015&lt;/param&gt;<br/>
+    &lt;param name=&quot;class&quot; type=&quot;string&quot;&gt;org.apache.tika.dl.imagerec.DL4JInceptionV3Net&lt;/param&gt;<br/>
+&lt;/params&gt;<br/>
+}}}</p>
+
+<p>The other important parameters are:<br/>
+{{{#!highlight xml<br/>
+    &lt;param name=&quot;modelWeightsPath&quot; type=&quot;string&quot;&gt;VALUE&lt;/param&gt;<br/>
+    &lt;param name=&quot;modelJsonPath&quot; type=&quot;string&quot;&gt;VALUE&lt;/param&gt;<br/>
+}}}</p>
+
+<p>The VALUE string can be:</p>
+<ol>
+	<li>File path relative to class loader (note that these could also be inside jar files) 2. Absolute file path anywhere on the local filesystem 3. Any remote URL, including HTTP or HTTPS
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>For example:</p>
+<ol>
+	<li><code>&lt;param name=&quot;modelWeightsPath&quot; type=&quot;string&quot;&gt;inception-model-weights.h5&lt;/param&gt;</code> 2. <code>&lt;param name=&quot;modelWeightsPath&quot; type=&quot;string&quot;&gt;/usr/share/apache-tika/models/tikainception-model-weights.h5&lt;/param&gt;</code> 3. <code>&lt;param name=&quot;modelWeightsPath&quot; type=&quot;string&quot;&gt;<a class="external-link" href="https://myserver.com/files/apache-tika/models/tikainception-model-weights.h5" rel="nofollow">https://myserver.com/files/apache-tika/models/tikainception-model-weights.h5</a>&lt;/param&gt;</code></li>
+</ol>
+
+
+<hr/>
+
+<h1 id="TikaAndVisionDL4J-Questions/Suggestions/Improvements/Feedback?">Questions / Suggestions / Improvements / Feedback ?</h1>
+
+<ol>
+	<li>If it was useful, let us know on twitter by mentioning <a class="external-link" href="https://twitter.com/ApacheTika" rel="nofollow">@ApacheTika</a> 2. If you have questions, let us know by <a class="external-link" href="https://tika.apache.org/mail-lists.html" rel="nofollow">using Mailing Lists</a> 3. If you find any bugs, <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA/" rel="nofollow">use Jira to report them</a></li>
+</ol>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

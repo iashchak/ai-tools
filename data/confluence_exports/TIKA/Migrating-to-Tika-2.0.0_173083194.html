@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Migrating to Tika 2.0.0</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Migrating to Tika 2.0.0
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on мар 07, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="MigratingtoTika2.0.0-Majorbreakingchanges">Major breaking changes</h1><ul><li>OCR is now triggered automatically for PDFs if tesseract is on the user's path see (<a href="TikaOCR_109454096.html#TikaOCR-disable-ocr">TikaOCR#disable-ocr</a>) for how to disable OCR.</li><li>Removed deprecated Metadata keys/properties and moved some commonly used keys from Metadata to TikaCoreProperties (such as TikaCoreProperties.RESOURCE_NAME_KEY) (TIKA-1974).  See below for a list of changed keys.</li><li>We upgraded from <code>log4j</code> to <code>log4j2</code> in tika-app, tika-server and anywhere else we used to use <code>log4j</code>.</li><li>The <code>tika-parsers </code>package has been split into several sub packages, inluding: <code>tika-parsers-standard-package</code>, <code>tika-parser-scientific-package</code> and <code>tika-parser-sqlite3-package</code>. You will need the <code>tika-parsers-standard-package</code> for complete detection of container-based formats such as .doc, .ppt, .xls, .docx, .pptx, .xlsx and others.</li><li><code>tika-app</code> only includes parsers in <code>tika-parsers-standard-package</code>; users have to add <code>tika-parser-scientific-package</code> and <code>tika-parser-sqlite3-package</code> if desired.</li><li><code>tika-server</code> is now <code>tika-server-standard </code>and only includes parsers in <code>tika-parsers-standard-package</code></li><li><code>tika-server</code> is now run in <code>--spawnChild</code> mode by default.</li><li>Removed deprecated PDFPreflightParser (TIKA-3437). </li><li>Parsers are now configured via<code> tika-config.xml</code> on instantiation. We have moved away from configuration via .properties files because of confusion among users. This affects the PDFParser, TesseractOCRParser and the StringsParser. See below for links to the specific parsers.</li><li>Changed namespaces of translator implementations (e.g. <code>org.apache.tika.language.translate.impl</code>) to avoid split-package with tika-core.</li></ul><p>For more details on changes in <code>tika-server</code> in 2.x, please see: <a href="TikaServer-in-Tika-2.x_191334866.html">TikaServer in Tika 2.x</a>.</p><h1 id="MigratingtoTika2.0.0-Metadata">Metadata</h1><h3 id="MigratingtoTika2.0.0-BreakingMetadataKeyChangesBetween1.xand2.x">Breaking Metadata Key Changes Between 1.x and 2.x</h3><p>These are changes in locations of keys, not in the key names that consumers/clients will see:</p><ul><li><code>Metadata.RESOURCE_NAME_KEY</code> has been renamed <code>TikaCoreProperties.RESOURCE_NAME_KEY</code>.</li><li><code>TikaCoreProperties.KEYWORDS</code> has been removed in favor of <code>Office.KEYWORDS</code></li></ul><h3 id="MigratingtoTika2.0.0-ChangedMetadataKeys">Changed Metadata Keys</h3><p>There are a few other subtle changes in key names listed below:</p><div class="table-wrap"><table class="wrapped confluenceTable"><colgroup><col/><col/></colgroup><tbody><tr><th class="confluenceTh">Tika 1.x</th><th class="confluenceTh">Tika 2.x</th></tr><tr><td class="confluenceTd">X-Parsed-By</td><td class="confluenceTd">X-TIKA:Parsed-By</td></tr><tr><td class="confluenceTd">X-TIKA:EXCEPTION:runtime</td><td class="confluenceTd">X-TIKA:EXCEPTION:container_exception</td></tr></tbody></table></div><h3 id="MigratingtoTika2.0.0-Removedduplicate/triplicatekeys">Removed duplicate/triplicate keys</h3><p><strong>Background:</strong> In early 1.x, we had basic metadata keys that were created somewhat <em>ad hoc</em>.  We then added metadata keys based on standards such as Dublin Core, or we at least tried to add namespaces to the metadata keys for specific file formats.  To maintain backwards compatibility, we kept the old keys and added new keys.  This led to quite a bit of metadata bloat, where we'd have the same information two or three times.  In Tika 2.x, we slimmed down the metadata keys and relied only on the standards-based or name-spaced keys.  In the table below, we document the mappings.  If you notice any missing, please let us know or update the wiki.</p><p><br/></p><div class="table-wrap"><table class="wrapped confluenceTable"><colgroup><col style="width: 349.0px;"/><col style="width: 228.0px;"/></colgroup><tbody><tr><th class="confluenceTh">Tika 1.x</th><th class="confluenceTh">Tika 2.x</th></tr><tr><td class="confluenceTd">Author, meta:author, dc:creator</td><td class="confluenceTd">dc:creator</td></tr><tr><td class="confluenceTd">Last-Author, meta:last-author</td><td class="confluenceTd">meta:last-author</td></tr><tr><td class="confluenceTd">title, dc:title</td><td class="confluenceTd">dc:title</td></tr><tr><td class="confluenceTd">Creation-Date, date, dcterms:created</td><td class="confluenceTd">dcterms:created</td></tr><tr><td class="confluenceTd">Last-Modified, modified, dcterms:modified</td><td class="confluenceTd">dcterms:modified</td></tr><tr><td class="confluenceTd">Last-Save-Date, meta:save-date</td><td class="confluenceTd">meta:save-date</td></tr><tr><td class="confluenceTd">w:comments</td><td class="confluenceTd">w:Comments</td></tr><tr><td class="confluenceTd">Application-Name, extended-properties:Application</td><td class="confluenceTd">extended-properties:Application</td></tr><tr><td class="confluenceTd">Character Count, meta:character-count</td><td class="confluenceTd">meta:character-count</td></tr><tr><td class="confluenceTd">Company, extended-properties:Company</td><td class="confluenceTd">extended-properties:Company</td></tr><tr><td class="confluenceTd">Edit-Time, extended-properties:TotalTime</td><td class="confluenceTd">extended-properties:TotalTime</td></tr><tr><td class="confluenceTd">Keywords, meta:keyword, dc:subject</td><td class="confluenceTd">meta:keyword, dc:subject</td></tr><tr><td class="confluenceTd">Page-Count, meta:page-count</td><td class="confluenceTd">meta:page-count</td></tr><tr><td class="confluenceTd">Revision-Number, cp:revision</td><td class="confluenceTd">cp:revision</td></tr><tr><td class="confluenceTd">subject, cp:subject, dc:subject</td><td class="confluenceTd">dc:subject</td></tr><tr><td class="confluenceTd">Template, extended-properties:Template</td><td class="confluenceTd">extended-properties:Template</td></tr><tr><td class="confluenceTd">Word-Count, meta:word-count</td><td class="confluenceTd">meta:word-count</td></tr><tr><td class="confluenceTd">identifier</td><td class="confluenceTd">dc:identifier</td></tr><tr><td class="confluenceTd">publisher</td><td class="confluenceTd">dc:publisher</td></tr><tr><td class="confluenceTd">dc:description, subject (as in MSG files)</td><td class="confluenceTd">dc:description (dc:subject was added back in 2.4.0).</td></tr></tbody></table></div><h1 id="MigratingtoTika2.0.0-tika-parsers–Configuringviatika-config.xml">tika-parsers – Configuring via tika-config.xml </h1><p>In 2.x, we've moved all configuration into a <code>tika-config.xml </code>file.  Two popular parsers used to rely on *.properties files; see their individual pages for details: <a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=109454066" rel="nofollow">PDFParser</a> and <a href="https://cwiki.apache.org/confluence/display/tika/tikaocr" rel="nofollow">TesseractOCRParser</a>.</p><p>See other individual parser pages for available configurations: <a href="TikaParserNotes_109454098.html">TikaParserNotes</a>.  If you notice any missing parsers, please help us document configurations for all parsers.</p><h1 id="MigratingtoTika2.0.0-tika-parsersmodule">tika-parsers module</h1><p>In Tika 2.x, we separated the 1.x <code>tika-parsers</code> module into three modules and packages:</p><ol><li>tika-parsers-standard – the most common parsers – should not require rest calls nor native libs (<strong>NOTE</strong>: despite the goal of this package, we do include the TesseractOCR parser which will run Tesseract if you have that installed)</li><li>tika-parsers-extended – may include native libs and/or dependencies that not everyone wants (e.g. <a class="external-link" href="https://www.unidata.ucar.edu/software/netcdf/" rel="nofollow">netcdf</a>)</li><li>tika-parsers-ml – may include heavy dependencies (e.g. <a class="external-link" href="https://deeplearning4j.konduit.ai/" rel="nofollow">dl4j</a>) or parsers that rely on rest calls and external services</li></ol><p>The goal is to allow users to select only the parsers (and dependencies) that they want.</p><p>When using <code>tika-parsers</code> in your project, you need to change the dependencies from:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>pom.xml from 1.27</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+  &lt;artifactId&gt;tika-parsers&lt;/artifactId&gt;
+  &lt;version&gt;1.27&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p><br/>to at least <code>tika-parsers-standard-package</code>.  If you want <code>netcdf</code> parsing and/or <code>sqlite3</code> parsing – both of which were included in <code>tika-parsers</code> in 1.x – you'll need to include <code>tika-parser-scientific-package</code> and/or the <code>tika-parser-sqlite3-package</code>.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>pom.xml for 2.0.0+</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+  &lt;artifactId&gt;tika-parsers-standard-package&lt;/artifactId&gt;
+  &lt;version&gt;2.7.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+  &lt;artifactId&gt;tika-parser-scientific-package&lt;/artifactId&gt;
+  &lt;version&gt;2.7.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+  &lt;artifactId&gt;tika-parser-sqlite3-package&lt;/artifactId&gt;
+  &lt;version&gt;2.7.0&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p><strong>NOTE: </strong>As of Tika 2.7.0, we have added <code>tika-parser-nlp-package</code> to our release artifacts.</p><p><strong>NOTE: </strong>As in Tika 1.x, if you need detection on container formats (e.g. OLE2: .doc, .ppt, .xls or zip-based: .xlsx, .pptx, .docx or .ogg based), you need to include the underlying Tika parsers that will parse the container files and make the detection based on the information in the container.  In Tika 2.x, this means that you need to include <code>tika-parsers-standard-package</code>! </p><h3 id="MigratingtoTika2.0.0-Lesserparsernotesthatmayonlyaffectearlyversionsof2.x">Lesser parser notes that may only affect early versions of 2.x</h3><p>Also, there's a small transitive dependency issue with jcl-over-slf4j between tika-parsers-standard-package 2.0.0 and tika-parser-scientific-module:2.0.0. So if you are using maven enforcer plugin, you will need to fix it by adding this:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>pom.xml</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;!-- Fix tika-parsers-standard-package 2.0.0 vs tika-parser-scientific-module:2.0.0 transitive dependency --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+    &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;
+    &lt;version&gt;1.7.31&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p>If you are checking for CVEs (recommended), the tika-parser-scientific-module:2.0.0 comes with a transitive dependency on quartz 2.2.0 which should be fixed like this:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>quartz</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">  &lt;dependency&gt;
+    &lt;groupId&gt;edu.ucar&lt;/groupId&gt;
+    &lt;artifactId&gt;netcdf4&lt;/artifactId&gt;
+    &lt;version&gt;${netcdf-java.version}&lt;/version&gt;
+    &lt;exclusions&gt;
+      ...
+      &lt;exclusion&gt;
+        &lt;groupId&gt;org.quartz-scheduler&lt;/groupId&gt;
+        &lt;artifactId&gt;quartz&lt;/artifactId&gt;
+      &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.quartz-scheduler&lt;/groupId&gt;
+    &lt;artifactId&gt;quartz&lt;/artifactId&gt;
+    &lt;version&gt;2.3.2&lt;/version&gt;
+  &lt;/dependency&gt;</pre>
+</div></div><h3 id="MigratingtoTika2.0.0-LanguageDetection">Language Detection</h3><p>When using lang detection, you need to use<span style="letter-spacing: 0.0px;">:</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>pom.xml 2.0.0</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+  &lt;artifactId&gt;tika-langdetect-optimaize&lt;/artifactId&gt;
+  &lt;version&gt;2.1.0&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p>Also note that <code>org.apache.tika.langdetect.OptimaizeLangDetector.getDefaultLanguageDetector</code> has moved to <code>org.apache.tika.langdetect.optimaize.OptimaizeLangDetector.getDefaultLanguageDetector</code>.</p><p>For OCR, you can not use anymore <code>TesseractOCRConfig.setTesseractPath(String)</code> and <code>TesseractOCRConfig.setTessdataPath(String)</code> methods. They moved to the <code>TesseractOCRParser</code> class.</p><h2 id="MigratingtoTika2.0.0-tika-parsers-moduleoptionaldependencies">tika-parsers-module optional dependencies</h2><h3 id="MigratingtoTika2.0.0-zstd">zstd</h3><p>The zstd dependency includes native libs and is not packaged with the tika-parsers-module.  If you'd like to parse zstd files, include:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>zstd-jni</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">    &lt;dependency&gt;
+      &lt;groupId&gt;com.github.luben&lt;/groupId&gt;
+      &lt;artifactId&gt;zstd-jni&lt;/artifactId&gt;
+      &lt;version&gt;1.5.0-4&lt;/version&gt;
+    &lt;/dependency&gt;</pre>
+</div></div><h3 id="MigratingtoTika2.0.0-TIFFandJPEG2000">TIFF and JPEG2000</h3><p>If you plan to write TIFFs with Tika (rendering of PDF pages for OCR), and if the BSD-3 with nuclear disclaimer license is acceptable to you, include:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>jai-imageio-core</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;dependency&gt;
+  &lt;groupId&gt;com.github.jai-imageio&lt;/groupId&gt;
+  &lt;artifactId&gt;jai-imageio-core&lt;/artifactId&gt;
+  &lt;version&gt;1.4.0&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p>If you plan on processing JPEG2000 images (most common use case would be rendering PDF pages for OCR), and if the BSD-3 with nuclear disclaimer license is acceptable to you,  include:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>jpeg2000</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;dependency&gt;
+  &lt;groupId&gt;com.github.jai-imageio&lt;/groupId&gt;
+  &lt;artifactId&gt;jai-imageio-jpeg2000&lt;/artifactId&gt;
+  &lt;version&gt;1.4.0&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p>Note! In 2.x, Tika will not warn you if a PDF page that you're trying to render has a JPEG2000 in it.  PDFBox will log a warning.</p><p><br/></p><h1 id="MigratingtoTika2.0.0-tika-app">tika-app</h1><p>tbd</p><h1 id="MigratingtoTika2.0.0-tika-server">tika-server</h1><h2 id="MigratingtoTika2.0.0-General">General</h2><ul><li>enableFileUrl has been removed in favor of two separate fetchers, one for files and one for URLs (see <a href="tika-pipes_181306665.html#tikapipes-FetchersInClassicServerEndpoints">tika-pipes#FetchersInClassicServerEndpoints</a>).<br/><ul><li><code>FileSystemFetcher</code> (which is packaged with tika-core) for files</li><li><code>HttpFetcher</code> (requires an external jar from <a class="external-link" href="https://mvnrepository.com/artifact/org.apache.tika/tika-fetcher-http/2.0.0" rel="nofollow">https://mvnrepository.com/artifact/org.apache.tika/tika-fetcher-http</a>) for URLs.</li></ul></li></ul><h2 id="MigratingtoTika2.0.0-Configuration">Configuration</h2><h2 id="MigratingtoTika2.0.0-tika-pipes">tika-pipes</h2><p>See the <a href="tika-pipes_181306665.html">tika-pipes</a> page.</p><h2 id="MigratingtoTika2.0.0-tika-eval">tika-eval</h2><h2 id="MigratingtoTika2.0.0-tika-langid">tika-langid</h2><p>In the 1.x branch, the default (hardwired) language identification component was the wrapper around Optimaize.  If you used the following in 1.x:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>pom.xml 1.27</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+  &lt;artifactId&gt;tika-langdetect&lt;/artifactId&gt;
+  &lt;version&gt;1.27&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p class="auto-cursor-target">In 2.x, change this to:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>optimaize-lang-detect</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.tika&lt;/groupId&gt;
+  &lt;artifactId&gt;tika-langdetect-optimaize&lt;/artifactId&gt;
+  &lt;version&gt;2.0.x&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div></div><p>The original  language id component that was built by Tika devs and that used to be in tika-core is now in the tika-langdetect-tika module. </p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

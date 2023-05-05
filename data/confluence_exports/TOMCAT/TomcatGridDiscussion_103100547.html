@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : TomcatGridDiscussion</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Archive_110694813.html">Archive</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TomcatGrid_103100542.html">TomcatGrid</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : TomcatGridDiscussion
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Mark Thomas</span> on мая 26, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TomcatGridDiscussion-ApacheTomcatGrid">Apache Tomcat Grid</h1>
+<p>This write up is a draft that includes a set of ideas that could be useful when managing multiple Tomcat instances. Even if some of these ideas go beyond the effort we want to undertake, I decided to include them so they can be discussed and maybe included on the road map. This description is by no means  comprehensive and/or finished but provides a base line to start bouncing ideas.</p>
+
+<p>Please feel free to update, fix, change, and reorganize this document in any  manner you feel is useful.</p>
+
+<h2 id="TomcatGridDiscussion-Introduction">Introduction</h2>
+<p>The Tomcat Grid manages one or more local or remote Tomcat instances from a centralized  location. This manager application shows the status of each Tomcat instance,  and provides a simple interface to trigger operations on them, individually or  as a group.</p>
+
+<h2 id="TomcatGridDiscussion-ArchitecturalOverview">Architectural Overview</h2>
+<p>The centralized location of the Tomcat Grid (the primary location) stores the  grid configuration, probably as an XML file. For reliability purposes,  secondary locations can be setup so the grid configuration is replicated after every change.</p>
+
+<p>The primary location runs a Tomcat Web Grid Manager, a web application that runs on a separate Tomcat instance. This manager application shows the state of the all Tomcat instances on the grid, and allows users to trigger operations on these  Tomcat instances.</p>
+
+<p>In addition to the Web Grid Manager, a Command-line (CLI) Grid Manager  application mimics the functionality of the web manager, with an equivalent  (text-only) interface that shows the status of the Tomcat instances, and  provides commands to trigger remote operations on them.</p>
+
+<p>The secondary locations run on dedicated Tomcat instances. They run a copy of the Web Grid Manager but they are shut down all the time unless they are explicitly  started by an operator (when the primary one goes bad). No two managers should  be active at the same time. If activated, the secondary locations can start  producing changes to the local grid configuration, and these changes are  replicated to all other managers (if/when possible).</p>
+
+<p>The example shown in the figure below assumes Machines #1 and #4 run a lighter  web and/or back end applications, so they have enough resources bandwidth to  run the extra Tomcat instance for the manager. In case the primary manager on  Machine #1 goes down (or the whole Machine #1 goes down), there is a secondary  manager (on Machine #4) that can be activated to take over the managing duties.</p>
+
+<p> TomcatGridExample.png!</p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>The Grid Agents are Java processes installed and running on each machine that listen (on a configured port) for commands from a Grid Manager application (Web or  CLI) and act upon them by interacting with the local Tomcat instances. No  encryption is envisioned on the network channels, since all these machines are  considered to be installed on a secured network segment (at least in prod).  [Maybe we should reconsider this]</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p><em><span style="text-decoration: underline;">markt</span>: I think this needs to be reconsidered.</em></p>
+
+<p><em><span style="text-decoration: underline;">vlad</span>: Sure. My take was to use unencrypted connections, since it's fast to implement for me and I don't know well how to implement a secured connection :/ . Maybe we could even offer both options. Anyway, why do you consider we need an secured connection? In my experience, I've never needed them in dev/state/QA/test, and in prod the environment are isolated. Well... I guess there are other scenarios I haven't been exposed to.</em></p>
+
+<p>All Tomcat instances (including the Web Grid Managers), as well as the Grid  Agents, are installed manually. The primary grid manager and all the agents are started manually too.</p>
+
+<p>Once the Web Grid Manager is started up, machines and instances can be registered in it, so they can become manageable. No centralized  (comprehensive) provisioning is envisioned until later versions of Tomcat Grid  (see below).</p>
+
+<p>The Grid Agents are processes that can also be managed. In particular, status can be obtained (and showed) from them, and basic operations (start/stop/kill) can be triggered on them. These operations are, however, heavily dependent on OS and OS capabilities (configuration, installed tools, etc.) and the infrastructure architecture (fire-walled machines, network VLans, etc).</p>
+
+<p>Collectively, Tomcat instances and Grid Agents are &quot;services&quot; since both can be managed.</p>
+
+<p><em><span style="text-decoration: underline;">markt</span>: Managing the agents strikes me as making this significantly more complex. Operating systems have tools to ensure particular services are running and are restarted if they fail. What is the benefit of pulling this into this tool?</em></p>
+
+<p><em><span style="text-decoration: underline;">vlad</span>: I agree that agents can run as daemons and be up all the time. However, I've seen many &quot;robust&quot; programs to have memory leaks and that for one reason or another stop working normally after some time. Maybe after a couple of days, or weeks, or months. Maybe it would be useful to restart them just before a critical operation such as a deployment. I agree that managing agent is more expensive since it requires the development and maintenance of multiple OS-dependent implementations.</em></p>
+
+<p>Later versions of the Grid include &quot;collection&quot; management. This allows to  group subsets of services (Tomcat instances and Grid Agents), so they can be  operated as whole. Each collection can include plain services, or other  collections (recursively).</p>
+
+<p>Below is a general overview of the software modules and their responsibilities.</p>
+
+<p> TomcatGridSoftwareModules.png!</p>
+
+<p>_The modules are:</p>
+
+<ul>
+	<li><strong>Core module</strong>: Shared logic to be used by all other modules.
+	<ul>
+		<li>Core data types, such as &quot;Machine&quot;, &quot;Instance&quot;.</li>
+		<li>Share core logic. For example, grid configuration file parsing/update.</li>
+		<li>Defines the Grid Agent functions (as interfaces), but does not implement them. These are used by all Managers modules.</li>
+		<li>Common utility classes.</li>
+		<li>Common exceptions.</li>
+	</ul>
+	</li>
+</ul>
+
+
+<ul>
+	<li><strong>Web Manager module</strong>: A JEE Web application that includes:
+	<ul>
+		<li>Includes a simple Managing web GUI: web pages, navigation logic.</li>
+		<li>Uses the Core module for functions such as:
+		<ul>
+			<li>Load Grid Configuration,</li>
+			<li>Interact with grid agents.</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li><strong>CLI Manager module</strong>: A java command-line program:
+	<ul>
+		<li>Command-line interface: command parsing, text output.</li>
+		<li>Uses the Core module for functions such as:
+		<ul>
+			<li>Load Grid Configuration,</li>
+			<li>Interact with grid agents.</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li><strong>Any other Manager module</strong>: Any future module that needs to connect to Grid Agents to manage Tomcat instances.</li>
+</ul>
+
+
+<ul>
+	<li><strong>Grid Agent module</strong>: Responds to Managers calls and controls local Tomcat instances.
+	<ul>
+		<li>Listen to Manager requests.</li>
+		<li>Implements the Grid Agent interfaces.</li>
+		<li>Includes the high-level interaction with Tomcat intances.</li>
+		<li>Defines and uses the Tomcat Management Primitives (as interfaces), but does not implement them.</li>
+		<li>Receives content (deployables, grid configuration changes) and applies them.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li><strong>Grid Agent Primitives for Linux</strong>:
+	<ul>
+		<li>Implements the Tomcat Management Primitives for Linux OS.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li><strong>Grid Agent Primitives for Windows</strong>:
+	<ul>
+		<li>Implements the Tomcat Management Primitives for Windows OS.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li><strong>Grid Agent Primitives for Mac</strong>:
+	<ul>
+		<li>Implements the Tomcat Management Primitives for Mac OS.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li><strong>Grid Agent Primitives for Other</strong>:
+	<ul>
+		<li>Implements the Tomcat Management Primitives for Other OS.
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+</ul>
+
+
+<p>The executables themselves are comprised of several modules each that are assembled during the build.</p>
+<ul>
+	<li>The Grid Web Manager Executable (a WAR) includes:
+	<ul>
+		<li>Core module</li>
+		<li>Web Manager module</li>
+	</ul>
+	</li>
+	<li>The Grid CLI Manager Executable (a JAR) includes:
+	<ul>
+		<li>Core module</li>
+		<li>CLI Manager module</li>
+	</ul>
+	</li>
+	<li>The Grid Agent Executable (a JAR) includes:
+	<ul>
+		<li>Core module</li>
+		<li>Grid Agent module</li>
+		<li>Grid Agent Primitives for Linux</li>
+		<li>Grid Agent Primitives for Windows</li>
+		<li>Grid Agent Primitives for Mac</li>
+		<li>Grid Agent Primitives for Other_</li>
+	</ul>
+	</li>
+</ul>
+
+
+
+
+<p>Considering all the above, the following phases could be considered as a base line for the road map of the Tomcat Grid.</p>
+
+<h2 id="TomcatGridDiscussion-Phase1-CoreGridOperation">Phase 1 - Core Grid Operation</h2>
+<p>The first phase includes the most basic features, in order to provide a  functioning and useful first version of the Grid.</p>
+
+<p>In particular, no Tomcat instances or Grid Agents automatic provisioning is  considered, no configuration GUI (only pre-configured XML config files), no WAR  deployments, no command-line interface, no complex grid operations, no  secondary managers, and no collections.</p>
+
+<p><em><span style="text-decoration: underline;">markt</span>: This raises another architectural question. Wouldn't this be more scalable if agents were configured with the location of the primary manager and registered themselves? The manager could persist that registration so an agent would have to be explicitly removed if it was taken off-line permanently.</em></p>
+
+<p><em><span style="text-decoration: underline;">vlad</span>: Definitively. A basic agent install, and registration could &quot;summon&quot; all the necessary software from the primary manager: i.e. Tomcat executables, grid configuration, etc. I thought about something like this as an advanced feature (phase 12), but we can rearrange the priorities if needed.</em></p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>The Web Grid Manager presents a Web interface that shows information of the whole Grid and present simple buttons to operate the Tomcat instances.
+<br class="atl-forced-newline"/></li>
+	<li>The managing logic must be clearly separated from the Web interface logic, since later on, a Command-Line Grid Manager will be included, and will use the same managing logic.
+<br class="atl-forced-newline"/></li>
+	<li>The available commands for each instance are:
+	<ul>
+		<li><strong>status</strong>: retrieves the status of a Tomcat instance through the corresponding Grid Agent</li>
+		<li><strong>trigger-start</strong>: sends a start request to the Tomcat instance using the corresponding Grid Agent</li>
+		<li><strong>trigger-stop</strong>: sends a stop request to the Tomcat instance using the corresponding Grid Agent</li>
+		<li><strong>trigger-kill</strong>: sends a kill request to the Tomcat instance using the corresponding Grid Agent
+		<ul>
+			<li><em><span style="text-decoration: underline;">markt</span>: A small thing. I think I'd prefer start/stop/kill/</em></li>
+			<li><em><span style="text-decoration: underline;">vlad</span>: I added these commands on phase 7 and, as I see them, they behave are a little bit different from the trigger ones, specially when we refer to the CLI manager. The <strong>trigger-start</strong>, issues the signal to the Grid Agent and ends. The <strong>start</strong> keeps on working (and updating the user) until the Tomcat instance is actually up (or fails to start up). On the Web interface the trigger start could show up as a simple icon (omitting its name). On the CLI I see the start command as far more useful than the trigger-start.</em>
+<br class="atl-forced-newline"/></li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>A simple configuration file lists all the machines and their instances so the Grid knows where each instance resides. [This configuration file is probably in XML format]
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+	<li>Grid Agents are installed on each machine and manage all instances in that machine pertaining to the Grid. Grid Agents receive commands from any manager and act accordingly. To manage the instances the Agents use:
+	<ul>
+		<li>Shell calls: start an instance, kill an instance.</li>
+		<li>JMX calls to retrieve instance live information.</li>
+		<li>JMX calls to change instance live values, and to request instance shutdown.</li>
+		<li>OS calls for any OS related need.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>It's assumed that a port will be accessible from each Grid Manager to each machine where the Grid Agents are serving. The firewall, if present must allow active server-type sockets on that port.
+	<ul>
+		<li><em><span style="text-decoration: underline;">markt</span>: Another architectural question. Which end opens the connection, does it stay open and which protocol is used? For example, agents connect to Manager via <a class="unresolved" href="#">WebSocket</a>.</em></li>
+		<li><em><span style="text-decoration: underline;">vlad</span>: I always considered the Grid Agent would would open a server NIO socket, to avoid using ephemereal ports. The Grid Agent is always listening, and the Managers connect when needed. In terms of protocol, it could be a ad-hoc one, specially developed for this tool, or use a well-known standard. I have ad-hoc one that I can use, but I'm open to suggestions.</em>
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Multiple Grids (and Grid Agents) can be running on the same set (or subset) of machines. If that's the case, Tomcat instances, and Grid Agents run on different ports for each grid. When multiple grids use the same machines they don't interfere with each other and can be operated simultaneously.
+<br class="atl-forced-newline"/></li>
+	<li>The status command shows the following information for each instance:
+	<ul>
+		<li>Machine</li>
+		<li>Service (a unique grid-wide name for each instance)</li>
+		<li>State
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>The state of an instance can be:
+	<ul>
+		<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p><strong>Active</strong>: the instance OS process exists, the instance is serving requests, and it looks healthy [enough].
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+		<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p><strong>Zoetic</strong> [for lack of a better word]: the instance OS process exists, but the instance is unresponsive and it doesn't respond to requests for state. It's probably not serving any HTTP requests, does not look healthy, it may be starting, it may be shutting down, it may be overwhelmed. Who knows.
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+		<li><strong>Stopped</strong>: the instance OS process does not exist, and therefore the instance is not operating at all.
+<br class="atl-forced-newline"/></li>
+		<li><strong>Not Available</strong>: This is a pseudo state that the manager applications (web and cli) show when a Grid Agent does not respond to requests for status in a timely manner.
+<br class="atl-forced-newline"/></li>
+		<li>If possible it would be great to discern different sub cases of the Zoetic state, so to help the user to determine what's going on and tackle the case accordingly:
+		<ul>
+			<li><strong>Starting</strong>: The Tomcat instance process exists, and the instance is starting. It's not yet serving HTTP requests.
+<br class="atl-forced-newline"/></li>
+			<li><strong>Stopping</strong>: The Tomcat instance process exists, and the instance is stopping. It's no longer serving HTTP requests.
+<br class="atl-forced-newline"/></li>
+			<li><strong>Unresponsive</strong>: The Tomcat instance process exists, but the instance health isn't good, it's not responding to HTTP requests, or it's overwhelmed. It's not even responding to requests for status. This state is different from &quot;Not Available&quot; since in this case the Grid Agent IS active and responding, but the Tomcat instance itself is unresponsive.
+<br class="atl-forced-newline"/></li>
+			<li>On second thoughts, these extra states can actually be discerned today with the current version of Tomcat, since the Grid Agents know all the trigger commands each local instance has received and can deduce (or make up) the sub case. If the Grid Agent is restarted, some kind of persistence of its state might be needed to &quot;remember&quot; what was going on before the Grid Agent was shut down, so to make an educated guess.
+<br class="atl-forced-newline"/></li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li>Grid Agents communicate over unsecured TCP sockets, and assume communication security is enforced by the network architecture (segregated segments/VLans).
+<br class="atl-forced-newline"/></li>
+	<li>The &quot;trigger&quot;-type commands just deliver the corresponding signal to the instance's Grid Agent and returns right away, without waiting for the full operation to complete. It's kind of &quot;fire and forget&quot;. The web user can keep on refreshing the the web interface to find out about the progress of the status of the Tomcat instances.
+<br class="atl-forced-newline"/></li>
+	<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>Simple user name/password authentication is implemented to secure the Web interface. [Maybe we'll need to provide more options]
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase2-ManageableGridAgents">Phase 2 - Manageable Grid Agents</h2>
+<p>This phase revamps the Grid Agents so they become manageable.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>As well as the instances, the agents can become unresponsive, or even crash. To address cases like these commands are implemented to manage the Grid Agents as well. The Grid Agents become now manageable services.
+<br class="atl-forced-newline"/></li>
+	<li>All grid agents are now also registered in the configuration file under a unique service names. Grid agents names share the same namespace than Tomcat instance names: i.e. the Tomcat instances &amp; Grid Agent names are grid-wide unique. This way commands (such as a trigger-start for example) can distinguish which type of service it needs to act on, and will chose a different logic (program, or script) to execute.
+<br class="atl-forced-newline"/></li>
+	<li>All previously defined commands are now available for the Grid Agents:
+	<ul>
+		<li>status</li>
+		<li>trigger-start</li>
+		<li>trigger-stop</li>
+		<li>trigger-kill
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>The status command now adds an extra column &quot;Type&quot; that indicates the type of service: Tomcat instance, or Grid Agent.
+<br class="atl-forced-newline"/></li>
+	<li>The mechanism to manage the grid agents is necessarily OS dependent. For example, in Linux it can be implemented using Bash commands though SSH. Suitable mechanisms must be studied for each OS.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase3.SecondaryManagers">Phase 3. Secondary Managers</h2>
+<p>The functionality for configuration replication is added.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>Secondary managers are registered on the grid's configuration file.
+<br class="atl-forced-newline"/></li>
+	<li>Every time a configuration change is produced or detected on the configuration of the primary manager, the changes are distributed to all secondary managers.
+<br class="atl-forced-newline"/></li>
+	<li>If the primary manager is down, secondary managers can be started, and can start producing changes (based on the local configuration copy). They can also start distributing the new configuration changes.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase4-ExtendedService&amp;MachineInformation">Phase 4 - Extended Service &amp; Machine Information</h2>
+<p>This phase extends the status information of the whole grid beyond the basic data.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>The status command now adds more information for each service (Tomcat instances and Grid Agents):
+	<ul>
+		<li>CPU usage (if possible)</li>
+		<li>CPU load (if possible)</li>
+		<li>Heap usage (if possible)</li>
+		<li>Threads (if possible)</li>
+		<li>Started on (if possible)</li>
+		<li>Any other information deemed useful for managing purposes.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[Optional] Machine information (same page, or maybe an extra tab) shows per machine:</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+	<ul>
+		<li>CPU usage</li>
+		<li>CPU load (1 min, 5, min, 15 min)</li>
+		<li>Memory usage</li>
+		<li>File system space usage for the mount where the &quot;webapps&quot; dir is (can this be different per instance?).
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase5-Command-LineInterface(CLI)">Phase 5 - Command-Line Interface (CLI)</h2>
+<p>This phase provides a CLI manager interface for environments that cannot use the web interface.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>In addition to the Web Grid Manager interface, the Command-Line Grid Manager interface is suitable when the web interface cannot be used. Typical cases are, when no web port is available on the servers (probably fire-walled), when the security policies do not allow remote server operations, etc. This maybe the case on some secured/fire-walled production environments where only text sessions are acceptable.
+<br class="atl-forced-newline"/></li>
+	<li>The Command-Line Grid Manager is also suitable for automation (e. g. the weekly full/partial site restart) when unattended operations are scheduled, using cron or equivalent utilities.
+<br class="atl-forced-newline"/></li>
+	<li>The Command-Line Grid Manager always leaves a log file per command execution on a directory created for this purpose. Each log file's name includes the time stamp, the command name, and (if possible) the arguments.
+<br class="atl-forced-newline"/></li>
+	<li>The implemented commands are:
+	<ul>
+		<li>status</li>
+		<li>trigger-start</li>
+		<li>trigger-stop</li>
+		<li>trigger-kill
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>The trigger commands are only executed when necessary. If an instance is already running a trigger-start command will be ignored. Conversely trigger-stop and trigger-kill commands are ignored when the instance is stopped.
+<br class="atl-forced-newline"/></li>
+	<li>Return codes must be strategically defined to allow automation. Well defined return codes can provide useful information to the caller program/process (especially for automation), so it can clearly identify the problem and act accordingly.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase6-Hooks">Phase 6 - Hooks</h2>
+<p>Extending the core operation of the grid services with custom logic.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>Hooks are integration points to include extra activities we want to be performed when some events occur on each Tomcat Instance or Grid Agent. A hook program is linked to a hook and may be implemented as a shell script or any other kind of executable program. Hooks can be defined for the following events:
+	<ul>
+		<li><strong>pre-trigger-start</strong></li>
+		<li><strong>post-trigger-start</strong></li>
+		<li><strong>pre-trigger-stop</strong></li>
+		<li><strong>post-trigger-stop</strong></li>
+		<li><strong>pre-trigger-kill</strong></li>
+		<li><strong>post-trigger-kill</strong>
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>The hooks are only executed when the corresponding signal is not ignored. For example, if a trigger-start is issued and the instance is stopped, the corresponding pre-trigger-start and post-trigger-start hooks are executed. If the instance was running, then the command would be ignored and its hooks would also be skipped.
+<br class="atl-forced-newline"/></li>
+	<li>Hooks can be useful for many purposes. For example, typical uses are:
+	<ul>
+		<li>Prepare an instance configuration.</li>
+		<li>Record instance events.</li>
+		<li>Send emails or other notifications upon restarts.</li>
+		<li>Clear caches &amp; temp dirs before starting an instance.</li>
+		<li>Delay the start of an instance to allow the OS to reclaim resources.</li>
+		<li>Generate thread dumps on specific events.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Hooks programs run on the machine where the affected instance runs. Therefore, the hooks programs need to be copied and prepared (manually or automagically) to be executed on all machines of the grid.
+<br class="atl-forced-newline"/></li>
+	<li>When hooks programs are registered (maybe uploaded) on the Grid they are automatically distributed behind the scenes to all instances/machines before they are ready to be used.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase7-EnhancedGridOperation">Phase 7 - Enhanced Grid Operation</h2>
+<p>Beyond the basic trigger operations, there's usually need for more complex ones that provide very common needs.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>Non-trigger commands are added to both the Command-Line and Web Grid Managers:
+	<ul>
+		<li><strong>start</strong>: triggers a start and waits until the operation succeeds or fail</li>
+		<li><strong>stop</strong>: triggers a stop and waits until the operation succeeds or fail</li>
+		<li><strong>kill</strong>: triggers a kill and waits until the operation succeeds or fail</li>
+		<li><strong>restart</strong>: triggers a stop, waits until it stops, triggers a start, wait until it starts</li>
+		<li><strong>killstart</strong>: triggers a kill, waits until it stops, triggers a start, wait until it starts
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>The new commands operate on both types of services (instances and agents).
+<br class="atl-forced-newline"/></li>
+	<li>New hooks are added for the new commands:
+	<ul>
+		<li><strong>pre-start</strong></li>
+		<li><strong>post-start</strong></li>
+		<li><strong>pre-stop</strong></li>
+		<li><strong>post-stop</strong></li>
+		<li><strong>pre-kill</strong></li>
+		<li><strong>post-kill</strong></li>
+		<li><strong>pre-restart</strong></li>
+		<li><strong>post-restart</strong></li>
+		<li><strong>pre-killstart</strong></li>
+		<li><strong>post-killstart</strong>
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>All these new commands use the &quot;trigger&quot; primitives behind the scenes.
+<br class="atl-forced-newline"/></li>
+	<li>The hooks for the non-trigger events are never ignored, so the hook programs are executed even if the related trigger commands are ignored.
+<br class="atl-forced-newline"/></li>
+	<li>Automatic trigger-kill operations are now automatically issued for stop and restart operations if configured, when a trigger-stop fails to succeed in the pre-configured time limit. The time limit is now optionally specified in the configuration file on a per-service basis.
+<br class="atl-forced-newline"/></li>
+	<li>A restart delay (now optionally specified on a per-service bases on the configuration file) is used when restarting services: it's applied to the restart and killstart commands.
+<br class="atl-forced-newline"/></li>
+	<li>The non-trigger commands show an update of the service state periodically (defaults to every 10s, and can be specified on the configuration file), and they keep working until the full operation completes.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase8-SimpleDeployment">Phase 8 - Simple Deployment</h2>
+<p>This phase implements War applications deployment and undeployment to the grid as a whole, or to specific Tomcat instances.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>New commands:
+	<ul>
+		<li><strong>deploy</strong>: deploys a web application (a WAR) to a specific or all grid instances</li>
+		<li><strong>undeploy</strong>: undeploys a web application from a specific or all grid instances
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Through these operations Tomcat instances will be able to run multiple web applications.
+<br class="atl-forced-newline"/></li>
+	<li>The status command is revamped so it now lists all war applications deployed on each instance.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase9-ApplicationVersionManagement">Phase 9 - Application Version Management</h2>
+<p>The application versioning is like a deployment functionality on steroids.</p>
+
+<p>The Application Version Management may interfere with the simple Deployment as described before, since it manages web applications in a different manner. It needs to be studied if both modes are compatible and can work at the same time, or if both are mutually exclusive. If the latter, the user will need to choose which mode to use when setting up the grid.</p>
+
+<p>When the a new version of the application (a Release) needs to be deployed the deployment happens in an orderly manner. The grid also keeps track of which version is live, which ones are not live but still on the grid, and also provide rollback capabilities.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>A Release includes one or more deployables. Deployables are WARs, JARs, etc. that will be part of an application we want to deploy on the grid.
+<br class="atl-forced-newline"/></li>
+	<li>Maybe all deployables are deployed to all instances, maybe each deployable goes to a subset of instances. This will need to be specified on the configuration file.
+<br class="atl-forced-newline"/></li>
+	<li>Releases are first registered into the Grid (maybe even uploaded) under a client-provided unique Version ID. If no Version ID is provided, the system generates it. Behind the scenes, each release deployable is transferred to the corresponding machines automatically during registration. Since this operation may take a while the release will show the states of loading, ready, or removing.
+<br class="atl-forced-newline"/></li>
+	<li>Releases must be deployed to the grid using the Version ID. Since all deployables are already distributed to all machines, a deployment now corresponds to local copy (or sym link) of each deployable to the Tomcat's webapps dir. The deployment automatically registers which Version ID is now deployed on every instance. The deployment operation can be sent to the whole grid or to a single instance.
+<br class="atl-forced-newline"/></li>
+	<li>No two versions are deployed at the same time on a Tomcat instance. When a version is deployed to an instance, the existing one is first unlinked from the instance. It's not actually removed from the grid or the file system, so a rollback operation can be performed quickly if needed.
+<br class="atl-forced-newline"/></li>
+	<li>New commands are implemented:
+	<ul>
+		<li><strong>register</strong>: loads a new application version into the grid under a unique Version ID</li>
+		<li><strong>deregister</strong>: removes a non-live application version from the grid</li>
+		<li><strong>versions</strong>: list all loaded and live Version IDs and where they are deployed</li>
+		<li><strong>deploy</strong>: deploys all version's deployables to the corresponding instances, unlinking the old ones</li>
+		<li><strong>rollback</strong>: undeploys the current version from all Tomcat instances, and restores the previous version</li>
+		<li><strong>deploystop</strong>: deploys all version's deployables to the corresponding instances, but keep the Tomcat instances down</li>
+		<li><strong>undeploy</strong>: undeploys a version (or a single deployable) from the grid or a subset of the grid
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>As shown above the deploy and undeploy commands are revamped.
+<br class="atl-forced-newline"/></li>
+	<li>The deploy, rollback, deploystop, and undeploy command may use, behind the scenes, many low-level &quot;link&quot; and &quot;unlink&quot; tasks. These tasks add/remove a deployable to/from an instance correspondingly.
+<br class="atl-forced-newline"/></li>
+	<li>Each deploy inspects the current state of the grid and saves a Rollback Plan. The rollback commands executes the Rollback Plan. Only one Rollback Plan is saved at any given time.
+<br class="atl-forced-newline"/></li>
+	<li>The Rollback (if saved) is shown on the Web and CLI interfaces.
+<br class="atl-forced-newline"/></li>
+	<li>The status operation now also shows for each instance:
+	<ul>
+		<li>Deployables (the list of war applications deployed in the instance)</li>
+		<li>Version IDs</li>
+		<li>Deployed at (date &amp; time)
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>New hooks are added for the new commands:
+	<ul>
+		<li><strong>pre-register-release</strong></li>
+		<li><strong>post-register-release</strong></li>
+		<li><strong>pre-register-deployable</strong></li>
+		<li><strong>post-register-deployable</strong></li>
+		<li><strong>pre-deregister-release</strong></li>
+		<li><strong>post-deregister-release</strong></li>
+		<li><strong>pre-deregister-deployable</strong></li>
+		<li><strong>post-deregister-deployable</strong></li>
+		<li><strong>pre-deploy</strong></li>
+		<li><strong>post-deploy</strong></li>
+		<li><strong>pre-rollback</strong></li>
+		<li><strong>post-rollback</strong></li>
+		<li><strong>pre-deploystop</strong></li>
+		<li><strong>post-deploystop</strong></li>
+		<li><strong>pre-undeploy</strong></li>
+		<li><strong>post-undeploy</strong></li>
+		<li><strong>unlink</strong>  (unlink: low-level operation that removes a deployable from an instance)</li>
+		<li><strong>post-unlink</strong></li>
+		<li><strong>pre-link</strong>    (link: low-level operation that adds a deployable to an instance)</li>
+		<li><strong>post-link</strong>
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase10-Collections">Phase 10 - Collections</h2>
+<p>Collections are groups and sub-groups of services (instances and/or agents) that are managed together. Essentially, instead of issuing a command on a single service, you can now issue it onto a collection. The commands will now affect all services in the collection and will probably take longer to complete, since multiple operations are now needed to complete the whole command.</p>
+
+<p>Collections may group identical Tomcat instances or maybe Tomcat instances that do not serve the same purpose. For example, one subgroup of Tomcat instances may run the customer facing site (like an HTTP cluster), other group may run the back end site (maybe processing JMS queues), other group may be dedicated to serving or connecting to integration points.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>The following commands can now be issued on collections in addition to plain services:
+	<ul>
+		<li>status</li>
+		<li>trigger-start</li>
+		<li>trigger-stop</li>
+		<li>trigger-kill</li>
+		<li>start</li>
+		<li>stop</li>
+		<li>kill</li>
+		<li>restart</li>
+		<li>killstart</li>
+		<li>deploy</li>
+		<li>rollback</li>
+		<li>deploystop</li>
+		<li>undeploy
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Hooks are modified to provide information of the collection they are affecting.
+<br class="atl-forced-newline"/></li>
+	<li>When a hook runs on a collection, it runs on the machine where the manager application (web or cli) runs, not remotely on the machine of any other instance. This is because in this case the execution is not tied to a specific instance, but to a collection.
+<br class="atl-forced-newline"/></li>
+	<li>Services defined in a collection can be managed in sequential or parallel modes. For example, a restart command on a sequential collection will restart the second service only, when the first one has fully completed. Once the second completes, it will restart the third one, and so on. A parallel collection would issue a restart on all services simultaneously.
+<br class="atl-forced-newline"/></li>
+	<li>Collections are defined in the configuration file and are of a recursive nature: a collection can include plain services, other collections, or both. For sequential mode, each &quot;sub-collection&quot; is treated as a single element so it's considered fully complete when all its included services and collections complete.
+<br class="atl-forced-newline"/></li>
+	<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[To be analyzed and defined if it's useful or not] Collections editing through the Web interface. This can be useful to graphically update collections when machines/instances are added/removed.
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase11-InstanceConfiguration">Phase 11 - Instance Configuration</h2>
+<p>The Web interface adds functionality to specify Tomcat instances configuration from the centralized location.</p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>The CLI interface does not offer this functionality. [to be discussed]</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>Included features are:</p>
+
+<ol>
+	<li>Using the Web interface the user can change instance's configuration remotely. This operation allows the instances to be changed remotely, for example to:
+	<ul>
+		<li>Add libraries (typically JDBC drivers, MQ drivers, JSF, etc.)</li>
+		<li>Set JVM parameters (memory settings, GC behavior, JVM tweaking, etc.)</li>
+		<li>Prepare (add/change/remove) JDBC data sources</li>
+		<li>Set context parameters</li>
+		<li>Set JNDI entries</li>
+		<li>View required WAR resources, and set resources values accordingly</li>
+		<li>Changing listeners</li>
+		<li>Other instance configurations
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase12-InstanceProvisioning">Phase 12 - Instance Provisioning</h2>
+<p>This functionality removes the necessity of a manual setup of all machines and Tomcat instances of the Grid. After installing the first Tomcat instance and deploying the Web Manager, provisioning operations to local or remote machines can be performed through the web interface.</p>
+
+<p>Because of its nature, the implementation of the provisioning operations is heavily OS dependent.</p>
+
+<p>In addition it may not be possible to install, configure, and run the Grid Agents remotely because of fire-walled machines. If that's the case, the Grid Agents will need to be manually setup. Once the Grid Agents are running, the rest of the provisioning can be performed through the Web Manager, using the Grid Agents.</p>
+
+<p>Included features are:</p>
+
+<ol>
+	<li>The provisioning operation will automate the following tasks:
+	<ul>
+		<li>Login into a machine</li>
+		<li>Installing the Grid Agents</li>
+		<li>Configuring &amp; running the Grid Agent</li>
+		<li>Installing the Tomcat instances</li>
+		<li>Configuring the Tomcat instances</li>
+		<li>Configuring the environment (shell variables, other)
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Using the Web and Command-Line interfaces the user can provision the Grid. Typical operations can be:
+	<ul>
+		<li>Adding a new machine to the Grid.</li>
+		<li>Removing a machine from the Grid.</li>
+		<li>Adding a new instance to a machine.</li>
+		<li>Removing an instance from a machine.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Once new machine is registered, the machine's Agent is installed and executed.
+<br class="atl-forced-newline"/></li>
+	<li>To deregister a machine all instances must have been removed first.
+<br class="atl-forced-newline"/></li>
+	<li>If a machine is deregistered, the Agent is stopped and optionally uninstalled. Maybe we'll leave it there, so it will be easier in the future to re-provision the machine.
+<br class="atl-forced-newline"/></li>
+	<li>Once a new instance is created the following operations are performed:
+	<ul>
+		<li>Registering the machines on the grid configuration file</li>
+		<li>Standard instance's directory tree is copied</li>
+		<li>All the instance extra configuration (libraries, JDBC data sources, etc.) are performed</li>
+		<li>No deployments are installed yet.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>To remove an instance, all deployables must have been undeployed first.
+<br class="atl-forced-newline"/></li>
+	<li>Once an instance is removed:
+	<ul>
+		<li>The instance is removed from the configuration file and any collection that included it</li>
+		<li>All deployments are removed from it</li>
+		<li>The whole directory tree for it is removed on the remote machine
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>The provisioning operations require remote access to the new machine, and therefore some kind of connections needs to be setup. For example, an SSH connection could be used if the user provides the user name/password credentials or if if an ssh key exchange had been previously setup between the machines.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TomcatGridDiscussion-Phase13-AdditionalCommands">Phase 13 - Additional Commands</h2>
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[To be described]</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

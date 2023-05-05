@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : HowTo</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : HowTo
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 25, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/gSslBg" rel="nofollow">https://cwiki.apache.org/confluence/x/gSslBg</a></p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025319405 {padding: 0px;}
+div.rbtoc1683025319405 ul {margin-left: 0px;}
+div.rbtoc1683025319405 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025319405'>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-Meta'>Meta</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-HowdoIaddaquestiontothispage?'>How do I add a question to this page?</a></li>
+<li><a href='#HowTo-HowdoIcontributetoTomcat&#39;sdocumentation?'>How do I contribute to Tomcat&#39;s documentation?</a></li>
+</ul>
+</li>
+<li><a href='#HowTo-Installation'>Installation</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-HowdoIsetupandrunTomcatonMacintoshOSX?'>How do I set up and run Tomcat on Macintosh OS X?</a></li>
+<li><a href='#HowTo-HowdoIsetupandrunTomcatonSolaris10?'>How do I set up and run Tomcat on Solaris 10?</a></li>
+<li><a href='#HowTo-HowdoIsetupandrunTomcatonOpenVMS?'>How do I set up and run Tomcat on OpenVMS?</a></li>
+<li><a href='#HowTo-HowdoIsetupanothertomcatserviceonWindows,sharingthesameTomcatHome?'>How do I set up another tomcat service on Windows, sharing the same Tomcat Home ?</a></li>
+<li><a href='#HowTo-HowdoIinstallTomcatasaserviceunderUnix?'>How do I install Tomcat as a service under Unix?</a></li>
+<li><a href='#HowTo-HowtorunTomcatwithoutrootprivileges?'>How to run Tomcat without root privileges?</a></li>
+<li><a href='#HowTo-HowtocreatenativelaunchersforTomcat'>How to create native launchers for Tomcat</a></li>
+<li><a href='#HowTo-HowdoIrotatecatalina.out?'>How do I rotate catalina.out?</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-Rotatecatalina.outusinglogrotate(orsimilar)'>Rotate catalina.out using logrotate (or similar)</a></li>
+<li><a href='#HowTo-Rotatecatalina.outusingrotatelogsorchronolog(orsimilar)'>Rotate catalina.out using rotatelogs or chronolog (or similar)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#HowTo-Configuration'>Configuration</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-HowdoIsetupmultiplesitessharingthesamewarapplication/warfile?'>How do I set up multiple sites sharing the same war application/war file?</a></li>
+<li><a href='#HowTo-HowdoIlogrequests?'>How do I log requests ?</a></li>
+<li><a href='#HowTo-CanIsetJavasystempropertiesdifferentlyforeachwebapp?'>Can I set Java system properties differently for each webapp?</a></li>
+<li><a href='#HowTo-HowdoIconfigureTomcatConnectors?'>How do I configure Tomcat Connectors?</a></li>
+<li><a href='#HowTo-HowdoIconfigureTomcattoworkwithIISandNTLM?'>How do I configure Tomcat to work with IIS and NTLM?</a></li>
+<li><a href='#HowTo-SettingupSSL'>Setting up SSL</a></li>
+<li><a href='#HowTo-HowToSSLClientAuthenticationwithFallbacktoFORMAuthentication'>HowTo SSL Client Authentication with Fallback to FORM Authentication</a></li>
+<li><a href='#HowTo-HowdoIrestrictthelistofSSLciphersusedforHTTPS'>How do I restrict the list of SSL ciphers used for HTTPS</a></li>
+<li><a href='#HowTo-HowdoImakeTomcatstartupfaster?'>How do I make Tomcat startup faster?</a></li>
+<li><a href='#HowTo-HowdoIoverridethedefaulthomepageloadedbyTomcat?'>How do I override the default home page loaded by Tomcat?</a></li>
+<li><a href='#HowTo-HowdoIenableServerSideIncludes(SSI)?'>How do I enable Server Side Includes (SSI)?</a></li>
+<li><a href='#HowTo-HowdoIinstalltheAdministrationwebapp?'>How do I install the Administration web app?</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-Tomcat5.5'>Tomcat 5.5</a></li>
+<li><a href='#HowTo-Tomcat6.0andlater'>Tomcat 6.0 and later</a></li>
+</ul>
+</li>
+<li><a href='#HowTo-HowdoIaddJARsorclassestothecommonclassloaderwithoutaddingthemto$CATALINA_HOME/lib?'>How do I add JARs or classes to the common classloader without adding them to $CATALINA_HOME/lib?</a></li>
+<li><a href='#HowTo-HowdoIauthenticateManageraccessviaJNDItoActiveDirectoryformultipleTomcatinstances?'>How do I authenticate Manager access via JNDI to Active Directory for multiple Tomcat instances?</a></li>
+<li><a href='#HowTo-WhereandhowdoIsetmemoryrelatedsettingstoimproveTomcatperformance?'>Where and how do I set memory related settings to improve Tomcat performance?</a></li>
+<li><a href='#HowTo-HowdoImakemywebapplicationbetheTomcatdefaultapplication?'>How do I make my web application be the Tomcat default application?</a></li>
+<li><a href='#HowTo-HowdoIsetupTomcatvirtualhostsinadevelopmentenvironment?'>How do I set up Tomcat virtual hosts in a development environment?</a></li>
+<li><a href='#HowTo-HowdoIgetstartedwithasimplecluster?'>How do I get started with a simple cluster?</a></li>
+</ul>
+</li>
+<li><a href='#HowTo-Programming'>Programming</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-Howdocalltomcatanttaskstodeploywebapps?'>How do call tomcat ant tasks to deploy webapps?</a></li>
+<li><a href='#HowTo-HowdoIloadapropertiesfile?'>How do I load a properties file?</a></li>
+<li><a href='#HowTo-HowdoIsharesessionsacrosswebapps?'>How do I share sessions across web apps?</a></li>
+<li><a href='#HowTo-HowcanIaccessmembersofacustomRealmorPrincipal?'>How can I access members of a custom Realm or Principal?</a></li>
+<li><a href='#HowTo-HowdoIgetdirectaccesstoaTomcatRealm?'>How do I get direct access to a Tomcat Realm?</a></li>
+<li><a href='#HowTo-HowdoIredirectSystem.outandSystem.errtomywebpage?'>How do I redirect System.out and System.err to my web page?</a></li>
+<li><a href='#HowTo-HowdoIconnecttoaWebsphereMQ(MQSeries)serverusingJMSandJNDI?'>How do I connect to a Websphere MQ (MQ Series) server using JMS and JNDI?</a></li>
+<li><a href='#HowTo-HowdoIuseDataSourceswithTomcat?'>How do I use DataSources with Tomcat?</a></li>
+<li><a href='#HowTo-HowdoIuseHibernateanddatabaseconnectionpoolingwithTomcat?'>How do I use Hibernate and database connection pooling with Tomcat?</a></li>
+<li><a href='#HowTo-HowdoIuseDataSourceRealmsforauthenticationandauthorization?'>How do I use DataSourceRealms for authentication and authorization?</a></li>
+</ul>
+</li>
+<li><a href='#HowTo-Troubleshooting'>Troubleshooting</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-Tomcatcrashed!WhatdoIdonow?'>Tomcat crashed! What do I do now?</a></li>
+<li><a href='#HowTo-I&#39;mencounteringclassloaderproblemswhenusingJNIunderTomcat'>I&#39;m encountering classloader problems when using JNI under Tomcat</a></li>
+<li><a href='#HowTo-HowdoIdebugaTomcatapplication?'>How do I debug a Tomcat application?</a></li>
+<li><a href='#HowTo-HowdoIdebugaTomcatapplicationwhenTomcatisrunasaWindowsservice?'>How do I debug a Tomcat application when Tomcat is run as a Windows service ?</a></li>
+<li><a href='#HowTo-HowdoIcheckwhetherTomcatisUPorDOWN?Thereisnostatuscommand'>How do I check whether Tomcat is UP or DOWN? There is no status command</a></li>
+<li><a href='#HowTo-HowdoIobtainathreaddumpofmyrunningwebapp?'>How do I obtain a thread dump of my running webapp ?</a>
+<ul class='toc-indentation'>
+<li><a href='#HowTo-IfyouarerunningOracle(Sun)JDK'>If you are running Oracle (Sun) JDK</a></li>
+<li><a href='#HowTo-Ifyouarerunningon*NIX'>If you are running on *NIX</a></li>
+<li><a href='#HowTo-IfyouarerunningonMicrosoftWindows'>If you are running on Microsoft Windows</a></li>
+<li><a href='#HowTo-IfyouarerunningTomcatasaserviceonMicrosoftWindows'>If you are running Tomcat as a service on Microsoft Windows</a></li>
+<li><a href='#HowTo-IfyouhaveTomcatrunninginaconsole'>If you have Tomcat running in a console</a></li>
+<li><a href='#HowTo-UsingJavacode'>Using Java code</a></li>
+</ul>
+</li>
+<li><a href='#HowTo-HowdoIreadaJavathreaddump?'>How do I read a Java thread dump ?</a></li>
+<li><a href='#HowTo-HowdoIobtainaheapdump?'>How do I obtain a heap dump?</a></li>
+<li><a href='#HowTo-HowdoIaddmyowncustomMBeantomonitormyapplicationwithinTomcat6?'>How do I add my own custom MBean to monitor my application within Tomcat 6?</a></li>
+</ul>
+</li>
+</ul>
+</div></p><hr/><h1 id="HowTo-Meta">Meta</h1><h2 id="HowTo-HowdoIaddaquestiontothispage?">How do I add a question to this page?</h2><p>Anyone may edit this page to add their own content. That is why this page is part of a Wiki and not a hardcoded static file in the FAQ.</p><p>However, <em>do not</em> add questions without answers to this page. If you have a question about how to do something in Tomcat which has not been addressed yet, ask the <a class="external-link" href="https://tomcat.apache.org/lists.html#tomcat-users" rel="nofollow">tomcat-user list</a>. Once you've figured out how to fix your problem, come back and update the Wiki to allow the rest of us to benefit from what you've learned!</p><h2 id="HowTo-HowdoIcontributetoTomcat&#39;sdocumentation?">How do I contribute to Tomcat's documentation?</h2><p>Download the source bundle or grab the source files from Tomcat <a class="external-link" href="https://tomcat.apache.org/source.html" rel="nofollow">Git repository</a> (at <a class="external-link" href="https://github.com/apache/tomcat" rel="nofollow">GitHub</a>).</p><p>The docs are in the <code>webapps/docs</code> subdirectory. They are in XML format and get processed into the HTML documentation as part of the Tomcat release.</p><p>Edit the documentation XML file(s) as you wish. The xdocs format is self-explanatory: use normal HTML markup, and add <code>&lt;section&gt;</code> or <code>&lt;subsection&gt;</code> tags as you see fit. Look at the existing docs as examples. Make sure you use valid XML markup.</p><p>If you're interested in previewing your changes, you will need to follow the directions for building Tomcat yourself. The docs will be generated in the <code>output/build/webapps/docs</code> directory.</p><p><a class="external-link" href="https://tomcat.apache.org/bugreport.html#How_to_submit_patches_and_enhancement_requests" rel="nofollow">Open a Bugzilla enhancement</a> item with the explanation of your enhancements, and attach a <code>git diff</code> or <code>diff -u</code> format of your patch, or create a Pull Request <a class="external-link" href="https://github.com/apache/tomcat" rel="nofollow">at GitHub</a>. We will evaluate and commit your patch as needed.</p><p>Note, that the Tomcat web site is updated with every release, so that documentation changes will not be visible until next Tomcat release. It is possible to view documentation for unreleased versions of Tomcat 7, Tomcat 8.5 and Tomcat 9 that is published by ASF Buildbot. See links on the <a class="external-link" href="https://tomcat.apache.org/ci.html" rel="nofollow">buildbot</a> page on Apache Tomcat web site.</p><hr/><h1 id="HowTo-Installation">Installation</h1><h2 id="HowTo-HowdoIsetupandrunTomcatonMacintoshOSX?">How do I set up and run Tomcat on Macintosh OS X?</h2><p>See <a href="TomcatOnMacOS_103100575.html">TomcatOnMacOS</a></p><h2 id="HowTo-HowdoIsetupandrunTomcatonSolaris10?">How do I set up and run Tomcat on Solaris 10?</h2><p>See <a href="TomcatOnSolaris10_103100601.html">TomcatOnSolaris10</a></p><h2 id="HowTo-HowdoIsetupandrunTomcatonOpenVMS?">How do I set up and run Tomcat on OpenVMS?</h2><p>See <a href="TomcatOnOpenVMS_103100599.html">TomcatOnOpenVMS</a></p><h2 id="HowTo-HowdoIsetupanothertomcatserviceonWindows,sharingthesameTomcatHome?">How do I set up another tomcat service on Windows, sharing the same Tomcat Home ?</h2><p>To install another Tomcat service using separate Home (binaries) and Base (configuration) paths you can use the <code>service.bat</code> script provided by Apache Tomcat. If your installation of Apache Tomcat does not have a <code>service.bat</code> script (in the <code>bin</code> directory), you can get one from a zip distributive for that version.</p><p>To install the service:</p><ol><li>Set environment variables <code>CATALINA_HOME</code>, <code>CATALINA_BASE and</code> <code>JAVA_HOME</code> (or <code>JRE_HOME</code>) as usual, as documented in <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/RUNNING.txt" rel="nofollow">RUNNING.txt</a> file.</li><li>Call the <code>service.bat</code> script to install the service, as shown in the <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/windows-service-howto.html#Installing_services" rel="nofollow">Windows Service How-To</a> in Tomcat documentation.<br/><code>service.bat install NewServiceName</code><code> --rename</code></li></ol><h2 id="HowTo-HowdoIinstallTomcatasaserviceunderUnix?">How do I install Tomcat as a service under Unix?</h2><p>Create a shell program to start Tomcat automatically. Each UNIX varies in how it starts up automatic services, but there are two main variants:</p><p>BSD::In a typical BSD system, there are a series of start up scripts in <code>/etc</code> starting with <code>rc.</code>. Look for, or create, a file called <code>/etc/rc.local</code> and enter the appropriate instructions to start up Tomcat there as a shell script.</p><p>System V::In a typical UNIX System V setup, there is a directory containing startup scripts, and other directories which contain links to these startup scripts. Create the appropriate startup script for your setup, then create the appropriate links.</p><p>For more information on each, check your system documentation.</p><ul><li><img class="emoticon emoticon-light-on" src="images/icons/emoticons/lightbulb_on.svg" data-emoticon-name="light-on" alt="(лампочка)"/> It also makes a lot of sense to use the <a href="JavaServiceWrapper_103099468.html">JavaServiceWrapper</a>.</li></ul><h2 id="HowTo-HowtorunTomcatwithoutrootprivileges?">How to run Tomcat without root privileges?</h2><p>The best way is to use jsvc, available as part of the <a class="external-link" href="https://commons.apache.org/proper/commons-daemon/jsvc.html" rel="nofollow">Apache Commons Daemon</a> project.</p><hr/><p>Other way is to put Apache httpd with mod_jk before your Tomcat servers, and use ports &gt;=1024 in the Tomcat(s). However, if httpd is not needed for some other reason, this is the most inefficient approach.</p><hr/><p>An other method is to use SetUID scripts (assuming you have the capability) to do this. Here's how I do it.</p><p>Create a file called <code>foo.c</code> with this content (replace &quot;/path/startupscript&quot; with the tomcat startup script):</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>foo.c</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: cpp; gutter: false; theme: Default" data-theme="Default">#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+int main( int argc, char *argv[] ) {
+  if ( setuid( 0 ) != 0 ) {
+    perror( &quot;setuid() error&quot; );
+    return 1;
+  }
+  printf( &quot;Starting ${APPLICATION}\n&quot; );
+  execl( &quot;/bin/sh&quot;, &quot;sh&quot;, &quot;/path/startupscript&quot;, 0 );
+  return 0;
+}</pre>
+</div></div><p>Run the following as root (replacing tmp with whatever you want the startup script to be and replacing XXXXX with whatever group you want to be able to start and stop tomcat:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">gcc tmp.c -o tmp
+chown root:XXXXX tmp
+chmod ugo-rwx tmp
+chmod u+rwxs,g+rx tmp</pre>
+</div></div><p>Now members of the tomcat group should be able to start and stop tomcat. One caveat though, you need to ensure that that your tomcat startup script is not writable by anyone other than root, otherwise your users will be able to insert commands into the script and have them run as root (very big security hole).</p><hr/><p>An other way is to use Iptables to redirect Port 80 and 443 to user ports (&gt;1024)</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">/sbin/iptables -A FORWARD -p tcp --destination-port 443 -j ACCEPT
+/sbin/iptables -t nat -A PREROUTING -j REDIRECT -p tcp --destination-port 443 --to-ports 8443
+/sbin/iptables -A FORWARD -p tcp --destination-port 80 -j ACCEPT
+/sbin/iptables -t nat -A PREROUTING -j REDIRECT -p tcp --destination-port 80 --to-ports 8080
+/sbin/iptables-save or /etc/init.d/iptables save</pre>
+</div></div><p>If you'd like &quot;localhost:443&quot; to also redirect to &quot;localhost:8443&quot;, you'll need this command as well:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">/sbin/iptables -t nat -A OUTPUT -p tcp -o lo -destination-port 443 -j REDIRECT --to-ports 8443</pre>
+</div></div><p>Also note that if you have existing rules defined in your chains, you will need to make sure that the rules above are not ruled-out by another rule when using -A to add the above rules. For example, if you have an existing FORWARD rule that says &quot;-j REJECT&quot; than adding the FORWARD rule after it will have no effect.</p><hr/><p>BSD-based Unix systems such as Mac OS X use a tool similar to iptables, called ipfw (for Internet Protocol Fire Wall). This tool is similar in that it watches all network packets go by, and can apply rules to affect those packets, such as &quot;port-forwarding&quot; from port 80 to some other port such as Tomcat's default 8080. The syntax of the rules is different than iptables, but the same idea. For more info, google and read the man page. Here is one possible rule to do the port-forwarding:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">sudo ipfw add 100 fwd 127.0.0.1,8080 tcp from any to any 80 in</pre>
+</div></div><p><br/></p><hr/><p>Yet another way is to use authbind package (part of Debian- and CentOS based distributions) which allows a program that would normally require superuser privileges to access privileged network services to run as a non-privileged user.</p><h2 id="HowTo-HowtocreatenativelaunchersforTomcat">How to create native launchers for Tomcat</h2><p>See <a href="TomcatCreateNativeLaunchers_103100503.html">TomcatCreateNativeLaunchers</a></p><h2 id="HowTo-HowdoIrotatecatalina.out?">How do I rotate catalina.out?</h2><p>Honestly, the first question is &quot;why are you rotating catalina.out&quot;? Tomcat logs very little to catalina.out so the usual culprit is web applications that stupidly send output to System.out or System.err. If that's the case, what you ought to do is set swallowOutput=&quot;true&quot; on the application's &lt;Context&gt; configuration. That will send the output to a file configured (default) by conf/logging.properties. Once you've done that, get the application fixed to use a real logger, or at least use ServletContext.log().</p><p>If you've decided that you still absolutely positively need to rotate catalina.out, there is something that you have to understand: catalina.out is created by your shell's output redirection, just like when you type &quot;ls -l &gt; dir_listing.txt&quot;. So rotating the file needs to be done carefully.</p><p>You can't just re-name the file or you'll find that Tomcat will continue logging to the file under the new name. You also can't delete catalina.out and re-create it, or you'll never get anything logged to catalina.out after that, unless you restart Tomcat.</p><p>There are really only two ways to properly rotate catalina.out, and they both have downsides.</p><h3 id="HowTo-Rotatecatalina.outusinglogrotate(orsimilar)">Rotate catalina.out using logrotate (or similar)</h3><p>To use a tool like <a class="external-link" href="http://man7.org/linux/man-pages/man8/logrotate.8.html" rel="nofollow">logrotate</a>, you'll want to use the &quot;copytruncate&quot; configuration option. This will copy catalina.out to another file (like catalina.out.<em>datestamp</em>) and then truncates catalina.out to zero-bytes. There is a major downside to this if catalina.out is seeing a lot of action: some log messages written to the log file during the copy/truncate procedure may be lost.</p><h3 id="HowTo-Rotatecatalina.outusingrotatelogsorchronolog(orsimilar)">Rotate catalina.out using rotatelogs or chronolog (or similar)</h3><p>To use a tool like Apache httpd's <a class="external-link" href="https://httpd.apache.org/docs/2.4/programs/rotatelogs.html" rel="nofollow">rotatelogs</a> or <a class="external-link" href="https://linux.die.net/man/1/cronolog" rel="nofollow">chronolog</a>, you'll have to modify Tomcat's catalina.sh (or catalina.bat) script to change the output redirection from a redirect to a pipe. The existing code in catalina.sh looks like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    eval &quot;\&quot;$_RUNJAVA\&quot;&quot; &quot;\&quot;$LOGGING_CONFIG\&quot;&quot; $LOGGING_MANAGER $JAVA_OPTS $CATALINA_OPTS \
+      -Djava.endorsed.dirs=&quot;\&quot;$JAVA_ENDORSED_DIRS\&quot;&quot; -classpath &quot;\&quot;$CLASSPATH\&quot;&quot; \
+      -Djava.security.manager \
+      -Djava.security.policy==&quot;\&quot;$CATALINA_BASE/conf/catalina.policy\&quot;&quot; \
+      -Dcatalina.base=&quot;\&quot;$CATALINA_BASE\&quot;&quot; \
+      -Dcatalina.home=&quot;\&quot;$CATALINA_HOME\&quot;&quot; \
+      -Djava.io.tmpdir=&quot;\&quot;$CATALINA_TMPDIR\&quot;&quot; \
+      org.apache.catalina.startup.Bootstrap &quot;$@&quot; start \
+      &gt;&gt; &quot;$CATALINA_OUT&quot; 2&gt;&amp;1 &quot;&amp;&quot;
+</pre>
+</div></div><p>You'll need to change that to something which looks more like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    eval &quot;\&quot;$_RUNJAVA\&quot;&quot; &quot;\&quot;$LOGGING_CONFIG\&quot;&quot; $LOGGING_MANAGER $JAVA_OPTS $CATALINA_OPTS \
+      -Djava.endorsed.dirs=&quot;\&quot;$JAVA_ENDORSED_DIRS\&quot;&quot; -classpath &quot;\&quot;$CLASSPATH\&quot;&quot; \
+      -Djava.security.manager \
+      -Djava.security.policy==&quot;\&quot;$CATALINA_BASE/conf/catalina.policy\&quot;&quot; \
+      -Dcatalina.base=&quot;\&quot;$CATALINA_BASE\&quot;&quot; \
+      -Dcatalina.home=&quot;\&quot;$CATALINA_HOME\&quot;&quot; \
+      -Djava.io.tmpdir=&quot;\&quot;$CATALINA_TMPDIR\&quot;&quot; \
+      org.apache.catalina.startup.Bootstrap &quot;$@&quot; start \
+      | &quot;$PATH_TO_CHRONOLOG&quot; $CATALINA_BASE/logs/catalina.out.%Y-%m-%d
+</pre>
+</div></div><p>This will be somewhat similar for catalina.bat, but the actual launch command will look different.</p><p>Also note that there are currently two places in catalina.sh (and catalina.bat) where Tomcat is launched, depending upon whether you are using a security manager or not. You should read the whole catalina.sh (or catalina.bat) file to make sure you have handled every case where Tomcat is launched.</p><h1 id="HowTo-Configuration">Configuration</h1><h2 id="HowTo-HowdoIsetupmultiplesitessharingthesamewarapplication/warfile?">How do I set up multiple sites sharing the same war application/war file?</h2><p>See <a href="CreateVirtualHosts_103098688.html">CreateVirtualHosts</a></p><h2 id="HowTo-HowdoIlogrequests?">How do I log requests ?</h2><p>See <a href="AccessLogValve_103098448.html">AccessLogValve</a></p><h2 id="HowTo-CanIsetJavasystempropertiesdifferentlyforeachwebapp?">Can I set Java system properties differently for each webapp?</h2><p>No. If you can edit Tomcat's startup scripts (or better create a <code>setenv.sh</code> file), you can add &quot;-D&quot; options to Java. But there is no way in Java to have different values of system properties for different classes in the same JVM.</p><p>There are some other methods available, like using <code>ServletContext.getContextPath()</code> to get the context name of your web application and locate some resources accordingly, or to define <code>&lt;context-param&gt;</code> elements in <code>WEB-INF/web.xml</code> file of your web application and then set the values for them in Tomcat context file (<code>META-INF/context.xml</code>). See <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/config/context.html" rel="nofollow">https://tomcat.apache.org/tomcat-9.0-doc/config/context.html</a> .</p><h2 id="HowTo-HowdoIconfigureTomcatConnectors?">How do I configure Tomcat Connectors?</h2><p>On the Tomcat FAQ, there is a list of Other Resources which should have information pointing you to the relevant pages.</p><p>Each connector has its own configuration, and its own set up. Check them for more information.</p><p>In particular, here are a number of locations for Tomcat Connectors:</p><ul><li><a class="external-link" href="https://tomcat.apache.org/connectors-doc/index.html" rel="nofollow">Tomcat Connectors Documentation</a></li><li><a class="external-link" href="https://tomcat.apache.org/connectors-doc/miscellaneous/faq.html" rel="nofollow">Tomcat Connectors FAQ</a></li><li><a class="external-link" href="https://tomcat.apache.org/connectors-doc/webserver_howto/apache.html" rel="nofollow">Configuring Tomcat Connectors for Apache</a></li><li><a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/connectors.html" rel="nofollow">Connectors How To</a></li><li><a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/config/ajp.html" rel="nofollow">AJP Connector in Tomcat 9 Configuration Reference</a></li></ul><p>The following <strong>excellent</strong> article was written by Mladen Turk. He is a Developer and Consultant for JBoss Inc in Europe, where he is responsible for native integration. He is a long time commiter for Jakarta Tomcat Connectors, Apache Httpd and Apache Portable Runtime projects.</p><ul><li><em>Fronting Tomcat with Apache or IIS - Best Practices<br/></em><a class="external-link" href="https://people.apache.org/~mturk/docs/article/ftwai.html" rel="nofollow">https://people.apache.org/~mturk/docs/article/ftwai.html</a></li></ul><p>Over the time several different connectors have been built, and some connector projects have been abandoned (so beware of old documentation).</p><h2 id="HowTo-HowdoIconfigureTomcattoworkwithIISandNTLM?">How do I configure Tomcat to work with IIS and NTLM?</h2><p>See <a href="https://cwiki.apache.org/confluence/display/TOMCAT/TomcatNTLM">TomcatNTLM</a></p><h2 id="HowTo-SettingupSSL">Setting up SSL</h2><p>Threads from the <a class="external-link" href="https://tomcat.apache.org/lists.html#tomcat-users" rel="nofollow">tomcat-user list</a></p><p>Using VeriSign:</p><ul><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=106285452711698&amp;w=2" rel="nofollow">https://marc.info/?l=tomcat-user&amp;m=106285452711698&amp;w=2</a></li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=107584265122914&amp;w=2" rel="nofollow">https://marc.info/?l=tomcat-user&amp;m=107584265122914&amp;w=2</a></li></ul><p>Using OpenSSL:</p><ul><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=106293430225790&amp;w=2" rel="nofollow">https://marc.info/?l=tomcat-user&amp;m=106293430225790&amp;w=2</a></li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=106453566416102&amp;w=2" rel="nofollow">https://marc.info/?l=tomcat-user&amp;m=106453566416102&amp;w=2</a></li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=106621232531781&amp;w=2" rel="nofollow">https://marc.info/?l=tomcat-user&amp;m=106621232531781&amp;w=2</a></li></ul><p>A description of &quot;what SSL is all about anyway&quot;:</p><ul><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=106692394104667&amp;w=2" rel="nofollow">https://marc.info/?l=tomcat-user&amp;m=106692394104667&amp;w=2</a></li></ul><h2 id="HowTo-HowToSSLClientAuthenticationwithFallbacktoFORMAuthentication">HowTo SSL Client Authentication with Fallback to FORM Authentication</h2><p>See <a href="SSLWithFORMFallback_103100112.html">SSLWithFORMFallback</a></p><h2 id="HowTo-HowdoIrestrictthelistofSSLciphersusedforHTTPS">How do I restrict the list of SSL ciphers used for HTTPS</h2><p>See <a href="HowTo-SSLCiphers_103099295.html">HowTo SSLCiphers</a>.</p><h2 id="HowTo-HowdoImakeTomcatstartupfaster?">How do I make Tomcat startup faster?</h2><p>See <a href="HowTo-FasterStartUp_103099266.html">HowTo FasterStartUp</a></p><h2 id="HowTo-HowdoIoverridethedefaulthomepageloadedbyTomcat?">How do I override the default home page loaded by Tomcat?</h2><p>After successfully installing Tomcat, you usually test it by loading <a class="external-link" href="http://localhost:8080" rel="nofollow">http://localhost:8080</a> . It is quite easy to override that page. Inside <code>$TOMCAT_HOME/conf/web.xml</code> there is a section called <code>&lt;welcome-file-list&gt;</code> and it looks like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;welcome-file-list&gt;
+        &lt;welcome-file&gt;index.html&lt;/welcome-file&gt;
+        &lt;welcome-file&gt;index.htm&lt;/welcome-file&gt;
+        &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+    &lt;/welcome-file-list&gt;
+</pre>
+</div></div><p>The default servlet attempts to load the <code>index.*</code> files in the order listed. You may easily override the <code>index.jsp</code> file by creating an index.html file at <code>$TOMCAT_HOME/webapps/ROOT</code>. It's somewhat common for that file to contain a new static home page or a redirect to a servlet's main page. A redirect would look like:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;html&gt;
+
+&lt;head&gt;
+&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0;URL=http://mydomain.com/some/path/to/servlet/homepage/&quot;&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;
+</pre>
+</div></div><p>This change takes effect immediately and does not require a restart of Tomcat.</p><h2 id="HowTo-HowdoIenableServerSideIncludes(SSI)?">How do I enable Server Side Includes (SSI)?</h2><p>See <a class="external-link" href="https://tomcat.apache.org/tomcat-7.0-doc/ssi-howto.html" rel="nofollow">https://tomcat.apache.org/tomcat-7.0-doc/ssi-howto.html</a></p><h2 id="HowTo-HowdoIinstalltheAdministrationwebapp?">How do I install the Administration web app?</h2><h3 id="HowTo-Tomcat5.5">Tomcat 5.5</h3><p>If you install Tomcat 5.5 binaries, the Administration web app is not bundled with it; this describes how to add the Administration web app to your Tomcat 5.5 installation. (Tomcat 4.1 comes with the Administration web app as part of the binary).</p><p>The following refers to a Tomcat 5.5 set up on Windows 2000, so your path names will be different on *nix platforms. In this example, Tomcat 5.5.17 in installed in <em>c:\Program Files\Apache Software Foundation\Tomcat 5.5</em> (this is my <strong>CATALINA_HOME</strong>).</p><ol><li>Unzip or untar (be careful to use GNU tar) the file containing the administration web app files (eg. <em>apache-tomcat-5.5.17-admin.zip</em>) to a temporary directory, eg. <em>c:\temp</em>.</li><li>Copy <em>c:\temp\apache-tomcat-5.5.17\conf\Catalina\localhost\admin.xml</em> to the directory <em>c:\Program Files\Apache Software Foundation\Tomcat 5.5\conf\Catalina\localhost</em>.</li><li>Copy the entire directory tree <em>c:\temp\apache-tomcat-5.5.17\server\webapps\admin</em></li></ol><p>to the directory <em>c:\Program Files\Apache Software Foundation\Tomcat 5.5\server\webapps</em>. This is an overlay, so \server\webapps is just pointing you to the \server\webapps, and the admin directory with its contents will be the only thing you see added there.</p><ol><li>Add a line to your <em>c:\Program Files\Apache Software Foundation\Tomcat 5.5\conf\tomcat-users.xml</em> file so that you have a user who has <strong>admin</strong> role. For example, add this line just before the last line (containing <strong>&lt;/tomcat-users&gt;</strong>) of the file:<ul><li>&lt;user username=&quot;admin&quot; password=&quot;makesomethingup&quot; roles=&quot;admin,manager&quot;/&gt;</li></ul></li><li>Restart Tomcat.</li><li>Now when you visit <em><span class="nolink">http://localhost:8080/admin</span></em> you should see a page that asks for a user name and password. If you still see the &quot;no longer loaded&quot; error message in your browser, you must either force a full reload of the web page (in Firefox, hold down Shift key while clicking on the Reload button) or just restart your browser completely.</li></ol><h3 id="HowTo-Tomcat6.0andlater">Tomcat 6.0 and later</h3><p>Development of Administration web app was ceased and it is no longer provided for Tomcat 6.0 and later versions.</p><p>An alternative is to use 3-rd party applications, such as PSI Probe. See <a href="AddOns_103098456.html">AddOns</a> page for links.</p><h2 id="HowTo-HowdoIaddJARsorclassestothecommonclassloaderwithoutaddingthemto$CATALINA_HOME/lib?">How do I add JARs or classes to the common classloader without adding them to $CATALINA_HOME/lib?</h2><p>Either</p><p>a) Configure Tomcat to run with separate <code>$CATALINA_BASE</code> and <code>$CATALINA_HOME</code> directories (as documented in <code>RUNNING.txt</code>), and place your JARs and classes into <code>$CATALINA_BASE/lib</code>, or</p><p>b) Edit the file <em>catalina.properties</em> under <code>$CATALINA_BASE/conf</code>; there is a property called <em>common.loader</em> to which you can add additional paths to find JARs or classes for the common classloader.</p><h2 id="HowTo-HowdoIauthenticateManageraccessviaJNDItoActiveDirectoryformultipleTomcatinstances?">How do I authenticate Manager access via JNDI to Active Directory for multiple Tomcat instances?</h2><p>ADS insists that the CN of every group be unique, but the Manager app. always uses the group CN=manager. The default can be changed, but it's hard to find and you have to do it over every time you upgrade. Instead, pick an attribute other than the common name – for example, &quot;description&quot; – that doesn't have to be unique, name it as the <code>RoleName</code> attribute of the <code>Realm</code> (in server.xml, which you'll be editing anyway), and set that attribute to &quot;manager&quot; in each group you create. Create an OU for each Tomcat instance's groups and give that OU's DN as the <code>RoleBase</code> in that instance's server.xml. Create a uniquely-named group in each instance's OU with the chosen attribute (&quot;description&quot; for example) set to &quot;manager&quot;.</p><h2 id="HowTo-WhereandhowdoIsetmemoryrelatedsettingstoimproveTomcatperformance?">Where and how do I set memory related settings to improve Tomcat performance?</h2><p>When your web application is using large memory as this memory size default setting can be too small. One way to address this problem is to set a larger heap size.</p><p>If you start Tomcat by using the standard <strong>script files</strong> (such as <code>CATALINA_HOME/bin/catalina.bat</code> or <code>catalina.sh</code>), this can be done by setting <code>CATALINA_OPTS</code> environment variable. The recommended way to do so is to create a <code>setenv.bat</code> or <code>setenv.sh</code> file, — read <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/RUNNING.txt" rel="nofollow">RUNNING.txt</a> for details.</p><p>Let say you want to increase it to 256 MB (as you required but make sure you have enough amount of physical memory/RAM and for 32bit system, use no more than 1.0-1.1 GB heap space size ). Set the <code>CATALINA_OPTS</code> to the value of <code>-Xms256m -Xmx256m</code>. In some cases it is better to set slightly lower size for <code>-Xms</code>.</p><p>For <code>setenv.bat</code> use the following line:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> set CATALINA_OPTS=-Xms256m -Xmx256m </pre>
+</div></div><p>For <code>setenv.sh</code> use the following:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> CATALINA_OPTS=&#39;-Xms256m -Xmx256m&#39; </pre>
+</div></div><p>There are other parameters that can be added, depending on your application and requirements, e.g: <code>'-XX:MaxPermSize'</code>.</p><p>For other parameters, look at the following pages:</p><ul><li><a href="Memory_103098949.html">FAQ/Memory</a></li><li><a href="OutOfMemory_103099557.html">OutOfMemory</a></li></ul><p>If you are running Tomcat as a <strong>Windows service</strong>, then environment variables and <code>setenv.bat</code> script have no effect. The relevant settings for the service wrapper application are stored in the Windows registry. They can be edited via Configuration application (<code>tomcat&lt;N&gt;w.exe</code>). See &quot;Java&quot; tab in the configuration dialog. The{{-Xms}} and <code>-Xmx</code> options are configured in fields named &quot;Initial memory pool&quot; and &quot;Maximum memory pool&quot;. Other options can be added to &quot;Java Options&quot; field as if they were specified on the command line of java executable.</p><h2 id="HowTo-HowdoImakemywebapplicationbetheTomcatdefaultapplication?">How do I make my web application be the Tomcat default application?</h2><p>Congratulations. You have created and tested a first web application (traditionally called &quot;mywebapp&quot;), users can access it via the URL &quot;http://myhost.company.com/mywebapp&quot;. You are very proud and satisfied. But now, how do you change the setup, so that &quot;mywebapp&quot; gets called when the user enters the URL &quot;http://myhost.company.com&quot; ?</p><p>The pages and code of your &quot;mywebapp&quot; application currently reside in (CATALINA_BASE)/webapps/mywebapp/. In a standard Tomcat installation, you will notice that under the same directory (CATALINA_BASE)/webapps/, there is a directory called <code>ROOT</code> (the capitals are important, even under Windows). That is the residence of the <em>current</em> Tomcat default application, the one that is called right now when a user calls up &quot;<span class="nolink">http://myhost.company.com[:port</span>]&quot;. The trick is to put your application in its place.</p><p>First stop Tomcat.<br/>Then before you replace the current default application, it may be a good idea to make a copy of it somewhere else.<br/>Then delete everything under the ROOT directory, and move everything that was previously under the (CATALINA_BASE)/webapps/mywebapp/ directory, toward this (CATALINA_BASE)/webapps/ROOT directory. In other words, what was previously .../mywebapp/WEB-INF should now be .../ROOT/WEB-INF (and not .../ROOT/mywebapp/WEB-INF).</p><p>Just by doing this, you have already made you webapp into the Tomcat <em>default webapp</em>.</p><p>Restart Tomcat and you're done.<br/>Call up &quot;http://myhost.company.com/&quot; and enjoy.</p><p><strong>Addendum 1: If you are deploying your application as a war file..</strong></p><p>The above instructions relate to the situation where you are &quot;manually&quot; deploying your application as a directory-and-files structure under the /webapps directory. If instead you are using the &quot;war&quot; method to deploy your application, the principle is about the same :</p><ul class="alternate"><li>delete the ROOT directory</li><li>name your war file &quot;ROOT.war&quot; (capitals mandatory)</li><li>drop the ROOT.war file directly in the /webapps directory.<br/>Tomcat will automatically deploy it.</li></ul><p>For more information about this topic in general, consult this page : <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/config/context.html" rel="nofollow">&quot;Configuration Reference / Context&quot;</a></p><p><strong>Addendum 2: If for some reason you want another method..</strong></p><p>If, for some reason, you do not want to deploy your application under the CATALINA_BASE/webapps/ROOT subdirectory, or you do not want to name your war-file &quot;ROOT.war&quot;, then read on. But you should first read this : <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/config/context.html" rel="nofollow">&quot;Configuration Reference / Context&quot;</a> and make sure you understand the implications.</p><p>The method described above is the simple method. The two methods below are more complex, and the second one has definite implications on the way you manage and run your Tomcat.</p><p><strong>Method 2.1</strong></p><ul class="alternate"><li>Place your war file outside of CATALINA_BASE/webapps (it <strong>must</strong> be outside to prevent double deployment).</li><li>Place a context file named ROOT.xml in CATALINA_BASE/conf/&lt;engine name&gt;/&lt;host name&gt;. The single &lt;Context&gt; element in this context file MUST have a <strong>docBase</strong> attribute pointing to the location of your war file. The path element should not be set - it is derived from the name of the .xml file, in this case ROOT.xml. See the Context Container above for details.</li></ul><p><strong>Method 2.2</strong></p><p>If you really know what you are doing..</p><ul class="alternate"><li>leave your war file in CATALINA_BASE/webapps, under its original name</li><li>turn off autoDeploy <strong>and</strong> deployOnStartup in your Host element in the server.xml file.</li><li>explicitly define <strong>all</strong> application Contexts in server.xml, specifying both path and docBase. You must do this, because you have disabled all the Tomcat auto-deploy mechanisms, and Tomcat will not deploy your applications anymore unless it finds their Context in the server.xml.</li></ul><p>Note that this last method also implies that in order to make any change to any application, you will have to stop and restart Tomcat.</p><h2 id="HowTo-HowdoIsetupTomcatvirtualhostsinadevelopmentenvironment?">How do I set up Tomcat virtual hosts in a development environment?</h2><p>See <a href="https://cwiki.apache.org/confluence/display/TOMCAT/TomcatDevelopmentVirtualHosts">TomcatDevelopmentVirtualHosts</a></p><h2 id="HowTo-HowdoIgetstartedwithasimplecluster?">How do I get started with a simple cluster?</h2><p>See <a href="ClusteringOverview_103098638.html">ClusteringOverview</a></p><hr/><h1 id="HowTo-Programming">Programming</h1><h2 id="HowTo-Howdocalltomcatanttaskstodeploywebapps?">How do call tomcat ant tasks to deploy webapps?</h2><p>See <a href="AntDeploy_103098482.html">AntDeploy</a></p><h2 id="HowTo-HowdoIloadapropertiesfile?">How do I load a properties file?</h2><p>Here are the three most popular ways::</p><ul><li>Use a classloader's <code>getResource()</code> method to get an url to the properties file and load it into the Properties. The properties file must be located within the webapp classpath (i.e. either <code>WEB-INF/classes/...</code> or in a jar in <code>WEB-INF/lib/</code>).</li></ul><p style="margin-left: 30.0px;">A challenge is to get the classloader when you are in a static initializer:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  public class Config {
+     private static java.util.Properties prop = new java.util.Properties();
+     private static loadProperties() {
+          // get class loader
+          ClassLoader loader = Config.class.getClassLoader();
+          if(loader==null)
+            loader = ClassLoader.getSystemClassLoader();
+
+          // assuming you want to load application.properties located in WEB-INF/classes/conf/
+          String propFile = &quot;conf/application.properties&quot;;
+          java.net.URL url = loader.getResource(propFile);
+          try{prop.load(url.openStream());}catch(Exception e){System.err.println(&quot;Could not load configuration file: &quot; + propFile);}
+     }
+
+     //....
+     // add your methods here. prop is filled with the content of conf/application.properties
+
+     // load the properties when class is accessed
+     static {
+        loadProperties();
+     }
+  }
+</pre>
+</div></div><p style="margin-left: 30.0px;">This method even works in a standalone java application. So it is my preferred way.</p><ul><li>Use a <code>ResourceBundle</code>. See the Java docs for the specifics of how the <code>ResourceBundle</code> class works. Using this method, the properties file must go into the <code>WEB-INF/classes</code> directory or in a jar file contained in the <code>WEB-INF/lib</code> directory.</li><li>Another way is to use the method <code>getResourceAsStream()</code> from the <code>ServletContext</code> class. This allows you update the file without having to reload the webapp as required by the first method. Here is an example code snippet, without any error trapping:</li></ul><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>// Assuming you are in a Servlet extending HttpServlet
+// This will look for a file called &quot;/more/cowbell.properties&quot; relative
+// to your servlet Root Context
+InputStream is = getServletContext().getResourceAsStream(&quot;/more/cowbell.properties&quot;);
+Properties  p  = new Properties();
+p.load(is);
+is.close();
+</pre>
+</div></div><h2 id="HowTo-HowdoIsharesessionsacrosswebapps?">How do I share sessions across web apps?</h2><p>You cannot share sessions directly across web apps, as that would be a violation of the Servlet Specification. There are workarounds, including using a singleton class loaded from the common classloader repository to hold shared information, or putting some of this shared information in a database or another data store. Some of these approaches have been discussed on the <a class="external-link" href="https://tomcat.apache.org/lists.html#tomcat-users" rel="nofollow">tomcat-user mailing list</a>, whose archives you should search for more information.</p><p>Sharing sessions across containers for clustering or replication purposes is a different matter altogether.</p><h2 id="HowTo-HowcanIaccessmembersofacustomRealmorPrincipal?">How can I access members of a custom Realm or Principal?</h2><p>When you create a custom subclass of <code>RealmBase</code> or <code>GenericPrincipal</code> and attempt to use those classes in your webapp code, you'll probably have problems with <code>ClassCastException</code>. This is because the instance returned by <code>request.getUserPrincipal()</code> is of a class loaded by the server's classloader, and you are trying to access it through you webapp's classloader. While the classes maybe otherwise exactly the same, different (sibling) classloaders makes them different classes.</p><p>This assumes you created a <code>MyPrincipal</code> class, and put in Tomcat's server/classes (or lib) directory, as well as in your webapp's webinf/classes (or lib) directory. Normally, you would put custom realm and principal classes in the server directory because they depend on other classes there.</p><p>Here's what you would like to do, but it throws <code>ClassCastException</code>:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>MyPrincipal p = request.getUserPrincipal();
+String emailAddress = p.getEmailAddress();
+</pre>
+</div></div><p>Here are 4 ways you might get around the classloader boundary:</p><p>1) <em>Reflection</em></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Principal p = request.getUserPrincipal();
+String emailAddress = p.getClass().getMethod(&quot;getEmailAddress&quot;, null).invoke(p, null);
+</pre>
+</div></div><p>2) <em>Move classes to a common classloader</em></p><p>You could put your custom classes in a classloader that is common to both the server and your webapp - e.g., either the &quot;common&quot; or bootstrap classloaders. To do this, however, you would also need to move the classes that your custom classes depend on up to the common classloader, and that seems like a bad idea, because there a many of them and they a core server classes.</p><p>3) <em>Common Interfaces</em></p><p>Rather than move the implementing custom classes up, you could define interfaces for your customs classes, and put the interfaces in the common directory. You're code would look like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public interface MyPrincipalInterface extends java.security.Principal {
+  public String getEmailAddress();
+}
+
+public class MyPrincipal implements MyPrincipalInterface {
+...
+  public String getEmailAddress() {
+    return emailAddress;
+  }
+}
+
+public class MyServlet implements Servlet {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    MyPrincipalInterface p = (MyPrincipalInterface)request.getUserPrincipal();
+    String emailAddress = p.getEmailAddress();
+...
+}
+</pre>
+</div></div><p><em>Notice that this method gives you pretty much the webapp code you wanted in the first place</em></p><p>4) <em>Serializing / Deserializing</em></p><p>You might want to try serializing the response of <code>request.getUserPrincipal()</code> and deserialize it to an instance of webapp's MyPrincipal.</p><h2 id="HowTo-HowdoIgetdirectaccesstoaTomcatRealm?">How do I get direct access to a Tomcat Realm?</h2><p>Credit: This code is from a post by Yoav Shapira <a class="external-link" href="https://www.yoavshapira.com/" rel="nofollow">https://www.yoavshapira.com/</a> in the user list</p><p>Sometimes access directly into the Tomcat realm object is needed; to do, this the following code can be used. Be aware, however, that by using this, your application is relying on a Tomcat extension and is therefore non-standard.</p><p>Note that in order for this to work the Context of the web application in question needs to have its privileged attribute set to &quot;true&quot;, otherwise web apps do not have access to the Tomcat classes.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Server server = ServerFactory.getServer();
+//Note, this assumes the Container is &quot;Catalina&quot;
+Service service = server.findService(&quot;Catalina&quot;);
+Engine engine = (Engine) service.getContainer();
+Host host = (Host) engine.findChild(engine.getDefaultHost());
+//Note, this assumes your context is &quot;myContext&quot;
+Context context = (Context) host.findChild(&quot;myContext&quot;);
+Realm realm = context.getRealm();
+</pre>
+</div></div><p><strong>Warning:</strong> The above recipe on how to obtain a <code>Context</code> for a web application is a bit obsolete and does not work in Tomcat 7 and later (as Server is no longer a singleton). There are other ways to achieve that. An easy one is to add a <code>Valve</code> or <code>Listener</code> to a context, as those classes have access to Tomcat internals. There may be other ways mentioned in the archives of the <a class="external-link" href="https://tomcat.apache.org/lists.html#tomcat-users" rel="nofollow">users mailing list</a>.</p><h2 id="HowTo-HowdoIredirectSystem.outandSystem.errtomywebpage?">How do I redirect System.out and System.err to my web page?</h2><p>I have met a situation where I needed to redirect a portion of standard ouput (<code>System.out</code>, STDOUT) and standard error (<code>System.err</code>, STDERR) to my web page instead of a log file. An example of such an application is a compiler research platform that our resarch team is putting online for anybody to be able to quickly compile-test their programs on line. Naturally, the compilers dump some of their stuff to STDERR or STDOUT and they are not web application <code>.jar</code>. Thus, I needed badly these streams related to the compiler output to be redirected to my web editor interface. Having found no easy instructions on how to do that lead me writing up this quick HOWTO. The HOWTO is based on Servlets, but similar arrangements can be done for JSPs. The below example shows the essentials, with most non-essentials removed.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class WebEditor extends HttpServlet
+{
+ ...
+        public void doGet
+        (
+                HttpServletRequest poHTTPRequest,
+                HttpServletResponse poHTTPResponse
+        )
+        throws IOException, ServletException
+        {
+                poHTTPResponse.setContentType(&quot;text/html&quot;);
+
+                ServletOutputStream out = poHTTPResponse.getOutputStream();
+
+                out.println(&quot;&lt;html&gt;&quot;);
+                out.println(&quot;&lt;body&gt;&quot;);
+                out.println(&quot;&lt;head&gt;&quot;);
+                out.println(&quot;&lt;title&gt;WebEditor Test $Revision: 1.6 $&lt;/title&gt;&quot;);
+                out.println(&quot;&lt;/head&gt;&quot;);
+                out.println(&quot;&lt;body&gt;&quot;);
+                out.println(&quot;&lt;h3&gt;WebEditor Test $Revision: 1.6 $&lt;/h3&gt;&quot;);
+                out.println(&quot;&lt;hr /&gt;&quot;);
+
+                // Backup the streams
+                PrintStream oStdOutBackup = System.out;
+                PrintStream oStdErrBackup = System.err;
+
+                try {
+
+                  // Redired STDOUT and STDERR to the ServletOutputStream
+                  System.setOut(new PrintStream(out));
+                  System.setErr(new PrintStream(out));
+
+                  try {
+                        // ... call compiler here that produces
+                        // tons of STDOUT/STDERR messages ...
+                  } catch(Exception e) {
+                        out.println(e);
+                  }
+
+                } finally {
+
+                  // Restore original STDOUT and STDERR
+                  System.setOut(oStdOutBackup);
+                  System.setErr(oStdErrBackup);
+
+                }
+
+                out.println(&quot;&lt;hr /&gt;&quot;);
+                out.println(&quot;&lt;/body&gt;&quot;);
+                out.println(&quot;&lt;/html&gt;&quot;);
+        }
+}
+</pre>
+</div></div><p>A few caveats arise, as for instance while the <code>System.out</code> and <code>System.err</code> are redirected as per above, no logging of these is done to files. You will need more legwork to do to make the additional logging. It is important to backup and restore the original streams as the above example does. The servlet should not be used to process several requests in parallel (some synchronization should be added to the above code to prevent that). Also, notice the use of <code>getOutputStream()</code>: when this method is called, the <code>getWriter()</code> method can no longer be used in the same response object.</p><p>Corrections and comments are most welcome!</p><h2 id="HowTo-HowdoIconnecttoaWebsphereMQ(MQSeries)serverusingJMSandJNDI?">How do I connect to a Websphere MQ (MQ Series) server using JMS and JNDI?</h2><p>Basically, this works just as described in <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html:" rel="nofollow">https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html:</a> Within your application, you are using the standard JNDI and JMS API calls. In web.xml (the container independent application descriptor), you specify resource references (stub resources). And in context.xml (the container specific application descriptor), you are actually configuring the JMS connection.</p><p>More to the point. Here's some example code, which might be added to a Servlet. The example is sending a message to an MQ server:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    import javax.jms.Queue;
+    import javax.jms.QueueConnection;
+    import javax.jms.QueueConnectionFactory;
+    import javax.jms.QueueSender;
+    import javax.jms.QueueSession;
+    import javax.jms.Session;
+    import javax.jms.TextMessage;
+    import javax.naming.Context;
+    import javax.naming.InitialContext;
+
+    Context ctx = (Context) new InitialContext().lookup(&quot;java:comp/env&quot;);
+    QueueConnectionFactory qcf = (QueueConnectionFactory) ctx.lookup(&quot;jms/MyQCF&quot;);
+    QueueConnection qc = qcf.createQueueConnection();
+    Queue q = (Queue) ctx.lookup(&quot;jms/MyQ&quot;);
+    QueueSession qs = qc.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    TextMessage tm = qs.createTextMessage();
+    tm.setText(&quot;Hi, there!&quot;);
+    QueueSender sender = qc.createSender();
+    sender.send(tm);
+    sender.close();
+    qs.close();
+    qc.close();
+</pre>
+</div></div><p>Note the following:</p><ol><li>I have intentionally omitted proper resource handling. For example, one ought to ensure that qc.close() is always called by using a try { .. } finally { ..} block.</li><li>The code contains absolutely no references to com.ibm.mq*.jar.</li><li>There are only two items, which need configuration: &quot;jms/MyQCF&quot;, and &quot;jms/MyQ&quot;. We'll find them again in web.xml, and context.xml.</li></ol><p>We have now written the code. Additionally, our web application needs the following files, and directories:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    +--META-INF
+    |  +--- context.xml
+    +--WEB-INF
+       +--- web.xml
+       +--- lib
+            +--- com.ibm.mq.jar
+            +--- com.ibm.mqjms.jar
+            +--- connector.jar
+            +--- dhbcore.jar
+            +--- geronimo-j2ee-management_1.0_spec-1.0.jar
+            +--- geronimo-jms_1.1_spec-1.0.jar
+</pre>
+</div></div><p>The application descriptor web.xml looks just the same as usual, with the exception of the following lines:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  &lt;resource-env-ref&gt;
+    &lt;resource-env-ref-name&gt;jms/MyQCF&lt;/resource-env-ref-name&gt;
+    &lt;resource-env-ref-type&gt;javax.jms.QueueConnectionFactory&lt;/resource-env-ref-type&gt;
+  &lt;/resource-env-ref&gt;
+
+  &lt;resource-env-ref&gt;
+    &lt;resource-env-ref-name&gt;jms/MyQ&lt;/resource-env-ref-name&gt;
+    &lt;resource-env-ref-type&gt;javax.jms.Queue&lt;/resource-env-ref-type&gt;
+  &lt;/resource-env-ref&gt;
+</pre>
+</div></div><p>This is simply telling, that the items &quot;jms/MyQCF&quot;, and &quot;jms/MyQ&quot; exist, and are instances of QueueConnectionFactory, and Queue, respectively. The actual configuration is in context.xml:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>   &lt;Resource
+      name=&quot;jms/MyQCF&quot;
+      auth=&quot;Container&quot;
+      type=&quot;com.ibm.mq.jms.MQQueueConnectionFactory&quot;
+      factory=&quot;com.ibm.mq.jms.MQQueueConnectionFactoryFactory&quot;
+      description=&quot;JMS Queue Connection Factory for sending messages&quot;
+      HOST=&quot;&lt;mymqserver&gt;&quot;
+      PORT=&quot;1414&quot;
+      CHAN=&quot;&lt;mychannel&gt;&quot;
+      TRAN=&quot;1&quot;
+      QMGR=&quot;&lt;myqueuemanager&gt;&quot;/&gt;
+   &lt;Resource
+      name=&quot;jms/MyQ&quot;
+      auth=&quot;Container&quot;
+      type=&quot;com.ibm.mq.jms.MQQueue&quot;
+      factory=&quot;com.ibm.mq.jms.MQQueueFactory&quot;
+      description=&quot;JMS Queue for receiving messages from Dialog&quot;
+      QU=&quot;&lt;myqueue&gt;&quot;/&gt;
+</pre>
+</div></div><p>Basically, you just have to enter your values for &lt;myqserver&gt; (the WebSphere MQ servers host name), &lt;mychannel&gt; (the channel name), &lt;myqueuemanager&gt; (the queue manager name), and &lt;myqueue&gt; (the queue name). Both these values, the associated names (HOST, PORT, CHAN, ...), and their collection is truly MQ specific. For example, with ActiveMQ, you typically have a broker URL, and a broker name, rather than HOST, PORT, CHAN, ...</p><p>The main thing to know (and the reason why I am writing this, because it took me some hours to find out): How do I know the property names, their meaning, and possible values? Well, there is an excellent manual, called &quot;WebSphere MQ Using Java&quot;. It should be easy to find by entering the title into Google. The manual contains a section, called &quot;Administering JMS objects&quot;, which describes the objects being configured in JNDI. But the most important part is the subsection on &quot;Properties&quot;, which contains all the required details.</p><h2 id="HowTo-HowdoIuseDataSourceswithTomcat?">How do I use DataSources with Tomcat?</h2><p>See <a href="UsingDataSources_103100747.html">UsingDataSources</a></p><h2 id="HowTo-HowdoIuseHibernateanddatabaseconnectionpoolingwithTomcat?">How do I use Hibernate and database connection pooling with Tomcat?</h2><p>See <a href="https://cwiki.apache.org/confluence/display/TOMCAT/TomcatHibernate">TomcatHibernate</a></p><h2 id="HowTo-HowdoIuseDataSourceRealmsforauthenticationandauthorization?">How do I use DataSourceRealms for authentication and authorization?</h2><p>See <a href="https://cwiki.apache.org/confluence/display/TOMCAT/TomcatDataSourceRealms">TomcatDataSourceRealms</a></p><hr/><h1 id="HowTo-Troubleshooting">Troubleshooting</h1><h2 id="HowTo-Tomcatcrashed!WhatdoIdonow?">Tomcat crashed! What do I do now?</h2><p>These steps are in no particular order ...</p><ol><li>Read the Tomcat FAQ</li><li>Read the Tomcat RELEASE NOTES - there is something about Linux in it</li><li>First look at the stack traces. I hope a stack trace was produced before the failure aborted the JVM process. After you get a few stack traces, see if a pattern appears. Trace back to source code if needed.</li><li>Patch (or <em>unpatch</em>!) the operating system as needed.</li><li>Patch (or <em>unpatch</em>!) the JVM (Java Virtual Machine).</li><li>Linux Problem? - read the RELEASE NOTES!</li><li>Look at commercial vendor support for other servlet engines. Sometimes the problem is universal regardless of servlet engine and may be a JVM/OS/application code issue</li><li>Search Google for web pages - maybe someone else had this problem. I'll bet they did.</li><li>Search Google news groups</li><li>If the JVM is from a commercial vendor, (eg: IBM, HP) check their release notes and news groups</li><li>Using a database? Make sure JDBC type 4 drivers are used. Check their release notes.</li><li>Tweak JVM memory parameters. Setting memory too high can be as bad as having memory too low. If your memory settings are set too high, Java 1.3 JVMs may freeze while waiting for the entire garbage collection to finish. Also if the JVM has too much memory, if may be starving other resources on the machine which are needed which may be causing unforeseen exceptions. In a nutshell, throwing more memory doesn't always solve the problem!</li><li>Turn off the Java JIT compiler. See the Java Docs on how to do this.</li></ol><h2 id="HowTo-I&#39;mencounteringclassloaderproblemswhenusingJNIunderTomcat">I'm encountering classloader problems when using JNI under Tomcat</h2><p>The important thing to know about using JNI under Tomcat is that one cannot place the native libraries OR their JNI interfaces under the WEB-INF/lib or WEB-INF/classes directories of a web application and expect to be able to reload the webapp without restarting the server. The class that calls System.loadLibrary(String) must be loaded by a classloader that is not affected by reloading the web application itself.</p><p>Thus, if you have JNI code that follows the convention of including a static initilaizer like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>class FooWrapper {
+    static {
+        System.loadLibrary(&quot;foo&quot;);
+    }
+
+    native void doFoo();
+}
+</pre>
+</div></div><p>then both this class and the shared library should be placed in the <code>$CATALINA_HOME/shared/lib</code> directory.</p><p><em>Note that under Windows, you'll also need to make sure that the library is in the <code>java.library.path</code>. Either add <code>%CATALINA_HOME%\shared\lib</code> to your Windows PATH environment variable, or place the DLL files in another location that is currently on the <code>java.library.path</code>. There may be a similar requirement for UNIX based system (I haven't checked), in which case you'd also have to add <code>$CATALINA_HOME/shared/lib</code> to the PATH environment variable. (Note: I'm not the original author of this entry.)</em></p><p>The symptom of this problem that I encountered looked something like this -</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java.lang.UnsatisfiedLinkError: Native Library WEB-INF/lib/libfoo.so already loaded in another classloader
+        at java.lang.ClassLoader.loadLibrary0(ClassLoader.java:1525)
+</pre>
+</div></div><p>If the <code>UnsatisfiedLinkError</code> is intermittent, it may be related to Tomcat's default session manager. It restored previous sessions at startup. One of those objects may load the JNI library. Try stopping the Tomcat JVM, deleting the SESSIONS.ser file, then starting Tomcat. You may consider changing the session persistence manager at this time.</p><p>Note that Tomcat 6.0.14 the $CATALINA_HOME/shared/lib directory does not exist. You will need to add this and you will need to edit $CATALINA_HOME/conf/catalina.properties so that the shared.loader line looks like this shared.loader=$CATALINA_HOME/shared/lib</p><h2 id="HowTo-HowdoIdebugaTomcatapplication?">How do I debug a Tomcat application?</h2><p>There is nothing magical about debugging a Tomcat application. All you need is an IDE and two environment variables.</p><ul><li>If you have not already done so begin by creating a new Tomcat context for your application. Navigate to <strong>TOMCAT_HOME\conf\Catalina\localhost</strong> and create a new file, say, myapp.xml. This will become part of your url, so to access your app you'll have to type <span class="nolink">http://localhost:8080/myapp</span>.</li><li>Enter the following in myapp.xml:</li></ul><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;Context docBase=&quot;c:/workspace/myapp/WebRoot&quot; /&gt;
+</pre>
+</div></div><ul><li>This assumes you have a web application containing WEB-INF in <strong>c:/workspace/myapp/WebRoot</strong></li><li>Create two environment variables:</li></ul><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>C:\&gt;set JPDA_ADDRESS=1044
+C:\&gt;set JPDA_TRANSPORT=dt_socket
+</pre>
+</div></div><ul><li>Now, you can launch Tomcat with these debug options:</li></ul><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>TOMCAT_HOME\bin\&gt;catalina jpda start
+</pre>
+</div></div><ul><li>Use your IDE to connect to Tomcat through port 1044</li></ul><p>See also: <a href="Developing_103098864.html">FAQ/Developing</a></p><h2 id="HowTo-HowdoIdebugaTomcatapplicationwhenTomcatisrunasaWindowsservice?">How do I debug a Tomcat application when Tomcat is run as a Windows service ?</h2><p>You can debug the tomcat service by editing the service parameters as follows.</p><ul><li>Launch a command prompt</li><li>Set the proper CATALINA_HOME environment variable: pointing to tomcat home</li><li>Run the following command:</li></ul><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>%CATALINA_HOME%\bin\tomcat6w.exe //ES//tomcat6
+</pre>
+</div></div><ul><li>Select the Java tab in the properties dialog box,</li><li>Add the following two lines to the Java Options text box:</li></ul><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>-Xdebug
+-Xrunjdwp:transport=dt_socket,address=127.0.0.1:1044,server=y,suspend=n
+</pre>
+</div></div><p>If you want to allow remote debugging, replace 127.0.0.1 by your server IP address.</p><ul><li>Click on &quot;Apply&quot; and close the dialog by clicking on &quot;OK&quot;</li><li>Restart the Apache Tomcat service</li><li>Use your IDE to connect to Tomcat through port 1044</li></ul><p>For IntelliJ IDEA you choose a remote debug target and set transport to &quot;socket&quot; and mode to &quot;attach&quot; , then you specify the host (127.0.0.1) and port (1044)</p><p>See also: <a href="Developing_103098864.html">FAQ/Developing</a></p><h2 id="HowTo-HowdoIcheckwhetherTomcatisUPorDOWN?Thereisnostatuscommand">How do I check whether Tomcat is UP or DOWN? There is no status command</h2><p>Unfortunately, the <code>org.apache.catalina.util.ServerInfo</code> class does not determine if Tomcat is UP or DOWN. It is possible to do an HTTP GET on the root url but this is not accurate. In my case I sometimes use a regular Apache HTTPd to display a maintainence message while upgrading, etc. and using that method would give false positives.</p><p>The correct way to do determine status is to parse the admin port from server.xml and see if we can connect to it. If we can then the Tomcat is UP otherwise it is DOWN.</p><p>Here is my code to do this. Consider it public domain and use it as you see fit. Tomcat makes a note of this connection with something like this on the console.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>May 1, 2007 5:10:35 PM org.apache.catalina.core.StandardServer await
+WARNING: StandardServer.await: Invalid command &#39;&#39; received
+</pre>
+</div></div><p>Ideally this should be incorporated into <code>org.apache.catalina.util.ServerInfo</code> by some committer. In addition to the shutdown command they should add commands like status (UP or DOWN) and uptime in the await method of <code>org.apache.catalina.core.StandardServer</code></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+/**
+ * Check to see if Tomcat is UP/DOWN.
+ *
+ * This parses the server.xml file for the Tomcat admin port and see if
+ * we can connect to it. If we can, then the Tomcat is UP otherwise it
+ * is DOWN
+ *
+ * It is invoked as follows:
+ *    java -Dcatalina.base=c:/tomcat-6.0.10 CatalinaStatus
+ *
+ * It can also (optionally) shutdown the Tomcat by adding the shutdown
+ * command line parameter as follows:
+ *
+ *    java -Dcatalina.base=c:/tomcat-6.0.10 CatalinaStatus shutdown
+ *
+ * @author Shiraz Kanga &lt;skanga at yahoo.com&gt;
+ */
+public class CatalinaStatus
+{
+  /**
+   * Pathname to the server configuration file.
+   */
+  protected static String configFile = &quot;conf/server.xml&quot;;
+  protected static String serverShutdown;
+  protected static int serverPort;
+
+  /**
+   * The application main program.
+   *
+   * @param args Command line arguments
+   */
+  public static void main (String args[])
+  {
+    Document configDom = getXmlDom (configFile ());
+    parseDocument (configDom);
+    // System.out.println (&quot;Catalina.serverPort: &quot; + serverPort);
+    // System.out.println (&quot;Catalina.serverShutdown: &quot; + serverShutdown);
+
+    // Stop the existing server
+    try
+    {
+      Socket localSocket = new Socket (&quot;127.0.0.1&quot;, serverPort);
+      System.err.println (&quot;Server status:  UP&quot;);
+      if ((args.length &gt; 0) &amp;&amp; (args[0].equalsIgnoreCase (&quot;shutdown&quot;)))
+      {
+        System.out.println (&quot;Tomcat shutdown initiated&quot; );
+        doShutdown (localSocket);
+      }
+
+      localSocket.close ();
+    }
+    catch (IOException e)
+    {
+      System.err.println (&quot;Server status:  DOWN&quot;);
+      System.exit(1);
+    }
+  }
+
+  /**
+   * Return a File object representing our configuration file.
+   */
+  protected static File configFile ()
+  {
+    File confFile = new File (configFile);
+    if (!confFile.isAbsolute())
+      confFile = new File (System.getProperty (&quot;catalina.base&quot;), configFile);
+    return (confFile);
+  }
+
+  /**
+   * Parses an XML file and returns a DOM document.
+   */
+  public static Document getXmlDom (File fileName)
+  {
+    try
+    {
+      // Create a builder factory
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance ();
+
+      // Create the builder and parse the file
+      Document doc = factory.newDocumentBuilder ().parse (fileName);
+      return doc;
+    }
+    catch (SAXException e)
+    {
+      // A parsing error occurred; the xml input is not valid
+      e.printStackTrace ();
+    }
+    catch (ParserConfigurationException e)
+    {
+      e.printStackTrace ();
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace ();
+    }
+    return null;
+  }
+
+  /**
+   * Extract the server port &amp; shutdown command from the DOM
+   */
+  private static void parseDocument (Document configDom)
+  {
+    //get the root element which is Server Eg: &lt;Server port=&quot;8005&quot; shutdown=&quot;SHUTDOWN&quot;&gt;
+
+    Element docEle = configDom.getDocumentElement ();
+    serverPort = Integer.parseInt (docEle.getAttribute (&quot;port&quot;));
+    serverShutdown = docEle.getAttribute (&quot;shutdown&quot;);
+  }
+
+  /**
+   * Send the shutdown command to the server
+   */
+  private static void doShutdown (Socket localSocket)
+  {
+    try
+    {
+      OutputStream outStream = localSocket.getOutputStream ();
+
+      for (int i = 0; i &lt; serverShutdown.length (); i++)
+        outStream.write (serverShutdown.charAt (i));
+      outStream.flush ();
+      outStream.close ();
+    }
+    catch (IOException e)
+    {
+      System.out.println (&quot;ERROR: I/O Exception during server shutdown.&quot;);
+      e.printStackTrace ();
+    }
+  }
+}
+</pre>
+</div></div><h2 id="HowTo-HowdoIobtainathreaddumpofmyrunningwebapp?">How do I obtain a thread dump of my running webapp ?</h2><p>You can only get a thread dump of the entire JVM, not just your webapp. This shouldn't be a big deal, but should be made clear: you are getting a dump of all JVM threads, not just those &quot;for your application&quot;, whatever that means.</p><p>Getting a thread dump depends a lot on your environment. Please choose the section below that matches your environment best. The more universal and convenient options are presented first, while the more difficult ones or those for specific setups are provided later. Generally, you should start at the top of the list and work your way down until you find a technique that works for you.</p><h3 id="HowTo-IfyouarerunningOracle(Sun)JDK">If you are running Oracle (Sun) JDK</h3><p>Oracle JDK (not the JRE) (formerly Sun JDK) since version 1.6 (and since 1.4 on *nix systems) ships with a program called <em>jstack</em> (or <em>jstack.exe</em> on Microsoft Windows) which will give you a thread dump on standard output. Redirect the output into a file and you have your thread dump. You will need the process id (&quot;pid&quot;) of the process to dump. Use of the program <em>jps</em> (<em>jps.exe</em> on Microsoft Windows) can help you determine the pid of a specific Java process.</p><p>See <a class="external-link" href="https://docs.oracle.com/javase/8/docs/technotes/tools/" rel="nofollow">Tools page</a> in JDK documentation for usage reference.</p><h3 id="HowTo-Ifyouarerunningon*NIX">If you are running on *NIX</h3><p>Send a SIGQUIT to the process. The thread dump will be sent to stdout which is likely to be redirected to CATALINA_BASE/logs/catalina.out.</p><p>To send a SIGQUIT, use <em>kill -3 &lt;pid&gt;</em> from the command line.</p><h3 id="HowTo-IfyouarerunningonMicrosoftWindows">If you are running on Microsoft Windows</h3><p>You can try to use SendSignal, developed specifically for this purpose. Make sure you read the comments for certain sitautions (e.g. running as a service, RDP connections, etc.). <a class="external-link" href="http://www.latenighthacking.com/projects/2003/sendSignal/" rel="nofollow">http://www.latenighthacking.com/projects/2003/sendSignal/</a></p><h3 id="HowTo-IfyouarerunningTomcatasaserviceonMicrosoftWindows">If you are running Tomcat as a service on Microsoft Windows</h3><p>Tomcat service has a monitoring application with it. When it is running it puts an icon in the Windows system tray area. Right-click the icon, a menu will appear. Select &quot;Thread Dump&quot; command from the menu. It will cause thread dump to be printed to stdout. The service captures stdout into a log file (<code>logs/tomcat</code><em>NN</em><code>-stdout.</code><em>DATE</em><code>.log</code>).</p><p>If the monitoring application is not running, you can start it manually. The command is</p><p><code>Tomcat9w.exe //MS//</code></p><p>or</p><p><code>Tomcat9w.exe //MS//servicename</code></p><p>If you installed Tomcat with an &quot;exe&quot; installer, &quot;Apache Tomcat <em>version</em> <em>servicename</em>&quot; group in the Windows menu has shortcut &quot;Monitor Tomcat&quot; that starts the monitoring application.</p><p>For details, see <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/windows-service-howto.html" rel="nofollow">Windows service page</a> in Tomcat documentation.</p><h3 id="HowTo-IfyouhaveTomcatrunninginaconsole">If you have Tomcat running in a console</h3><p>*NIX: Press CRTL-\ Microsoft Windows: press CRTL-BREAK</p><p>This will produce a thread dump on standard output, but may not be possible to capture to a file.</p><h3 id="HowTo-UsingJavacode">Using Java code</h3><p>If you cannot use any of the above methods, it is also possible to obtain a thread dump programmatically, with a Servlet or JSP page that runs within Tomcat. For example, you can use <code>java.lang.Thread.getAllStackTraces()</code> method.</p><p>Tomcat Manager web application starting with Tomcat 7.0.58 / 8.0.0 supports a command that outputs a thread dump. (<a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html#Thread_Dump" rel="nofollow">Tomcat 9 documentation</a>, <a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=57261" rel="nofollow">BZ 57261</a>)</p><p><code>StuckThreadDetectionValve</code> valve logs stacktraces of request processing threads that are busy for longer than configured time limit. It is available starting with Tomcat 6.0.36 / 7.0.14. (<a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html#Stuck_Thread_Detection_Valve" rel="nofollow">Tomcat 9 documentation</a>)</p><hr/><h2 id="HowTo-HowdoIreadaJavathreaddump?">How do I read a Java thread dump ?</h2><p>Java thread dumps are just text files, so you can read them with any text editor. There are some tools that can make your life easier, especially if you need to look at more than one thread dump at once.</p><p>One such tool is the Thread Dump Viewer (TDV), which you can find here: <a class="external-link" href="https://sourceforge.net/projects/tdv/" rel="nofollow">https://sourceforge.net/projects/tdv/</a>. It is a bit old (last release: 2007) but it can be somewhat helpful.</p><h2 id="HowTo-HowdoIobtainaheapdump?">How do I obtain a heap dump?</h2><p>See <a class="external-link" href="https://wiki.eclipse.org/MemoryAnalyzer#Getting_a_Heap_Dump" rel="nofollow">Getting a Heap Dump</a> on the help pages of <a class="external-link" href="https://www.eclipse.org/mat/" rel="nofollow">Eclipse Memory Analysis Tool</a>.</p><h2 id="HowTo-HowdoIaddmyowncustomMBeantomonitormyapplicationwithinTomcat6?">How do I add my own custom MBean to monitor my application within Tomcat 6?</h2><p>First of all, you can read <a class="external-link" href="http://oss.wxnet.org/mbeans.html" rel="nofollow">this great tutorial</a> from Christopher Blunck ( chris@wxnet.org ). I will just add my comments and improvements.</p><p>1. Start your Tomcat and check that you have access to <a class="external-link" href="http://localhost:8080/manager/jmxproxy/" rel="nofollow">http://localhost:8080/manager/jmxproxy/</a>.</p><p>It means that JMX is enabled on your Tomcat configuration (if not, check if the following line is in your /conf/server.xml file:<br/><code>&lt;Listener className=&quot;org.apache.catalina.mbeans.ServerLifecycleListener&quot; /&gt;</code><br/>Otherwise, check the Tomcat documentation to activate it). Let this page opened to check further if your custom MBean is detected by Tomcat.</p><p>2. Build your custom MBean by following the Christopher Blunck's example:</p><p><strong>ServerMBean.java</strong> :</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  package org.wxnet.mbeans;
+
+  public interface ServerMBean {
+    public void setLoggingLevel(int level);
+    public long getUptime();
+  }
+</pre>
+</div></div><p><strong>Server.java</strong> :</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>package org.wxnet.mbeans;
+
+  import javax.management.MBeanServer;
+  import javax.management.MBeanServerFactory;
+  import javax.management.ObjectName;
+
+  import java.util.ArrayList;
+
+  public class Server implements ServerMBean {
+    private int _logLevel = 1;
+    private long _startTime = 0L;
+
+    public Server() {
+      MBeanServer server = getServer();
+
+      ObjectName name = null;
+      try {
+        name = new ObjectName(&quot;Application:Name=Server,Type=Server&quot;);
+        server.registerMBean(this, name);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      _startTime = System.currentTimeMillis();
+    }
+
+
+    private MBeanServer getServer() {
+      MBeanServer mbserver = null;
+
+      ArrayList mbservers = MBeanServerFactory.findMBeanServer(null);
+
+      if (mbservers.size() &gt; 0) {
+        mbserver = (MBeanServer) mbservers.get(0);
+      }
+
+      if (mbserver != null) {
+        System.out.println(&quot;Found our MBean server&quot;);
+      } else {
+        mbserver = MBeanServerFactory.createMBeanServer();
+      }
+
+      return mbserver;
+    }
+
+
+    // interface method implementations
+    public void setLoggingLevel(int level) { _logLevel = level; }
+    public long getUptime() { return System.currentTimeMills() - _startTime; }
+  }
+</pre>
+</div></div><p>In this implementation, firstly notice the <em>ObjectName</em> representing the MBean (in the constructor):<br/><em>name = new ObjectName(&quot;<strong>Application</strong>:Name=<strong>Server</strong>,Type=<strong>Server</strong>&quot;);<br/></em>Do not hesitate to change the domain name (the first parameter) by your own to easily find your MBean reference in the <a class="external-link" href="http://localhost:8080/manager/jmxproxy" rel="nofollow">http://localhost:8080/manager/jmxproxy</a> page.</p><p>Secondly, take a look at your MBean constructor:</p><ol><li>First step is to get a reference to the Tomcat's MBeanServer with <em>MBeanServer server = getServer();</em>.</li><li>The <em>getServer()</em> method returns the first MBean server in the list of MBean servers registered in JVM, which is the one used by Tomcat.</li></ol><p>In my application architecture, I placed the 2 MBeans files (the interface and its implementation) in a particular package (I don't think its compulsary but definitely more aesthetic). Compile those one in a jar archive and place it in the Tomcat's library folder (<code>/lib</code>).</p><p>3. Build your <strong>ContextListener</strong>: According to the <a class="external-link" href="https://tomcat.apache.org/tomcat-6.0-doc/config/listeners.html" rel="nofollow">Tomcat's documentation</a>, a Listener is a <em>a component that performs actions when specific events occur, usually Tomcat <strong>starting</strong> or Tomcat stopping.</em>. We need to instantiate and load our MBean at Tomcat's start. So we build a ContextListener.java file which is placed wherever you want in your project architecture:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>package org.bonitasoft.context;
+
+/**
+ * @author Christophe Havard
+ *
+ */
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.bonitasoft.mbeans.Server;
+
+public final class ContextListener  implements ServletContextListener {
+
+  public void contextInitialized(ServletContextEvent event) {
+    Server mbean = new Server();
+  }
+
+  public void contextDestroyed(ServletContextEvent event) { }
+
+}
+</pre>
+</div></div><p>Take a look especially at the contextInitialized method. It just instantiates our custom MBean. Don't forget that the MBean register itself in the Tomcat's MBeanServer in its constructor. DO NOT FORGET to change the <em>package</em> line according to your application architecture.</p><p>Then, you have to modify your WEB-INF/web.xml file to make Tomcat execute your ContextListener.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!DOCTYPE web-app
+    PUBLIC &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+    &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot;&gt;
+
+&lt;web-app&gt;
+  &lt;display-name&gt;My Web Application&lt;/display-name&gt;
+ &#39;&#39;&#39;&#39;&#39;bla bla bla...&#39;&#39;&#39;&#39;&#39;
+  &lt;listener&gt;
+    &lt;listener-class&gt;org.bonitasoft.context.ContextListener&lt;/listener-class&gt;
+  &lt;/listener&gt;
+&lt;/web-app&gt;
+</pre>
+</div></div><p>In his tutorial, Christopher Blunck suggests to compile the ContextListener.java file in a jar archive and then place it into our WEB-INF/lib folder. In my own experiments, I never found any difference without doing this.</p><p>4. The <strong><em>mbeans-descriptor.xml</em></strong> file: The only entry in the Tomcat documentation about custom MBean is about this file. It says &quot;<em>You may also add MBean descriptions for custom components in a mbeans-descriptor.xml file, located in the same package as the class files it describes.</em>&quot;. Unfortunately, instead of reading this file, Tomcat applied its own templates to replace my MBeans attributes and operations descriptions... I really didn't figure out what is the correct way of using and placing this file. So I don't use it.</p><p>5. The configuration should be over. You should have done the following operations:</p><ol><li>Build your MBean,</li><li>Compile it and place the .jar archive in the Tomcat's /lib folder,</li><li>Build your ContextListener.java,</li><li>Add a reference to your ContextListener inside your WEB-INF/web.xml file</li></ol><p>You can try to run your project. Open the <a class="external-link" href="http://localhost:8080/manager/jmxproxy" rel="nofollow">http://localhost:8080/manager/jmxproxy</a> page and find your custom MBean (with a simple ctrl+f). You can see its domain, name, type and its attributes and methods.</p><p>You can now use this MBean in your application by getting a reference to the Tomcat's MBean server:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+//call operations with invoke(...) and attributes with getAttributes(...)
+</pre>
+</div></div><p>Do not hesitate to check the ManagementFactory class javadoc.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Deployment</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Deployment
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 24, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/5SklBg" rel="nofollow">https://cwiki.apache.org/confluence/x/5SklBg</a></p><h2 id="Deployment-Preface">Preface</h2><p>This section of the FAQ discusses common questions related to web application deployment.</p><h2 id="Deployment-Questions">Questions</h2><ol><li><a href="#Deployment-Q1">Why does tomcat 5 create context configuration files?</a></li><li><a href="#Deployment-Q2">Why does the memory usage increase when I redeploy a web application?</a></li></ol><h2 id="Deployment-Answers">Answers</h2><h3 id="Deployment-Q1Whydoestomcat5createcontextconfigurationfiles?"><span class="confluence-anchor-link" id="Deployment-Q1"></span>Why does tomcat 5 create context configuration files?</h3><h4 id="Deployment-Tomcat5,Tomcat6:">Tomcat 5, Tomcat 6:</h4><p><span style="color: rgb(23,43,77);">Unlike tomcat 4.x, tomcat 5.x creates context configuration files for you in its<span> </span></span><code>conf/[Engine name]/[Host name]</code><span style="color: rgb(23,43,77);"><span> </span>directory. This is part of the change in tomcat's configuration mechanism from version 4.x to make overall configuration more robust, flexible, and enterprise-friendly. Note, however, that this has changed the recommended deployment practices for web applications. These context configuration files are created by tomcat, but not removed by tomcat, because the user may have changed them or other files in the conf directory. The suggested practice for tomcat 5 is to place context configuration files as<span> </span></span><code>META-INF/context.xml</code><span style="color: rgb(23,43,77);"><span> </span>in your webapp, and use Tomcat's Manager webapp to deploy/undeploy your applications. More details can be found here:<span> </span></span><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=107590945807699&amp;w=2" rel="nofollow">MARC Archive</a></p><h4 id="Deployment-Tomcat7andlater:">Tomcat 7 and later:</h4><p>In Tomcat 7 the default behaviour has been changed to do not auto-create those context configuration files.</p><p><span style="color: rgb(23,43,77);">The recommended practice of using<span> </span></span><code>META-INF/context.xml</code><span style="color: rgb(23,43,77);"><span> </span>files is still the same. Those files are discovered and processed in the same way. The difference is that they are not copied to the<span> </span></span><code>conf/[Engine name]/[Host name]</code><span style="color: rgb(23,43,77);">directory.</span></p><p>This is convenient, as you do not need to care of those copied files when undeploying your application, and you do not need to care whether the <code>conf</code> directory is writeable. This change in behaviour is documented in the <a class="external-link" href="https://tomcat.apache.org/migration-7.html" rel="nofollow">Migration Guide</a>.</p><h3 id="Deployment-Q2WhydoesthememoryusageincreasewhenIredeployawebapplication?"><span class="confluence-anchor-link" id="Deployment-Q2"></span>Why does the memory usage increase when I redeploy a web application?</h3><p>That is because your web application has a memory leak.</p><p>A common issue are &quot;PermGen&quot; memory leaks. They happen because the Classloader (and the Class objects it loaded) cannot be recycled unless some requirements are met (*). They are stored in the permanent heap generation by the JVM, and when you redeploy a new class loader is created, which loads another copy of all these classes. This can cause <code>OufOfMemoryErrors</code> eventually.</p><p>(*) The requirement is that all classes loaded by this classloader should be able to be gc'ed at the same time.</p><p>Starting with Tomcat 6.0.25 there is a tool in the Manager webapp to help diagnose such misbehaving applications. See <a href="Memory_103098949.html">FAQ/Memory</a> and <a href="MemoryLeakProtection_103099526.html">MemoryLeakProtection</a>.</p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

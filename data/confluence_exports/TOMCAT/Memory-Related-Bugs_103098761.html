@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Memory Related Bugs</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="All-about-bugs_103098759.html">All about bugs</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Memory Related Bugs
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 24, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/iSklBg" rel="nofollow">https://cwiki.apache.org/confluence/x/iSklBg</a></p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025319097 {padding: 0px;}
+div.rbtoc1683025319097 ul {margin-left: 0px;}
+div.rbtoc1683025319097 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025319097'>
+<ul class='toc-indentation'>
+<li><a href='#MemoryRelatedBugs-Preface'>Preface</a>
+<ul class='toc-indentation'>
+<li><a href='#MemoryRelatedBugs-JSPRecompilation'>JSP Recompilation</a></li>
+</ul>
+</li>
+<li><a href='#MemoryRelatedBugs-Questions'>Questions</a>
+<ul class='toc-indentation'>
+<li><a href='#MemoryRelatedBugs-HowdoIadjustmemorysettings?'>How do I adjust memory settings?</a></li>
+<li><a href='#MemoryRelatedBugs-WhydoIgetOutOfMemoryErrorerrors?'>Why do I get OutOfMemoryError errors?</a></li>
+<li><a href='#MemoryRelatedBugs-HowmuchmemoryisTomcat/webapp/???using?'>How much memory is Tomcat/webapp/??? using?</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h2 id="MemoryRelatedBugs-Preface">Preface</h2><p>This page discusses various memory issues. In a nutshell - if your computer has less than 128MB of ram - you will probably have trouble. Anyhow, also read the following threads for other memory related issues:</p><ul><li><a class="external-link" href="https://tomcat.markmail.org/thread/kwgn35su6gsy2eze" rel="nofollow">Memory requirements</a></li><li><a class="external-link" href="https://tomcat.markmail.org/thread/icep3qjkclm3mf2i" rel="nofollow">java.lang.OutOfMemoryError during deploy</a> </li><li><a class="external-link" href="https://tomcat.markmail.org/thread/umiaztjbn5h5xyd2" rel="nofollow">Memory Mgmt Tomcat</a></li></ul><h3 id="MemoryRelatedBugs-JSPRecompilation">JSP Recompilation</h3><p>If your application uses JSPs which are frequently recompiled at runtime, e.g. headers that change value hourly, please make sure to read the JSP HOW-TO page and RELEASE NOTES documents. You may wish to tune the JSP compiler configuration to prevent memory leaks. Of course, these are documents you should have read by now anyways..</p><h2 id="MemoryRelatedBugs-Questions">Questions</h2><h3 id="MemoryRelatedBugs-HowdoIadjustmemorysettings?"><strong>How do I adjust memory settings?</strong></h3><p>First look at <code>java -X</code> to determine what parameters to set. Then you can set them via the environment variable <code>CATALINA_OPTS</code>. Read a comment at the top of the files <code>catalina.bat</code> or <code>catalina.sh</code> for more information on <code>CATALINA_OPTS</code>.</p><p>Note that there also exists environment variable <code>JAVA_OPTS</code>, but it <em>should not</em> be used to set the memory settings. The difference is that <code>JAVA_OPTS</code> settings are used for all Tomcat management commands. When you stop Apache Tomcat (using <code>shutdown.sh</code> or <code>catalina.sh stop</code> command), a small short-lived Java process is created that notifies the main Java process of Tomcat that it has to shut down. This small Java process does not need the same memory settings as the main process. The small process uses the settings from <code>JAVA_OPTS</code>. The main process uses the settings from both <code>JAVA_OPTS</code> and <code>CATALINA_OPTS</code>.</p><p>If you launch Tomcat in any other way that does not use <code>catalina.bat</code> or <code>catalina.sh</code> to prepare a command line for Java (e.g. you launch java directly from within an IDE, or you use a Service Wrapper to run Tomcat as a service on Windows), see their options on how to provide settings for the java executable. E.g. Apache Commons Daemon service wrapper for Windows has a GUI configuration dialog that <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/windows-service-howto.html" rel="nofollow">can be opened</a> by running <code>tomcat9w.exe</code> or a similar command.</p><h3 id="MemoryRelatedBugs-WhydoIgetOutOfMemoryErrorerrors?"><strong>Why do I get <code>OutOfMemoryError</code> errors?</strong></h3><p>Many reasons.</p><ul><li>You're out of memory. Simple as that - add more to your heap.</li><li>You're out of memory. You have code which is hanging onto object references and the garbage collector can't do its job. Get a profiler to debug this one.</li><li>You ran out of file descriptors. If you are on a *nix system, it has been observed that an <code>OutOfMemoryError</code> can be thrown if you run out of file descriptors. This can occur if your threshold is too low. The <code>ulimit</code> program can help you out here. You also may need to account for socket connections too when thinking about these thresholds. Google is your friend for getting more information about this topic.</li><li>You have too many threads running. Some OS's have a limit to the number of threads which may be executed by a single process. (Which is what the JVM is.) Refer to your OS docs for more information on how to raise this threshold.</li><li>If you have a lot of servlets or JSP's, you may need to increase your permanent generation. By default, it is 64MB. Doubling it to be <code>-XX:MaxPermSize=256m</code> might be a good start.</li><li>Your OS limits the amount of memory your process may take. OK, this one is grasping at straws.</li><li>Not actually a reason - but on your particular platform, look at the <code>java -X</code> options. They may be VERY helpful.</li></ul><h3 id="MemoryRelatedBugs-HowmuchmemoryisTomcat/webapp/???using?"><strong>How much memory is Tomcat/webapp/??? using?</strong></h3><ul><li>To find out how much memory Tomcat is using, you might be able to use the <code>Runtime</code> class provided by the JDK.</li><li>You can't find out how much memory a webapp is using. The JVM doesn't give us these detail.</li><li>You can't find out how much memory a ??? is using. The JVM doesn't give us these detail.</li><li>That being said, a memory profiling tool might prove the above statements wrong - but you probably don't want to use them in a production environment.</li></ul><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

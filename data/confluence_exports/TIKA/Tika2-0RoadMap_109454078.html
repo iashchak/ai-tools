@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Tika2 0RoadMap</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Tika2 0RoadMap
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Tika20RoadMap-Background">Background</h1>
+<p>This page is intended for a discussion of changes anticipated in Tika 2.0.</p>
+
+<p>The Work-In-Progress Tika 2.x branch is in Git as <em>2.x</em>, see <a class="external-link" href="https://github.com/apache/tika/tree/2.x" rel="nofollow">https://github.com/apache/tika/tree/2.x</a></p>
+
+<p>See <a href="Tika2_0MigrationGuide_148640966.html">Tika2_0MigrationGuide</a> for documentation of changes in the 2.x branch.</p>
+
+<p>Note - not everything list here will be done in 2.0. Please contribute!</p>
+
+<h1 id="Tika20RoadMap-MajorPlannedChanges">Major Planned Changes</h1>
+
+<ul>
+	<li>Remove Tika app's server.  Users should now use the JAX-RS server available in the tika-server module.
+<br class="atl-forced-newline"/></li>
+	<li>Remove all deprecated methods and metadata keys
+<br class="atl-forced-newline"/></li>
+	<li>Move from service loading to config file for parser specification and loading.  <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1445" rel="nofollow">TIKA-1445</a> raised this as an important area for improvement within Tika.  The current strategy in the <a class="unresolved" href="#">AutoDetectParser</a> is to load all parsers and then pick the first parser that matches a given mime type.  Tika chooses the &quot;first&quot; by first sorting on whether or not the class name begins with org.apache.tika and then (effectively) by reverse alphabetical order of the class name.  It would be great if the user could specify the order of parser selection in the config file.  We will be working towards this gradually through Tika 1.8 and 1.9, and we will remove service loading entirely in Tika 2.0.
+<br class="atl-forced-newline"/>
+	<ul>
+		<li><em>Not sure this is quite right. We want to allow people full control of parser ordering, combining multiple parsers for fuller metadata etc, but we also want to continue to support the use case of &quot;drop an extra jar on the classpath and automatically have the parser in it loaded+used&quot;, which relies on the service loading to find parsers and add them</em></li>
+		<li><em>Who says this use case *has* to be supported using <a class="unresolved" href="#">ServiceLoading</a> - seems like we can also support it without <a class="unresolved" href="#">ServiceLoading</a> and with more control over the ordering, etc.</em>
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Allow users to build composite parsers with configurable strategies via the config file (<a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1509" rel="nofollow">TIKA-1509</a> and <a href="CompositeParserDiscussion_109454044.html">CompositeParserDiscussion</a>).  We will be working towards this gradually through Tika 1.8 and 1.9.  By Tika 2.0, however, this will be the default.
+<br class="atl-forced-newline"/></li>
+	<li>Solve the complex metadata challenge; see: <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1607" rel="nofollow">TIKA-1607</a> and <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1691" rel="nofollow">TIKA-1691</a> and <a class="external-link" href="http://mail-archives.apache.org/mod_mbox/incubator-tika-dev/201510.mbox/%3c561B8B26.30105@geomatys.com%3e" rel="nofollow">ISO 19115 discussion</a> .... Or at least come to some accommodation that will allow for both easy key/values access and more advanced access for those who know what they're doing.
+<br class="atl-forced-newline"/></li>
+	<li>Work out how to allow &quot;resetting&quot; or &quot;augmenting&quot; or &quot;rewinding&quot; of the SAX stream, to permit:
+	<ul>
+		<li>We tried one parser, got half way through and it failed, and now we want to try another</li>
+		<li>We used on parser, that finished, now we want to run a second one (eg OCR)</li>
+		<li>We finished one paragraph, then did NER on it, and want to update the HTML with the entities</li>
+		<li>We want to mark the last 2 paragraphs as <em>language=german</em> or unmark <em>language=english</em> on the body now we've found some german text
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Parsers vs Content Handlers vs Decorators - Work out where we want &quot;content enhancement&quot; logic to live (Wrapping Parser? Decorator? Handler? Other). Then, ensure that can be configured in easily (config xml as well as code), can do what it needs, then shift things over to the new model if they're not there already
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="Tika20RoadMap-MajorCompleted/Mostly-CompletedChanges">Major Completed / Mostly-Completed Changes</h1>
+
+<ul>
+	<li>Allow for easily configurable parser sub-packages.  The tika-app, tika-server and tika-bundle jars are now pushing or are &gt; 50MB.  It would be great if users easily could specify a subset of parsers they care about, either a la carte or by category (image, common office files (MSOffice, PDF, etc.), environmental data) and only get the dependencies required for that subset of parsers.</li>
+</ul>
+
+
+<h1 id="Tika20RoadMap-MinorPlannedChanges">Minor Planned Changes</h1>
+
+<ul>
+	<li>Move to Java 1.8 (???)
+<br class="atl-forced-newline"/></li>
+	<li>Have mail &quot;folder&quot; formats (such as mbox) behave more like other containers, triggering embedded documents for each of their mail messages rather than mushing everything together
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="Tika20RoadMap-Wishes">Wishes</h1>
+<ul>
+	<li>Uniform representation of geo information from common files (kml/kmz/exif/others???) in metadata (perhaps <a class="external-link" href="https://en.wikipedia.org/wiki/Well-known_text" rel="nofollow">WKT</a>)?</li>
+</ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

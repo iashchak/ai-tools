@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : HowTo SSLCiphers</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Security_103099051.html">Security</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="SSL_107970688.html">SSL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : HowTo SSLCiphers
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 15, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="HowToSSLCiphers-HowdoIrestrictthelistofSSLciphersusedbyConnector">How do I restrict the list of SSL ciphers used by Connector</h1>
+
+<p>Firstly, the configuration attribute and its values depend on what HTTPS implementation you are using. You may be using either Java-based implementation aka JSSE — with BIO and NIO connectors, or OpenSSL-based implementation — with APR connector.</p>
+
+<p><strong>Links:</strong></p>
+
+<ul>
+	<li><a class="external-link" href="http://tomcat.apache.org/tomcat-7.0-doc/config/http.html" rel="nofollow">HTTP Connector configuration reference (Tomcat 7)</a>
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="HowToSSLCiphers-UsingJavaimplementation">Using Java implementation</h2>
+
+<p>For BIO and NIO connectors the attribute that specifies the list of ciphers is called <strong>ciphers</strong> and multiple values are separated by a comma (<code>,</code>). For the list of possible values see the list of cipher suite names for your version of Java, e.g.</p>
+
+<ul>
+	<li><a class="external-link" href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#jssenames" rel="nofollow">Oracle Java 6</a></li>
+	<li><a class="external-link" href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#jssenames" rel="nofollow">Oracle Java 7</a>
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>See thread &quot;Default SSL ciphers supported by Tomcat 6&quot; from October 2009 <a class="external-link" href="http://markmail.org/message/zn4namfhypyxum23" rel="nofollow">here</a> for a short program that displays available ciphers in your particular JVM.</p>
+
+<p><strong>Sample configuration:</strong></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> ciphers=&quot;SSL_RSA_WITH_RC4_128_MD5,
+           SSL_RSA_WITH_RC4_128_SHA,
+           TLS_ECDHE_ECDSA_WITH_RC4_128_SHA,
+           TLS_ECDHE_RSA_WITH_RC4_128_SHA,
+           TLS_ECDH_ECDSA_WITH_RC4_128_SHA,
+           TLS_ECDH_RSA_WITH_RC4_128_SHA&quot;
+</pre>
+</div></div>
+
+<h2 id="HowToSSLCiphers-UsingOpenSSLimplementation(APRconnector)">Using OpenSSL implementation (APR connector)</h2>
+
+<p>For APR connector the attribute that specifies the list of ciphers is called <strong>SSLCipherSuite</strong> and multiple values are separated by a colon (<code>:</code>). Generally, it is configured in the same way as <code>SSLCipherSuite</code> directive of <a class="external-link" href="http://httpd.apache.org/docs/2.4/mod/mod_ssl.html#sslciphersuite" rel="nofollow">mod_ssl of Apache HTTPD server</a>. For the list of possible values see <a class="external-link" href="http://www.openssl.org/docs/ssl/SSL_CTX_set_cipher_list.html" rel="nofollow">OpenSSL documentation</a>, or run <code>openssl.exe ciphers -v</code>.</p>
+
+<p><strong>Sample configurations:</strong></p>
+
+<p>a)</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> SSLCipherSuite=&quot;RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW&quot;
+</pre>
+</div></div>
+
+<p>b)</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> SSLCipherSuite=&quot;RC4-SHA&quot;
+</pre>
+</div></div>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

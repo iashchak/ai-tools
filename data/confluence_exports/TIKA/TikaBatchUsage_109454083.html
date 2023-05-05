@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaBatchUsage</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaBatchUsage
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Eric Pugh</span> on июл 06, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaBatchUsage-Usage">Usage</h1><p>See <a href="TikaBatchOverview_109454082.html">TikaBatchOverview</a> for a general design overview of tika-batch.</p><p>tika-batch was added to Tika 1.8 as its own package, and it was integrated into tika-app with 1.8 as well.</p><h2 id="TikaBatchUsage-TikaBatchviatika-app-X.Y.jar"><a class="unresolved" href="#">TikaBatch</a> via tika-app-X.Y.jar</h2><p>You can see the commandline arguments via the regular &quot;-help&quot; commands. There is a separate section at the end for tika-batch options.</p><p>In the current dev version. Tika-app decides if it is in batch mode based on one of two signals:</p><ol><li>There are only two arguments and the first one is an existing directory</li><li>-inputDir or -i is specified in the commandline</li></ol><p>Once the app knows that it is in batch mode, it converts some of the traditional tika-app commandline arguments for use by org.apache.tika.batch.fs.FSBatchProcessCLI.</p><p>Some examples:</p><p>*Most basic (with output to a directory called &quot;output&quot;):</p><p><code>java -jar tika-app.X.Y.jar &lt;inputDirectory&gt; &lt;outputDirectory&gt;</code></p><p>*Specify input and output directories:</p><p><code>java -jar tika-app.X.Y.jar -i /mydata/src/dir -o /mydata/output/dir</code></p><p>*Set the number of file consumer threads:</p><p><code>java -jar tika-app.X.Y.jar -numConsumers 10 -i &lt;inputDirectory&gt; -o &lt;outputDirectory&gt;</code></p><p>*Output text instead of xml</p><p><code>java -jar tika-app.X.Y.jar -t -i &lt;inputDirectory&gt; -o &lt;outputDirectory&gt;</code></p><p>*Use the RecursiveParserWrapper and store text for each document:<br/><code>java -jar tika-app.X.Y.jar -J -t -i &lt;inputDirectory&gt; -o &lt;outputDirectory&gt;</code></p><p>*Customize the behavior of Tika through the tika-config.xml configuration file:<br/><code>java -jar tika-app.X.Y.jar -c my-custom-tika-config.xml -J -t -i &lt;inputDirectory&gt; -o &lt;outputDirectory&gt;</code></p><p>*Specify jvm args to be used by the child process (prepend a &quot;J&quot; to the regular args):</p><p><code>java -jar tika-app.X.Y.jar -JXmx2g -JDlog4j.configuration=log4j.xml -i &lt;inputDirectory&gt; -o &lt;outputDirectory&gt;</code></p><p>*Commandline to generate output files for tika-eval...only process those files listed in pdfs_random_50000.csv:</p><p><br/><code>java -Dlog4j.configuration=file:log4j_driver.xml -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -JXX:-OmitStackTraceInFastThrow -JXmx5g -JDlog4j.configuration=file:log4j.xml -bc tika-batch-config-basic-test.xml -i &lt;input_directory&gt; -o &lt;output_directory&gt; -fileList pdfs_random_50000.csv</code></p><h3 id="TikaBatchUsage-Exampleloggingconfigfiles">Example logging config files</h3><p><a class="unresolved" href="#">tika-batch-sh.zip</a></p><h3 id="TikaBatchUsage-Somenotes">Some notes</h3><p>*The watchdog process will restart the child process unless the child process exits with a &quot;do not restart value&quot;=254. If you want to kill all processing, make sure to kill the parent process and then the child process.</p><p>*Make sure to add -JXX:-OmitStackTraceInFastThrow to the child process's commandline arguments so that Java doesn't swallow your stack traces.</p><h2 id="TikaBatchUsage-TikaBatchServer"><a class="unresolved" href="#">TikaBatch</a> Server</h2><p>Module not yet implemented...want to contribute? This would require hardening the server and creating an example client to be used within <a class="unresolved" href="#">TikaBatch</a> FS framework.</p><h2 id="TikaBatchUsage-TikaBatchHadoop"><a class="unresolved" href="#">TikaBatch</a> Hadoop</h2><p>Module not yet implemented within Tika project...want to contribute? See <a href="TikaInHadoop_109454094.html">TikaInHadoop</a>.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaEvalOnVM</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaEvalOnVM
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Tim Allison</span> on авг 12, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaEvalOnVM-HowtoRuntika-evalOntheVM">How to Run tika-eval On the VM</h1><p>While users can run tika-eval on their own machines with their own documents, the Apache Tika, Apache PDFBox and Apache POI communities have gathered &gt;1TB of documents from govdocs1 and from Common Crawl to serve as a regression testing corpus. Before a release, we'll run the last release against the candidate release to identify potential regressions.</p><p>This page is intended for committers/PMC members with access to the VM who want to run the regression tests. The example focuses on testing a SNAPSHOT version of PDFBox, but the steps are nearly identical for the full Tika eval or for sub projects. See <a href="TikaEval_109454084.html">TikaEval</a> for more information on the <code>tika-eval</code> module by itself. See <a class="external-link" href="http://openpreservation.org/blog/2016/10/04/apache-tikas-regression-corpus-tika-1302" rel="nofollow">this blog</a> for a description of running this project on <a class="external-link" href="https://corpora.tika.apache.org/base/" rel="nofollow">Tika's VM</a>.</p><p>The driver <code>appBatchExecutor.sh</code>, the various configuration files and the file lists for PDFs are available here: <a href="attachments/109454090/158871239.tgz" data-linked-resource-id="158871239" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="batch-scripts.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="109454090" data-linked-resource-container-version="5">batch-scripts.tgz</a>.</p><p>If you haven't done so in your .bashrc file, make sure to <code>umask g+rw</code> before running anything</p><p><br/></p><p>The main working directory is: <code>/data1/tools/tika/batch</code> </p><h2 id="TikaEvalOnVM-AnExamplewithApachePDFBox">An Example with Apache PDFBox</h2><ol><li>Clean up from any previous runs<ol><li>Remove tika-app-X-Y.jar from /data1/tools/tika/batch/bin – make sure to leave in the other &quot;optional&quot; jars: <code>jai-imageio-jpeg2000-1.3.0.jar, sqlite-jdbc-3.32.3.2.jar and zstd-jni-1.4.5-6.jar</code></li><li>Remove or rename <code>/data1/tools/tika/batch/logs</code></li><li>Remove or rename <code>/data1/tools/tika/batch/nohup.out</code></li></ol></li><li>Run the current &quot;A&quot; version<ol><li>Place the &quot;A&quot; version of tika-app-X.Y.jar in <code>/data1/tools/tika/batch/bin</code></li><li>Modify <code>appBatchExecutor.sh</code> to<ol><li>put the output in a new output directory <code>-o /data1/extracts/pdfboxA</code></li><li>if using a file list, confirm that the correct file list is specified <code>-fileList fileLists/ccAndBugTracker_pdfs.txt</code></li></ol></li><li>Execute: <code>nohup ./appBatchExecutor.sh &amp;</code></li><li>Wait for the &quot;A&quot; version to complete before starting the &quot;B&quot; version</li></ol></li><li>Build and run the &quot;B&quot; version<ol><li>Update PDFBox from SVN, <code>mvn clean install</code></li><li>Update the PDFBox, Fontbox and jbig2-imageio versions in the Tika project tika-parsers/pom.xml</li><li>Run <code>mvn clean</code> on the whole Tika project and make sure that your IDE has picked up the changes</li><li>Run the PDFParser tests in tika-parsers/src/test/java/o.a.t.parsers.pdf.* to make sure that at least the Tika unit tests work.</li><li>Build the entire Tika project (even though you'll only use tika-app.jar): <code>mvn clean install</code></li><li>On the VM, remove the tika.app-A.jar from <code>/data1/tools/tika/batch/bin</code>, rename the existing <code>nohup.out</code> to <code>nohup-A.out</code>, rename <code>logs/</code> to <code>logs-A/</code></li><li>Drop the new tika-app-B.jar into (you guessed it!): <code>/data1/tools/tika/batch/bin</code></li><li>Modify <code>appBatchExecutor.sh</code> to<ol><li>put the output in a new output directory <code>-o /data1/extracts/pdfboxB</code></li><li>if using a file list, confirm that the correct file list is specified <code>-fileList fileLists/ccAndBugTracker_pdfs.txt</code></li></ol></li><li>Execute: <code>nohup ./appBatchExecutor.sh &amp;</code></li><li>Wait for the &quot;B&quot; version to complete before starting the comparisons and reports</li></ol></li><li>Make the comparisons and report<ol><li>In <code>/data1/tools/tika/eval</code>, remove the existing db file <code>pdfboxAvsB.mv.db</code> if you don't want to rename it.</li><li><code>nohup java -jar tika-eval-X.Y.jar Compare -extractsA /data1/extracts/pdfboxA -extractsB /data1/extracts/pdfboxB -db pdfboxAvsB&amp;</code></li><li>When that completes,<ol><li>Remove any files left over from the last run in <code>reports/</code>: <code>rm -r reports</code></li><li>Write the reports <code>java -Djava.io.tmpdir=tmp -jar tika-eval-X.Y.jar Report -db pdfboxAvsB</code> – <strong>Note the -Djava.io.tmpdir=tmp – need to set the tmp directory to something writeable by 'collab'</strong></li></ol></li></ol></li></ol><p>When this process completes, you'll have all of the reports written to <code>/data1/tools/tika/eval/reports</code>/.</p><h2 id="TikaEvalOnVM-H2toPostgresqlandReports">H2 to Postgresql and Reports</h2><p>With the expansion of the regression corpus, I'm finding that H2 isn't able to write the reports – no matter the -Xmx, even after a few hours, it doesn't even get to the point of creating the <em>reports</em> directory.</p><p>I should set up postgres on our VM, but I haven't gotten around to that yet. For now, I'm copying the H2 db to Postgresql and then writing the reports from there. The code to copy H2-&gt;postgres is available here: <a class="external-link" href="https://github.com/tballison/tika-addons/tree/master/eval-addons" rel="nofollow">tika-addons</a>.</p><p>I had to modify the report SQL slightly to work with Postgresql, and I stripped out some of the reports/calculations that aren't critical to the full regression tests. The modified report SQL is available <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-eval/src/main/resources/comparison-reports-pg.xml" rel="nofollow">comparison-reports-pg.xml</a></p>
+                    </div>
+
+                                                            <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/109454090/158871562.tgz">batch-scripts.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/109454090/158871239.tgz">batch-scripts.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

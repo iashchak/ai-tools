@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : SSLWithFORMFallback6</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Security_103099051.html">Security</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="SSL_107970688.html">SSL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : SSLWithFORMFallback6
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on авг 28, 2010
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This is my implementation of SSL with FORM fallback. It has been tested on tomcat 6.0.16. Feel free to use at is you like. I do not know if this is the best approach, but it's simple and it works. Also see <a class="external-link" href="http://wiki.apache.org/tomcat/SSLWithFORMFallback" rel="nofollow">http://wiki.apache.org/tomcat/SSLWithFORMFallback</a></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>import java.io.IOException;
+import java.security.Principal;
+import java.security.cert.X509Certificate;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import org.apache.catalina.Container;
+import org.apache.catalina.Globals;
+import org.apache.catalina.authenticator.AuthenticatorBase;
+import org.apache.catalina.authenticator.Constants;
+import org.apache.catalina.authenticator.FormAuthenticator;
+import org.apache.catalina.authenticator.SSLAuthenticator;
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
+import org.apache.catalina.deploy.LoginConfig;
+import org.apache.coyote.ActionCode;
+/**
+ *
+ * @author Vegar Neshaug
+ */
+public class SSLWithFormFallback extends AuthenticatorBase {
+    // Our two authenticators
+    FormAuthenticator formAuthenticator = new FormAuthenticator();
+    SSLAuthenticator sslAuthenticator = new SSLAuthenticator();
+    /**
+     * Descriptive information about this implementation.
+     */
+    protected static final String info =
+            &quot;net.neshaug.SSLWithFormFallback/1.0&quot;;
+
+    /**
+     * Return descriptive information about this Valve implementation.
+     */
+    @Override
+    public String getInfo() {
+        return (info);
+    }
+
+    @Override
+    public boolean authenticate(Request request, Response response, LoginConfig config) throws IOException {
+        // Have we already authenticated someone?
+        Principal principal = request.getUserPrincipal();
+        //String ssoId = (String) request.getNote(Constants.REQ_SSOID_NOTE);
+        if (principal != null) {
+            // Associate the session with any existing SSO session in order
+            // to get coordinated session invalidation at logout
+            String ssoId = (String) request.getNote(Constants.REQ_SSOID_NOTE);
+            if (ssoId != null) {
+                associate(ssoId, request.getSessionInternal(true));
+            }
+            return (true);
+        }
+
+        // Get certificates from the request
+        boolean certAuth = true;
+        X509Certificate certs[] = (X509Certificate[]) request.getAttribute(Globals.CERTIFICATES_ATTR);
+        if ((certs == null) || (certs.length &lt; 1)) {
+            request.getCoyoteRequest().action(ActionCode.ACTION_REQ_SSL_CERTIFICATE, null);
+            certs = (X509Certificate[]) request.getAttribute(Globals.CERTIFICATES_ATTR);
+        }
+        if ((certs == null) || (certs.length &lt; 1)) {
+            // No certificates
+            certAuth = false;
+        }
+
+        // Delegate authentication request
+        if (certAuth) {
+            return sslAuthenticator.authenticate(request, response, config);
+        } else {
+            return formAuthenticator.authenticate(request, response, config);
+        }
+    }
+
+    @Override
+    public void start() throws LifecycleException {
+        super.start();
+        formAuthenticator.start();
+        sslAuthenticator.start();
+    }
+    
+    @Override
+    public void stop() throws LifecycleException {
+        super.stop();
+        formAuthenticator.stop();
+        sslAuthenticator.stop();
+    }
+
+    // I&#39;d rather not have the below, but it is necessary for the
+    // authenticators to work properly.
+    @Override
+    public void setContainer(Container container) {
+        super.setContainer(container);
+        sslAuthenticator.setContainer(container);
+        formAuthenticator.setContainer(container);
+    }
+
+    @Override
+    public ObjectName createObjectName(String domain, ObjectName parent)
+            throws MalformedObjectNameException {
+        sslAuthenticator.createObjectName(domain, parent);
+        formAuthenticator.createObjectName(domain, parent);
+        return super.createObjectName(domain, parent);
+    }
+}
+</pre>
+</div></div>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

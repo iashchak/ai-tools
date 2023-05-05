@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Try out Ozone</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Try out Ozone
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Arpit Agarwal</span>, last modified by <span class='editor'> Sammi Chen</span> on ноя 02, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025377963 {padding: 0px;}
+div.rbtoc1683025377963 ul {list-style: circle !important;margin-left: 0px;padding-left: 10px;}
+div.rbtoc1683025377963 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025377963'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#TryoutOzone-BuildfromSource'>Build from Source</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1.1</span> <a href='#TryoutOzone-BuildFromGitRepo'>Build From Git Repo</a></li>
+<li><span class='TOCOutline'>1.2</span> <a href='#TryoutOzone-BuildFromaSourceRelease'>Build From a Source Release</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>2</span> <a href='#TryoutOzone-DownloadBinaryRelease'>Download Binary Release</a></li>
+<li><span class='TOCOutline'>3</span> <a href='#TryoutOzone-StartClusterUsingDocker'>Start Cluster Using Docker</a></li>
+<li><span class='TOCOutline'>4</span> <a href='#TryoutOzone-SingleNodeDevelopmentCluster'>Single Node Development Cluster</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>4.1</span> <a href='#TryoutOzone-Configuration'>Configuration</a></li>
+<li><span class='TOCOutline'>4.2</span> <a href='#TryoutOzone-StartServices'>Start Services</a></li>
+<li><span class='TOCOutline'>4.3</span> <a href='#TryoutOzone-RunOzoneCommands'>Run Ozone Commands</a></li>
+<li><span class='TOCOutline'>4.4</span> <a href='#TryoutOzone-StopServices'>Stop Services</a></li>
+<li><span class='TOCOutline'>4.5</span> <a href='#TryoutOzone-CleanupyourDevEnvironment(Optional)'>Clean up your Dev Environment (Optional)</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>5</span> <a href='#TryoutOzone-Multi-NodeOzoneCluster'>Multi-Node Ozone Cluster</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>5.1</span> <a href='#TryoutOzone-Pre-requisites'>Pre-requisites</a></li>
+<li><span class='TOCOutline'>5.2</span> <a href='#TryoutOzone-Configuration.1'>Configuration</a></li>
+<li><span class='TOCOutline'>5.3</span> <a href='#TryoutOzone-StartServices.1'>Start Services</a></li>
+<li><span class='TOCOutline'>5.4</span> <a href='#TryoutOzone-StopServices.1'>Stop Services</a></li>
+</ul>
+</li>
+</ul>
+</div></p><p><br/></p><p>There are two ways to try out Ozone. Either you can build from source code or download a binary release.</p><h2 id="TryoutOzone-BuildfromSource">Build from Source</h2><h3 id="TryoutOzone-BuildFromGitRepo">Build From Git Repo</h3><p><br/>Get the Apache Ozone source code from the Apache Git repository. Then check out trunk and build it with the <code>hdds</code> Maven profile enabled.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  git clone https://github.com/apache/ozone.git
+  cd hadoop-ozone
+  mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Pdist -Dtar -DskipShade</pre>
+</div></div><p>Initial compilation may take over 30 minutes as Maven downloads dependencies. <code>-DskipShade</code> is optional - it makes compilation faster for development.</p><p>This will give you a tarball in your distribution directory. Here is an example of the tarball that will be generated.</p><p><em><code>hadoop-ozone/dist/target/ozone-0.5.0-SNAPSHOT.tar.gz</code></em></p><h3 id="TryoutOzone-BuildFromaSourceRelease">Build From a Source Release</h3><p>Download and extract a source tarball from <a class="external-link" href="https://ozone.apache.org/downloads/" rel="nofollow">https://ozone.apache.org/downloads/</a> E.g.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  tar xf ozone-1.2.1-src.tar.gz
+  cd ozone-1.2.1-src/
+  mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Pdist -Dtar -DskipShade</pre>
+</div></div><h2 id="TryoutOzone-DownloadBinaryRelease">Download Binary Release</h2><p>Download and extract a binary release from <a class="external-link" href="https://ozone.apache.org/downloads/" rel="nofollow">https://ozone.apache.org/downloads/</a> E.g.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  tar xf ozone-1.2.1.tar.gz
+  cd ozone-1.2.1/</pre>
+</div></div><p><br/></p><h2 id="TryoutOzone-StartClusterUsingDocker">Start Cluster Using Docker</h2><p>If you downloaded or built a source release, run the following commands to start an Ozone cluster in docker containers with 3 datanodes.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  cd hadoop-ozone/dist/target/ozone-*-SNAPSHOT/compose/ozone
+  docker-compose up -d --scale datanode=3</pre>
+</div></div><p><br/></p><p>If you downloaded a binary release, run the following instead.,</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  cd compose/ozone
+  docker-compose up -d --scale datanode=3</pre>
+</div></div><p><br/></p><p>For more docker-compose commands, please check the end of the <a href="https://cwiki.apache.org/confluence/display/HADOOP/Getting+Started+with+docker">Getting started with docker</a> guide</p><p>To Shutdown the cluster, please run the command <strong>docker-compose down</strong></p><p><br/></p><h2 id="TryoutOzone-SingleNodeDevelopmentCluster">Single Node Development Cluster</h2><p>This is the traditional way to start a development cluster from source code. Once the package is built, you can start Ozone services by going to the <em><code>hadoop-ozone/dist/target/ozone-*/</code></em> directory. Your Unix shell should expand the '*' wildcard to the correct Ozone version number.</p><h3 id="TryoutOzone-Configuration">Configuration</h3><p>Save the minimal snippet to <em><code>hadoop-ozone/dist/target/ozone-*/etc/hadoop/ozone-site.xml</code></em> in the compiled distribution.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: RDark" data-theme="RDark">&lt;configuration&gt;
+&lt;properties&gt;
+&lt;property&gt;&lt;name&gt;ozone.enabled&lt;/name&gt;&lt;value&gt;true&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.scm.datanode.id&lt;/name&gt;&lt;value&gt;/tmp/ozone/data/datanode.id&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.replication&lt;/name&gt;&lt;value&gt;1&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.metadata.dirs&lt;/name&gt;&lt;value&gt;/tmp/ozone/data/metadata&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.scm.names&lt;/name&gt;&lt;value&gt;localhost&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.om.address&lt;/name&gt;&lt;value&gt;localhost&lt;/value&gt;&lt;/property&gt;
+&lt;/properties&gt;
+&lt;/configuration&gt;</pre>
+</div></div><h3 id="TryoutOzone-StartServices">Start Services</h3><p>To start ozone, you need to start SCM, OzoneManager and DataNode. In pseudo-cluster mode, all services will be started on localhost.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  bin/ozone scm --init
+  bin/ozone --daemon start scm
+  bin/ozone om --init
+  bin/ozone --daemon start om
+  bin/ozone --daemon start datanode</pre>
+</div></div><h3 id="TryoutOzone-RunOzoneCommands">Run Ozone Commands</h3><p><span class="md-line md-end-block">Once you have ozone running you can use these </span><a class="external-link" href="https://github.com/apache/hadoop/blob/trunk/hadoop-ozone/docs/content/CommandShell.md" rel="nofollow">Ozone </a><a class="external-link" href="https://github.com/apache/hadoop/blob/trunk/hadoop-ozone/docs/content/CommandShell.md" rel="nofollow">shell</a><span class="md-line md-end-block"> commands</span><span class="md-line md-end-block"> to create a volume, bucket and keys. E.g.</span></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  bin/ozone sh volume create /vol1
+  bin/ozone sh bucket create /vol1/bucket1
+  dd if=/dev/zero of=/tmp/myfile bs=1024 count=1
+  bin/ozone sh key put /vol1/bucket1/key1 /tmp/myfile
+  bin/ozone sh key list /vol1/bucket1</pre>
+</div></div><p><span><br/></span></p><h3 id="TryoutOzone-StopServices"><span>Stop Services</span></h3><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: RDark" data-theme="RDark">  bin/ozone --daemon stop om
+  bin/ozone --daemon stop scm
+  bin/ozone --daemon stop datanode</pre>
+</div></div><p><span><br/></span></p><h3 id="TryoutOzone-CleanupyourDevEnvironment(Optional)"><span>Clean up your Dev Environment (Optional)</span></h3><p>Remove the following directories to wipe the Ozone pseudo-cluster state. This will also delete all user data (volumes/buckets/keys) you added to the pseudo-cluster.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: RDark" data-theme="RDark">rm -fr /tmp/ozone
+rm -fr /tmp/hadoop-${USER}*</pre>
+</div></div><div class="confluence-information-macro confluence-information-macro-information"><span class="aui-icon aui-icon-small aui-iconfont-info confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>Note: This will also wipe state for any running HDFS services.</p><p><br/></p></div></div><p><br/></p><h2 id="TryoutOzone-Multi-NodeOzoneCluster">Multi-Node Ozone Cluster</h2><h3 id="TryoutOzone-Pre-requisites"><span>Pre-requisites</span></h3><p><span>Ensure you have password-less ssh setup between your hosts.</span></p><h3 id="TryoutOzone-Configuration.1">Configuration</h3><h4 id="TryoutOzone-ozone-site.xml">ozone-site.xml</h4><p>Save the following snippet to <em><code>etc/hadoop/ozone-site.xml</code></em> in the compiled Ozone distribution.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: RDark" data-theme="RDark">&lt;configuration&gt;
+&lt;properties&gt;
+&lt;property&gt;&lt;name&gt;ozone.scm.block.client.address&lt;/name&gt;&lt;value&gt;SCM-HOSTNAME&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.scm.names&lt;/name&gt;&lt;value&gt;SCM-HOSTNAME&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.scm.client.address&lt;/name&gt;&lt;value&gt;SCM-HOSTNAME&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.om.address&lt;/name&gt;&lt;value&gt;OM-HOSTNAME&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.handler.type&lt;/name&gt;&lt;value&gt;distributed&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.enabled&lt;/name&gt;&lt;value&gt;True&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.scm.datanode.id&lt;/name&gt;&lt;value&gt;/tmp/ozone/data/datanode.id&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.replication&lt;/name&gt;&lt;value&gt;1&lt;/value&gt;&lt;/property&gt;
+&lt;property&gt;&lt;name&gt;ozone.metadata.dirs&lt;/name&gt;&lt;value&gt;/tmp/ozone/data/metadata&lt;/value&gt;&lt;/property&gt;
+&lt;/properties&gt;
+&lt;/configuration&gt;</pre>
+</div></div><p>Replace SCM-HOSTNAME and OM-HOSTNAME with the names of the machines where you want to start the SCM and OM services respectively. It is okay to start these services on the same host. If you are unsure then just use any machine from your cluster.</p><h4 id="TryoutOzone-ozone-env.sh">ozone-env.sh</h4><p>The only mandatory setting in ozone-env.sh is JAVA_HOME. E.g.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: RDark" data-theme="RDark"># The java implementation to use. By default, this environment
+# variable is REQUIRED on ALL platforms except OS X!
+export JAVA_HOME=/usr/java/latest</pre>
+</div></div><h4 id="TryoutOzone-workers"><span>workers</span></h4><p>The workers file should contain a list of hostnames in your cluster where DataNode service will be started. E.g.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: RDark" data-theme="RDark">n001.example.com
+n002.example.com
+n003.example.com
+n004.example.com</pre>
+</div></div><h3 id="TryoutOzone-StartServices.1">Start Services</h3><h4 id="TryoutOzone-InitializetheSCM">Initialize the SCM</h4><p>Run the following commands on the SCM host</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: RDark" data-theme="RDark">bin/ozone scm --init
+bin/ozone --daemon start scm</pre>
+</div></div><h4 id="TryoutOzone-FormattheOM"><span>Format the OM</span></h4><p>Run the following commands on the OM host</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: RDark" data-theme="RDark">bin/ozone om --init
+bin/ozone --daemon start om</pre>
+</div></div><h4 id="TryoutOzone-StartDataNodes"><span>Start DataNodes</span></h4><p>Run the following command on any cluster host.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">  sbin/start-ozone.sh</pre>
+</div></div><h3 id="TryoutOzone-StopServices.1"><span>Stop Services</span></h3><p>Run the following command on any cluster host.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: RDark" data-theme="RDark">sbin/stop-ozone.sh</pre>
+</div></div><p><span><br/></span></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

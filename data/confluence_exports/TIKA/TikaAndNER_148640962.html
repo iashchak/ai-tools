@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaAndNER</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaAndNER
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Chris Mattmann</span>, last modified by <span class='editor'> Eric Pugh</span> on сен 03, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h3 id="TikaAndNER-/*&lt;![CDATA[*/div.rbtoc1683040429432{padding:0px;}div.rbtoc1683040429432ul{margin-left:0px;}div.rbtoc1683040429432li{margin-left:0px;padding-left:0px;}/*]]&gt;*/#TikaAndNER-NamedEntityRecognition(NER)withTika#TikaAndNER-NamedEntityRecognition(NER)w"><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429432 {padding: 0px;}
+div.rbtoc1683040429432 ul {margin-left: 0px;}
+div.rbtoc1683040429432 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429432'>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndNER-'></a></li>
+<li><a href='#TikaAndNER-NamedEntityRecognition(NER)withTika'>Named Entity Recognition (NER) with Tika</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndNER-ActivateNamedEntityParser'>Activate Named Entity Parser</a></li>
+<li><a href='#TikaAndNER-UsingApacheOpenNLPNER'>Using Apache OpenNLP NER</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndNER-TikaApp+OpenNLPNERinaction'>Tika App + OpenNLP NER in action</a></li>
+</ul>
+</li>
+<li><a href='#TikaAndNER-UsingStanfordCoreNLPNER'>Using Stanford CoreNLP NER</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndNER-Tika+CoreNLPinaction'>Tika + CoreNLP in action</a></li>
+</ul>
+</li>
+<li><a href='#TikaAndNER-UsingRegularExpressions'>Using Regular Expressions</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndNER-Tika+RegexNERinaction'>Tika + RegexNER in action</a></li>
+</ul>
+</li>
+<li><a href='#TikaAndNER-CreatingacustomNER'>Creating a custom NER</a></li>
+<li><a href='#TikaAndNER-Chainingalltheaboveatonce'>Chaining all the above at once</a></li>
+</ul>
+</li>
+</ul>
+</div></h3><h3 id="TikaAndNER-NamedEntityRecognition(NER)withTika">Named Entity Recognition (NER) with Tika</h3><p class="line862">Named Entity Recognition is supported in<span> </span><em>tika-parsers</em>, introduced in <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1787" rel="nofollow" style="text-decoration: none;">TIKA-1787</a>. This page describes the steps required to configure and activate the<span> </span><a class="external-link" href="https://github.com/apache/tika/pull/61/files#diff-3a416957f7629e40c8fe5e8fd6c577a3R57" rel="nofollow" style="text-decoration: none;">NamedEntityParser</a>.</p><h4 id="TikaAndNER-ActivateNamedEntityParser">Activate Named Entity Parser</h4><ul><li style="list-style-type: none;"><p class="line862">Before moving ahead to configure NER implementations,<span> </span><em>org.apache.tika.parser.ner.<a class="external-link" href="https://163.172.69.106/tika/NamedEntityParser" rel="nofollow" style="text-decoration: none;">NamedEntityParser</a></em>, the parser responsible for handling the name recognition task needs to be enabled. This can be done with Tika Config XML file, as follows:</p></li></ul><p class="line867"><br/></p><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+    &lt;parsers&gt;
+        &lt;parser class=&quot;org.apache.tika.parser.ner.NamedEntityParser&quot;&gt;
+            &lt;mime&gt;text/plain&lt;/mime&gt;
+            &lt;mime&gt;text/html&lt;/mime&gt;
+            &lt;mime&gt;application/xhtml+xml&lt;/mime&gt;
+        &lt;/parser&gt;
+    &lt;/parsers&gt;
+&lt;/properties&gt;</pre><p class="line874">This configuration has to be supplied in the later phases, so store it as 'tika-config.xml'.</p><p class="line862">Note: The<span> </span><a class="external-link" href="https://163.172.69.106/tika/NamedEntityParser" rel="nofollow" style="text-decoration: none;">NamedEntityParser</a><span> </span>parser does not restrict mimetypes, it uses Tika's auto detect parser to read text content from non-text streams.</p><p class="line867"><br/></p><h4 id="TikaAndNER-UsingApacheOpenNLPNER">Using Apache OpenNLP NER</h4><ul><li style="list-style-type: none;"><p class="line862">The NE Parser is configured to use an implementation based on<span> </span><a class="external-link" href="https://opennlp.apache.org/documentation/1.5.2-incubating/manual/opennlp.html#tools.namefind.recognition.api" rel="nofollow" style="text-decoration: none;">Apache OpenNLP</a>. However, the NER models need to be added to the Tika's classpath to make this work.</p></li></ul><p class="line874">The following table shows types of entities and the paths to place the model file.</p><div class="table-wrap"><table class="wrapped confluenceTable"><colgroup><col/><col/><col/></colgroup><tbody><tr><td class="confluenceTd"><p class="line891"><strong>Entity Type</strong></p></td><td class="confluenceTd"><p class="line891"><strong>Path for model</strong></p></td><td class="confluenceTd"><p class="line891"><strong>URL to get</strong></p></td></tr><tr><td class="confluenceTd"><p class="line862">PERSON</p></td><td class="confluenceTd"><p class="line862">org/apache/tika/parser/ner/opennlp/ner-person.bin</p></td><td class="confluenceTd"><p class="line862"><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-person.bin" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/en-ner-person.bin</a></p></td></tr><tr><td class="confluenceTd"><p class="line862">LOCATION</p></td><td class="confluenceTd"><p class="line862">org/apache/tika/parser/ner/opennlp/ner-location.bin</p></td><td class="confluenceTd"><p class="line862"><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-location.bin" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/en-ner-location.bin</a></p></td></tr><tr><td class="confluenceTd"><p class="line862">ORAGANIZATION</p></td><td class="confluenceTd"><p class="line862">org/apache/tika/parser/ner/opennlp/ner-organization.bin</p></td><td class="confluenceTd"><p class="line862"><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-organization.bin" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/en-ner-organization.bin</a></p></td></tr><tr><td class="confluenceTd"><p class="line862">DATE</p></td><td class="confluenceTd"><p class="line862">org/apache/tika/parser/ner/opennlp/ner-date.bin</p></td><td class="confluenceTd"><p class="line862"><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-date.bin" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/en-ner-date.bin</a></p></td></tr><tr><td class="confluenceTd"><p class="line862">TIME</p></td><td class="confluenceTd"><p class="line862">org/apache/tika/parser/ner/opennlp/ner-time.bin</p></td><td class="confluenceTd"><p class="line862"><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-time.bin" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/en-ner-time.bin</a></p></td></tr><tr><td class="confluenceTd"><p class="line862">PERCENT</p></td><td class="confluenceTd"><p class="line862">org/apache/tika/parser/ner/opennlp/ner-percentage.bin</p></td><td class="confluenceTd"><p class="line862"><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-percentage.bin" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/en-ner-percentage.bin</a></p></td></tr><tr><td class="confluenceTd"><p class="line862">MONEY</p></td><td class="confluenceTd"><p class="line862">org/apache/tika/parser/ner/opennlp/ner-money.bin</p></td><td class="confluenceTd"><p class="line862"><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/en-ner-money.bin" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/en-ner-money.bin</a></p></td></tr></tbody></table></div><p class="line874">Notes:</p><ol><li>You can use any combination of the models. If you are interested in only the LOCATION names, then skip other NER models save LOCATION.</li><li><p class="line862">NER Models for other languages are also available<span> </span><a class="external-link" href="http://opennlp.sourceforge.net/models-1.5/" rel="nofollow" style="text-decoration: none;">http://opennlp.sourceforge.net/models-1.5/</a><span> </span>. If you choose to use different language, use those URLs in the below script.</p></li></ol><p class="line867"><br/></p><h5 id="TikaAndNER-TikaApp+OpenNLPNERinaction">Tika App + OpenNLP NER in action</h5><p class="line867"><br/></p><pre>#Create a directory for keeping all the models.
+#Choose any convenient path but make sure to use absolute path
+export NER_RES=$HOME/tika/tika-ner-resources
+mkdir -p $NER_RES
+cd $NER_RES
+
+PATH_PREFIX=&quot;$NER_RES/org/apache/tika/parser/ner/opennlp&quot;
+URL_PREFIX=&quot;http://opennlp.sourceforge.net/models-1.5&quot;
+
+mkdir -p $PATH_PREFIX
+
+# using three entity types from the above table for demonstration
+wget &quot;$URL_PREFIX/en-ner-person.bin&quot; -O $PATH_PREFIX/ner-person.bin
+wget &quot;$URL_PREFIX/en-ner-location.bin&quot; -O $PATH_PREFIX/ner-location.bin
+wget &quot;$URL_PREFIX/en-ner-organization.bin&quot; -O $PATH_PREFIX/ner-organization.bin
+
+export TIKA_APP={your/path/to/tika-app}/target/tika-app-1.12-SNAPSHOT.jar
+
+java -classpath $NER_RES:$TIKA_APP org.apache.tika.cli.TikaCLI --config=tika-config.xml -m http://people.apache.org/committer-index.html
+
+# Are there any metadata keys starting with &quot;NER_&quot; ?</pre><p class="line867"><br/></p><h4 id="TikaAndNER-UsingStanfordCoreNLPNER">Using Stanford CoreNLP NER</h4><ul><li style="list-style-type: none;"><p class="line862">The 'org.apache.tika.parser.ner.corenlp.CoreNLPNERecogniser' class provides runtime bindings to<span> </span><a class="external-link" href="http://nlp.stanford.edu/software/CRF-NER.shtml" rel="nofollow" style="text-decoration: none;">Stanford CoreNLP CRF classifiers</a><span> </span>for named entity recognition.</p></li></ul><p class="line874">The following steps are necessary to use this NER implementation:</p><ul><li>Add Core NLP library and its dependencies to classpath</li><li>Add models to class path</li><li>Set NER Implementation to CoreNLP</li></ul><p class="line874">NOTE: The latest release of Stanford CoreNLP requires JDK8.</p><p class="line867"><br/></p><h5 id="TikaAndNER-Tika+CoreNLPinaction">Tika + CoreNLP in action</h5><p class="line867"><br/></p><pre>cd /$HOME/src 
+git clone https://github.com/thammegowda/tika-ner-corenlp.git
+cd tika-ner-corenlp
+mvn clean compile package assembly:single -PtikaAddon
+
+#this should produce target/tika-ner-corenlp-addon-*-jar-with-dependencies.jar
+export CORE_NLP_JAR=`find $PWD/target/tika-ner-corenlp-addon-*jar-with-dependencies.jar`
+
+export TIKA_APP={your/path/to/tika-app}/target/tika-app-1.12-SNAPSHOT.jar
+
+java -Dner.impl.class=org.apache.tika.parser.ner.corenlp.CoreNLPNERecogniser \
+      -classpath $TIKA_APP:$CORE_NLP_JAR org.apache.tika.cli.TikaCLI \
+      --config=tika-config.xml -m http://www.hawking.org.uk
+
+# Observe metadata keys starting with NER_ 
+
+# To use 3class NER model  (Default is 7 class model)
+
+ java  -Dner.corenlp.model=edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz \
+       -Dner.impl.class=org.apache.tika.parser.ner.corenlp.CoreNLPNERecogniser \
+       -classpath $TIKA_APP:$CORE_NLP_JAR org.apache.tika.cli.TikaCLI \
+       --config=tika-config.xml -m http://www.hawking.org.uk</pre><p class="line862">The CoreNLP CRF classifier recognised the following from the text content of<span> </span><a class="external-link" href="http://www.hawking.org.uk/" rel="nofollow" style="text-decoration: none;">http://www.hawking.org.uk</a><span> </span>page:</p><pre>NER_DATE: 2009
+NER_DATE: 1963
+NER_DATE: 1663
+NER_DATE: 1982
+NER_DATE: 1979
+NER_LOCATION: Gonville
+NER_LOCATION: Einstein
+NER_LOCATION: London
+NER_LOCATION: Cambridge
+NER_LOCATION: Santa Cruz
+NER_ORGANIZATION: Leiden University
+NER_ORGANIZATION: NASA
+NER_ORGANIZATION: CBE
+NER_ORGANIZATION: Brief History of Time
+NER_ORGANIZATION: University of California
+NER_ORGANIZATION: Cambridge Lectures Publications Books Images Films
+NER_ORGANIZATION: Caius College
+NER_ORGANIZATION: Royal Society
+NER_ORGANIZATION: About Stephen The Computer Stephen
+NER_ORGANIZATION: US National Academy of Science
+NER_ORGANIZATION: Department of Applied Mathematics
+NER_ORGANIZATION: ESA
+NER_ORGANIZATION: The Universe
+NER_ORGANIZATION: Sally Tsui Wong-Avery Director of Research
+NER_ORGANIZATION: the University of Cambridge
+NER_ORGANIZATION: Theoretical Physics
+NER_ORGANIZATION: Baby Universe
+NER_PERSON: Einstein
+NER_PERSON: P. Oesch
+NER_PERSON: R. Bouwens
+NER_PERSON: George
+NER_PERSON: Stephen Hawking
+NER_PERSON: Isaac Newton
+NER_PERSON: D. Magee
+NER_PERSON: Annie
+NER_PERSON: G. Illingworth
+NER_PERSON: Stephen
+NER_PERSON: Dennis Stanton Avery</pre><p class="line867"><br/></p><h4 id="TikaAndNER-UsingRegularExpressions">Using Regular Expressions</h4><p class="line862">The<span> </span><strong>org.apache.tika.parser.ner.regex.RegexNERecogniser</strong><span> </span>provides an implementation based on Regular expressions. The following steps are required to use this implementation:</p><ul><li>Configure regular expressions in 'org/apache/tika/parser/ner/regex/ner-regex.txt'</li><li><p class="line862">Set System property<span> </span>ner.impl.class<span> </span>to<span> </span><em>org.apache.tika.parser.ner.regex.RegexNERecogniser</em></p></li></ul><p class="line867"><br/></p><h5 id="TikaAndNER-Tika+RegexNERinaction">Tika + RegexNER in action</h5><p class="line867"><br/></p><pre># Create a regex file and add it to classpath
+export NER_RES=$HOME/tika/tika-ner-resources
+mkdir -p $NER_RES
+cd $NER_RES
+mkdir -p org/apache/tika/parser/ner/regex/
+
+echo &quot;PHONE_NUMBER=((\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4})&quot; &gt; org/apache/tika/parser/ner/regex/ner-regex.txt
+echo &quot;EMAIL=([a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))&quot; &gt;&gt; org/apache/tika/parser/ner/regex/ner-regex.txt
+
+export TIKA_APP={your/path/to/tika-app}/target/tika-app-1.12-SNAPSHOT.jar
+
+java -Dner.impl.class=org.apache.tika.parser.ner.regex.RegexNERecogniser \
+    -classpath $NER_RES:$TIKA_APP org.apache.tika.cli.TikaCLI \
+    --config=tika-config.xml -m  http://www.cs.usc.edu/faculty_staff/faculty
+
+# Observe values of keys NER_PHONE_NUMBER and NER_EMAIL</pre><p class="line867"><br/></p><h4 id="TikaAndNER-CreatingacustomNER">Creating a custom NER</h4><ul><li><p class="line862">Create a class and implement<span> </span><em>org.apache.tika.parser.ner.NERecogniser</em></p></li><li><p class="line862">Set class name as value to system property<span> </span><em>ner.impl.class</em><span> </span>similar to Regex or CoreNLP</p></li></ul><p class="line867"><br/></p><h4 id="TikaAndNER-Chainingalltheaboveatonce">Chaining all the above at once</h4><ul><li style="list-style-type: none;"><p class="line862">Multiple class names can be provided by setting the system property<span> </span><em>ner.impl.class</em><span> </span>to a comma separtes class names</p></li></ul><p class="line862">Example :<span> </span><em>-Dner.impl.class = org.apache.tika.parser.ner.opennlp.OpenNLPNERecogniser,org.apache.tika.parser.ner.regex.RegexNERecogniser</em></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

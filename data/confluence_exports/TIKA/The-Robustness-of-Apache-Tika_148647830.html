@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : The Robustness of Apache Tika</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : The Robustness of Apache Tika
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on фев 01, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Running untrusted parsers on untrusted data is inherently risky (see, for example: <a class="external-link" href="https://github.com/gangtan/LangSec-papers-and-slides/raw/main/langsec21/slides/Fisher_LangSec21.pdf" rel="nofollow">Kathleen Fisher's LangSec2021 talk</a>). The Apache Tika team does what it can.</p><p>In rare cases, Tika can go into infinite loops or allocate surprising amounts of memory (OutOfMemoryExceptions (OOMs)).  If you are processing enough documents in the wild, you will run into these challenges and you must defend against them. </p><p>Again, if you're processing untrusted files at scale, we strongly encourage not running Tika in the same jvm as, say, an indexer or search system or any other critical code.</p><p>The Tika project offers some defenses against these denial of service (DoS) vulnerabilities.  All of these options spawn a forked process to do the actual parsing.</p><ol><li>The ForkParser – this forks a child process and will protect against OOM and infinite loops.</li><li>tika-batch – if you are processing files at desktop/vm scale (not cloud scale), you can run tika-batch via tika-app:<ol><li><pre> java -jar tika-app.jar -i &lt;input_dir&gt; -o &lt;output_dir&gt;</pre></li></ol></li><li><p>tika-server – if you are using tika-server 1.x, start the server with `–spawnChild` mode, and it will fork a child process to do the actual parsing.  In Tika 2.x, that mode is default.</p></li><li>Use tika-pipes in Tika 2.x, programmatically, in tika-app with the -a option or in tika-server with the /async or /pipes endpoints.</li></ol><p>The Tika project has taken the following steps to identify and fix catastrophic problems:</p><ol><li>We gathered a regression corpus ~2 million files from Common Crawl, and we run Tika against that before release to identify potential DoS vulnerabilities.</li><li>We've done code reviews of some of our dependencies to identify common sets of vulnerabilities, such as read-a-length-then-allocate patterns.</li><li><p>We have recently added a basic fuzzing module to identify some of these vulnerabilities. </p></li><li>We continue to engage with security researchers who have carried out code reviews or applied more advanced fuzzing to identify vulnerabilities.</li><li>We have forked, fixed and released as our own at least three parsers that were not able to make the fixes on their own or did not respond in a reasonable amount of time.</li><li><p>We document our fixed vulnerabilities here: <a class="external-link" href="https://tika.apache.org/security.html" rel="nofollow">https://tika.apache.org/security.html</a>.</p></li><li><p>We offer the <a href="MockParser_109454063.html">MockParser</a> in tika-core tests that will allow you to test the robustness of your system against infinite loops, out of memory exceptions and other serious problems.</p></li></ol><p>In short, we do what we can, but given what we've seen before and given the size of our dependencies' codebases, we can't assert that Tika is safe.  If you are processing high volumes of untrustworthy data, please, please avoid running Tika in the same process as anything that matters, such as your indexer or natural language processing code.  </p><p>Finally, when you come across a file that causes catastrophic problems and if you are able to share that triggering file, we will try to fix the source of the problem if we can. </p><p><br/></p><p>Please see slide 12 for more details: <a class="external-link" href="http://events17.linuxfoundation.org/sites/events/files/slides/ApacheConMiami2017_tallison_v2.pdf" rel="nofollow">http://events17.linuxfoundation.org/sites/events/files/slides/ApacheConMiami2017_tallison_v2.pdf</a></p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

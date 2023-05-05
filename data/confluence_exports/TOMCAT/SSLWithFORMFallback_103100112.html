@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : SSLWithFORMFallback</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Security_103099051.html">Security</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="SSL_107970688.html">SSL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : SSLWithFORMFallback
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on фев 08, 2014
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This page describes a Tomcat setup for SSL Client Authentication with fallback to FORM authentication. This is <em>not</em> for using FORM based authentication over a simple SSL channel - you do not need SSL client authentication for that.</p>
+
+<p>Note: Tested with Tomcat 5.5.17, 5.5.20 and 5.5.25</p>
+
+<p>See also:</p>
+
+<ul>
+	<li><a href="SSLWithFORMFallback7_103100134.html">SSLWithFORMFallback7</a></li>
+	<li><a href="SSLWithFORMFallback6_103100128.html">SSLWithFORMFallback6</a></li>
+	<li><a href="SSLWithFormFallbackAuthenticator_103100137.html">SSLWithFormFallbackAuthenticator</a>
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>SSL Client Authentication (sometimes also known as &quot;Client Certificate&quot; authentication) uses the SSL protocol to authenticate clients based on a X509 Certificate. Normally this is accomplished by configuring SSL in Tomcat, and then configuring the Web Application's security descriptor to use &quot;CLIENT-CERT&quot; as the auth-method in the login-config section.</p>
+
+<p>We found that we wanted to implement 2 levels of security - client authentication based on SSL certificates for serious security, but FORM based login as a fallback option. This requirement can exist for a number of reasons:</p>
+
+<ul>
+	<li>for customers who do not want to make use of certificates</li>
+	<li>for when the customer certificate expires</li>
+	<li>to permit customers to log in for the first time without a certificate</li>
+	<li>to allow different &quot;user-levels&quot; - high security vs. low security, with different functions available</li>
+	<li>etc...
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>In trying to implement this, we found the only &quot;standard conformant&quot; solution was to install the web application multiple times with different authentication configurations. This solution was very unsatisfactory for us, as it leads to a duplication of services, and the services are accessible under different URLs/Ports depending on the desired security level. That just wasn't what we wanted.</p>
+
+<p>So the following solution, unfortunately, is not standards-conformant. This is because the J2EE standard, while deferring authentication to the container, specifies the authentication method in the webapplication deployment descriptor (web.xml). There, only one login-config section is allowed, which counts for the whole application. It does not permit you to configure a fallback login method.</p>
+
+
+<h2 id="SSLWithFORMFallback-Setup">Setup</h2>
+
+<p>So, to get the fallback login working you will need the following:</p>
+
+<ul>
+	<li>Tomcat Installation</li>
+	<li>Your Webapplication</li>
+	<li>The Java Class <a href="SSLWithFormFallbackAuthenticator_103100137.html">SSLWithFormFallbackAuthenticator</a>  (download from here)</li>
+	<li>Server Certificate &amp; Private Key</li>
+	<li>Client Certificate &amp; Private Key</li>
+	<li>Certification Authority Public Certificates</li>
+	<li>Working authentication realm
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>It is assumed that your web-application is working, and you are currently using FORM based authentication. Your login config in your web.xml deployment descriptor should therefore look something like this:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;login-config&gt;
+	  &lt;auth-method&gt;FORM&lt;/auth-method&gt;
+	  &lt;form-login-config&gt;
+	  	&lt;form-login-page&gt;/pub/login.jsp&lt;/form-login-page&gt;
+	  	&lt;form-error-page&gt;/pub/loginerror.jsp&lt;/form-error-page&gt;
+	  &lt;/form-login-config&gt;
+&lt;/login-config&gt;
+</pre>
+</div></div>
+
+<p>It is further assumed that your web-application contains at least one protected page, requiring authentication, and that the login currently works using your FORM based login with an appropriate Login Realm.</p>
+
+
+<h3 id="SSLWithFORMFallback-BasicSSLSetup">Basic SSL Setup</h3>
+
+<p>First, setup SSL in Tomcat, as described in: <a class="external-link" href="http://tomcat.apache.org/tomcat-5.5-doc/ssl-howto.html" rel="nofollow">http://tomcat.apache.org/tomcat-5.5-doc/ssl-howto.html</a></p>
+
+<p>Make sure basic SSL is working, without client authentication. You can test this using your browser. While you are at it, add the server's certification authority to your Browser's list of trusted certificates, if it is not there already. You should be able to access your application normally, but via the https (SSL) protocol. If you access a protected page, you should be prompted for a login using the FORM login you configured.</p>
+
+<h3 id="SSLWithFORMFallback-SSLClientAuthentication">SSL Client Authentication</h3>
+
+<p>In the tomcat server.xml file, configure the server to use client authentication:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;Connector port=&quot;8443&quot; minProcessors=&quot;5&quot; maxProcessors=&quot;75&quot;
+    enableLookups=&quot;true&quot; disableUploadTimeout=&quot;true&quot;
+    acceptCount=&quot;100&quot; debug=&quot;0&quot; scheme=&quot;https&quot; secure=&quot;true&quot;;
+    clientAuth=&quot;want&quot; sslProtocol=&quot;TLS&quot;
+    keystoreFile=&quot;/etc/mykeystore.jks&quot; keystorePass=&quot;changeit&quot;
+    truststoreFile=&quot;/etc/mytruststore.jks&quot; truststorePass=&quot;changeit&quot;/&gt;
+</pre>
+</div></div>
+
+<p>Note the use of clientAuth=&quot;want&quot; to request a certificate, but not fail if none is presented.</p>
+
+<p>Configure your Realm to accept the client certificate. Depending on which realm you are using, you will need to add a user for the certificate in different ways. The default Tomcat Realms use the &quot;SubjectDN&quot; field of the certificate as a &quot;username&quot; to look up the user.</p>
+
+<h3 id="SSLWithFORMFallback-TestingClientAuthentication">Testing Client Authentication</h3>
+
+<p>Fire up your browser and install the client certificate and private key in your certificate store.</p>
+
+<p>Now change your auth-method from &quot;FORM&quot; to &quot;CLIENT-CERT&quot; and restart/redeploy your web-app. If you access your protected page you should now be prompted for a certificate by your browser. Select the installed certificate. If everything was configured correctly you should be authenticated based on your certificate, and taken to the protected page.</p>
+
+<p>If things go wrong, here's some places to look:</p>
+
+<ul>
+	<li>Is the client certificate properly installed? If not, your browser will not offer the certificate for you to choose on login.</li>
+	<li>Is the client certificate authority properly imported in the truststore on the server? If not, the browser will not know to use your installed client certificate.</li>
+	<li>Is the server certificate valid and properly installed?</li>
+	<li>Is your client certificate's SubjectDN configured as a user in the Realm you are using? Depending on which realm you are using you will have to add the user in different ways (for example, to the file &quot;tomcat-users.xml&quot; if using Tomcat's <a class="unresolved" href="#">MemoryUserDatabase</a>).
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h3 id="SSLWithFORMFallback-AddingFallbacktoFormAuthentication">Adding Fallback to Form Authentication</h3>
+
+<p>Make sure the class you downloaded, &quot;SSLWithFormFallbackAuthenticator.java&quot; is compiled and installed, for example in the server/classes folder of your Tomcat installation. Alternatively, you can pack the compiled class in a JAR file, and place the JAR in the server/lib folder of your Tomcat installation.</p>
+
+<p>The class implements a Tomcat &quot;Valve&quot;, and needs to live within the server directory of your Tomcat and cannot be part of your web application's WAR, since it is used by Tomcat for authentication, which happens before your web application is called, and hence outside your web application's classloader.</p>
+
+<p>Configure your Web-Application to use this class for authentication. This is done in two steps:</p>
+
+<ol>
+	<li>Remove the &lt;auth-method&gt; element from your web application's deployment descriptor. The &lt;login-config&gt; element should still contain the &lt;form-login-config&gt; elements to configure the form, but <em>NO</em> &lt;auth-method&gt; tag.</li>
+</ol>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;login-config&gt;
+	  &lt;!-- auth-method is commented out for fallback authentication --&gt;
+	  &lt;!-- &lt;auth-method&gt;FORM&lt;/auth-method&gt; --&gt;
+	  &lt;form-login-config&gt;
+	  	&lt;form-login-page&gt;/pub/login.jsp&lt;/form-login-page&gt;
+	  	&lt;form-error-page&gt;/pub/loginerror.jsp&lt;/form-error-page&gt;
+	  &lt;/form-login-config&gt;
+&lt;/login-config&gt;
+</pre>
+</div></div>
+
+<p>2. Configure the authentication valve. The authentication valve can be configured in two places. Either in your Tomcat server.xml file, or your application's context.xml file. The context.xml file lives in the directory &quot;META-INF&quot; within your WAR file. The following is a sample context.xml file for fallback authentication:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;Context path=&quot;/mycontextpath&quot; &gt;
+	&lt;Valve className=&quot;at.telekom.tomcat.security.SSLWithFormFallbackAuthenticator&quot; /&gt;
+&lt;/Context&gt;
+</pre>
+</div></div>
+
+<p>If you have configured the &lt;Context&gt; element in your Tomcat server.xml file, you can also place the &lt;Valve&gt; element there.</p>
+
+<p>You will need to restart tomcat to apply these changes.</p>
+
+<h3 id="SSLWithFORMFallback-TestingFallbackAuthentication">Testing Fallback Authentication</h3>
+
+<p>This is best tested with two different browsers (eg Firefox and IE):</p>
+
+<ol>
+	<li>Install the client certificate in one of the Browsers (if it isn't already)</li>
+	<li>Fire up this browser and visit your protected page</li>
+	<li>You should be promted for the certificate as before, select it as before</li>
+	<li>You should be logged into the site, as before</li>
+	<li>Now fire up the other browser, the one without the certificate</li>
+	<li>Attempt to access your protected page</li>
+	<li>Depending on your Browser you may be promted about the certificate - click &quot;cancel&quot; if this is the case</li>
+	<li>You should be taken to the login form of your application</li>
+	<li>Log in using the form. You should be granted access, as before
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h3 id="SSLWithFORMFallback-Howdoesitwork?">How does it work?</h3>
+
+<p>The code is tested with Tomcat 5.5.17, 5.5.20 and 5.5.25. It will probably work with only minor modifications for other Tomcat 5.5 versions. It has been tested using Java 1.5.</p>
+
+<p>In short, this code works because:</p>
+<ul>
+	<li>Tomcat uses the auth-config element of the deployment descriptor to create an Authentication Valve</li>
+	<li>If this element is missing, Tomcat does not complain, and simply installs no Authenticator</li>
+	<li>By manually adding our own Authentication Valve we add authentication back to the application</li>
+	<li>Our authentication valve inherits from the <a class="unresolved" href="#">FormAuthenticationValve</a>, and adds functionality from the SSL authenticator</li>
+	<li>It simply first tries SSL Auth, and failing that makes a second attempt using form auth
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h3 id="SSLWithFORMFallback-Comments,Feedback,Support">Comments, Feedback, Support</h3>
+
+<p>This code is supplied back to the apache foundation, without any support or warranty. Use at your own risk. The author and his employer assume no responsibility for damages resulting in the use of this code or these instructions.</p>
+
+<p>Feel free to use the code in any way you want but do not expect support.</p>
+
+<p>Should you have questions about the code, please feel free to contact me (the Author) at:  runger -<span style="text-decoration: line-through;">AT</span>- aon.at</p>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaEvalDbDesign</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaEvalDbDesign
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaEvalDbDesign-DesignoftheTikaEvalDatabase">Design of the Tika Eval Database</h1>
+
+<h2 id="TikaEvalDbDesign-Background">Background</h2>
+
+<p>The tika-eval module was initially designed to work with the output from Tika's RecursiveParserWrapper (<code>-J -t</code> in tika-app-ese or <code>/rmeta/text</code> from tika-server).  The basic idea is that for each input file, there is a list of Metadata objects.  The first Metadata object in the list contains the information from the outer/container input file, and if there are attachments or embedded files, those are added to the list.  The content that was extracted is stored in the &quot;X-TIKA:content&quot; key in each Metadata object.</p>
+
+<p>In the following discussion, we use the term &quot;container&quot; to refer to the initial input file, and we use &quot;file&quot; to refer either to the container file or to an embedded object.  An &quot;extract&quot; is the file that contains the extracted metadata/content.</p>
+
+<p>Because of this one-&gt;many mapping, the table structure became fairly complex fairly quickly.  The initial flat file didn't work so well.</p>
+
+<h2 id="TikaEvalDbDesign-Tables">Tables</h2>
+<h3 id="TikaEvalDbDesign-Profile">Profile</h3>
+<ul>
+	<li>PROFILES – this is the main table. This contains all files, embedded and not, whether or not there was an exception.  The primary key is ID, and this table has foreign keys to the CONTAINERS table (CONTAINER_ID), and to the MIMES table (MIME_TYPE_ID).  This includes a boolean value for whether or not this file was an embedded file or a container file (IS_EMBEDDED).  Note that the ID==CONTAINER_ID for the container file; this makes some useful joins much easier.
+<br class="atl-forced-newline"/></li>
+	<li>CONTAINERS – this contains information about the container file. The primary key is CONTAINER_ID and that maps to the PROFILES' table's CONTAINER_ID foreign key.
+<br class="atl-forced-newline"/></li>
+	<li>CONTENTS – this contains statistics about the content that was extracted.  The primary key is ID and this maps directly to the PROFILES' table's ID.
+<br class="atl-forced-newline"/></li>
+	<li>MIMES – this contains mime strings and the most common file extension for each mime type.  The primary key is MIME_TYPE_ID, and this maps to the MIME_TYPE_ID column in the PROFILES table.
+<br class="atl-forced-newline"/></li>
+	<li>PARSE_EXCEPTIONS – this contains information about parse exceptions. The primary key is ID and that maps to the ID column in the PROFILES table.  This includes the original stack trace, a slightly truncated stack trace used for sorting and grouping by, and a foreign key to the class/type of exception.
+<br class="atl-forced-newline"/></li>
+	<li>REF_PARSE_EXCEPTION_TYPES – this is a reference table that contains the different classes/types of parse exceptions: runtime, encryption (password protected files), access_permission (e.g. a PDF that won't allow extraction of text) and unsupported version.  We have custom code that maps stacktraces to these exception types.  Let us know if you find any problems!
+<br class="atl-forced-newline"/></li>
+	<li>ERRORS – this contains records for errors reading the extract file or errors that were caused during the parse that caused tika-app in batch mode to restart.  By mapping to the REF_EXTRACT_ERROR_TYPES and the REF_PARSE_ERROR_TYPES, you can identify the cause of the problem.  There's a todo to integrate the code that reads in the parser error log and update this table...that functionality is on its way.
+<br class="atl-forced-newline"/></li>
+	<li>EMB_FILE_NAMES – this records the full path of an embedded file <strong>within</strong> the file.  If there's a zip with a zip in it, you might see: /zip1.zip/zip2.zip/my_docx.docx.  Again, the ID in this table maps to the ID in the PROFILES table.
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h3 id="TikaEvalDbDesign-Comparison">Comparison</h3>
+<p> Nearly all of the above exist with '_A' or '_B' added to the end of the table names.  The ID in PROFILES_A matches the ID in PROFILES_B.  If a given container file contained a different number of attachments or if the code couldn't figure out which attachments map to which attachments, there can be incorrect double entries between the two.</p>
+
+<p> In addition to the profiling tables, there is also:</p>
+
+<ul>
+	<li>CONTENT_COMPARISONS – this records the output of comparing the content.  Again, the ID maps to the ID in PROFILES_A and PROFILES_B.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="TikaEvalDbDesign-Columns">Columns</h2>
+
+<h3 id="TikaEvalDbDesign-CONTENTS">CONTENTS</h3>
+<ul>
+	<li>CONTENT_LENGTH – literal string length</li>
+	<li>NUM_TOKENS – number of tokens (as analyzed by the Lucene analysis chain)</li>
+	<li>NUM_UNIQUE_TOKENS – number of unique tokens (also known as &quot;types&quot;)</li>
+	<li>COMMON_TOKENS_LANG – which language was selected for counting &quot;common tokens&quot;</li>
+	<li>NUM_COMMON_TOKENS – number of &quot;common tokens&quot; (not number of unique tokens) that were found</li>
+	<li>TOP_N_TOKENS – top 10 most frequent tokens</li>
+	<li>NUM_ALPHABETIC_TOKENS – number of tokens that contained at least one alphabetic/ideographic character</li>
+	<li>LANG_ID_1 – language id as determined by Optimaize</li>
+	<li>LANG_ID_1_PROB_1 – language id probability.</li>
+	<li>LANG_ID_2, etc.  if Optimaize thought there could be more than one language classification.</li>
+	<li>UNICODE_CHAR_BLOCKS – number of characters per Unicode code block</li>
+	<li>TOKEN_ENTROPY_RATE – token entropy, a measure of diversity of terms. A word list would have a very high entropy, a novel by someone with a 10 word vocabulary would have a very low entropy rate.</li>
+	<li>TOKEN_LENGTH_SUM, *_MEAN, *_STD_DEV – sum, mean, stdev of the lengths of the tokens
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h3 id="TikaEvalDbDesign-CONTENT_COMPARISONS">CONTENT_COMPARISONS</h3>
+<ul>
+	<li>TOP_10_UNIQUE_TOKEN_DIFFS_A – what are the top 10 most frequent terms that appear in A and never appear in B.</li>
+	<li>TOP_10_UNIQUE_TOKEN_DIFFS_B – <em>vice versa</em></li>
+	<li>TOP_10_MORE_IN_A – the top 10 terms that appear more frequently in A than B.  The number is the difference between A and B per term (e.g. you'd see <code>&quot;cat&quot;: 10</code> if &quot;cat&quot; appeared 30 times in A and 20 times in B )</li>
+	<li>TOP_10_MORE_IN_B – <em>vice versa</em></li>
+	<li>DICE_COEFFICIENT – focuses on the overlap based on unique tokens (not tokens): 2*overlap/(totalUniqueTokensA+totalUniquTokensB)</li>
+	<li>OVERLAP – focuses on the overlap of tokens: (2*overlap)/(totalTokensA+totalTokensB)</li>
+</ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

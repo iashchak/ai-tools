@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : GitHub Integration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-Contributor-Guide_89071892.html">Hadoop Contributor Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : GitHub Integration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Arpit Agarwal</span>, last modified by <span class='editor'> Akira Ajisaka</span> on мар 27, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em><span style="color: rgb(0,128,0);">Note: This content was moved over from <a class="external-link" href="https://wiki.apache.org/hadoop/GithubIntegration" rel="nofollow">https://wiki.apache.org/hadoop/GithubIntegration</a><strong><br/></strong></span></em></p><p><br/>There are several ways to setup Git for committers and contributors. Contributors can safely setup Git any way they choose but committers should take extra care since they can push new commits to the trunk at Apache and various policies there make backing out mistakes problematic. To keep the commit history clean take note of the use of <code>--squash</code> below when merging into <code>apache/trunk</code>.</p><p><br/></p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025379693 {padding: 0px;}
+div.rbtoc1683025379693 ul {margin-left: 0px;}
+div.rbtoc1683025379693 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025379693'>
+<ul class='toc-indentation'>
+<li><a href='#GitHubIntegration-Gitsetup'>Git setup</a></li>
+<li><a href='#GitHubIntegration-HowtocreateaPR'>How to create a PR</a></li>
+<li><a href='#GitHubIntegration-HowtorunJenkinsprecommitjobforaPR'>How to run Jenkins precommit job for a PR</a></li>
+<li><a href='#GitHubIntegration-MergingaPR(forcommitters)'>Merging a PR (for committers)</a></li>
+<li><a href='#GitHubIntegration-ClosingaPRwithoutcommitting(forcommitters)'>Closing a PR without committing (for committers)</a></li>
+<li><a href='#GitHubIntegration-Apache/githubintegrationfeatures'>Apache/github integration features</a></li>
+<li><a href='#GitHubIntegration-BestPractices'>Best Practices</a>
+<ul class='toc-indentation'>
+<li><a href='#GitHubIntegration-AvoidingaccidentallycommittingprivatebranchestotheASFrepo'>Avoiding accidentally committing private branches to the ASF repo</a></li>
+<li><a href='#GitHubIntegration-AvoidingaccidentallycommittingprivatekeystoAmazonAWS,MicrosoftAzureorothercloudinfrastructures'>Avoiding accidentally committing private keys to Amazon AWS, Microsoft Azure or other cloud infrastructures</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h2 id="GitHubIntegration-Gitsetup">Git setup</h2><p>This describes setup for one local repo and two remotes. It allows you to push the code on your machine to either your GitHub repo or apache/hadoop GitHub repo. The ASF official repository is <a class="external-link" href="https://gitbox.apache.org" rel="nofollow">gitbox.apache.org</a>, however, the repository can be writable from both GitBox and GitHub if you are a committer. You will want to fork GitHub's <code>apache/hadoop</code> to your own account on GitHub, this will enable Pull Requests of your own. Cloning this fork locally will set up &quot;origin&quot; to point to your remote fork on GitHub as the default remote. So if you perform `git push origin trunk` it will go to your fork.<br/><br/>To attach to the Apache git repo do the following:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git remote add apache https://github.com/apache/hadoop.git</pre>
+</div></div><p><br/>To check your remote setup:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git remote -v</pre>
+</div></div><p><br/>you should see something like this:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">origin    https://github.com/your-github-id/hadoop.git (fetch)
+origin    https://github.com/your-github-id/hadoop.git (push)
+apache    https://github.com/apache/hadoop.git (fetch)
+apache    https://github.com/apache/hadoop.git (push)</pre>
+</div></div><p><br/>Now if you want to experiment with a branch everything, by default, points to your github account because <code>origin</code> is the. You can work as normal using only github until you are ready to merge with the apache remote. Some conventions will integrate with Apache Jira ticket numbers.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git checkout -b feature/hadoop-xxxx #xxxx typically is a Jira ticket number
+#do some work on the branch
+git commit -a -m &quot;doing some work&quot;
+git push origin feature/hadoop-xxxx # notice pushing to **origin** not **apache**</pre>
+</div></div><p><br/>Once you are ready to commit to the apache remote, you can create a PR.</p><h2 id="GitHubIntegration-HowtocreateaPR">How to create a PR</h2><p>Push your branch to GitHub:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git checkout feature/hadoop-xxxx
+git fetch apache
+git rebase apache/trunk # to make it apply to the current trunk
+git push origin feature/hadoop-xxxx</pre>
+</div></div><p><br/></p><ol><li>Go to your <code>feature/hadoop-xxxx</code> branch on Github. Since you forked it from Github's <code>apache/hadoop</code> it will default any PR to go to <code>apache/trunk</code>.</li><li>Click the green &quot;<strong><em>Compare, review, and create pull request</em></strong>&quot; button.</li><li>You can edit the to and from for the PR if it isn't correct. The &quot;base fork&quot; should be <code>apache/hadoop</code> unless you are collaborating separately with one of the committers on the list. The &quot;base&quot; will be trunk. Don't submit a PR to one of the other branches unless you know what you are doing. The &quot;head fork&quot; will be your forked repo and the &quot;compare&quot; will be your `feature/hadoop-xxxx` branch.</li><li>Click the &quot;Create pull request&quot; button and name the request &quot;HADOOP-XXXX&quot; all caps. This will connect the comments of the PR to the mailing list and Jira comments.</li><li>From now on the PR lives on github's <code>apache/hadoop</code> repository. You use the commenting UI there.</li></ol><h2 id="GitHubIntegration-HowtorunJenkinsprecommitjobforaPR">How to run Jenkins precommit job for a PR</h2><p>The precommit job is run automatically when opened a PR and when there is any change in your branch. If you are a committer and want to run Jenkins precommit job manually, log in to <a class="external-link" href="https://ci-hadoop.apache.org/job/hadoop-multibranch" rel="nofollow">https://ci-hadoop.apache.org/job/hadoop-multibranch</a> and run the job corresponding with the pull request ID. If there is no such job, click &quot;Scan Repository Now&quot; to scan the pull requests. If you are not committer, please create an empty commit on your branch.</p><h2 id="GitHubIntegration-MergingaPR(forcommitters)">Merging a PR (for committers)</h2><p>In most cases, clicking the &quot;Squash and merge button&quot; is fine. Before merging the PR, the committer must check the title and the commit message, and fix them if needed. You can add &quot;Signed-off-by&quot;, &quot;Reviewed-by&quot;, and &quot;Co-authored-by&quot; when merging the commit.</p><p>When you need to commit the change locally and push them, start with reading <a class="external-link" href="https://help.github.com/articles/checking-out-pull-requests-locally/" rel="nofollow">https://help.github.com/articles/checking-out-pull-requests-locally/</a>. Remember that pull requests are equivalent to a remote GitHub branch with potentially a multitude of commits. In this case it is recommended to squash remote commit history to have one commit per issue, rather than merging in a multitude of contributor's commits. In order to do that, as well as close the PR at the same time, it is recommended to use squash commits.</p><p>Merging pull requests are equivalent to a &quot;pull&quot; of a contributor's branch:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git checkout trunk      # switch to local trunk branch
+git pull apache trunk   # fast-forward to current remote HEAD
+git pull --squash https://github.com/cuser/hadoop cbranch  # merge to trunk</pre>
+</div></div><p><br/><br/>The <code>--squash</code> option ensures all PR history is squashed into single commit, and allows committer to use his/her own message. Read git help for merge or pull for more information about <code>--squash</code> option. In this example we assume that the contributor's GitHub handle is &quot;cuser&quot; and the PR branch name is &quot;cbranch&quot;. Next, resolve conflicts, if any, or ask a contributor to rebase on top of trunk, if PR went out of sync.<br/><br/>If you are ready to merge your own (committer's) PR you probably only need to merge (not pull), since you have a local copy that you've been working on. This is the branch that you used to create the PR.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git checkout trunk      # switch to local trunk branch
+git pull apache trunk   # fast-forward to current remote HEAD
+git merge --squash feature/hadoop-xxxx</pre>
+</div></div><p><br/><br/>Remember to run regular patch checks, build with tests enabled, and change CHANGES.TXT (not applicable for Hadoop versions 2.8.0 and later) for the appropriate part of the project.<br/><br/>If everything is fine, you now can commit the squashed request along the lines</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git commit -a -m &quot;HADOOP-XXXX description (cuser via your-apache-id) closes apache/hadoop#ZZ&quot;</pre>
+</div></div><p><br/><br/>HADOOP-XXXX is all caps and where ZZ is the pull request number on apache/hadoop repository. Including `closes apache/hadoop#ZZ` will close the PR automatically. More information is found at <a class="external-link" href="https://help.github.com/articles/closing-issues-via-commit-messages|GitHub" rel="nofollow">https://help.github.com/articles/closing-issues-via-commit-messages</a>. Next, push to <a class="external-link" href="https://gitbox.apache.org" rel="nofollow">gitbox.apache.org</a>:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">push apache trunk</pre>
+</div></div><p><br/>(this will require Apache handle credentials).<br/><br/>The PR, once pushed, will get mirrored to GitHub. To update your personal GitHub version push there too:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">push origin trunk</pre>
+</div></div><p><br/><br/>Note on squashing: Since squash discards remote branch history, repeated PRs from the same remote branch are difficult for merging. The workflow implies that every new PR starts with a new rebased branch. This is more important for contributors to know, rather than for committers, because if new PR is not mergeable, github would warn to begin with. Anyway, watch for dupe PRs (based on same source branches). This is a bad practice.</p><h2 id="GitHubIntegration-ClosingaPRwithoutcommitting(forcommitters)"><br/>Closing a PR without committing (for committers)</h2><p>Now Hadoop committer can directly close GitHub pull requests. If you are a committer and don't have the privilege, you need to link your ASF and GitHub account via <a class="external-link" href="https://gitbox.apache.org/setup/" rel="nofollow">https://gitbox.apache.org/setup/</a> </p><h2 id="GitHubIntegration-Apache/githubintegrationfeatures">Apache/github integration features</h2><p>Read <a class="external-link" href="https://blogs.apache.org/infra/entry/improved_integration_between_apache_and" rel="nofollow">https://blogs.apache.org/infra/entry/improved_integration_between_apache_and</a>. Comments and PRs with Hadoop issue handles should post to mailing lists and Jira. Hadoop issue handles must in the form `HADOOP-YYYYY` (all capitals). Usually it makes sense to file a JIRA issue first, and then create a PR with description</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">HADOOP-YYYY: &lt;jira-issue-description&gt;</pre>
+</div></div><p><br/>In this case all subsequent comments will automatically be copied to JIRA without having to mention the JIRA issue explicitly in each comment of the PR.</p><h2 id="GitHubIntegration-BestPractices"><br/>Best Practices</h2><h3 id="GitHubIntegration-AvoidingaccidentallycommittingprivatebranchestotheASFrepo">Avoiding accidentally committing private branches to the ASF repo</h3><p>Its dangerously easy —especially when using IDEs— to accidentally commit changes to the ASF repo, be it direct to the `trunk`, `branch-2` or other standard branch on which you are developing, or to a private branch you had intended to keep on GitHub (or a private repo).<br/><br/>Committers can avoid this by having the directory in which they develop code set up with read only access to the ASF repository on GitHub, without the Apache repository added. A separate directory should be set up with write access to the ASF repository as well as read access to your other repositories. Merging operations and pushes back to the ASF repo are done from this directory —so isolated from all local development.<br/><br/>If you accidentally commit a patch to an ASF branch, do not attempt to roll back the branch and force out a new update. Simply commit and push out a new patch revoking the change.<br/><br/>If you do accidentally commit a branch to the ASF repo, the infrastructure team can delete it —but they cannot stop it propagating to GitHub and potentially being visible. Try not to do that.<br/><br/></p><h3 id="GitHubIntegration-AvoidingaccidentallycommittingprivatekeystoAmazonAWS,MicrosoftAzureorothercloudinfrastructures">Avoiding accidentally committing private keys to Amazon AWS, Microsoft Azure or other cloud infrastructures</h3><p>All the cloud integration projects under <code>hadoop-tools</code> expect a resource file, <code>resources/auth-keys.xml</code> to contain the credentials for authenticating with cloud infrastructures. These files are explicitly excluded from git through entries in <code>.gitignore</code>. To avoid running up large bills and/or exposing private data, it is critical to keep any of your credentials secret.<br/><br/>For maximum security here, clone your Hadoop repository into create separate directory for cloud tests, one with read-only access. Create the <code>auth-keys.xml</code> files there. This guarantees that you cannot commit the credentials, albeit with a somewhat more complex workflow, as patches must be pushed to a git repository before being pulled and tested into the cloud-enabled directory.<br/><br/>Accidentally committing secret credentials is a very expensive mistake. You will not only need to revoke your keys, you will need to kill all bitcoining machines created on all EC2 zones, and all outstanding spot-price bids for them.<br/><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

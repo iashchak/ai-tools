@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : UpgradingTikaInSolr</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : UpgradingTikaInSolr
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Tim Allison</span> on сен 10, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="UpgradingTikaInSolr-Idiot&#39;sGuidetoUpgradingTikainApacheSolr">Idiot's Guide to Upgrading Tika in Apache Solr</h1><p>This is written as a relative outsider to Apache Solr development. It will appear painfully rudimentary to devs on Solr, and it assumes less-than-black-belt-familiarity with git...so be it.</p><p>Many thanks to Uwe Schindler for walking me through these steps several times.</p><h1 id="UpgradingTikaInSolr-Prereqs">Prereqs</h1><ol><li>python3 must be installed and callable as python3</li><li>perl must be installed</li><li>ivy must be installed: <code>ant ivy-bootstrap</code></li><li>Fork lucene-solr and clone your fork.</li><li>Hint: if you're using Intellij, run <code>ant idea</code> <strong>before</strong> opening the project in Intellij</li><li>Getting Solr built the first time can take a long time.</li><li>Check out your local fork</li><li>Make sure you're up to date<ol><li><code>git remote add upstream <a class="external-link" href="https://github.com/apache/lucene-solr.git" rel="nofollow">https://github.com/apache/lucene-solr.git</a></code></li><li><code>git fetch upstream</code></li><li><code>git pull upstream master</code></li><li><code>git push master</code></li></ol></li></ol><h1 id="UpgradingTikaInSolr-Phase1">Phase 1</h1><ol><li>create new branch, e.g <code>jira/solr-11701</code></li><li><code>mvn dependency:tree</code> on the newly released Apache Tika and <strong>MEMORIZE</strong> it</li><li>upgrade all dependencies in <code>lucene/ivy-versions.properties</code> – make sure that they are in alphabetical order</li><li>add any new licenses in <code>solr/licenses</code> – must include a -LICENSE-XYZ.txt and -NOTICE.txt file for every jar</li><li>update anything new in <code>solr/contrib/extraction/ivy.xml</code></li><li><code>ant clean</code> (out of nervous habit) and then run the unit tests in <code>contrib/dataimporthandler-extras</code> and <code>contrib/extraction</code></li><li>Fix any problems in the source code, and this can include <code>XLSXResponseWriter</code> which relies on Apache POI.</li><li><code>ant clean-jars jar-checksums</code></li><li><code>git add</code> new .sha1 files in solr/licenses and lucene/licenses and <code>git rm</code> old .sha1 files</li><li><code>ant precommit</code></li><li>Receive immediate errors that you missed something and go back two steps; repeat <code>ant precommit</code> as needed, waiting 15-20 minutes each time ... if you didn't break something obvious.</li><li>In my environment, <code>ant precommit</code> eventually ends in errors about broken links in html. This means you are successful!!!</li><li>Run <code>ant test</code> for kicks.  Something will likely break.  Try to figure out if it is caused by anything you did or just a flaky build.  Bonus points if the test failure is reproducible and you report it/fix it.</li></ol><h1 id="UpgradingTikaInSolr-Phase2:IntegrationTestingSolr">Phase 2: Integration Testing Solr</h1><p>To test that you've gotten most of the dependencies right, why not run DIH on Tika's test documents?</p><ol><li>Build the Solr dist: <code>cd solr/</code> and <code>ant package</code></li><li>Unzip your shiny new Solr and create a collection from: <a class="external-link" href="https://github.com/tballison/tika-addons/tree/main/solr-tika-integration/src/configs" rel="nofollow">https://github.com/tballison/tika-addons/tree/main/solr-tika-integration/src/configs</a></li><li><code>bin\solr start</code></li><li>Copy the files from tika-parsers/src/test/resources/test-documents ... make sure to remove ucar files: *.nc, *.hdf, *.fb2, *.he5 – these wreak havoc with the data importer</li><li>Navigate to the Solr admin window-&gt;<code>Dataimport</code>.</li><li>Close your eyes, cross your fingers, pray to your appropriate diet(y|ies) or not, and press <code>Execute</code></li><li>Watch the command window to see if there were any catastrophic missing class problems</li><li>Go to logs to see if there are any show stoppers for exceptions.</li><li>When this completes, go to <code>Query</code> and check how many documents are actually indexed</li><li>Compare the number of documents in Solr to the number you'd get if you ran <code>java -jar tika-app.jar -i &lt;input_dir&gt; -o &lt;output_dir&gt;</code></li></ol><p>In addition to DIH, the above configs are also set up to work with the ExtractingHandler. </p><p><br/></p><p>You can run either the SolrJ client (<a class="external-link" href="https://github.com/tballison/tika-addons/blob/main/solr-tika-integration/src/main/java/org/tallison/indexers/SolrJIndexer.java" rel="nofollow">https://github.com/tballison/tika-addons/blob/main/solr-tika-integration/src/main/java/org/tallison/indexers/SolrJIndexer.java</a>) or the</p><p>Curl wrapper <a class="external-link" href="https://github.com/tballison/tika-addons/blob/main/solr-tika-integration/src/main/java/org/tallison/indexers/CurlIndexer.java" rel="nofollow">https://github.com/tballison/tika-addons/blob/main/solr-tika-integration/src/main/java/org/tallison/indexers/CurlIndexer.java</a></p><p>Make sure to set the source directory appropriately and the solr-collection name correctly for your test files and Solr collection.  Note that these indexers do not process files recursively.</p><h1 id="UpgradingTikaInSolr-Phase3:SubmitaPullRequest">Phase 3: Submit a Pull Request</h1><ol><li>When everything looks good, commit your changes and submit a PR</li></ol><h1 id="UpgradingTikaInSolr-Phase4:Reflect,Rejoice,Work">Phase 4: Reflect, Rejoice, Work</h1><ol><li>Reflect on:<ol><li>The tedium to get the dependencies right and the risks of not getting them right</li><li>The ever present risks of jar hell by integrating Tika into Solr</li><li>The seductive belief that Tika won't break Solr, when we know it will eventually, and we should really be keeping Tika out of Solr if at all possible...and yet maintain the awesome easy-to-get-started-ness of the current integration.</li></ol></li><li>Rejoice that Tika is being refactored out of Solr in 9x.<s><br/></s></li><li>Work towards whatever solution allows for an easy, out of the box extraction process for binary files</li></ol>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

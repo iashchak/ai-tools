@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : TomcatOnOpenVMS</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OS_107970699.html">OS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : TomcatOnOpenVMS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 16, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="TomcatOnOpenVMS-RunningTomcatonOpenVMS">Running Tomcat on OpenVMS</h2>
+
+<p>HP offers an Apache based web server named &quot;Secure Web Server&quot; (SWS). It includes an Apache module CSWS_JAVA (Tomcat). The current version of this module is CSWS_JAVA Version 7.0-29 for OpenVMS Integrity Server (based on Apache Tomcat 7.0.29).</p>
+
+<p>At the time of writing, it is unknown to me whether HP plans to create newer versions of Tomcat for SWS.</p>
+
+<p>These notes show how to install and run Tomcat on OpenVMS, independent of HP's Secure Web Server.</p>
+
+<p>I hope these notes are of use to someone out there.</p>
+
+<h4 id="TomcatOnOpenVMS-THEENVIRONMENT">THE ENVIRONMENT</h4>
+
+<p>OpenVMS for Integrity Servers Version 8.3 is the minimum version for which this should work. Newer versions are recommended, as there are 8.3-1H1 or 8.4 from HP or 8.4-1H1 from VSI.</p>
+
+<p>Java 6 (at the time of writing there is no newer Java version available from HP or VSI), the HP kit is named J2SE™ Development Kit (JDK) 6.0-4, which is based on Java SE 6 Update 37.</p>
+
+<p>Patches, aka ECOs, for OpenVMS as listed in <a class="external-link" href="http://h18012.www1.hp.com/java/download/ivms/1.6.0/jdk6.0_patches.html" rel="nofollow">http://h18012.www1.hp.com/java/download/ivms/1.6.0/jdk6.0_patches.html</a>.</p>
+
+<p>Some disk space (~20MB is the minimum for the installation) on an ODS5 disk.</p>
+
+<p>A recent archive tool for zip archives or compressed tar files.</p>
+
+<p>Scripts, aka VMS DCL command procedures, as shown below.</p>
+
+<h3 id="TomcatOnOpenVMS-THEINSTALLATION">THE INSTALLATION</h3>
+
+<p>Ensure that Java 6 is installed on OpenVMS and that at least all the ECOs as described above are installed. It is recommended to have the operating system patched to the current level. At least the C-run-time environment should have the current patch level.</p>
+
+<p><strong>Step 1: Download Tomcat</strong></p>
+
+<p>Download Tomcat from the Tomcat home page, and get the binary version, either the zip or tar.gz file. I downloaded <code>apache-tomcat-7.0.64.tar.gz</code>.</p>
+
+<p><strong>Step 2: Extract Tomcat archive</strong></p>
+
+<p>Extract the files into a directory on an ODS5 disk. Verify that your unzip or tar utility creates case sensitive file names. The result of extracting will be a sub-directory <code>apache-tomcat-7.0.64</code>, which from the VMS command line will be shown as <code>apache-tomcat-7^.0^.64.DIR;1</code> (For convenience you can rename the directory file, to avoid the escape character <code>'^'</code>, for example to <code>apache-tomcat-7064.DIR;1</code>.)</p>
+
+<p>It is recommended to use the directory filename as is and to set the VMS process' parse style for commands to accept ODS5 file specifications: <code>$ set process/parse_style=extended/case_lookup=blind</code>. </p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>It is also recommended to make the sub-directory files deletable: <code>$ set protection=o:rwed [.apache-tomcat-7&#94;.0^.64...]&#42;.dir</code></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p><strong>Step 2: Add the OpenVMS specific scripts</strong></p>
+
+<p>Extract the scripts shown below into the appropriate directories.</p>
+
+<p><strong>Step 3: Test the installation</strong></p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>Run the version script: <code>$ @[.apache-tomcat-7&#94;.0^.64.bin]version</code>. The result should look like:</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Server version: Apache Tomcat/7.0.64
+Server built:   Aug 19 2015 17:18:06 UTC
+Server number:  7.0.64.0
+OS Name:        OpenVMS
+OS Version:     V8.4
+Architecture:   ia64
+JVM Version:    1.6.0-6
+JVM Vendor:     Hewlett-Packard Company
+$ 
+</pre>
+</div></div>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>Start Tomcat: <code>@[.apache-tomcat-7&#94;.0^.64.bin]startup</code>.</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>The supplied startup script runs Tomcat in a spawned OpenVMS sub-process of your current interactive process. That is, there will be some asynchronous output shown in your terminal which is produced by VMS and/or Tomcat.  However, you can enter any DCL command while Tomcat is running - including the command to stop it.</p>
+
+<p>The output may look like:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>%DCL-S-SPAWNED, process BECKER_39053 spawned
+$ 
+Oct 16, 2015 2:56:17 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Server version:        Apache Tomcat/7.0.64
+Oct 16, 2015 2:56:17 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Server built:          Aug 19 2015 17:18:06 UTC
+Oct 16, 2015 2:56:17 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Server number:         7.0.64.0  
+...
+Oct 16, 2015 2:56:26 PM org.apache.catalina.startup.Catalina start
+INFO: Server startup in 8339 ms
+</pre>
+</div></div>
+
+<p>Now open a browser window, and enter <a class="external-link" href="http://YOUR_VMS_NODE:8080" rel="nofollow">http://YOUR_VMS_NODE:8080</a> - the default Tomcat page should open.</p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>Stop Tomcat: <code>@[.apache-tomcat-7&#94;.0^.64.bin]shutdown</code>.</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>Similar to the startup script, the supplied shutdown script runs in a spawned OpenVMS sub-process. That is, there will be some asynchronous output shown in your terminal which is produced by VMS and/or Tomcat.  However you can enter any DCL command while Tomcat is shutting down.</p>
+
+<p>The output may look like:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>%DCL-S-SPAWNED, process BECKER_18865 spawned
+$ 
+Oct 16, 2015 3:00:50 PM org.apache.catalina.core.StandardServer await
+INFO: A valid shutdown command was received via the shutdown port. Stopping the Server instance.
+...
+</pre>
+</div></div>
+
+<p><strong>Step 4: After the installation</strong></p>
+
+<p>Now you are ready to deploy your web application and configure Tomcat for your needs.</p>
+
+<p>Whether you remove specific files, which are not required for OpenVMS is up to you as well as removing the default Tomcat web application.</p>
+
+<h3 id="TomcatOnOpenVMS-OpenVMSSCRIPTS">OpenVMS SCRIPTS</h3>
+
+<p>Save this file as <code>catalina.com</code> into the bin directory of your installation.</p>
+
+<p>Contents of the OpenVMS specific catalina server script</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$! OpenVMS Control Script for the CATALINA Server
+$! catalina.com, 8-Apr-2014, hb
+$
+$ default = f$environment(&quot;default&quot;)
+$ this_file = f$environment(&quot;procedure&quot;)
+$ on control_y then -
+        $ goto common_exit
+$ on error then -
+        $ goto common_exit
+$ set def &#39;f$parse(this_file,,,&quot;device&quot;)&#39;&#39;f$parse(this_file,,,&quot;directory&quot;)&#39;
+$ set def [-]
+$ set protection=(SYSTEM:RWED,OWNER:RWED,GROUP:RE,WORLD)/default
+$ config_setup = f$search(&quot;[.bin]java$config_setup.com&quot;)
+$ if config_setup .eqs. &quot;&quot;
+$ then
+$     write sys$output &quot;%version-e-fnf, java$config_setup.com not found.&quot;
+$     goto common_exit
+$ endif
+$ if f$trnlnm(&quot;JAVA$CANCEL_CURRENT&quot;) .nes. &quot;&quot;
+$ then
+$     ! just avoid the %SYSTEM-F-NOLOGNAM from @JAVA$CANCEL_CURRENT
+$     deassign := deassign/nolog
+$     @JAVA$CANCEL_CURRENT
+$ endif
+$ @sys$startup:java$60_setup
+$ define := define/nolog
+$ @&#39;config_setup
+$ LOGGING_CONFIG=&quot;&quot;&quot;-Djava.util.logging.config.file=./conf/logging.properties&quot;&quot;&quot;
+$ options=&quot;&quot;
+$ options= options +-
+        &quot;&quot;&quot;-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager&quot;&quot; &quot;
+$ options= options +-
+        &quot;&quot;&quot;-Djava.util.logging.config.file=./conf/logging.properties&quot;&quot; &quot;
+$ libs=&quot;./bin/bootstrap.jar:&quot; +-
+        &quot;./bin/tomcat-juli.jar&quot;
+$ define/job/nolog classpath &quot;&#39;&#39;libs&#39;&quot;
+$ spawn/nowait/input=nl: java &#39;LOGGING_CONFIG &#39;options -
+        &quot;-Dcatalina.base=./&quot; &quot;-Dcatalina.home=./&quot; -
+        &quot;-Djava.io.tmpdir=./temp&quot; -
+        &quot;org.apache.catalina.startup.Bootstrap&quot; &#39;p1&#39;
+$
+$ common_exit:
+$ set default &#39;default
+</pre>
+</div></div>
+
+<p>Save this file as <code>startup.com</code> into the bin directory of your installation.</p>
+
+<p>Contents of the OpenVMS specific startup script</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$! OpenVMS Start Script for the CATALINA Server
+$! startup.com, 17-Jun-2013, hb
+$
+$ this_file = f$environment(&quot;procedure&quot;)
+$ parse = f$getjpi(0,&quot;parse_style_perm&quot;)
+$ case = f$getjpi(0,&quot;case_lookup_perm&quot;)
+$ on control_y then -
+              $ goto common_exit
+$ on error then -
+              $ goto common_exit
+$ set process/parse=extended/case=blind
+$ @&#39;f$parse(this_file,,,&quot;device&quot;)&#39;&#39;f$parse(this_file,,,&quot;directory&quot;)&#39;catalina &quot;start&quot;
+$ common_exit:
+$ set process/parse=&#39;parse/case=&#39;case
+</pre>
+</div></div>
+
+<p>Save this file as <code>shutdown.com</code> into the bin directory of your installation.</p>
+
+<p>Contents of the OpenVMS specific shutdown script</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$! OpenVMS Stop Script for the CATALINA Server
+$! shutdown.com, 17-Jun-2013, hb
+$
+$ this_file = f$environment(&quot;procedure&quot;)
+$ parse = f$getjpi(0,&quot;parse_style_perm&quot;)
+$ case = f$getjpi(0,&quot;case_lookup_perm&quot;)
+$ on control_y then -
+              $ goto common_exit
+$ on error then -
+              $ goto common_exit
+$ set process/parse=extended/case=blind
+$ @&#39;f$parse(this_file,,,&quot;device&quot;)&#39;&#39;f$parse(this_file,,,&quot;directory&quot;)&#39;catalina &quot;stop&quot;
+$ common_exit:
+$ set process/parse=&#39;parse/case=&#39;case
+</pre>
+</div></div>
+
+<p>Save this file as <code>version.com</code> into the bin directory of your installation.</p>
+
+<p>Contents of the OpenVMS specific version script</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$! OpenVMS Version Script for the CATALINA Server
+$! version.com, 8-Apr-2014, hb
+$
+$ default = f$environment(&quot;default&quot;)
+$ this_file = f$environment(&quot;procedure&quot;)
+$ parse = f$getjpi(0,&quot;parse_style_perm&quot;)
+$ case = f$getjpi(0,&quot;case_lookup_perm&quot;)
+$ on control_y then -
+        $ goto common_exit
+$ on error then -
+        $ goto common_exit
+$ set process/parse=extended/case=blind
+$ set def &#39;f$parse(this_file,,,&quot;device&quot;)&#39;&#39;f$parse(this_file,,,&quot;directory&quot;)&#39;
+$ set def [-]
+$ config_setup = f$search(&quot;[.bin]java$config_setup.com&quot;)
+$ if config_setup .eqs. &quot;&quot;
+$ then
+$     write sys$output &quot;%version-e-fnf, java$config_setup.com not found.&quot;
+$     goto common_exit
+$ endif
+$ if f$trnlnm(&quot;JAVA$CANCEL_CURRENT&quot;) .nes. &quot;&quot;
+$ then
+$     ! just avoid the %SYSTEM-F-NOLOGNAM from @JAVA$CANCEL_CURRENT
+$     deassign := deassign/nolog
+$     @JAVA$CANCEL_CURRENT
+$ endif
+$ @sys$startup:java$60_setup
+$ define := define/nolog
+$ @&#39;config_setup
+$ java -classpath ./lib/catalina.jar org.apache.catalina.util.ServerInfo
+$ common_exit:
+$ set default &#39;default
+$ set process/parse=&#39;parse/case=&#39;case
+</pre>
+</div></div>
+
+<p>Save this file as <code>java$config_setup.com</code> into the bin directory of your installation.</p>
+
+<p>Contents of the OpenVMS specific Java setup script</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$! JAVA$CONFIG_SETUP.COM
+$!
+$! --NOTE:
+$! --       THIS FILE WAS ORIGINALLY GENERATED BY
+$! --       SYS$COMMON:[JAVA$60.COM]JAVA$CONFIG_WIZARD.COM;1
+$! --       ON  7-MAR-2013 14:41:12.27
+$! --       IT HAS BEEN MANUALLY EDITTED SINCE THEN.
+$! --
+$! --       For more complete description of the logicals shown,
+$! --       please read the release notes.
+$!
+$! The following are useful in all environments.
+$!
+$ SET PROCESS/PARSE_STYLE=EXTENDED
+$ DEFINE/JOB DECC$ARGV_PARSE_STYLE TRUE
+$ DEFINE/JOB DECC$EFS_CASE_PRESERVE TRUE
+$ DEFINE/JOB JAVA$DAEMONIZE_MAIN_THREAD TRUE
+$ DEFINE/JOB JAVA$DISABLE_CMDFILE_WHITESPACE_PARSING TRUE
+$ DEFINE/JOB DECC$ENABLE_GETENV_CACHE TRUE
+$ DEFINE/JOB DECC$FILE_PERMISSION_UNIX TRUE
+$!
+$! Omitting logicals useful in debugging environment.
+$!
+$! Omitting logicals useful in mimicing UNIX file system behavior
+$!
+$! Omitting logicals useful in heavy child processes { runtime.exec() } behavior
+$!
+$! Logicals useful for supporting file sharing:
+$!
+$ DEFINE/JOB DECC$FILE_SHARING TRUE  ! ask for C-RTL support for file sharing
+$!
+$! Omitting logicals useful for bypassing secondary stat() call.
+$!
+$! Logicals useful to set up caching of file/directory information
+$!
+$ DEFINE/JOB JAVA$CACHING_INTERVAL 60  ! to disable, undefine logical or set value to 0
+$ DEFINE/JOB JAVA$CACHING_DIRECTORY TRUE ! enable special case -- don&#39;t look in directory if directory known to be absent
+$!
+$! Logicals useful for supporting ODS-5 operation only.
+$! 
+$! NOTE:
+$!    The value of JAVA$FILENAME_CONTROLS generated below is different than the one set in JAVA$60_SETUP.COM
+$!    To make this new value be in effect, be sure to run JAVA$CONFIG_SETUP.COM after you run JAVA$60_SETUP.COM.  
+$ DEFINE/JOB DECC$EFS_CHARSET  TRUE  ! 
+$ DEFINE/JOB DECC$EFS_CASE_SPECIAL  FALSE  ! 
+$ DEFINE/JOB JAVA$FILENAME_CONTROLS 8 ! only enable the mixed UNIX/VMS filespec mapping
+$ DEFINE/JOB JAVA$READDIR_CASE_DISABLE  TRUE  ! turns off auto. class/source case-sensitive name extraction
+$!
+$!    See: SYS$COMMON:[JAVA$60.COM]JAVA$FILENAME_CONTROLS.COM for explanation of bits enabled above.
+$!
+$! Omitting logicals useful supporting PC-style keyboard on workstation.
+$!
+</pre>
+</div></div>
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

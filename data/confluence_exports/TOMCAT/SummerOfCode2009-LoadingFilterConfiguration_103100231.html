@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : SummerOfCode2009 LoadingFilterConfiguration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="GSOC_103099234.html">GSOC</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="SummerOfCode2009_103100229.html">SummerOfCode2009</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : SummerOfCode2009 LoadingFilterConfiguration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 28, 2010
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Here we want to convert tomcat internal into somewhat more standard Servlet filters. So we need a place to put those configurations for these converted filters. </p>
+
+<p>For global level filters(for all the servlet in this tomcat instance), we have conf/web.xml file to put configurations. And for servlet level filters(wrapper level in tomcat), we have individual web.xml files too. The question is, what if the filter should  be engine/host/context level, where do we put the configuration? </p>
+
+<p>Here are some options I could bring to my mind:</p>
+
+<p>1: we could add those configurations into conf/server.xml</p>
+
+<p>pros: the place for configuration keeps consistent with that of valves. And we could also use similar syntax as valves, such as &lt;Filter&gt; element. So I think this is least abrupt way for configurating filters.</p>
+
+<p>cons: Maybe a little strange to config somewhat general Servlet structure into a tomcat specific configuration file. And need some hacking for squeezing those configurated filters into filter chain. And it is difficult to access <a class="unresolved" href="#">ServletContext</a>. </p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>2: we could also support "$CATALINA_BASE/conf/[enginename]/engine-filters.default" for engine level filters, "$CATALINA_BASE/conf/[enginename]/[hostname]/host-filters.default" for host level filters and "$CATALINA_BASE/conf/[enginename]/[hostname]/context.xml.default" for context levelfilters just as tomcat do now for "context.xml.default"</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>pros: keep consistent with valves. And somewhat the same as the first method. I think this could be the complement of the first option. </p>
+
+<p>cons: But I think this way is more verbose than the first, since configuration scattered into several places. Considering the situation of valves, there are not too many filters need to be configurated in this way. And other defect of this option is just the same as option 1.</p>
+
+
+<p>3: Put all those converted filters into the global conf/web.xml, and using some extra parameters to determine the level(server/engine/host/context) which this filter belongs to. </p>
+
+<p>pros: keep consistent with the Servlet specification. And maybe least source code that need to write.</p>
+
+<p>cons: the global conf/web.xml file is rather long now. Scrolling this file and adding or altering it could become a burden to developer to some degree. And I think those additional parameters harms the portability to some degree. </p>
+
+
+<p>4: Raised by Mark. Provide support for a host and engine level web.xml files Pros: Simple to implement,particularly with Servlet 3.0 requirements for web fragments. Should be very easy to extend.</p>
+
+<p>Cons: One instance of filter created per context, even when filter is defined at host/engine. Would require more objects.</p>
+
+
+<p>5: Something else?</p>
+
+
+<p>Are there any other places or methods that could put the configurations for those converted filters? Any comments are welcomed. Thank you for your time. </p>
+
+
+<p>(Mark prefer option 4. And he hopes to start on the web fragment code shortly. )</p>
+
+<hr/>
+<p><a href="https://cwiki.apache.org/confluence/display/TOMCAT/CategoryGSOC">CategoryGSOC</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

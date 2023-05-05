@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : MSOfficeParsers</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : MSOfficeParsers
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="MSOfficeParsers-Tika&#39;sMSOfficeParsers(ApachePOI)">Tika's MSOffice Parsers (Apache POI)</h1>
+
+<h2 id="MSOfficeParsers-BetaSAXParsersfor.docxand.pptx">Beta SAX Parsers for .docx and .pptx</h2>
+
+<p>As of Tika 1.15, there are experimental/beta SAX parsers for .docx files.  On very large files (e.g. &quot;War and Peace&quot;), this parser appears to be 4x faster and require far less memory than our traditional DOM based parsers.  For smaller files, the gain is not nearly as great.  For the 386MB pptx submitted on TIKA-2201, it would have taken ~60GB to load the file in memory.</p>
+
+<p>These parsers are still in their early stages and don't have all of the features of the DOM parsers.  However, the .docx parser does offer parameterization to include or exclude deleted text.</p>
+
+<p>To select it programmatically, set <code>setUseSAXDocxExtractor</code> or <code>setUseSAXPptxExtractor</code> to <code>true</code> on an <a class="unresolved" href="#">OfficeParserConfig</a> and put that in the <a class="unresolved" href="#">ParseContext</a>: <code>context.set(OfficeParserConfig.class, officeParserConfig);</code>.</p>
+
+<p>To set it via the config file, try:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+    &lt;parsers&gt;
+        &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;/&gt;
+        &lt;parser class=&quot;org.apache.tika.parser.microsoft.ooxml.OOXMLParser&quot;&gt;
+            &lt;params&gt;
+                &lt;param name=&quot;useSAXDocxExtractor&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+                &lt;param name=&quot;useSAXPptxExtractor&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+            &lt;/params&gt;
+        &lt;/parser&gt;
+    &lt;/parsers&gt;
+&lt;/properties&gt;
+</pre>
+</div></div>
+
+<p>See <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1321" rel="nofollow">TIKA-1321</a> for the parser and <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2180" rel="nofollow">TIKA-2180</a> and <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2201" rel="nofollow">TIKA-2201</a> for some symptoms that the current DOM parser might be slowing you down.</p>
+
+
+
+<h2 id="MSOfficeParsers-HowtobuildTikawithPOI&#39;strunk">How to build Tika with POI's trunk</h2>
+
+<p>You'll need to have the following build tools installed: Ant, Forrest and Maven. You'll also need the source code for both projects via svn, git or download of src.</p>
+
+<ol>
+	<li>Build <a class="external-link" href="https://poi.apache.org/howtobuild.html" rel="nofollow">POI</a> – &quot;<code>gradlew clean build jar</code>&quot;.  Optionally, to run the integration tests: &quot;<code>ant test-integration</code>&quot;.  Note, you can also grab a nightly build from <a class="external-link" href="https://builds.apache.org/job/POI/lastSuccessfulBuild/artifact/build/dist/" rel="nofollow">Jenkins</a>.  As of this writing, you still have to generate the poms.  So, the nightly build saves you from building POI, but it doesn't yet save you from having to download the source code (install Ant, etc.) to build the poms. 2.  Generate the poms – &quot;<code>ant maven-poms</code>&quot;. 3.  From <code>build/dist/maven</code>, install this new build of POI into your local Maven repo – e.g.:
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>mvn install:install-file -Dfile=poi-4.0.0-SNAPSHOT.jar -DpomFile=poi-4.0.0-SNAPSHOT.pom
+
+mvn install:install-file -Dfile=poi-ooxml-schemas-4.0.0-SNAPSHOT.jar -DpomFile=poi-ooxml-schemas-4.0.0-SNAPSHOT.pom
+
+mvn install:install-file -Dfile=poi-ooxml-4.0.0-SNAPSHOT.jar -DpomFile=poi-ooxml-4.0.0-SNAPSHOT.pom
+
+mvn install:install-file -Dfile=poi-scratchpad-4.0.0-SNAPSHOT.jar -DpomFile=poi-scratchpad-4.0.0-SNAPSHOT.pom</pre>
+</div></div>
+ 4.  Update the version of POI in Tika's <code>tika-parsers/pom.xml</code>. 5.  Make any necessary modifications to Tika (if there are mods to POI's API) 6.  Build Tika – &quot;<code>mvn clean install</code>&quot;
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>And there you have a shiny, sparkling, new Tika with the dev version of POI!</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

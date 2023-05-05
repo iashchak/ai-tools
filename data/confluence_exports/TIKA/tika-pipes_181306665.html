@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : tika-pipes</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : tika-pipes
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on сен 29, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="tikapipes-SecurityWarning"><strong>Security Warning</strong></h2><p><strong>NOTE:</strong> The tika-pipes modules in combination with tika-server open potential security vulnerabilities if you do not carefully limit access to tika-server.  If the tika-pipes modules are turned on, anyone with access to your tika-server has the read and write permissions of the tika-server, and they will be able to read data and to forward the parsed results to whatever you've configured (see, for example: <a class="external-link" href="https://en.wikipedia.org/wiki/Server-side_request_forgery" rel="nofollow">https://en.wikipedia.org/wiki/Server-side_request_forgery</a>).  The tika-pipes modules for tika-server are intended to be run in <strong>tightly controlled networks</strong>, e.g. Docker. </p><p><strong>DO NOT</strong> use tika-pipes if your tika-server is exposed to the internet or if you do not carefully restrict access to tika-server.</p><p>Consider adding two-way TLS encryption to your client and server, a beta version of which is available in 2.4.0: <a href="TikaServer_148639291.html#TikaServer-SSL(Beta)">TikaServer#SSL(Beta)</a>.</p><h2 id="tikapipes-Overview">Overview</h2><p>The tika-pipes modules enable <strong>fetching</strong> data from various sources, running the parse and then <strong>emitting</strong> the output to various destinations.  These modules are built around the <a href="RecursiveParserWrapper_181309139.html">RecursiveParserWrapper</a> output model (<code>-J</code> option in <code>tika-app</code> and <code>/rmeta</code> endpoint in <code>tika-server-standard</code>).  Users can specify content format (text/html/body) and set limits (number of embedded files, max content length) via <a href="FetchEmitTuple_181309049.html">FetchEmitTuple</a>s.  Further, users can add <a href="Metadata-Filters_181309141.html">Metadata Filters</a> to select and modify the metadata that is extracted during the parse before emitting the output.</p><p>We need to improve how to add dependencies.  Very few of the fetchers/emitters are embedded in <code>tika-app</code> or <code>tika-server-standard</code>.  For now, users can download required jars from maven central, e.g. the S3Emitter is available: <a class="external-link" href="https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-s3/2.1.0/tika-emitter-s3-2.1.0.jar" rel="nofollow">https://repo1.maven.org/maven2/org/apache/tika/tika-emitter-s3/2.1.0/tika-emitter-s3-2.1.0.jar</a></p><h1 id="tikapipes-examplesIJUSTWANTEXAMPLES.SHOWMETHEEXAMPLES!!!"><span class="confluence-anchor-link" id="tikapipes-examples"></span>I JUST WANT EXAMPLES.  SHOW ME THE EXAMPLES!!!</h1><p>See below (<a href="#tikapipes-tika-app">tika-app</a>) for fully worked examples of using tika-app to fetch from a local file share, parse and send the output to Solr.</p><h1 id="tikapipes-Fetchers">Fetchers</h1><p>Fetchers allow users to specify sources of inputstream+metadata for the parsing process.  Fetchers are currently enabled in all of <code>tika-server-standard</code> and in the async option (<code>-a</code>) in <code>tika-app</code>.</p><p>With the exception of the <code>FileSystemFetcher</code>, users have to add the other fetcher dependencies to their class path.</p><h2 id="tikapipes-FileSystemFetcher">FileSystemFetcher</h2><p>A FileSystemFetcher allows the user to specify a base directory in <code>tika-config.xml</code> and then at parse time, the user specifies the relative path for a file.  This class is included in <code>tika-core</code> and no external resources are required.</p><p>For example, a minimal<code> tika-config.xml</code> file for a FileSystemFetcher would be:</p><pre>&lt;properties&gt;<br/>  &lt;fetchers&gt;<br/>    &lt;fetcher class=&quot;org.apache.tika.pipes.fetcher.fs.FileSystemFetcher&quot;&gt;<br/>      &lt;params&gt;<br/>        &lt;name&gt;fsf&lt;/name&gt;<br/>        &lt;basePath&gt;/my/base/path1&lt;/basePath&gt;<br/>      &lt;/params&gt;<br/>    &lt;/fetcher&gt;<br/>  &lt;/fetchers&gt;<br/>&lt;/properties&gt;</pre><h2 id="tikapipes-HttpFetcher">HttpFetcher</h2><p>The HttpFetcher requires that this dependency be on your class path: <a class="external-link" href="https://mvnrepository.com/artifact/org.apache.tika/tika-fetcher-http" rel="nofollow">https://mvnrepository.com/artifact/org.apache.tika/tika-fetcher-http</a></p><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">HttpFetcher</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default">&lt;properties&gt;
+ &lt;fetchers&gt;
+  &lt;fetcher class="org.apache.tika.pipes.fetcher.http.HttpFetcher"&gt;
+   &lt;params&gt;
+    &lt;name&gt;http&lt;/name&gt;
+	&lt;!-- these are optional; timeouts are all in milliseconds --&gt;
+    &lt;authScheme&gt;&lt;/authScheme&gt;
+    &lt;connectTimeout&gt;30000&lt;/connectTimeout&gt;
+    &lt;ntDomain&gt;&lt;/ntDomain&gt;
+    &lt;password&gt;&lt;/password&gt;
+    &lt;proxyHost&gt;&lt;/proxyHost&gt;
+    &lt;proxyPort&gt;&lt;/proxyPort&gt;
+    &lt;requestTimeout&gt;&lt;/requestTimeout&gt;
+    &lt;socketTimeout&gt;&lt;/socketTimeout&gt;
+    &lt;userName&gt;&lt;/userName&gt;
+   &lt;/params&gt;
+  &lt;/fetcher&gt;
+ &lt;/fetchers&gt;
+&lt;/properties&gt;</pre> 
+ </div>
+</div><p><br/></p><h2 id="tikapipes-S3Fetcher">S3Fetcher</h2><div class="code panel pdl" style="border-width: 1px;">
+ <div class="codeHeader panelHeader pdl hide-border-bottom" style="border-bottom-width: 1px;">
+  <b class="code-title">S3Fetcher</b><span class="collapse-source expand-control" style="display:none;"><span class="expand-control-icon icon">&nbsp;</span><span class="expand-control-text">Развернуть исходный код</span></span><span class="collapse-spinner-wrapper"></span>
+ </div>
+ <div class="codeContent panelContent pdl hide-toolbar"> 
+  <pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default; collapse: true" data-theme="Default">&lt;properties&gt;
+  &lt;fetchers&gt;
+    &lt;fetcher class="org.apache.tika.pipes.fetcher.s3.S3Fetcher"&gt;
+      &lt;params&gt;
+        &lt;name&gt;s3f&lt;/name&gt;
+        &lt;region&gt;us-east-1&lt;/region&gt;
+        &lt;bucket&gt;my-bucket&lt;/bucket&gt;
+  &nbsp; &nbsp; &nbsp; &lt;!-- either use the instance as a credential --&gt;
+        &lt;credentialsProvider&gt;instance&lt;/credentialsProvider&gt;
+        &lt;!-- or use a profile --&gt;
+        &lt;credentialsProvider&gt;profile&lt;/credentialsProvider&gt;
+        &lt;profile&gt;myProfile&lt;/profile&gt;
+        
+        &lt;!-- whether or not to spool the s3 object to a local temp file 
+             before fetching. Default: true --&gt;
+        &lt;spoolToTemp&gt;true&lt;/spoolToTemp&gt;
+
+        &lt;!-- these are all optional --&gt;
+        &lt;!-- if your pipes iterator is working on a list of files under my-prefix --&gt;
+        &lt;prefix&gt;my-prefix&lt;/prefix&gt;
+        &lt;!-- extract the s3 object user metadata and inject it into the Tika metadata --&gt;
+        &lt;extractUserMetadata&gt;false&lt;/extractUserMetadata&gt;
+        &lt;!-- the s3 api sets a fairly low max. If you are running a heavily concurrent application, you
+             may need to bump this. --&gt;
+        &lt;maxConnections&gt;100&lt;/maxConnections&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+  &lt;/fetchers&gt;
+&lt;/properties&gt;</pre> 
+ </div>
+</div><h2 id="tikapipes-GCSFetcher">GCSFetcher</h2><h2 id="tikapipes-SolrFetcher">SolrFetcher</h2><h1 id="tikapipes-Emitters">Emitters</h1><p>The <code>FileSystemEmitter</code> requires the <code>tika-serialization</code> module and is not included in <code>tika-core</code>.  However, it is bundled with <code>tika-app</code> and <code>tika-server-standard</code>. For the other emitters, users have to add the other emitter dependencies to their class path.</p><h2 id="tikapipes-FileSystemEmitter">FileSystemEmitter</h2><p>A <code>FileSystemEmitter</code> allows the user to specify a base directory in <code>tika-config.xml</code> and then at parse time, the user specifies the relative path for the emitted .json file.</p><p>For example, a minimal <code>tika-config.xml</code> file for a <code>FileSystemEmitter</code> would be:</p><pre>&lt;properties&gt;<br/>  &lt;emitters&gt;<br/>    &lt;emitter class=&quot;org.apache.tika.pipes.emitter.fs.FileSystemEmitter&quot;&gt;<br/>      &lt;params&gt;<br/>        &lt;name&gt;fse&lt;/name&gt;<br/>        &lt;basePath&gt;/my/base/extracts&lt;/basePath&gt;<br/>      &lt;/params&gt;<br/>    &lt;/emitter&gt;<br/>  &lt;/emitters&gt;<br/>&lt;/properties&gt;</pre><h2 id="tikapipes-S3Emitter">S3Emitter</h2><h2 id="tikapipes-OpenSearchEmitter">OpenSearchEmitter</h2><h2 id="tikapipes-SolrEmitter">SolrEmitter</h2><h1 id="tikapipes-PipesIterators">PipesIterators</h1><p>tbd</p><h1 id="tikapipes-tika-apptika-appexamples"><span class="confluence-anchor-link" id="tikapipes-tika-app"></span>tika-app examples</h1><h2 id="tikapipes-FromFileSharetoFileShare">From FileShare to FileShare</h2><p>Process all files in a directory recursively and place the .json extracts in a parallel directory structure.</p><p><strong>N.B. </strong>For the logging to work correctly in the async pipes parser, you have to use &gt;= 2.1.0</p><ul><li>Place the tika-app jar and any other dependencies in a <code>bin/</code> directory</li><li>Unzip this file (<a href="attachments/181306665/184617986.tgz" data-linked-resource-id="184617986" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="fs-to-fs-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">fs-to-fs-config.tgz</a>) and place the <code>config/</code> directory at the same level as the <code>bin/</code> directory in the previous step</li><li>Open <code>config/tika-config-fs-to-fs.xml</code> and update the &lt;<code>basePath/&gt;</code> elements in the fetcher and emitter sections to specify the absolute path to the root directory for the binary documents (fetcher) and to the target root directory for the extracts (emitter). Update the <code>&lt;basePath/&gt;</code> element in the <code>pipesiterator</code> section and make sure that it matches what you specified in the<code> fetcher</code> section.</li><li>Commandline:  <code>java -Xmx512m -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-fs-to-fs.xml</code></li></ul><h2 id="tikapipes-FromfilelistonFileSharetoFileShare">From file list on FileShare to FileShare</h2><p>The input is a list of relative paths to files (e.g. <a href="attachments/181306665/184617982.txt" data-linked-resource-id="184617982" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="file-list.txt" data-nice-type="Text File" data-linked-resource-content-type="text/plain" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">file-list.txt</a>) on a file share and the output is .json extract files on a file share. </p><p><strong>N.B. </strong>For the logging to work correctly in the async pipes parser, you have to use &gt;= 2.1.0.</p><ul><li>Place the tika-app jar and any other dependencies in a <code>bin/</code> directory</li><li>Unzip this file (<a href="attachments/181306665/184617983.tgz" data-linked-resource-id="184617983" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="file-list-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">file-list-config.tgz</a>) and place the <code>config/</code> directory at the same level as the <code>bin/</code> directory in the previous step and the same level as the <code>file-list.txt</code></li><li>Open <code>config/tika-config-filelist.xml</code> and update the &lt;<code>basePath/&gt;</code> elements in the fetcher and emitter sections to specify the absolute path to the root directory for the binary documents (fetcher) and to the target root directory for the extracts (emitter).</li><li>Commandline:  <code>java -Xmx512m -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-filelist.xml</code></li></ul><h2 id="tikapipes-FromFilesharetoSolrfs-to-solr">From Fileshare to Solr<span class="confluence-anchor-link" id="tikapipes-fs-to-solr"></span></h2><p>These examples were tested with Solr 8.9.0 on Ubuntu in single core mode (not cloud).  These examples require Tika &gt;= 2.1.0.</p><h3 id="tikapipes-Indexembeddedfilesinaparent-childrelationship">Index embedded files in a parent-child relationship</h3><ul><li>Create collection: <code>bin/solr create -c tika-example &amp;&amp; bin/solr config -c tika-example -p 8983 -action set-user-property -property update.autoCreateFields -value false</code></li><li>Set schema with this file <a href="attachments/181306665/184618355.json" data-linked-resource-id="184618355" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="solr-parent-child-schema.json" data-linked-resource-content-type="application/json" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">solr-parent-child-schema.json</a>: <code>curl -F 'data=@solr-parent-child-schema.json' <a class="external-link" href="http://localhost:8983/solr/tika-example/schema" rel="nofollow">http://localhost:8983/solr/tika-example/schema</a></code></li><li>Put the latest tika app jar and tika-emitter-solr-2.1.0.jar in a <code>bin/</code> directory</li><li>Unzip this config/ directory <a href="attachments/181306665/184618349.tgz" data-linked-resource-id="184618349" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="solr-parent-child-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">solr-parent-child-config.tgz</a> and put it at the same level as the <code>bin/</code> directory</li><li>Open <code>config/tika-config-fs-to-solr.xml</code> and update the <code>&lt;basePath&gt;</code> elements in the fetcher AND the pipesiterator to point to the directory that you want to index</li><li>Run tika:<code> java -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-fs-to-solr.xml</code></li></ul><h3 id="tikapipes-Treateachembeddedfileasaseparatefile">Treat each embedded file as a separate file</h3><ul><li>Create collection: <code>bin/solr create -c tika-example &amp;&amp; bin/solr config -c tika-example -p 8983 -action set-user-property -property update.autoCreateFields -value false</code></li><li>Set schema with this file <a href="attachments/181306665/186876134.json" data-linked-resource-id="186876134" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="solr-separate-docs-schema.json" data-linked-resource-content-type="application/json" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">solr-separate-docs-schema.json</a>: <code>curl -F 'data=@solr-separate-docs-schema.json' <a class="external-link" href="http://localhost:8983/solr/tika-example/schema" rel="nofollow">http://localhost:8983/solr/tika-example/schema</a></code></li><li>Put the latest tika app jar and tika-emitter-solr-2.1.0.jar in a <code>bin/</code> directory</li><li>Unzip this config/ directory <a href="attachments/181306665/184618347.tgz" data-linked-resource-id="184618347" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="solr-separate-docs-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">solr-separate-docs-config.tgz</a> and put it at the same level as the <code>bin/</code> directory</li><li>Open <code>config/tika-config-fs-to-solr.xml</code> and update the <code>&lt;basePath&gt;</code> elements in the fetcher AND the pipesiterator to point to the directory that you want to index</li><li>Run tika:<code> java -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-fs-to-solr.xml</code></li></ul><h3 id="tikapipes-Legacymode,concatenatecontentfromembeddedfiles">Legacy mode, concatenate content from embedded files</h3><ul><li>Create collection: <code>bin/solr create -c tika-example &amp;&amp; bin/solr config -c tika-example -p 8983 -action set-user-property -property update.autoCreateFields -value false</code></li><li>Set schema with this file <a href="attachments/181306665/186876136.json" data-linked-resource-id="186876136" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="solr-concatenate-schema.json" data-linked-resource-content-type="application/json" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">solr-concatenate-schema.json</a>: <code>curl -F 'data=@solr-concatenate-schema.json' <a class="external-link" href="http://localhost:8983/solr/tika-example/schema" rel="nofollow">http://localhost:8983/solr/tika-example/schema</a></code></li><li>Put the latest tika app jar and tika-emitter-solr-2.1.0.jar in a <code>bin/</code> directory</li><li>Unzip this config/ directory <a href="attachments/181306665/184618351.tgz" data-linked-resource-id="184618351" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="solr-concatenate-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">solr-concatenate-config.tgz</a> and put it at the same level as the <code>bin/</code> directory</li><li>Open <code>config/tika-config-fs-to-solr.xml</code> and update the <code>&lt;basePath&gt;</code> elements in the fetcher AND the pipesiterator to point to the directory that you want to index</li><li>Run tika:<code> java -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-fs-to-solr.xml</code></li></ul><h2 id="tikapipes-FromFilesharetoOpenSearchfs-to-opensearch">From Fileshare to OpenSearch<span class="confluence-anchor-link" id="tikapipes-fs-to-opensearch"></span></h2><p>The following require Tika &gt;= 2.1.0. They will not work with the 2.0.0 release.  These examples were tested with OpenSearch 1.0.0 running in docker on an Ubuntu host.</p><h3 id="tikapipes-Indexembeddedfilesinaparent-childrelationship.1">Index embedded files in a parent-child relationship</h3><p>This option requires specification of the parent child relationship in the mappings file.  The parent is currently hardcoded to be <code>container</code>, and the embedded files are <code>embedded</code>.  The OpenSearch emitter flattens relationships so that if there are deeply recursively embedded files, all embedded files are children of the single container/parent file; recursive relationships are not captured in the OpenSearch join relation.  However, the embedded path is stored in the <code>X-TIKA:embedded_resource_path</code> metadata value, and the recursive relations can be reconstructed from that path.</p><ul><li>Place the tika-app jar and the <code>tika-emitter-opensearch-2.1.0.jar</code> in the <code>bin/</code> directory</li><li>Unzip this file <a href="attachments/181306665/184618339.tgz" data-linked-resource-id="184618339" data-linked-resource-version="3" data-linked-resource-type="attachment" data-linked-resource-default-alias="opensearch-parent-child-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">opensearch-parent-child-config.tgz</a> and place the<code> config/</code> directory at the same level as the <code>bin/</code> directory</li><li>Open <code>config/tika-config-fs-to-opensearch.xml</code> and update the <code>&lt;basePath&gt;</code> elements in BOTH the fetcher and the pipesiterator to point to the directory that you want to index</li><li>Curl these mappings <a href="attachments/181306665/184618340.json" data-linked-resource-id="184618340" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="opensearch-parent-child-mappings.json" data-linked-resource-content-type="application/json" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">opensearch-parent-child-mappings.json</a> to OpenSearch: <code>curl -k -T opensearch-mappings.json -u admin:admin -H &quot;Content-Type:application/json&quot; <a class="external-link" href="https://localhost:9200/tika-test" rel="nofollow">https://localhost:9200/tika-test</a></code></li><li>Run tika app: <code>java -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-fs-to-opensearch.xml</code></li></ul><h3 id="tikapipes-Treateachembeddedfileasaseparatefile.1">Treat each embedded file as a separate file</h3><ul><li>Place the tika-app jar and the <code>tika-emitter-opensearch-2.1.0.jar</code> in the <code>bin/</code> directory</li><li>Unzip this file <a href="attachments/181306665/184618339.tgz" data-linked-resource-id="184618339" data-linked-resource-version="3" data-linked-resource-type="attachment" data-linked-resource-default-alias="opensearch-parent-child-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">opensearch-parent-child-config.tgz</a> and place the<code> config/</code> directory at the same level as the <code>bin/</code> directory</li><li>Open <code>config/tika-config-fs-to-opensearch.xml</code> and update the <code>&lt;basePath&gt;</code> elements in the fetcher and the pipesiterator to point to the directory that you want to index</li><li>Curl these mappings <a href="attachments/181306665/184618259.json" data-linked-resource-id="184618259" data-linked-resource-version="3" data-linked-resource-type="attachment" data-linked-resource-default-alias="opensearch-mappings.json" data-linked-resource-content-type="application/json" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">opensearch-mappings.json</a> to OpenSearch: <code>curl -k -I -T opensearch-mappings.json <a class="external-link" href="https://localhost:9200/tika-test" rel="nofollow">https://localhost:9200/tika-test</a> -u admin:admin -H &quot;Content-Type: application/json&quot;</code></li><li>Run tika app: <code>java -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-fs-to-opensearch.xml</code></li></ul><h3 id="tikapipes-Legacymode,concatenatecontentfromembeddedfiles.1">Legacy mode, concatenate content from embedded files</h3><p>This emulates the legacy output from <code>tika-app</code> and the <code>/tika</code> endpoint in<code> tika-server-standard</code>.  Note that this option hides exceptions from embedded files and metadata from embedded files.  The key difference between this config and the &quot;treat each embedded file as a separate file&quot; is the <code>parseMode</code> element in the <code>pipesIterator</code>:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  &lt;pipesIterator class=&quot;org.apache.tika.pipes.pipesiterator.fs.FileSystemPipesIterator&quot;&gt;
+    &lt;params&gt;
+      &lt;parseMode&gt;CONCATENATE&lt;/parseMode&gt;
+  ... </pre>
+</div></div><p><br/></p><ul><li>Place the tika-app jar and the <code>tika-emitter-opensearch-2.1.0.jar</code> in the <code>bin/</code> directory</li><li>Unzip this file  <a href="attachments/181306665/184618338.tgz" data-linked-resource-id="184618338" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="opensearch-concatenate-config.tgz" data-linked-resource-content-type="application/x-compressed-tar" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">opensearch-concatenate-config.tgz</a>and place the<code> config/</code> directory at the same level as the <code>bin/</code> directory</li><li>Open <code>config/tika-config-fs-to-opensearch.xml</code> and update the <code>&lt;basePath&gt;</code> elements in the fetcher and the pipesiterator to point to the directory that you want to index</li><li>Curl these mappings <a href="attachments/181306665/184618259.json" data-linked-resource-id="184618259" data-linked-resource-version="3" data-linked-resource-type="attachment" data-linked-resource-default-alias="opensearch-mappings.json" data-linked-resource-content-type="application/json" data-linked-resource-container-id="181306665" data-linked-resource-container-version="49">opensearch-mappings.json</a> to OpenSearch: <code>curl -k -T opensearch-mappings.json -u admin:admin -H &quot;Content-Type:application/json&quot; <a class="external-link" href="https://localhost:9200/tika-test" rel="nofollow">https://localhost:9200/tika-test</a></code></li><li>Run tika app: <code>java -cp &quot;bin/*&quot; org.apache.tika.cli.TikaCLI -a --config=config/tika-config-fs-to-opensearch.xml</code></li></ul><h1 id="tikapipes-tika-server">tika-server</h1><h2 id="tikapipes-FetchersInClassicServerEndpointsFetchersintheclassictika-serverendpoints"><span class="confluence-anchor-link" id="tikapipes-FetchersInClassicServerEndpoints"></span>Fetchers in the classic tika-server endpoints</h2><p>For the classic tika-server endpoints (<code>/rmeta, /tika, /unpack, /meta</code>), users specify <code>fetcherName</code> and <code>fetchKey</code> in the headers.  This replaces <code>enableFileUrl</code> from tika-1.x. Note that <code>enableUnsecureFeatures</code> must still be set via the tika-config.xml:</p><p><br/></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;fetchers&gt;
+    &lt;fetcher class=&quot;org.apache.tika.pipes.fetcher.fs.FileSystemFetcher&quot;&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/my/base/path1&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+  &lt;/fetchers&gt;
+&lt;server&gt;
+  &lt;params&gt;
+    &lt;enableUnsecureFeatures&gt;true&lt;/enableUnsecureFeatures&gt;
+  &lt;params&gt;
+&lt;/server&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/>To parse<code> /my/base/path1/path2/myfile.pdf:</code></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -X PUT http://localhost:9998/tika --header &quot;fetcherName: fsf&quot; --header &quot;fetchKey: path2/myfile.pdf&quot;</pre>
+</div></div><p class="auto-cursor-target">If your file path has non-ASCII characters, you should specify the fetcherName and the fetchKey as query parameters in the request instead of in the headers:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -X PUT &#39;http://tika:9998/rmeta/text?fetcherName=fsf&amp;fetchKey=中文.txt&#39; 
+curl -X PUT &#39;http://tika:9998/rmeta/text?fetcherName=fsf&amp;fetchKey=%E4%B8%AD%E6%96%87.txt&#39;</pre>
+</div></div><p><br/></p><h2 id="tikapipes-The/pipesendpoint">The <code>/pipes</code> endpoint</h2><p>This endpoint requires that at least one fetcher and one emitter be specified in the config file and that <code>enableUnsecureFeatures</code> be set to true. In the following example, we have source documents in <code>/my/base/path1</code>, and we want to write extracts to <code>/my/base/extracts</code>. Unlike with the classic endpoints, users send a json FetchEmitTuple to tika-server. For full documentation of this object see: <a href="FetchEmitTuple_181309049.html">FetchEmitTuple</a></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;fetchers&gt;
+    &lt;fetcher class=&quot;org.apache.tika.pipes.fetcher.fs.FileSystemFetcher&quot;&gt;
+      &lt;params&gt;
+        &lt;name&gt;fsf&lt;/name&gt;
+        &lt;basePath&gt;/my/base/path1&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/fetcher&gt;
+  &lt;/fetchers&gt;
+  &lt;emitters&gt;
+    &lt;emitter class=&quot;org.apache.tika.pipes.emitter.fs.FileSystemEmitter&quot;&gt;
+      &lt;params&gt;
+        &lt;name&gt;fse&lt;/name&gt;
+        &lt;basePath&gt;/my/base/extracts&lt;/basePath&gt;
+      &lt;/params&gt;
+    &lt;/emitter&gt;
+  &lt;/emitters&gt;
+  &lt;server&gt;
+    &lt;params&gt;
+      &lt;enableUnsecureFeatures&gt;true&lt;/enableUnsecureFeatures&gt;
+    &lt;/params&gt;
+  &lt;/server&gt;
+  &lt;pipes&gt;
+    &lt;params&gt;
+      &lt;tikaConfig&gt;/path/to/tika-config.xml&lt;/tikaConfig&gt;
+    &lt;params&gt;
+  &lt;/pipes&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><p>To parse<code> /my/base/path1/path2/myfile.pdf:</code></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{&quot;fetcher&quot;:&quot;fsf&quot;,&quot;fetchKey&quot;:&quot;path2/myfile.pdf&quot;,&quot;emitter&quot;:&quot;fse&quot;,&quot;emitKey&quot;:&quot;path2/myfile.pdf&quot;}&#39; http://localhost:9998/pipes</pre>
+</div></div><p>Note, by default, the <code>FileSystemEmitter</code> automatically adds &quot;.json&quot; to the end of the <code>emitKey</code>.</p><h2 id="tikapipes-The/asyncendpoint">The <code>/async</code> endpoint</h2><p>The only difference in the /async handler is that you send a list of <code>FetchEmitTuples</code>:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -X POST -H &quot;Content-Type: application/json&quot; -d &#39;[{&quot;fetcher&quot;:&quot;fsf&quot;,&quot;fetchKey&quot;:&quot;path2/myfile.pdf&quot;,&quot;emitter&quot;:&quot;fse&quot;,&quot;emitKey&quot;:&quot;path2/myfile.pdf&quot;}]&#39; http://localhost:9998/async
+</pre>
+</div></div><h2 class="auto-cursor-target" id="tikapipes-ModifyingDockertousethepipesmodules">Modifying Docker to use the pipes modules</h2><p class="auto-cursor-target">For examples of how to load the pipes modules with Docker see: <a href="tika-pipes-and-Docker_186877907.html">tika-pipes and Docker</a>.</p><p><br/></p>
+                    </div>
+
+                                                            <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/181306667.xml">tika-async-example.xml</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/181306669.tgz">tika-integration-example.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/181306678.properties">log4j2.properties</a> (text/plain)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184617982.txt">file-list.txt</a> (text/plain)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184617988.tgz">file-list-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184617986.tgz">fs-to-fs-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184617983.tgz">file-list-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618258.tgz">opensearch-separate-docs-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876227.json">opensearch-mappings.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876229.tgz">opensearch-concatenate-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876221.tgz">opensearch-parent-child-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876222.json">opensearch-parent-child-mappings.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618346.json">solr-schema.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876135.tgz">solr-separate-docs-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618348.xml">solr-parent-child-schema.xml</a> (text/xml)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876131.tgz">solr-parent-child-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876137.tgz">solr-concatenate-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876130.json">solr-parent-child-schema.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618355.json">solr-parent-child-schema.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618349.tgz">solr-parent-child-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876134.json">solr-separate-docs-schema.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618347.tgz">solr-separate-docs-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876136.json">solr-concatenate-schema.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618351.tgz">solr-concatenate-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876226.tgz">opensearch-parent-child-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618340.json">opensearch-parent-child-mappings.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618339.tgz">opensearch-parent-child-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/186876230.json">opensearch-mappings.json</a> (application/json)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618338.tgz">opensearch-concatenate-config.tgz</a> (application/x-compressed-tar)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/181306665/184618259.json">opensearch-mappings.json</a> (application/json)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

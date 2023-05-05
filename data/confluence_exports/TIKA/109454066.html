@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : PDFParser (Apache PDFBox)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : PDFParser (Apache PDFBox)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Tim Allison</span> on фев 15, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="PDFParser(ApachePDFBox)-PDFParser">PDFParser</h1><h2 id="PDFParser(ApachePDFBox)-Configurationoptions">Configuration options</h2><p>There are three ways of configuring the PDFParser.</p><ol><li>Programmatically via setter methods on the PDFParser.</li><li>Programmatically via the PDFParserConfig object submitted through the <code>ParseContext</code>.</li><li>Via the tika-config.xml file (many thanks to Thamme Gowda and Chris Mattmann's work on TIKA-1508).</li></ol><p>The first two are fairly self-explanatory through the javadocs.</p><p>In the following, we document all of the parameters for the PDFParser in Tika 2.x. You only need to specify the parameters you want to change.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>PDFParser Configuration</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;properties&gt;
+  &lt;parsers&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;&gt;
+      &lt;!-- this is not formally necessary, but prevents loading of unnecessary parser --&gt;
+      &lt;parser-exclude class=&quot;org.apache.tika.parser.pdf.PDFParser&quot;/&gt;
+    &lt;/parser&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.pdf.PDFParser&quot;&gt;
+      &lt;params&gt;
+       &lt;!-- these are the defaults; you only need to specify the ones you want 
+            to modify --&gt;
+        &lt;param name=&quot;allowExtractionForAccessibility&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+        &lt;param name=&quot;averageCharTolerance&quot; type=&quot;float&quot;&gt;0.3&lt;/param&gt;
+        &lt;param name=&quot;detectAngles&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;extractAcroFormContent&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+        &lt;param name=&quot;extractActions&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;catchIntermediateIOExceptions&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+        &lt;param name=&quot;dropThreshold&quot; type=&quot;float&quot;&gt;2.5&lt;/param&gt;
+        &lt;param name=&quot;enableAutoSpace&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+        &lt;param name=&quot;extractAnnotationText&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;extractBookMarksText&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+        &lt;param name=&quot;extractFontNames&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;extractInlineImages&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;extractUniqueInlineImagesOnly&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+        &lt;param name=&quot;ifXFAExtractOnlyXFA&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;maxMainMemoryBytes&quot; type=&quot;long&quot;&gt;-1&lt;/param&gt;
+        &lt;param name=&quot;ocrDPI&quot; type=&quot;int&quot;&gt;300&lt;/param&gt;
+        &lt;param name=&quot;ocrImageFormatName&quot; type=&quot;string&quot;&gt;png&lt;/param&gt;
+        &lt;param name=&quot;ocrImageQuality&quot; type=&quot;float&quot;&gt;1.0&lt;/param&gt;
+        &lt;param name=&quot;ocrRenderingStrategy&quot; type=&quot;string&quot;&gt;ALL&lt;/param&gt;
+        &lt;param name=&quot;ocrStrategy&quot; type=&quot;string&quot;&gt;auto&lt;/param&gt;
+        &lt;param name=&quot;ocrStrategyAuto&quot; type=&quot;string&quot;&gt;better&lt;/param&gt;
+        &lt;param name=&quot;ocrImageType&quot; type=&quot;string&quot;&gt;gray&lt;/param&gt;
+        &lt;param name=&quot;setKCMS&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;sortByPosition&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt;
+        &lt;param name=&quot;spacingTolerance&quot; type=&quot;float&quot;&gt;0.5&lt;/param&gt;
+        &lt;param name=&quot;suppressDuplicateOverlappingText&quot; type=&quot;bool&quot;&gt;false&lt;/param&gt; 
+      &lt;/params&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;
+&lt;/properties&gt;</pre>
+</div></div><h2 id="PDFParser(ApachePDFBox)-OptionalDependencies">Optional Dependencies</h2><p>If you need to process TIFF or JPEG2000 images within PDFs (either for inline image extraction or OCR), please consider adding the optional dependencies specified by <a class="external-link" href="https://pdfbox.apache.org/2.0/dependencies.html#optional-components" rel="nofollow">PDFBox</a>. These dependencies are not compatible with ASL 2.0; please make sure that any third party licenses are suitable for your project.</p><p>Finally, <a class="external-link" href="https://twitter.com/mcaruanagalizia/status/796097425446490114" rel="nofollow">M. Caruana Galizia</a> alerted us to the need to use maven-shade's <code>ServicesResourceTransformer</code> because the third-party dependencies' services file will be overwritten unless you transform the services. See an example: <a class="external-link" href="https://github.com/ICIJ/extract/blob/master/pom.xml" rel="nofollow">here</a>.</p><h1 id="PDFParser(ApachePDFBox)-OCR#PDFParser(ApachePDFBox)-OCR"><a href="#PDFParser(ApachePDFBox)-OCR">OCR</a></h1><p>Note: the configuration of some of these features via the config file requires a nightly build of Tika after 11/8/2016 or Tika version &gt;= 1.15.</p><p>Start with the instructions on <a class="external-link" href="https://wiki.apache.org/tika/TikaOCR" rel="nofollow">TikaOCR</a>. In short, you need to have Tesseract installed.</p><p>There are two ways of running OCR on PDFs:</p><ol><li>Extracting the inline images and letting Tesseract run on each inline image.</li><li>Rendering each PDF page as a single image and running Tesseract on that single image.</li></ol><p>We have not carried out evaluations to determine which strategy is better. We suspect that the tried and true <em>It Depends(TM)</em> is operative here. We added OCR'ing of the single image option because some PDFs can contain hundreds of images per page where each image is a tiny part of the overall page, and OCR would be useless. However, we recognize, that if the page is logically broken into sections, running OCR on the individual inline images might yield better results.</p><p>Note: These two options are independent.  If you set <code>extractInlineImages</code> to true and select an <code>OcrStrategy</code> that includes OCR on the rendered page, Tika will run OCR on the extracted inline images <em>and</em>  the rendered page. </p><h3 id="PDFParser(ApachePDFBox)-Option1:ConfiguringOCRonInlineImages">Option 1: Configuring OCR on Inline Images</h3><p>This will extract inline images as if they were attachments, and then, if Tesseract is correctly configured, it should run against the images. Note: by default, extracting inline images is turned off because some rare PDFs contain thousands of inline images per page, and it has a big hit on performance, both memory usage and time.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>...
+        &lt;parser class=&quot;org.apache.tika.parser.pdf.PDFParser&quot;&gt;
+            &lt;params&gt;
+                &lt;param name=&quot;extractInlineImages&quot; type=&quot;bool&quot;&gt;true&lt;/param&gt;
+            &lt;/params&gt;
+        &lt;/parser
+...
+</pre>
+</div></div><h3 id="PDFParser(ApachePDFBox)-Option2:ConfiguringOCRonRenderedPages">Option 2: Configuring OCR on Rendered Pages</h3><p>This will render each PDF page and then run OCR on that image. This method of OCR is triggered by the <code>ocrStrategy</code> parameter, but users can manipulate other parameters, including the <code>image type</code> (see <code>org.apache.pdfbox.rendering.ImageType</code> for options) and the dots per inch <code>dpi</code>. The defaults are: <code>gray</code> and <code>300</code> respectively. For <code>ocrStrategy</code>, we currently have: <code>no_ocr</code> (rely on regular text extraction only), <code>ocr_only</code> (don't bother extracting text, just run OCR on each page), <code>ocr_and_text</code> (both extract text and run OCR) and (as of Tika 1.21) <code>auto</code> (try to extract text, but run OCR if fewer than 10 characters were extracted of if there are more than 10 characters with unmapped Unicode values). </p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>...
+        &lt;parser class=&quot;org.apache.tika.parser.pdf.PDFParser&quot;&gt;
+            &lt;params&gt;
+                &lt;param name=&quot;ocrStrategy&quot; type=&quot;string&quot;&gt;ocr_only&lt;/param&gt;
+                &lt;param name=&quot;ocrImageType&quot; type=&quot;string&quot;&gt;rgb&lt;/param&gt;
+                &lt;param name=&quot;ocrDPI&quot; type=&quot;int&quot;&gt;100&lt;/param&gt;
+            &lt;/params&gt;
+        &lt;/parser&gt;
+...
+</pre>
+</div></div><h3 id="PDFParser(ApachePDFBox)-SettingParseTime/PerFileconfigurationsviatika-server">Setting Parse Time/Per File configurations via tika-server</h3><p>See: <a href="Configuring-Parsers-At-Parse-Time-in-tika-server_240883999.html">Configuring Parsers At Parse Time in tika-server</a>.</p><h3 id="PDFParser(ApachePDFBox)-OptionalDependencies.1">Optional Dependencies</h3><p>Note, you should include the following dependency to process JBIG2 images:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.pdfbox&lt;/groupId&gt;
+        &lt;artifactId&gt;jbig2-imageio&lt;/artifactId&gt;
+        &lt;version&gt;3.0.2&lt;/version&gt;
+    &lt;/dependency&gt;
+</pre>
+</div></div><p>Note, <strong>if their licenses are compatible with your application</strong>, you may want to include the following jai libraries in your classpath to handle jp2, jpeg2000 and tiff files. <strong>The licenses are not Apache 2.0 compatible!</strong></p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;dependency&gt;
+        &lt;groupId&gt;com.github.jai-imageio&lt;/groupId&gt;
+        &lt;artifactId&gt;jai-imageio-core&lt;/artifactId&gt;
+        &lt;version&gt;1.4.0&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.github.jai-imageio&lt;/groupId&gt;
+        &lt;artifactId&gt;jai-imageio-jpeg2000&lt;/artifactId&gt;
+        &lt;version&gt;1.3.0&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+</pre>
+</div></div><p>If you are using Java 8, make sure to see <a class="external-link" href="https://pdfbox.apache.org/2.0/migration.html#pdf-rendering" rel="nofollow">pdf-rendering</a> for JVM settings that may improve the speed of processing.</p><h2 id="PDFParser(ApachePDFBox)-CommonTextExtractionChallengeswithPDFs">Common Text Extraction Challenges with PDFs</h2><p>This is mostly a stub. The focus of this section is on extracting electronic text from the PDF with no OCR.</p><p>One could write several volumes on how text extraction from PDFs could go wrong. It would only be poetic justice for said author to print out those volumes, pour coffee on the paper, scan them in as PDFs on different scanners, some with OCR, some without, at different angles of rotation with user-defined fonts randomly deleted.</p><p>High level preliminaries:</p><p>0. Your matrix algebra (or, your tool's matrix algebra) has to be moderately advanced to do text extraction well.</p><ol><li>The PDF format is display-based not text-based<ol><li>One major goal is to display the same content on different devices b. A PDF may be image-only and contain no actual electronic text c. When there is electronic text, there may be no space characters stored in the text, rather spaces may appear in the rendering of the image via specific coordinates for the characters. <br class="atl-forced-newline"/>2. The PDF format is page-based</li></ol></li></ol><h3 id="PDFParser(ApachePDFBox)-TablesAren&#39;tExtractedasTables">Tables Aren't Extracted as Tables</h3><p>Right. In PDF/UA (Universal Accessibility) tables can be stored with structural markup.  As of Tika 1.24, you can set &quot;extractMarkedContent&quot; = &quot;true&quot; via the PDFParserConfig, and Tika will extracted marked content, including tables, if the PDF was generated with marked content. </p><p>In many PDFs, tables are often not stored as tables. A human is easily able to see tables, but all that is stored in the PDF is text chunks and coordinates on a page (if there's any text at all). One needs to apply some advanced computation to extract table structure from a PDF. Tika does not currently do this. Please see <a class="external-link" href="http://tabula.technology/" rel="nofollow">TabulaPDF</a> as one open source project that extracts tables from PDFs and maintains their structure. </p><p>Note that as of 2023, we still see papers at research conferences on extracting structural elements (including tables) from PDFs – THIS IS NOT A SOLVED PROBLEM.  And, humorously, this kind of task is sometimes called &quot;PDF remediation&quot;.</p><h3 id="PDFParser(ApachePDFBox)-NoText">No Text</h3><h3 id="PDFParser(ApachePDFBox)-MildlyGarbledText">Mildly Garbled Text</h3><h3 id="PDFParser(ApachePDFBox)-CompletelyGarbledText">Completely Garbled Text</h3><h3 id="PDFParser(ApachePDFBox)-Nospaces/Extraspaces">No spaces/Extra spaces</h3><p>See 1c. above. Depending on how the PDF was generated, it is possible that it doesn't store actual space characters. Rather software has to use coordinates on the page plus matrix algebra plus font information about the width of characters to &quot;impute&quot; where spaces would be. The math is the simple part; sometimes there can be missing or wrong font information that can lead to no spaces or extra spaces.</p><h3 id="PDFParser(ApachePDFBox)-Word/Linebreaksinthemiddleofmytext?!">Word/Line breaks in the middle of my text ?!</h3><h3 id="PDFParser(ApachePDFBox)-CharacterEncoding/UnicodeMappings">Character Encoding/Unicode Mappings</h3><p>See also <a class="external-link" href="https://wiki.apache.org/tika/Troubleshooting%20Tika#PDF_Text_Problems" rel="nofollow">diagnosing PDF text problems</a>.</p><h2 id="PDFParser(ApachePDFBox)-Seealso">See also</h2><p>Upgrading to <a class="unresolved" href="#">PDFBox 2.x</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

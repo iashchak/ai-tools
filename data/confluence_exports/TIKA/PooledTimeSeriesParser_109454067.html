@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : PooledTimeSeriesParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : PooledTimeSeriesParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The <a class="external-link" href="http://arxiv.org/abs/1412.6505" rel="nofollow">Pooled Time Series algorithm</a> was developed by <a class="external-link" href="http://michaelryoo.com/jpl-interaction.html" rel="nofollow">Michael Ryoo</a> and it allows for video descriptors to be considered over time and in this consideration for videos to be compared based on the activity going on in their scenes. In short, Pooled Time Series is a video comparison metric. An ALv2 licensed version of the  <a class="external-link" href="https://github.com/chrismattmann/pooled_time_series" rel="nofollow">Pooled Time Series code</a> is available for use in computing Histogram of Oriented Gradients (HOG) and Histogram of Optical Flows (HOF) which can be useful extracted data and metadata for a Tika Parser.</p>
+
+<h1 id="PooledTimeSeriesParser-MetadataRepresentation">Metadata Representation</h1>
+
+<p>The ultimate goal of the project is to be able to extract metadata and data from videos and to index that information inside of a searh engine like Apache Solr. Videos, like images, are just numbers - or a ordered sequence of number - or matrices. There are many ways in which these numbers can be defined. Some popular visual descriptors are Histogram of Gradients, Optical Flow vectors, RGB or Color Histograms. The challenge is to figure out a way to map this datatype to a datatype that can be understood by Solr. In the case of color based histograms, we can convert the image into a matrix of hex values, where each hex value is the pixel color value and index that as a text_ws field in Solr.</p>
+
+<h1 id="PooledTimeSeriesParser-SomeRelatedEfforts">Some Related Efforts</h1>
+
+<p><a class="unresolved" href="#">ShutterStock</a> developed an <a class="external-link" href="https://lucidworks.com/blog/shutterstock-searches-35-million-images-color-using-apache-solr/" rel="nofollow">image search tool</a> using a similar approach.</p>
+
+<h1 id="PooledTimeSeriesParser-Representationofoutputdata">Representation of output data</h1>
+
+<p>The data output from the Pooled Time Series parser is an XHTML document of table values, where each &lt;tr&gt;..&lt;/tr&gt; would be a row of the feature matrix and &lt;td&gt; would be the corresponding element in that column. When using a search engine like Apache Solr to do ranking or querying we can to compute a distance function on these values (for the dataset and the query video), such as Chi-Squared, which is what the pooled time series algorithm does.</p>
+
+<p>A Tika Parser has been developed that implements the Pooled Time Series algorithm above and that outputs the HOF and HOG data from videos for use in later processing and indexing. Read on below to install and use it!</p>
+
+<h1 id="PooledTimeSeriesParser-Pre-requisites">Pre-requisites</h1>
+
+<h2 id="PooledTimeSeriesParser-InstallPooledTimeSeries">Install Pooled Time Series</h2>
+
+<ol>
+	<li><code>mkdir -p $HOME/git &amp;&amp; cd $HOME/git &amp;&amp; git clone <a class="external-link" href="https://github.com/USCDataScience/hadoop-pot.git" rel="nofollow">https://github.com/USCDataScience/hadoop-pot.git</a></code> 2. <code>cd hadoop-pot/hadoop-pot-assembly &amp;&amp; mvn install assembly:assembly</code> 3. Follow steps 3, 4 and 5 from <a class="external-link" href="https://github.com/USCDataScience/hadoop-pot#getting-started" rel="nofollow">the install guide from Pooled Time  Series</a> and confirm that <code>pooled_time_series</code> installed correctly. Note the <a class="external-link" href="https://github.com/USCDataScience/hadoop-pot#pre-requisites" rel="nofollow">pre-requisites from Pooled Time Series</a> require you to install OpenCV and set some environment variables.</li>
+</ol>
+
+
+<p>After above steps you must be able to execute <code>pooled_time_series</code> through terminal and get below output</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>usage: pooled_time_series
+ -d,--dir &lt;directory&gt;            A directory with image files in it
+ -f,--file &lt;file&gt;                Path to a single file
+ -h,--help                       Print this message.
+ -j,--json                       Set similarity output format to JSON.
+                                 Defaults to .txt
+ -o,--outputfile &lt;output file&gt;   File containing similarity results.
+                                 Defaults to ./similarity.txt
+ -p,--pathfile &lt;path file&gt;       A file containing full absolute paths to
+                                 videos. Previous default was
+                                 memex-index_temp.txt
+</pre>
+</div></div>
+<h2 id="PooledTimeSeriesParser-RunParserfromTika-App">Run <a class="unresolved" href="#">PooledTimeSeries</a> Parser from Tika-App</h2>
+
+<p>Grab an MP4, <a class="unresolved" href="#">QuickTime</a>, or other video (supported by your OpenCV implementation). Then run the following command:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -classpath tika-app/target/tika-app-X.Y.jar org.apache.tika.cli.TikaCLI --config=$HOME/git/pooled_time_series/src/main/resources/tika-config.xml -J yourfile.mov
+</pre>
+</div></div>
+
+<p>which should output something like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+    {
+        &quot;Content-Length&quot;: &quot;1926487&quot;,
+        &quot;Content-Type&quot;: &quot;video/quicktime&quot;,
+        &quot;X-Parsed-By&quot;: [
+            &quot;org.apache.tika.parser.CompositeParser&quot;,
+            &quot;org.apache.tika.parser.pot.PooledTimeSeriesParser&quot;
+        ],
+        &quot;X-TIKA:content&quot;: &quot;&lt;html xmlns=\&quot;http://www.w3.org/1999/xhtml\&quot;&gt;\n&lt;head&gt;\n&lt;meta name=\&quot;of_frames\&quot; content=\&quot;358\&quot; /&gt;\n&lt;meta name=\&quot;Content-Length\&quot; content=\&quot;1926487\&quot; /&gt;\n&lt;meta name=\&quot;of_vecSize\&quot; content=\&quot;200\&quot; /&gt;\n&lt;meta name=\&quot;og_frames\&quot; content=\&quot;358\&quot; /&gt;\n&lt;meta name=\&quot;X-Parsed-By\&quot; content=\&quot;org.apache.tika.parser.CompositeParser\&quot; /&gt;\n&lt;meta name=\&quot;X-Parsed-By\&quot; content=\&quot;org.apache.tika.parser.pot.PooledTimeSeriesParser\&quot; /&gt;\n&lt;meta name=\&quot;Content-Type\&quot; content=\&quot;video/quicktime\&quot; /&gt;\n&lt;meta name=\&quot;resourceName\&quot; content=\&quot;yourfile.mov\&quot; /&gt;\n&lt;meta name=\&quot;og_vecSize\&quot; content=\&quot;200\&quot; /&gt;\n&lt;title&gt;&lt;/title&gt;\n&lt;/head&gt;\n&lt;body&gt;&lt;h3&gt;Histogram of Optical Flows (HOF)&lt;/h3&gt;\n&lt;table =\&quot;358\&quot; =\&quot;200\&quot;&gt;&lt;tr&gt;\t&lt;td&gt;0&lt;/td&gt;\t&lt;td&gt;106.000000&lt;/td&gt;\t&lt;td&gt;77.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;95.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;13.000000&lt;/td&gt;\t&lt;td&gt;92.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;102.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;65.000000&lt;/td&gt;\t&lt;td&gt;20.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;5.000000&lt;/td&gt;\t&lt;td&gt;92.000000&lt;/td&gt;\t&lt;td&gt;6.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;6.000000&lt;/td&gt;\t&lt;td&gt;14.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;5.000000&lt;/td&gt;\t&lt;td&gt;12.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;\t&lt;td&gt;46.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;\t&lt;td&gt;26.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;4.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;78.000000&lt;/td&gt;\t&lt;td&gt;30.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;13.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;&lt;/tr&gt;\n&lt;tr&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;40.000000&lt;/td&gt;\t&lt;td&gt;9.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;19.000000&lt;/td&gt;\t&lt;td&gt;17.000000&lt;/td&gt;\t&lt;td&gt;15.000000&lt;/td&gt;\t&lt;td&gt;18.000000&lt;/td&gt;\t&lt;td&gt;4.000000&lt;/td&gt;\t&lt;td&gt;14.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;4.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;12.000000&lt;/td&gt;\t&lt;td&gt;35.000000&lt;/td&gt;\t&lt;td&gt;18.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;7.000000&lt;/td&gt;\t&lt;td&gt;36.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;11.000000&lt;/td&gt;\t&lt;td&gt;4.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;14.000000&lt;/td&gt;\t&lt;td&gt;98.872983&lt;/td&gt;\t&lt;td&gt;58.159994&lt;/td&gt;\t&lt;td&gt;55.624418&lt;/td&gt;\t&lt;td&gt;109.918199&lt;/td&gt;\t&lt;td&gt;154.628142&lt;/td&gt;\t&lt;td&gt;274.379973&lt;/td&gt;\t&lt;td&gt;260.610341&lt;/td&gt;\t&lt;td&gt;216.563245&lt;/td&gt;\t&lt;td&gt;161.240045&lt;/td&gt;\t&lt;td&gt;110.679989&lt;/td&gt;\t&lt;td&gt;101.618012&lt;/td&gt;\t&lt;td&gt;179.517287&lt;/td&gt;\t&lt;td&gt;242.615251&lt;/td&gt;\t&lt;td&gt;135.289986&lt;/td&gt;\t&lt;td&gt;131.035653&lt;/td&gt;\t&lt;td&gt;120.141349&lt;/td&gt;\t&lt;td&gt;108.120592&lt;/td&gt;\t&lt;td&gt;110.649989&lt;/td&gt;\t&lt;td&gt;109.483038&lt;/td&gt;\t&lt;td&gt;121.264360&lt;/td&gt;\t&lt;td&gt;129.601505&lt;/td&gt;&lt;/tr&gt;\n&lt;/table&gt;\n&lt;/body&gt;&lt;/html&gt;&quot;,
+        &quot;X-TIKA:parse_time_millis&quot;: &quot;32054&quot;,
+        &quot;of_frames&quot;: &quot;358&quot;,
+        &quot;of_vecSize&quot;: &quot;200&quot;,
+        &quot;og_frames&quot;: &quot;358&quot;,
+        &quot;og_vecSize&quot;: &quot;200&quot;,
+        &quot;resourceName&quot;: &quot;yourfile.mov&quot;
+    }
+]
+
+</pre>
+</div></div>
+
+<h2 id="PooledTimeSeriesParser-WillthisworkfromTikaServer?">Will this work from Tika Server?</h2>
+
+<p>Yes, it will! Start Tika server like so:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -jar tika-server/target/tika-server-X.Y.jar --config=$HOME/git/pooled_time_series/src/main/resources/tika-config.xml
+</pre>
+</div></div>
+
+<p>Then send your movie file to Tika server like so:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T yourfile.mov http://localhost:9998/rmeta
+</pre>
+</div></div>
+
+<p>which should produce in response:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+    {
+        &quot;Content-Type&quot;: &quot;video/quicktime&quot;,
+        &quot;X-Parsed-By&quot;: [
+            &quot;org.apache.tika.parser.CompositeParser&quot;,
+            &quot;org.apache.tika.parser.pot.PooledTimeSeriesParser&quot;
+        ],
+        &quot;X-TIKA:content&quot;: &quot;&lt;html xmlns=\&quot;http://www.w3.org/1999/xhtml\&quot;&gt;\n&lt;head&gt;\n&lt;meta name=\&quot;of_frames\&quot; content=\&quot;358\&quot; /&gt;\n&lt;meta name=\&quot;of_vecSize\&quot; content=\&quot;200\&quot; /&gt;\n&lt;meta name=\&quot;og_frames\&quot; content=\&quot;358\&quot; /&gt;\n&lt;meta name=\&quot;X-Parsed-By\&quot; content=\&quot;org.apache.tika.parser.CompositeParser\&quot; /&gt;\n&lt;meta name=\&quot;X-Parsed-By\&quot; content=\&quot;org.apache.tika.parser.pot.PooledTimeSeriesParser\&quot; /&gt;\n&lt;meta name=\&quot;Content-Type\&quot; content=\&quot;video/quicktime\&quot; /&gt;\n&lt;meta name=\&quot;og_vecSize\&quot; content=\&quot;200\&quot; /&gt;\n&lt;title&gt;&lt;/title&gt;\n&lt;/head&gt;\n&lt;body&gt;&lt;h3&gt;Histogram of Optical Flows (HOF)&lt;/h3&gt;\n&lt;table =\&quot;358\&quot; =\&quot;200\&quot;&gt;&lt;tr&gt;\t&lt;td&gt;0&lt;/td&gt;\t&lt;td&gt;106.000000&lt;/td&gt;\t&lt;td&gt;77.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;95.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;13.000000&lt;/td&gt;\t&lt;td&gt;92.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;102.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;65.000000&lt;/td&gt;\t&lt;td&gt;20.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;5.000000&lt;/td&gt;\t&lt;td&gt;92.000000&lt;/td&gt;\t&lt;td&gt;6.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;6.000000&lt;/td&gt;\t&lt;td&gt;14.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;5.000000&lt;/td&gt;\t&lt;td&gt;12.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;\t&lt;td&gt;46.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;\t&lt;td&gt;26.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;4.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;78.000000&lt;/td&gt;\t&lt;td&gt;30.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;13.000000&lt;/td&gt;\t&lt;td&gt;1.000000&lt;/td&gt;\t&lt;td&gt;2.000000&lt;/td&gt;&lt;/tr&gt;\n&lt;tr&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;3.000000&lt;/td&gt;\t&lt;td&gt;40.000000&lt;/td&gt;\t&lt;td&gt;9.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;0.000000&lt;/td&gt;\t&lt;td&gt;245.873308&lt;/td&gt;\t&lt;td&gt;153.544600&lt;/td&gt;\t&lt;td&gt;103.059990&lt;/td&gt;\t&lt;td&gt;162.541708&lt;/td&gt;\t&lt;td&gt;252.468921&lt;/td&gt;\t&lt;td&gt;319.609416&lt;/td&gt;\t&lt;td&gt;292.059971&lt;/td&gt;\t&lt;td&gt;274.583075&lt;/td&gt;\t&lt;td&gt;228.970014&lt;/td&gt;\t&lt;td&gt;164.473069&lt;/td&gt;\t&lt;td&gt;108.219989&lt;/td&gt;\t&lt;td&gt;146.701403&lt;/td&gt;\t&lt;td&gt;219.940923&lt;/td&gt;\t&lt;td&gt;271.829481&lt;/td&gt;\t&lt;td&gt;268.119973&lt;/td&gt;\t&lt;td&gt;239.719107&lt;/td&gt;\t&lt;td&gt;189.607921&lt;/td&gt;\t&lt;td&gt;144.830008&lt;/td&gt;\t&lt;td&gt;121.639988&lt;/td&gt;\t&lt;td&gt;152.505474&lt;/td&gt;\t&lt;td&gt;213.557055&lt;/td&gt;\t&lt;td&gt;255.007528&lt;/td&gt;\t&lt;td&gt;70.309993&lt;/td&gt;\t&lt;td&gt;65.385228&lt;/td&gt;\t&lt;td&gt;70.524468&lt;/td&gt;\t&lt;td&gt;86.334997&lt;/td&gt;\t&lt;td&gt;99.789990&lt;/td&gt;\t&lt;td&gt;99.137078&lt;/td&gt;\t&lt;td&gt;91.163868&lt;/td&gt;\t&lt;td&gt;79.987551&lt;/td&gt;\t&lt;td&gt;77.109992&lt;/td&gt;\t&lt;td&gt;72.579427&lt;/td&gt;\t&lt;td&gt;70.198524&lt;/td&gt;\t&lt;td&gt;69.390141&lt;/td&gt;\t&lt;td&gt;73.559993&lt;/td&gt;\t&lt;td&gt;72.062835&lt;/td&gt;\t&lt;td&gt;71.696460&lt;/td&gt;\t&lt;td&gt;73.634280&lt;/td&gt;\t&lt;td&gt;94.779991&lt;/td&gt;\t&lt;td&gt;85.952229&lt;/td&gt;\t&lt;td&gt;70.536712&lt;/td&gt;\t&lt;td&gt;53.734593&lt;/td&gt;\t&lt;td&gt;51.209995&lt;/td&gt;\t&lt;td&gt;59.868269&lt;/td&gt;\t&lt;td&gt;76.378587&lt;/td&gt;\t&lt;td&gt;89.771828&lt;/td&gt;\t&lt;td&gt;114.999988&lt;/td&gt;\t&lt;td&gt;106.977985&lt;/td&gt;\t&lt;td&gt;89.542021&lt;/td&gt;\t&lt;td&gt;67.454518&lt;/td&gt;\t&lt;td&gt;51.209995&lt;/td&gt;\t&lt;td&gt;55.368092&lt;/td&gt;\t&lt;td&gt;81.877135&lt;/td&gt;\t&lt;td&gt;104.533636&lt;/td&gt;\t&lt;td&gt;177.449982&lt;/td&gt;\t&lt;td&gt;170.156562&lt;/td&gt;\t&lt;td&gt;141.561883&lt;/td&gt;\t&lt;td&gt;98.872983&lt;/td&gt;\t&lt;td&gt;58.159994&lt;/td&gt;\t&lt;td&gt;55.624418&lt;/td&gt;\t&lt;td&gt;109.918199&lt;/td&gt;\t&lt;td&gt;154.628142&lt;/td&gt;\t&lt;td&gt;274.379973&lt;/td&gt;\t&lt;td&gt;260.610341&lt;/td&gt;\t&lt;td&gt;216.563245&lt;/td&gt;\t&lt;td&gt;161.240045&lt;/td&gt;\t&lt;td&gt;110.679989&lt;/td&gt;\t&lt;td&gt;101.618012&lt;/td&gt;\t&lt;td&gt;179.517287&lt;/td&gt;\t&lt;td&gt;242.615251&lt;/td&gt;\t&lt;td&gt;135.289986&lt;/td&gt;\t&lt;td&gt;131.035653&lt;/td&gt;\t&lt;td&gt;120.141349&lt;/td&gt;\t&lt;td&gt;108.120592&lt;/td&gt;\t&lt;td&gt;110.649989&lt;/td&gt;\t&lt;td&gt;109.483038&lt;/td&gt;\t&lt;td&gt;121.264360&lt;/td&gt;\t&lt;td&gt;129.601505&lt;/td&gt;&lt;/tr&gt;\n&lt;/table&gt;\n&lt;/body&gt;&lt;/html&gt;&quot;,
+        &quot;X-TIKA:parse_time_millis&quot;: &quot;34291&quot;,
+        &quot;of_frames&quot;: &quot;358&quot;,
+        &quot;of_vecSize&quot;: &quot;200&quot;,
+        &quot;og_frames&quot;: &quot;358&quot;,
+        &quot;og_vecSize&quot;: &quot;200&quot;
+    }
+]
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

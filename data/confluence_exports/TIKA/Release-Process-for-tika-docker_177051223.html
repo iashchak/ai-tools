@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Release Process for tika-docker</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Release Process for tika-docker
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> David Meikle</span>, last modified by <span class='editor'> Tim Allison</span> on фев 06, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429462 {padding: 0px;}
+div.rbtoc1683040429462 ul {margin-left: 0px;}
+div.rbtoc1683040429462 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429462'>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikadocker-Prerequisites'>Prerequisites</a>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikadocker-DockerHubRepositoryandAccess'>DockerHub Repository and Access</a></li>
+<li><a href='#ReleaseProcessfortikadocker-tika-dockerrepo'>tika-docker repo</a></li>
+</ul>
+</li>
+<li><a href='#ReleaseProcessfortikadocker-GeneralInformation'>General Information</a>
+<ul class='toc-indentation'>
+<li><a href='#ReleaseProcessfortikadocker-ImageTypes'>Image Types</a></li>
+<li><a href='#ReleaseProcessfortikadocker-DockerComposeFiles'>Docker Compose Files</a></li>
+<li><a href='#ReleaseProcessfortikadocker-docker-tool.sh'>docker-tool.sh</a></li>
+<li><a href='#ReleaseProcessfortikadocker-republish-images.sh'>republish-images.sh</a></li>
+</ul>
+</li>
+<li><a href='#ReleaseProcessfortikadocker-ReleaseProcess'>Release Process</a></li>
+</ul>
+</div></p><h2 id="ReleaseProcessfortikadocker-Prerequisites">Prerequisites</h2><h5 id="ReleaseProcessfortikadocker-DockerHubRepositoryandAccess">DockerHub Repository and Access</h5><p>To be able to release the Apache Tika Docker image on DockerHub you will need to have access to the <a class="external-link" href="https://hub.docker.com/repository/docker/apache/tika/general" rel="nofollow">apache/tika</a> repository. This is controlled by the ASF Infra team and can be requested through a <a class="external-link" href="https://issues.apache.org/jira/browse/INFRA" rel="nofollow">INFRA JIRA ticket</a>. Make sure to tag the ticket with the <em><strong>D</strong><strong>ocker</strong></em> label.</p><h5 id="ReleaseProcessfortikadocker-tika-dockerrepo">tika-docker repo</h5><p>This <a class="external-link" href="https://github.com/apache/tika-docker" rel="nofollow">repository</a> contains the Dockerfiles used to create the minimal and full images for Apache Tika. Its also containers helper examples and configurations.</p><h2 id="ReleaseProcessfortikadocker-GeneralInformation">General Information</h2><h5 id="ReleaseProcessfortikadocker-ImageTypes">Image Types</h5><p>There are two image types:</p><ul><li>Minimal - containing just Apache Tika and it's base dependencies (i.e. Java)</li><li>Full - containing Apache Tika, it's dependencies, as well as Tesseract and GDAL.</li></ul><p>The Dockerfile for each image is in the correspondingly named directory, and are the only assets used to public the images.</p><h5 id="ReleaseProcessfortikadocker-DockerComposeFiles">Docker Compose Files</h5><p>There are a number of Docker Compose files to allow users to quickly test certain scenarios:</p><ul style="text-decoration: none;"><li>Recognising and Captioning Video and Images with TensorFlow REST (<a class="external-link" href="https://github.com/apache/tika-docker/blob/master/docker-compose-tika-vision.yml" rel="nofollow" style="text-decoration: none;">see here</a>)</li><li>Enriching Academic PDF Parsing with Grobid REST (<a class="external-link" href="https://github.com/apache/tika-docker/blob/master/docker-compose-tika-grobid.yml" rel="nofollow" style="text-decoration: none;">see here</a>)</li><li>OCR of PDF or Images with Tesseract including a Custom Configuration (<a class="external-link" href="https://github.com/apache/tika-docker/blob/master/docker-compose-tika-customocr.yml" rel="nofollow" style="text-decoration: none;">see here</a>)</li><li>Named Entity Recognition (<a class="external-link" href="https://github.com/apache/tika-docker/blob/master/docker-compose-tika-ner.yml" rel="nofollow" style="text-decoration: none;">see here</a>)</li></ul><p>These different scenarios use the corresponding configuration in the <em>sample-configs</em> directory.</p><p>Neither these Docker Compose YML files or the Sample Configurations are used for publishing Apache Tika's Docker image. They are only used to provide examples for complex configurations.</p><p>An example of using these is provided <a class="external-link" href="https://meikle.io/technology/opensource/apache-tika-docker-examples.html" rel="nofollow">here</a>.</p><h5 id="ReleaseProcessfortikadocker-docker-tool.sh">docker-tool.sh</h5><p>This shell file is a helper script used to simplify the building, testing and publication of the images.</p><p>It provides the following options:</p><ul><li>build - to build a minimal and full image of the passed in version</li><li>test - to verify the built image can start and the version number be received back</li><li>publish - to publish the image on DockerHub (only for those who have access to the DockerHub repo)</li><li>latest - to tag the supplied version built locally as <em>latest</em> on DockerHub.</li></ul><h5 id="ReleaseProcessfortikadocker-republish-images.sh">republish-images.sh</h5><p>This shell file was used to republish the older images when the Dockerfile was updated. It is redundant now but kept in the repo incase something similar needs done in the future.</p><h2 id="ReleaseProcessfortikadocker-ReleaseProcess">Release Process</h2><ol><li><p>Update the <a class="external-link" href="http://README.md" rel="nofollow">README.md</a>'s  <code>Available Tags</code> section</p></li><li><p>Update the TAG version in <code>.env to be X.Y.Z.Q+1</code></p></li><li><s>Update the version in <code>.travis.yml to be X.Y.Z.Q+1 X.Y.Z</code></s></li><li>Update CHANGES.md to include this release, changes and release date</li><li>Test the release as in the example below</li><li>Commit the changes</li><li>To release a new version of Apache Tika on DockerHub, you can follow the below steps (replacing <em>2.5.0</em> with the version number you wish to publish).  As of 2.5.0, we started having to version our docker images even when based on the same Tika version.  So, Docker tags might be 2.5.0.1 for Tika version 2.5.0.  The first version in the commandlines is the Docker version, and the second version in the build command is the Tika version.</li></ol><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: Default" data-theme="Default">$ git clone https://github.com/apache/tika-docker &amp;&amp; cd tika-docker
+$ ./docker-tool.sh build 2.5.0.1 2.5.0
+$ ./docker-tool.sh test 2.5.0.1
+
+# If you see the test passed, you can then publish it and tag it as latest:
+$ ./docker-tool.sh publish 2.5.0.1
+$ ./docker-tool.sh latest 2.5.0.1</pre>
+</div></div><p>        6. If everything worked, tag the last commit</p><ol><li style="list-style-type: none;"><ol><li><span style="color: rgb(51,51,153);"><code>git tag -a 2.5.0.1 -m &quot;New release for 2.5.0.1&quot;</code></span></li><li><span style="color: rgb(51,51,153);">git push  --tags</span></li></ol></li></ol>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

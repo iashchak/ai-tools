@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Logging Tutorial</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Logging Tutorial
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on фев 25, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This document is provided &quot;as is&quot;, without warranty of any kind,  express or implied, including but not limited to the warranties of merchantability,  fitness for a particular purpose and non infringement.  In no event shall the author be liable for any claim,  damages or other liability, whether in an action of contract,  tort or otherwise, arising from, out of or in connection with  this document or the use or other dealings in this document.</p>
+
+<h1 id="LoggingTutorial-PrimerOnjava.util.loggingandJULI">Primer On java.util.logging and JULI</h1>
+
+<p>The goal of this primer is to demonstrate how to log with  java.util.logging, as implemented by JULI, as a backdrop to the rest of the tutorial,  in particular the sections related to configuring Tomcat logging with the configuration file. One may think it's wise to skip this section and proceed directly to the section on the configuration file, but all the concepts talked about here are necessary to understand the configuration file.  The examples used in this section show programmatically how logging is configured.  The section on Tomcat's configuration file discusses how to accomplish declaratively what is done programmatically in this section.</p>
+
+<p>The following concepts (Classes) are important:</p>
+<ul>
+	<li><a class="unresolved" href="#">LogManager</a></li>
+	<li>Loggers</li>
+	<li>Handlers</li>
+	<li>Levels</li>
+	<li>Root Logger</li>
+	<li>Root Handler
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>The official Tomcat logging documentation refers to  the above concepts / classes extensively.  </p>
+
+<p>Lets start with Loggers. What's the purpose of a Logger?  A Logger is what a developer uses to write log statements  to the console, to a file, to the network, etc.  If you wanted to log something from your web application's class <a class="unresolved" href="#">CriticalComponent</a> using java.util.logging you would  first create a logger like this:</p>
+
+<hr/>
+<p>private String nameOfLogger = 'com.example.myapp.CriticalComponent';</p>
+
+<p>or</p>
+
+<p>private String nameOfLogger = <a class="unresolved" href="#">CriticalComponent</a>.class.getName();</p>
+
+<p>private static Logger myLogger = Logger.getLogger(nameOfLogger);</p>
+<hr/>
+
+<p>Pay attention to how we defined the name of the Logger.  This is important to the material explaining Tomcat's logging configuration.  You may also want to think about why myLogger is a static field (Hint myLogger is shared among all instances of <a class="unresolved" href="#">CriticalComponent</a>).</p>
+
+<p>Now you have a logger to create logging messages from your class <a class="unresolved" href="#">CriticalComponent</a>. For example you could now try something like this:</p>
+
+<p>public void wasssup() <br/>
+{<br/>
+   myLogger.info(&quot;Ah Yeah Baby - that's the end of System.out.println&quot;);<br/>
+}</p>
+
+<p>If you ran this code with a deployed web application you would see this statement on the console or in catalina.out:</p>
+
+<hr/>
+<p>INFO; 322125105255ms; 4407662;# 1; com.example.myapp.CriticalComponent; wasssup; Ah Yeah Baby - that's the end of System.out.println</p>
+<hr/>
+
+<p>Notice that both the name of the Logger and the method that logged the message are  mentioned in the log statement.  This is important to know when you want to alter  the configuration of the Logger.  For example you might want to turn this logger off, because it's not that useful.</p>
+
+<p>What if you wanted the output to appear in a file and on the console?  For that you need to  define 2 Handlers.  Create the two like this:</p>
+
+<hr/>
+<p>Handler fileHandler = new <a class="unresolved" href="#">FileHandler</a>(&quot;/var/log/tomcat/myapp.log&quot;);</p>
+
+<p>Handler consoleHandler = new <a class="unresolved" href="#">ConsoleHandler</a>();</p>
+
+<p>myLogger.addHandler(fileHandler);</p>
+
+<p>myLogger.addHandler(consoleHandler);</p>
+<hr/>
+
+<p>Now myLogger will log to both the console and the file /var/log/tomcat/myapp.log.</p>
+
+<p>So now we understand Loggers and Handlers, but we have not touched on Levels,  Root Loggers, and Root Handlers yet.  What are those?</p>
+
+<p>Lets start with a root Logger.  A root logger is a logger whose name is &quot;&quot;. What's the purpose of it?  Suppose you tried to do some logging with  myLogger like this:</p>
+
+<hr/>
+<p>myLogger.finest(&quot;Sooooo Fine&quot;);</p>
+<hr/>
+
+<p>And nothing shows up in your log, but you know that this statement is being  called.  What's going on?  The answer is that the JULI root logger's Level is set to INFO by default.  The level INFO has a corresponding integer assigned to it, which is 3.  <br/>
+When myLogger attempts to log it first checks its level.  If myLogger's level is greater  than the level intrinsic to the method doing the  logging (finest), then the record will be logged.  In this case the logging method finest  corresponds to Level zero.  Zero is less than 3, hence the logger does not log the message. My logger will only log messages with a level that is greater than or equal to 3.  So for  instance if </p>
+<hr/>
+<p>myLogger.severe(&quot;Oohhh %#$@#$!!!&quot;) </p>
+<hr/>
+
+<p>is called, it will get logged because the level intrinsic to the method severe is greater than 3.  So you are following this, but wondering how myLogger's level got set to 3 (INFO), since we never explicitly set it.  The answer is that it comes from the root Logger.  </p>
+
+<p>Now suppose you created a logger named 'com.example.myapp' and set its level.  Would myLogger still get its level from the root Logger.  It would not.</p>
+
+<p>The reason is that the logger named 'com.example.myapp' is now a parent logger to myLogger, and myLogger gets its level from it instead.  How did the 'com.example.myapp' Logger become a parent? It's because of its name 'com.example.myapp'.  If it were named 'org.charity.generous', it would not be a parent logger.  Do you see the pattern (myLogger = Logger.getLogger('com.example.myapp.CriticalComponent') includes 'com.example.myapp' in its name)?  </p>
+
+<p>Now that we mulled that over you have an idea of what a level is as well.  The Level determines what gets logged.  You can set the level directly on myLogger like this:</p>
+
+<p>myLogger.setLevel(Level.WARNING);</p>
+
+<p>In this case only messages with a level of WARNING or SEVERE will get logged by myLogger.</p>
+
+<p>Now remember that once something gets logged by myLogger, it's handed over to myLogger's Handlers.  But what if we never assigned any Handlers to myLogger.  How would it get  its Handler?</p>
+
+<p>The answer is the root Handlers.  The root logger has root Handlers.  So if you don't  explicitly define any Handlers for myLogger, it will use the Handlers attached to  the root Logger.  Now if you did attach Handler(s) to the logger named 'com.example.myapp', but not to myLogger, then myLogger would use the Handler(s) attached to 'com.example.myapp', instead of the Handlers attached to the root Logger.  In other words myLogger uses the  Handlers of the closest Logger ancestor, which in this case is either the 'com.example.myapp'  Logger or the root Logger.</p>
+
+<p>So all of the above is important to understand in order to be able to configure Tomcat logging with JULI.  Now we can talk about doing so via the configuration file.</p>
+
+<h1 id="LoggingTutorial-ConfiguringTomcatJULI">Configuring Tomcat JULI</h1>
+
+<h2 id="LoggingTutorial-ConfiguringLoggers">Configuring Loggers</h2>
+
+<p>Suppose we wanted to configure myLogger via a logging.properties file, rather than programmatically as we did earlier, and simply set its Level to SEVERE.  <br/>
+We would put the following in the configuration file:</p>
+
+<hr/>
+<p>com.example.myapp.CriticalComponent.level = SEVERE</p>
+<hr/>
+
+<p>That's how Loggers are configured.  We specified the name of the  Logger followed by a period and the name of the  property we wanted to set, which is 'level' in this case.  If we had several classes with corresponding loggers, and we did not want to set the  logging level for each class individually, we could set the logging level on the root Logger like this:</p>
+<hr/>
+<p>.level = SEVERE</p>
+<hr/>
+
+<p>This will set the level on all loggers to SEVERE, unless the Logger uses a non-default level (Either programmatically or via configuration).</p>
+
+<p>So if you wished to turn logging off all together simply configure the root  logger like this and make sure that there are no child loggers that override this setting:</p>
+
+<hr/>
+<p>.level = OFF</p>
+<hr/>
+
+<p>On the flip side to log everything set it like this:</p>
+<hr/>
+<p>.level = ALL</p>
+<hr/>
+
+<h2 id="LoggingTutorial-ConfiguringHandlers">Configuring Handlers</h2>
+
+<p>Suppose that we also wanted to add a Handler to the Logger named  com.example.myapp.CriticalComponent.   </p>
+
+<p>We could define our handler like this:	</p>
+
+<p>handlers = org.apache.juli.FileHandler</p>
+
+<p>And configure it like this:<br/>
+org.apache.juli.FileHandler.level = WARNING org.apache.juli.FileHandler.directory = /var/log/tomcat/<br/>
+org.apache.juli.FileHandler.prefix = mywebapp</p>
+
+<p>Then assign it to our Logger like this:</p>
+
+<p>com.example.myapp.CriticalComponent.handlers = org.apache.juli.FileHandler</p>
+
+<p>Now we've done the same thing declaratively in our logging.properties file that we did programmatically earlier.</p>
+
+<p>What if we wanted to make the Handler we just configured the root Handler?  We could configure it as the root Handler like this:<br/>
+.handlers = org.apache.juli.FileHandler.</p>
+
+<p>Now all Tomcat Loggers that do not have a Handler assigned to them directly, either programmatically or declaratively via the logging.properties file,  will delegate to this Handler.</p>
+
+<h2 id="LoggingTutorial-ConfiguringContextLoggers">Configuring Context Loggers</h2>
+<p>So now you've had a look at the example logging.properties file in the official documentation again, and you understand most of it.</p>
+
+<p>Then you get to these lines:</p>
+
+<hr/>
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager].level = INFO org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager].handlers = \<br/>
+3manager.org.apache.juli.FileHandler</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+<hr/>
+
+<p>These don't follow the same syntax we've been using thus far to configure Loggers and Handlers.</p>
+
+<p>These are for configuring Context loggers.  What's a context logger?  First you need to know a little about the <a class="unresolved" href="#">ServletContext</a>.   </p>
+
+<p>For a description of what a Servlet Context is see:</p>
+<hr/>
+<p><a class="external-link" href="http://java.sun.com/j2ee/1.4/docs/api/javax/servlet/ServletContext.html" rel="nofollow">http://java.sun.com/j2ee/1.4/docs/api/javax/servlet/ServletContext.html</a></p>
+<hr/>
+<p>You'll notice specifically that it mentions that there is one <a class="unresolved" href="#">ServletContext</a> per webapp, and that this <a class="unresolved" href="#">ServletContext</a> can be used to perform logging.</p>
+
+<p>Looking down a little further in the <a class="unresolved" href="#">ServletContext</a>.html document we see that the <a class="unresolved" href="#">ServletContext</a> has a log method that takes a String. </p>
+
+<p>If a developer working on the manager application were to use the <a class="unresolved" href="#">ServletContext</a>.log method, without the corresponding configuration lines shown above, output would go to standard out, and end up on the console or catalina.out.  However now that the <a class="unresolved" href="#">ServletContext</a> Logger has been configured for the manager application,  <a class="unresolved" href="#">ServletContext</a>.log(&quot;...&quot;) statements made within the /manager application will end up in manager.dd.mm.yyy.log.</p>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

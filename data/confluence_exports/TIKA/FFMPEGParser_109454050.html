@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : FFMPEGParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : FFMPEGParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Tika now support FFMPEG extraction. Read on below to see how.</p>
+
+<h1 id="FFMPEGParser-InstallFFMPEG">Install FFMPEG</h1>
+
+<p>If you're lucky, the following should install FFMPEG.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>brew install ffmpeg
+</pre>
+</div></div>
+
+<p>You can test to see if FFMPEG is installed by typing:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>ffmpeg -version
+</pre>
+</div></div>
+
+<p>You should see something resembling:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>ffmpeg version 2.3.3 Copyright (c) 2000-2014 the FFmpeg developers
+built on Jan  8 2015 14:52:39 with Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
+configuration: --prefix=/usr/local/Cellar/ffmpeg/2.3.3 --enable-shared --enable-pthreads --enable-gpl --enable-version3 --enable-nonfree --enable-hardcoded-tables --enable-avresample --enable-vda --cc=clang --host-cflags= --host-ldflags= --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-libxvid
+libavutil      52. 92.100 / 52. 92.100
+libavcodec     55. 69.100 / 55. 69.100
+libavformat    55. 48.100 / 55. 48.100
+libavdevice    55. 13.102 / 55. 13.102
+libavfilter     4. 11.100 /  4. 11.100
+libavresample   1.  3.  0 /  1.  3.  0
+libswscale      2.  6.100 /  2.  6.100
+libswresample   0. 19.100 /  0. 19.100
+libpostproc    52.  3.100 / 52.  3.100
+</pre>
+</div></div>
+
+<p>To use FFMPEG in Tika, then you simply use Tika-App and/or the Tika-REST server on a video file. Read on below to see how.</p>
+
+<h1 id="FFMPEGParser-UsingTikaApp">Using Tika App</h1>
+
+<p>You can use Tika app once FFMPEG is installed to parse a video file. For example:</p>
+
+<p><code>java -classpath tika-app/target/tika-app-1.9-SNAPSHOT.jar org.apache.tika.cli.TikaCLI -m SPOT11_000001\ 15.AVI</code></p>
+
+<p>Which should produce the following output:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Content-Length: 312559634
+Content-Type: video/x-msvideo
+X-Parsed-By: org.apache.tika.parser.DefaultParser
+X-Parsed-By: org.apache.tika.parser.external.CompositeExternalParser
+X-Parsed-By: org.apache.tika.parser.external.ExternalParser
+encoder: ankarec
+resourceName: SPOT11_000001 15.AVI
+videoResolution: 720x480
+xmpDM:audioChannelType: 1
+xmpDM:audioCompressor: pcm_s16le ([1][0][0][0] / 0x0001)
+xmpDM:audioSampleRate: 8000
+xmpDM:duration: 00:05:35.92
+xmpDM:fileDataRate: 7443 kb/s
+xmpDM:videoColorSpace: yuvj420p(pc, bt470bg)
+xmpDM:videoCompressor: mjpeg (MJPG / 0x47504A4D)
+xmpDM:videoFrameRate: 25
+</pre>
+</div></div>
+
+<p>Here is a test on another file:</p>
+
+<p><code>java -classpath tika-app/target/tika-app-1.9-SNAPSHOT.jar org.apache.tika.cli.TikaCLI -m WOW_MR_T.avi</code></p>
+
+<p>Which should produce the following output:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Content-Length: 8932074
+Content-Type: video/x-msvideo
+X-Parsed-By: org.apache.tika.parser.DefaultParser
+X-Parsed-By: org.apache.tika.parser.external.CompositeExternalParser
+X-Parsed-By: org.apache.tika.parser.external.ExternalParser
+resourceName: WOW_MR_T.avi
+xmpDM:audioCompressor: mp3 (U[0][0][0] / 0x0055)
+xmpDM:audioSampleRate: 48000
+xmpDM:duration: 00:00:33.03
+xmpDM:fileDataRate: 2163 kb/s
+xmpDM:videoCompressor: mpeg4 (DX50 / 0x30355844)
+</pre>
+</div></div>
+
+<h1 id="FFMPEGParser-UsingTikaServer">Using Tika Server</h1>
+
+<p>Start Tika server using the following command:</p>
+
+<p><code>java -jar tika-server/target/tika-server-1.9-SNAPSHOT.jar</code></p>
+
+<p>Then, issue a cURL command to post a video to Tika Server for FFMPEG to parse:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T WOW_MR_T.avi -H &quot;Content-Disposition: attachment; filename=WOW_MR_T.avi&quot; http://localhost:9998/rmeta
+</pre>
+</div></div>
+
+<p>Which should return:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+   {
+      &quot;Content-Type&quot;:&quot;video/x-msvideo&quot;,
+      &quot;X-Parsed-By&quot;:[
+         &quot;org.apache.tika.parser.DefaultParser&quot;,
+         &quot;org.apache.tika.parser.external.CompositeExternalParser&quot;,
+         &quot;org.apache.tika.parser.external.ExternalParser&quot;
+      ],
+      &quot;X-TIKA:parse_time_millis&quot;:&quot;219&quot;,
+      &quot;resourceName&quot;:&quot;WOW_MR_T.avi&quot;,
+      &quot;xmpDM:audioCompressor&quot;:&quot;mp3 (U[0][0][0] / 0x0055)&quot;,
+      &quot;xmpDM:audioSampleRate&quot;:&quot;48000&quot;,
+      &quot;xmpDM:duration&quot;:&quot;00:00:33.03&quot;,
+      &quot;xmpDM:fileDataRate&quot;:&quot;2163 kb/s&quot;,
+      &quot;xmpDM:videoCompressor&quot;:&quot;mpeg4 (DX50 / 0x30355844)&quot;
+   }
+]
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

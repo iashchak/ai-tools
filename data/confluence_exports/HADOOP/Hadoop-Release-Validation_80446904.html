@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Hadoop Release Validation</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-Contributor-Guide_89071892.html">Hadoop Contributor Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Hadoop Release Validation
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Arpit Agarwal</span>, last modified on фев 05, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This is a checklist for community members to validate new Apache Hadoop releases.</p><h2 id="HadoopReleaseValidation-Overview">Overview</h2><p>By ASF policy the PMC votes on release artifacts hosted at <a class="external-link" href="https://dist.apache.org" rel="nofollow">dist.apache.org</a>. E.g. for <a class="external-link" href="https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-3.1.0/" rel="nofollow">Apache Hadoop 3.1.0</a>, the following artifacts are covered by this policy:</p><ol><li>hadoop-3.1.0-src.tar.gz</li><li>hadoop-3.1.0-src.tar.gz.asc</li><li>hadoop-3.1.0-src.tar.gz.mds</li><li>hadoop-3.1.0.tar.gz</li><li>hadoop-3.1.0.tar.gz.asc</li><li>hadoop-3.1.0.tar.gz.mds</li></ol><p>Additionally it is a good idea to verify the Maven artifacts on <a class="external-link" href="https://repository.apache.org/" rel="nofollow">repository.apache.org</a> as these will be consumed by downstream projects.</p><h2 id="HadoopReleaseValidation-Step-by-stepguide">Step-by-step guide</h2><p>You don't need to verify all of the below before voting on a release.</p><h3 id="HadoopReleaseValidation-Checkreleaseartifacts">Check release artifacts</h3><p>Verify that the release bits were correctly generated. These steps don't check for release functionality.</p><ol><li>Verify signatures using the instructions at <a class="external-link" href="https://www.apache.org/info/verification.html#CheckingSignatures" rel="nofollow">https://www.apache.org/info/verification.html#CheckingSignatures</a>. You will need GPG installed. On MacOS machines, you can install GPG with <a class="external-link" href="https://brew.sh" rel="nofollow">HomeBrew</a> using <code><em>brew install gpg</em></code>.</li><li><p class="auto-cursor-target">Verify checkums for the source and binary artifacts from the corresponding <em>.mds</em> files. E.g. a quick way to do so using gpg is:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">gpg --print-mds hadoop-3.1.1-src.tar.gz &gt; mds.tmp
+diff hadoop-3.1.1-src.tar.gz.mds mds.tmp</pre>
+</div></div></li><li>Verify that there are no MD5 signatures provided.</li><li>Verify that jars have been correctly staged to <a class="external-link" href="https://repository.apache.org/" rel="nofollow">repository.apache.org</a>.<ol><li>For 3.x releases and later, verify that the shaded fat jars look correct.</li></ol></li><li>Sanity check the <em>CHANGES.md</em> and <em>RELEASENOTES.md</em> files.</li><li>Verify that source and binary tarballs include LICENSE.txt and NOTICE.txt files.</li></ol><p> </p><h3 id="HadoopReleaseValidation-VerifySourceReleaseBits">Verify Source Release Bits</h3><ol><li>Extract the source tarball and build the release from sources using:<ol><li><pre>mvn clean install package -Pdist -DskipTests=true</pre></li></ol></li><li><p>The binary tarball will be available at <em style="font-family: Arial , sans-serif;">hadoop-dist/target/hadoop-&lt;version&gt;.tar.gz</em>.</p></li><li>Follow all the steps from the <strong><em>Verify Binary Release</em></strong> section below.</li><li><p class="auto-cursor-target">Verify that the source distribution has no extra files/changes by diffing against the git tag in a local clone of the Hadoop repo. E.g.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: bash; gutter: false; theme: RDark" data-theme="RDark">$ git checkout release-3.1.0-RC1
+$ diff -r $PWD /tmp/hadoop-3.1.0  # Assuming RC src tarball was unpacked in /tmp/hadoop-3.1.0</pre>
+</div></div></li></ol><p> </p><h3 id="HadoopReleaseValidation-VerifyBinaryReleaseBits">Verify Binary Release Bits</h3><ol><li>Install the binary release to a cluster. E.g. this may be a single-node pseudo-cluster, a 3-node cluster of VMs or a real cluster of arbitrary size.</li><li>Start up HDFS and YARN services and check release functionality. Some example functionality that applies to all releases:<ol><li>Try out <a class="external-link" href="https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html" rel="nofollow">file system shell commands</a>.</li><li>Try out some <a class="external-link" href="https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HDFSCommands.html#Administration_Commands" rel="nofollow">admin commands</a>.</li><li>Check the various service web UIs.</li><li><a class="external-link" href="https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html" rel="nofollow">Enable NameNode HA</a>.</li><li><a class="external-link" href="https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0" rel="nofollow">Launch example MapReduce jobs</a>.</li><li>Repeat the above steps with <a class="external-link" href="https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SecureMode.html" rel="nofollow">Kerberos Security</a> enabled.</li><li>&lt;Add more yarn-specific checks here&gt;</li></ol></li><li>Check release specific features.</li></ol><p> </p><h3 id="HadoopReleaseValidation-VerifySiteDocumentation">Verify Site Documentation</h3><ol><li>Generate and stage the <a class="external-link" href="http://hadoop.apache.org/docs/current/" rel="nofollow">site documentation</a> with the following commands and verify site docs look okay:<ol><li><pre>mvn site:site</pre></li><li><pre>mkdir -p /tmp/site &amp;&amp; mvn site:stage -DstagingDirectory=/tmp/site</pre></li><li><p>Browse to <a class="external-link" href="file:///tmp/site/hadoop-project/index.html" rel="nofollow">file:///tmp/site/hadoop-project/index.html</a>.</p></li></ol></li></ol><p> </p><div class="confluence-information-macro confluence-information-macro-information"><span class="aui-icon aui-icon-small aui-iconfont-info confluence-information-macro-icon"></span><div class="confluence-information-macro-body"></div></div><h2 id="HadoopReleaseValidation-Relatedarticles">Related articles</h2><p></p><p>
+
+
+
+
+
+
+
+
+
+
+
+<ul class="content-by-label">
+        <li>
+        <div>
+                <span class="icon aui-icon content-type-page" title="Страница">Страница:</span>        </div>
+
+        <div class="details">
+                        <a href="/confluence/display/HADOOP/Hadoop+Release+Validation">Hadoop Release Validation</a>
+                
+                        
+                    </div>
+    </li>
+    </ul>
+</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

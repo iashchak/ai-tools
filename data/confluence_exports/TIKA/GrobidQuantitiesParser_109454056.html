@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : GrobidQuantitiesParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : GrobidQuantitiesParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="GrobidQuantitiesParser-GrobidQuantitieswithTika">Grobid Quantities with Tika</h1>
+
+<p>Grobid Quantities is a Java library used to recognize any expressions of measurements (e.g. pressure, temperature, etc.) in textual documents, parse, normalize and finally convert the measurements into SI units. It can be used on technical and scientific articles (text, XML and PDF input) and patents (text and XML input). To use its capabilities with Tika, one must install the server endpoint created for Grobid Quantities to extract measurement units from text passed to it.</p>
+
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429285 {padding: 0px;}
+div.rbtoc1683040429285 ul {margin-left: 0px;}
+div.rbtoc1683040429285 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429285'>
+<ul class='toc-indentation'>
+<li><a href='#GrobidQuantitiesParser-GrobidQuantitieswithTika'>Grobid Quantities with Tika</a>
+<ul class='toc-indentation'>
+<li><a href='#GrobidQuantitiesParser-Installation'>Installation</a></li>
+<li><a href='#GrobidQuantitiesParser-StartGrobidQuantitiesServer'>Start Grobid Quantities Server</a></li>
+<li><a href='#GrobidQuantitiesParser-PreparingresourcesforGrobidQuantitiesinTika-App'>Preparing resources for Grobid Quantities in Tika-App</a></li>
+<li><a href='#GrobidQuantitiesParser-RunningGrobidQuantitieswithTika'>Running Grobid Quantities with Tika</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h2 id="GrobidQuantitiesParser-Installation">Installation</h2>
+
+<p> <strong>Steps to install</strong>: Install Grobid Quantities by following the steps from <a class="external-link" href="https://github.com/kermitt2/grobid-quantities" rel="nofollow">github</a> and make sure the quantity model is trained as per the instructions provided</p>
+
+<p>After installing and training the model, start the REST server using the following command</p>
+
+
+<h2 id="GrobidQuantitiesParser-StartGrobidQuantitiesServer">Start Grobid Quantities Server</h2>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ mvn -Dmaven.test.skip=true jetty:run-war
+</pre>
+</div></div>
+
+<p>The server starts by default on port number 8080 and the server can be seen running on <a class="external-link" href="http://127.0.0.1:8080" rel="nofollow">http://127.0.0.1:8080</a>.</p>
+
+<h2 id="GrobidQuantitiesParser-PreparingresourcesforGrobidQuantitiesinTika-App">Preparing resources for Grobid Quantities in Tika-App</h2>
+
+<ol>
+	<li><strong>Activate Named Entity Parser</strong>  In order to use any of the <a class="external-link" href="https://wiki.apache.org/tika/TikaAndNER#Activate_Named_Entity_Parser" rel="nofollow">NamedEntityParser</a> implementations in Tika , the parser responsible for handling the name recognition task needs to be enabled. This can be done with Tika Config XML file, as follows 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+ &lt;properties&gt;
+     &lt;parsers&gt;
+         &lt;parser class=&quot;org.apache.tika.parser.ner.NamedEntityParser&quot;&gt;
+             &lt;mime&gt;text/plain&lt;/mime&gt;
+             &lt;mime&gt;text/html&lt;/mime&gt;
+             &lt;mime&gt;application/xhtml+xml&lt;/mime&gt;
+         &lt;/parser&gt;
+     &lt;/parsers&gt;
+ &lt;/properties&gt;
+ </pre>
+</div></div>
+ This configuration has to be supplied in the later phases, so store it as 'tika-config.xml'.
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+ 2. <strong>Supply <a class="unresolved" href="#">GrobidServer</a>.properties file</strong>
+<br class="atl-forced-newline"/>
+ It is imperative that Tika should know on what host you are running the <em>grobid-quantities-server</em>. By default Tika will assume your server runs on port 8080. In order to specify any other port, you must supply a <a class="unresolved" href="#">GrobidServer</a>.properties file. Sample <a class="unresolved" href="#">GrobidServer</a>.properties file. My file looks like the following: 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>grobid.server.url=http://localhost:8080
+grobid.endpoint.text=/processQuantityText
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ In a nutshell 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> #Create a directory for keeping the config and properties file.
+ export GROBID_QUANTITIES_RES=$HOME/GrobidQuantitiesRest-resources
+ mkdir -p $GROBID_QUANTITIES_RES
+ cd $GROBID_QUANTITIES_RES
+ #config file must be stored in this directory
+ pwd
+
+ export PATH_PREFIX=&quot;$GROBID_QUANTITIES_RES/org/apache/tika/parser/ner/grobid&quot;
+ mkdir -p $PATH_PREFIX
+ #create and edit the properties file
+ vim $PATH_PREFIX/GrobidServer.properties
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="GrobidQuantitiesParser-RunningGrobidQuantitieswithTika">Running Grobid Quantities with Tika</h2>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>
+export TIKA_APP={your/path/to/tika-app}/target/tika-app-1.13-SNAPSHOT.jar
+
+#set the system property to use GrobidNERecogniser class
+java -Dner.impl.class=org.apache.tika.parser.ner.grobid.GrobidNERecogniser -classpath $GROBID_QUANTITIES_RES:$TIKA_APP org.apache.tika.cli.TikaCLI --config=$GROBID_QUANTITIES_RES/tika-config.xml -m  https://en.wikipedia.org/wiki/Time
+
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

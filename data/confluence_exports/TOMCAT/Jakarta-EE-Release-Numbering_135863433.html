@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Jakarta EE Release Numbering</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Jakarta EE Release Numbering
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on фев 15, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="JakartaEEReleaseNumbering-***DRAFT***DRAFT***DRAFT***">*** DRAFT *** DRAFT *** DRAFT ***</h2><p>Jakarta EE 9 will be, as far as Tomcat is concerned, identical to Java EE 8 with one notable exception. The package names for many of the Jakarta EE packages will change from javax.* to jakarta.*</p><p>Jakarta EE 10 will follow relatively quickly after Jakarta EE 9 and will include API changes, new features etc.</p><p>Tomcat major versions have, historically, tracked releases of the Java Servlet specification (and associated Java EE specification).</p><p>The expectation is that future Tomcat versions will continue to track releases of the Jakarta Servlet specification  (and associated Jakarta EE specification).</p><p>The Tomcat community wishes to implement Jakarta EE 9 but recognises that many users will wish to remain on Java EE 8 while taking advantage of new features introduced in Tomcat 10 onwards.</p><p>The Tomcat community has therefore drafted the following release plan:</p><h4 id="JakartaEEReleaseNumbering-Currentstatus">Current status</h4><ul><li>7.0.x : Continues to support Java EE 6</li><li>8.5.x : Continues to support Java EE 7</li><li>9.0.x : Continues to support Java EE 8</li><li>10.0.x : Jakarta EE 9 development</li></ul><h4 id="JakartaEEReleaseNumbering-Step1:AnnounceEOLfor7.0.x">Step 1: Announce EOL for 7.0.x</h4><p>Announce EOL for Tomcat 7 (as 31 March 2021?)</p><p>That gives us:</p><ul><li>7 : Continues to support Java EE 6</li><li>8 : Continues to support Java EE 7</li><li>9 : Continues to support Java EE 8</li><li>10.0.0-Mx (master) development branch for Jakarta EE 9 support</li></ul><p>Note the 10.0.0-Mx will be Milestone releases</p><p><span style="font-weight: 600;letter-spacing: -0.003em;">Step 2: Releases between now and Jakarta EE 9 release</span></p><p>Apply Tomcat API changes planned for Tomcat 10 to 10.0.0-Mx</p><p>Apply Jakarta EE 9 package rename changes.</p><p>Other changes applied to 10.0.0-Mx and then back-ported to 9.0.x, 8.5.x and 7.0.x</p><p>Monthly milestone releases of 10.0.0-Mx alongside 9.0.x and 8.5.x</p><h4 id="JakartaEEReleaseNumbering-Step3:JakartaEE9release">Step 3: Jakarta EE 9 release</h4><p>Once Jakarta EE 9 is released and Tomcat 10.0.0-Mx passes the TCK</p><p>Release 10.0.0</p><p>Create a 10.0.x branch from master.</p><p>10.0.x will be supported until there is a stable 10.1.0 release.</p><p>Create a 9.10.x branch (from master and revert the package rename commits)</p><p>9.n will be supported until there is a stable 9.(n+1) release.</p><p>Latest 9.n aims to be identical to latest Tomcat n except it won't include the javax → jakarta package rename.</p><p>That gives us:</p><ul><li>7.0.x : Continues to support Java EE 6</li><li>8.5.x : Continues to support Java EE 7</li><li>9.0.x : Continues to support Java EE 8</li><li>9.10.x: Continues to support Java EE 8 with Tomcat API identical to latest Tomcat 10</li><li>10.0.x: Continues to support Jakarta EE 9. Critical / important fixes only. Will be EOL'd as soon as Jakarta EE 10 is stable.</li><li>10.1-0-Mx (master): Development branch for Jakarta EE 10 support</li></ul><h4 id="JakartaEEReleaseNumbering-Step4:JakartaEE10release">Step 4 : Jakarta EE 10 release</h4><p>It is assumed that Tomcat 7 EOL has passed by this point.</p><p>10.0.x will also be EOL.</p><p>That gives us:</p><ul><li>8.5.x : Continues to support Java EE 7</li><li>9.0.x : Continues to support Java EE 8</li><li>9.10.x: Continues to support Java EE 8 with Tomcat API identical to latest Tomcat 10.1.x</li><li>10.1.x (master): Supports Jakarta EE 10</li></ul><h4 id="JakartaEEReleaseNumbering-Step5JakartaEE11developmentstarts">Step 5 Jakarta EE 11 development starts</h4><p>Announce EOL for Tomcat 8.</p><p>Create 10.1.x branch from master.</p><p>That gives us:</p><ul><li>8.5.x : Continues to support Java EE 7</li><li>9.0.x : Continues to support Java EE 8</li><li>9.10.x : Continues to support Java EE 8 with Tomcat API identical to latest Tomcat 10.0.x</li><li>10.1.x : Supports Jakarta EE 10</li><li>11.0.x (master): Development of Jakarta EE 11 support</li></ul><h4 id="JakartaEEReleaseNumbering-Step6:JakartaEE11release">Step 6 : Jakarta EE 11 release</h4><p>9.10.x is now EOL.</p><p>Create a 9.11.x branch (from master and revert the package rename commits)</p><p>That gives us:</p><ul><li>8.5.x : Continues to support Java EE 7 (likely to be EOL soon if not already EOL)</li><li>9.0.x : Continues to support Java EE 8</li><li>9.11.x : Continues to support Java EE 8 with Tomcat API identical to latest Tomcat 11.0.x</li><li>10.1.x : Supports Jakarta EE 10</li><li>11.0.x : (master): Supports of Jakarta EE 11</li></ul><h4 id="JakartaEEReleaseNumbering-Steadystate">Steady state</h4><p>The steady state should be repeating the pattern of steps 5 and 6 with the following versions:</p><ul><li>9.N: Continues to support Java EE 8 with Tomcat API identical to latest Tomcat N</li><li>(N-2): Supports Jakarta EE (N-2)</li><li>(N-1): Supports Jakarta EE (N-1)</li><li>N (master): Development of Jakarta EE N support</li></ul><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

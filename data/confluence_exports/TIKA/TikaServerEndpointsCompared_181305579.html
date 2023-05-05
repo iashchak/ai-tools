@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaServerEndpointsCompared</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TikaServer_148639291.html">TikaServer</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaServerEndpointsCompared
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on окт 26, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This table highlights some differences between some of the handlers. I've temporarily left in question marks for items we need to confirm.</p><div class="table-wrap"><table class="wrapped confluenceTable"><colgroup><col/><col/><col/><col/><col/><col/><col/></colgroup><tbody><tr><th class="confluenceTh">Feature</th><th class="confluenceTh">/tika (text|body)</th><th colspan="1" class="confluenceTh">/tika (html)</th><th class="confluenceTh">/tika (json)</th><th class="confluenceTh">/rmeta</th><th colspan="1" class="confluenceTh">/meta</th><th colspan="1" class="confluenceTh">/unpack</th></tr><tr><td class="confluenceTd">Text (including text of embedded documents)</td><td class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td class="confluenceTd">Y</td><td class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y ( with /unpack/all)</td></tr><tr><td class="confluenceTd">Metadata of main document</td><td class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y</td><td class="confluenceTd">Y</td><td class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y ( with /unpack/all)</td></tr><tr><td class="confluenceTd">Metadata of embedded documents/attachments</td><td class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td class="confluenceTd">N</td><td class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td></tr><tr><td colspan="1" class="confluenceTd">Notification of parse exception</td><td colspan="1" class="confluenceTd">Y/N[1]</td><td colspan="1" class="confluenceTd">Y/N[1]</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y?</td></tr><tr><td colspan="1" class="confluenceTd">Specific stacktrace if server is started with the -s (stacktrace)  option</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td></tr><tr><td colspan="1" class="confluenceTd">MetadataFilters are applied (see <a href="ModifyingContentWithHandlersAndMetadataFilters_217385627.html">ModifyingContentWithHandlersAndMetadataFilters</a>)</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td></tr><tr><td colspan="1" class="confluenceTd">Notification of parse exception in embedded document</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y as of 2.4.1</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N?</td></tr><tr><td colspan="1" class="confluenceTd">Specific stacktrace for parse exception in embedded document</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y as of 2.4.1</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td></tr><tr><td colspan="1" class="confluenceTd">Streaming write[2]</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td></tr><tr><td colspan="1" class="confluenceTd">WriteLimit with the <code>writeLimit</code>  header</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">Y</td><td colspan="1" class="confluenceTd">N/A</td><td colspan="1" class="confluenceTd">N</td></tr><tr><td colspan="1" class="confluenceTd">Actual attachments (raw bytes)</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">N</td><td colspan="1" class="confluenceTd">Y</td></tr></tbody></table></div><p class="auto-cursor-target"><a class="unresolved" href="#">1</a> If the parse exception comes early in the parse before the streaming starts (as with an EncryptedDocumentException), you'll get an http status 422 in /tika (text) and /tika (html).  With the <code>/tika (text)</code>  option, if the parse exception happens after content has started streaming, the stream will simply stop and you'll have no idea that there was a parse exception.  With the <code>/tika (html)</code>  option, you'll see truncated html in /tika (html) if this happens.</p><p class="auto-cursor-target"><a class="unresolved" href="#">2</a> Tika tries to stream while parsing and while writing the output.  For some file formats, the parsers currently load the full document into memory and then write the content.  So, this row focuses on whether Tika streams the writing of the content (and not the streaming read/parse of the file).</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

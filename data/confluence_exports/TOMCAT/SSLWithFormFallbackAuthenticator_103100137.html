@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : SSLWithFormFallbackAuthenticator</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Security_103099051.html">Security</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="SSL_107970688.html">SSL</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : SSLWithFormFallbackAuthenticator
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on авг 28, 2010
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The following code was tested with Tomcat 5.5.17 and 5.5.20. See the page <a href="SSLWithFORMFallback_103100112.html">SSLWithFORMFallback</a> for instructions.</p>
+
+<p>You will need the Tomcat JARs from a tomcat installation to compile this class.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>package at.telekom.tomcat.security;
+
+import java.io.IOException;
+import java.security.Principal;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import javax.servlet.ServletException;
+
+import org.apache.catalina.Globals;
+import org.apache.catalina.Realm;
+import org.apache.catalina.Session;
+import org.apache.catalina.authenticator.Constants;
+import org.apache.catalina.authenticator.FormAuthenticator;
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
+import org.apache.catalina.deploy.LoginConfig;
+import org.apache.catalina.deploy.SecurityConstraint;
+import org.apache.catalina.util.DateTool;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.coyote.ActionCode;
+
+
+
+/**
+ * &lt;p&gt;
+ * Authenticator Valve for Tomcat
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * This Valve implements a special login method - SSL Certificate based, with FORM fallback.
+ * It is intended to be used on an SSL protected channel. The Authenticator first tries to authenticate
+ * based on a client certificate included in the SSL Request. If this is not possible, or the request
+ * does not contain a client certificate, the Authenticator attempts to authenticate using the
+ * FORM login method.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * To use this authenticator, include a &amp;lt;login-config&gt; in your web.xml, but do not include a
+ * &amp;lt;auth-method&gt; tag. Do include the &amp;lt;form-login-config&gt; tag to configure the pages used if
+ * FORM login occurs.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Instead of the &amp;lt;auth-method&gt; tag, manually configure a Valve in your tomcat configuration 
+ * (server.xml or context.xml). Configure the Valve on the corresponding context, and use this 
+ * class as the Valve type.
+ * &lt;/p&gt;
+ * @author Richard Unger
+ */
+public class SSLWithFormFallbackAuthenticator extends FormAuthenticator {
+
+	private static Log log = LogFactory.getLog(SSLWithFormFallbackAuthenticator.class);
+	
+    /**
+     * &quot;Expires&quot; header always set to Date(1), so generate once only
+     */
+    private static final String DATE_ONE =
+        (new SimpleDateFormat(DateTool.HTTP_RESPONSE_DATE_HEADER,
+                              Locale.US)).format(new Date(1));
+    
+    /**
+	 * 
+	 */
+	public SSLWithFormFallbackAuthenticator() {
+		super();
+	}
+
+	/**
+	 * @see org.apache.catalina.authenticator.AuthenticatorBase#invoke(org.apache.catalina.connector.Request, org.apache.catalina.connector.Response)
+	 */
+	@Override
+    public void invoke(Request request, Response response)
+        throws IOException, ServletException {
+
+        if (log.isDebugEnabled())
+            log.debug(&quot;Security checking request &quot; +
+                request.getMethod() + &quot; &quot; + request.getRequestURI());
+        LoginConfig config = this.context.getLoginConfig();
+
+        // Have we got a cached authenticated Principal to record?
+        if (cache) {
+            Principal principal = request.getUserPrincipal();
+            if (principal == null) {
+                Session session = request.getSessionInternal(false);
+                if (session != null) {
+                    principal = session.getPrincipal();
+                    if (principal != null) {
+                        if (log.isDebugEnabled())
+                            log.debug(&quot;We have cached auth type &quot; +
+                                session.getAuthType() +
+                                &quot; for principal &quot; +
+                                session.getPrincipal());
+                        request.setAuthType(session.getAuthType());
+                        request.setUserPrincipal(principal);
+                    }
+                }
+            }
+        }
+
+        // Special handling for form-based logins to deal with the case
+        // where the login form (and therefore the &quot;j_security_check&quot; URI
+        // to which it submits) might be outside the secured area
+        String contextPath = this.context.getPath();
+        String requestURI = request.getDecodedRequestURI();
+        if (requestURI.startsWith(contextPath) &amp;&amp;
+            requestURI.endsWith(Constants.FORM_ACTION)) {
+            if (!authenticate(request, response, config)) {   //  RU - this is a call to FORM based auth!
+                if (log.isDebugEnabled())
+                    log.debug(&quot; Failed authenticate() test ??&quot; + requestURI );
+                return;
+            }
+        }
+
+        Realm realm = this.context.getRealm();
+        // Is this request URI subject to a security constraint?
+        SecurityConstraint [] constraints
+            = realm.findSecurityConstraints(request, this.context);
+       
+        if ((constraints == null) /* &amp;&amp;
+            (!Constants.FORM_METHOD.equals(config.getAuthMethod())) */ ) {
+            if (log.isDebugEnabled())
+                log.debug(&quot; Not subject to any constraint&quot;);
+            getNext().invoke(request, response);
+            return;
+        }
+
+        // Make sure that constrained resources are not cached by web proxies
+        // or browsers as caching can provide a security hole
+        if (disableProxyCaching &amp;&amp; 
+            // FIX-ME: Disabled for Mozilla FORM support over SSL 
+            // (improper caching issue)
+            //!request.isSecure() &amp;&amp;
+            !&quot;POST&quot;.equalsIgnoreCase(request.getMethod())) {
+      /*      if (securePagesWithPragma) {
+                // FIX-ME: These cause problems with downloading office docs
+                // from IE under SSL and may not be needed for newer Mozilla
+                // clients.
+                response.setHeader(&quot;Pragma&quot;, &quot;No-cache&quot;);
+                response.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);
+            } else { */
+                response.setHeader(&quot;Cache-Control&quot;, &quot;private&quot;);
+          //  }
+            response.setHeader(&quot;Expires&quot;, DATE_ONE);
+        }
+
+        int i;
+        // Enforce any user data constraint for this security constraint
+        if (log.isDebugEnabled()) {
+            log.debug(&quot; Calling hasUserDataPermission()&quot;);
+        }
+        if (!realm.hasUserDataPermission(request, response,
+                                         constraints)) {
+            if (log.isDebugEnabled()) {
+                log.debug(&quot; Failed hasUserDataPermission() test&quot;);
+            }
+            /*
+             * ASSERT: Authenticator already set the appropriate
+             * HTTP status code, so we do not have to do anything special
+             */
+            return;
+        }
+
+        // Since authenticate modifies the response on failure,
+        // we have to check for allow-from-all first.
+        boolean authRequired = true;
+        for(i=0; i &lt; constraints.length &amp;&amp; authRequired; i++) {
+            if(!constraints[i].getAuthConstraint()) {
+                authRequired = false;
+            } else if(!constraints[i].getAllRoles()) {
+                String [] roles = constraints[i].findAuthRoles();
+                if(roles == null || roles.length == 0) {
+                    authRequired = false;
+                }
+            }
+        }
+             
+        if(authRequired) {  
+            if (log.isDebugEnabled()) {
+                log.debug(&quot; Calling authenticate()&quot;);
+            }
+            if (!authenticateSSL(request, response, config)){  // RU - this is the SSL auth
+                if (!authenticate(request, response, config)) { // RU - and this is the FORM fallback!
+                    if (log.isDebugEnabled()) {
+                        log.debug(&quot; Failed authenticate() test for both SSL and form&quot;);
+                    }
+                    /*
+                     * ASSERT: Authenticator already set the appropriate
+                     * HTTP status code, so we do not have to do anything
+                     * special
+                     */
+                    return;
+                }             	
+            }
+        }
+    
+        if (log.isDebugEnabled()) {
+            log.debug(&quot; Calling accessControl()&quot;);
+        }
+        if (!realm.hasResourcePermission(request, response,
+                                         constraints,
+                                         this.context)) {
+            if (log.isDebugEnabled()) {
+                log.debug(&quot; Failed accessControl() test&quot;);
+            }
+            /*
+             * ASSERT: AccessControl method has already set the
+             * appropriate HTTP status code, so we do not have to do
+             * anything special
+             */
+            return;
+        }
+    
+        // Any and all specified constraints have been satisfied
+        if (log.isDebugEnabled()) {
+            log.debug(&quot; Successfully passed all security constraints&quot;);
+        }
+        getNext().invoke(request, response);
+
+    }
+
+
+    /**
+     * Authenticate the user by checking for the existence of a certificate
+     * chain, and optionally asking a trust manager to validate that we trust
+     * this user.
+     * 
+     * 
+     * This method was modified from the original SSLAuthenticator not to throw exceptions
+     * or modify the response, since there will be FORM authentication fallback.
+     * 
+     *
+     * @param request Request we are processing
+     * @param response Response we are creating
+     * @param config    Login configuration describing how authentication
+     *              should be performed
+     *
+     * @exception IOException if an input/output error occurs
+     */
+    public boolean authenticateSSL(Request request,
+                                Response response,
+                                LoginConfig config)
+        throws IOException {
+
+        // Have we already authenticated someone?
+        Principal principal = request.getUserPrincipal();
+        //String ssoId = (String) request.getNote(Constants.REQ_SSOID_NOTE);
+        if (principal != null) {
+            if (log.isDebugEnabled())
+            	log.debug(&quot;Already authenticated &#39;&quot; + principal.getName() + &quot;&#39;&quot;);
+            // Associate the session with any existing SSO session in order
+            // to get coordinated session invalidation at logout
+            String ssoId = (String) request.getNote(Constants.REQ_SSOID_NOTE);
+            if (ssoId != null)
+                associate(ssoId, request.getSessionInternal(true));
+            return (true);
+        }
+
+        // NOTE: We don&#39;t try to reauthenticate using any existing SSO session,
+        // because that will only work if the original authentication was
+        // BASIC or FORM, which are less secure than the CLIENT-CERT auth-type
+        // specified for this webapp
+        //
+        // Uncomment below to allow previous FORM or BASIC authentications
+        // to authenticate users for this webapp
+        // TO-DO make this a configurable attribute (in SingleSignOn??)
+        /*
+        // Is there an SSO session against which we can try to reauthenticate?
+        if (ssoId != null) {
+            if (log.isDebugEnabled())
+                log.debug(&quot;SSO Id &quot; + ssoId + &quot; set; attempting &quot; +
+                          &quot;reauthentication&quot;);
+            // Try to reauthenticate using data cached by SSO.  If this fails,
+            // either the original SSO logon was of DIGEST or SSL (which
+            // we can&#39;t reauthenticate ourselves because there is no
+            // cached username and password), or the realm denied
+            // the user&#39;s reauthentication for some reason.
+            // In either case we have to prompt the user for a logon
+            if (reauthenticateFromSSO(ssoId, request))
+                return true;
+        }
+        */
+
+        // Retrieve the certificate chain for this client
+        if (log.isDebugEnabled())
+        	log.debug(&quot; Looking up certificates&quot;);
+
+        X509Certificate certs[] = (X509Certificate[])
+            request.getAttribute(Globals.CERTIFICATES_ATTR);
+        if ((certs == null) || (certs.length &lt; 1)) {
+        	log.debug(&quot; No certificates found in HttpRequest.&quot;);
+            request.getCoyoteRequest().action
+                              (ActionCode.ACTION_REQ_SSL_CERTIFICATE, null);
+            certs = (X509Certificate[])
+                request.getAttribute(Globals.CERTIFICATES_ATTR);
+            if (certs!=null &amp;&amp; (certs.length &gt;= 1))
+            	log.debug(&quot;Certificates found in CoyoteRequest&quot;);
+        }
+        else
+        	log.debug(&quot;Certificates found in HttpRequest&quot;);
+        if ((certs == null) || (certs.length &lt; 1)) {
+            if (log.isDebugEnabled())
+            	log.debug(&quot;  No certificates included with this request&quot;);
+         /*   response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                               sm.getString(&quot;authenticator.certificates&quot;)); */
+            return (false);
+        }
+
+        log.debug(&quot;Found certificates, authenticating using them!&quot;);
+        
+        // Authenticate the specified certificate chain
+        principal = context.getRealm().authenticate(certs);
+        if (principal == null) {
+            if (log.isDebugEnabled())
+            	log.debug(&quot;  Realm.authenticate() returned false&quot;);
+         /*   response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                               sm.getString(&quot;authenticator.unauthorized&quot;)); */
+            return (false);
+        }
+
+        // Cache the principal (if requested) and record this authentication
+        register(request, response, principal, Constants.CERT_METHOD,
+                 null, null);
+        return (true);
+
+    }
+
+	
+	
+	
+}
+</pre>
+</div></div>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

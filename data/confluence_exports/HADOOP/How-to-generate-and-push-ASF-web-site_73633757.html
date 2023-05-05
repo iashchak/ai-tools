@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : How to generate and push ASF web site</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-Contributor-Guide_89071892.html">Hadoop Contributor Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : How to generate and push ASF web site
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Akira Ajisaka</span>, last modified by <span class='editor'> Arpit Agarwal</span> on мар 04, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>In <a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14163" rel="nofollow">HADOOP-14163</a>, Apache Hadoop ASF web site has been migrated from SVN to Git.</p><p>The site source is in a <a class="external-link" href="http://github.com/apache/hadoop-site" rel="nofollow">dedicated repository</a> under asf-site directory and the generated web site is in the <strong>same branch</strong> but in the content folder.</p><p><br/></p><p>1. First you need a directory with the asf-site branch which contains the rendered site:</p><pre>git clone <a class="external-link" href="mailto:git@github.com" rel="nofollow">git@github.com</a>:apache/hadoop-site.git</pre><p>For <strong>committers</strong> (without gitbox integration) use the following url:</p><pre>git clone <a class="external-link" href="https://gitbox.apache.org/repos/asf/hadoop-site.git" rel="nofollow">https://gitbox.apache.org/repos/asf/hadoop-site.git</a> -b asf-site</pre><p>Please note that the repository contains multiple gigabytes of javadoc files. If you are not a release manager (=you don't need to update the javadocs) please check the sparse checkout section below.</p><p>2. Second you need the Hugo site generator. As it's written in go, all you need is a single binary. You can download it from the <a class="external-link" href="https://github.com/gohugoio/hugo/releases" rel="nofollow">release</a> page (or you can check the <a class="external-link" href="https://gohugo.io/getting-started/installing/" rel="nofollow">documentation</a>)</p><p>3. Now you can generate the site:</p><pre>hugo<br/><br/>Check the results:</pre><pre>firefox content/index.html</pre><p>You can also check the result during the edits with live-reload:</p><pre>hugo server</pre><p>And check <a class="external-link" href="http://localhost:1313" rel="nofollow">http://localhost:1313</a></p><p>4. <strong>Please commit the generated site</strong> (./content) together/after with the source changes. Both the sources (./src) and both the generated site (./content) are on the same branch (asf-site). Just commit everything from your local working copy. The generation of the site is not automatic (yet), but you need to render the site and commit the rendered site, too.</p><h2 id="HowtogenerateandpushASFwebsite-Createanewreleases">Create a new releases</h2><p>To create a new item on the hadoop site just create a new markdown file with the standard header and put it to the src/releases folder. For example:</p><pre>---</pre><pre>title: Release 2.8.1 available<br/>date: 2017-06-08<br/>linked: true<br/>---<br/>&lt;!---<br/>  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);<br/>  you may not use this file except in compliance with the License.<br/>  You may obtain a copy of the License at<br/><br/>   <a class="external-link" href="http://www.apache.org/licenses/LICENSE-2.0" rel="nofollow">http://www.apache.org/licenses/LICENSE-2.0</a><br/><br/>  Unless required by applicable law or agreed to in writing, software<br/>  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,<br/>  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br/>  See the License for the specific language governing permissions and<br/>  limitations under the License. See accompanying LICENSE file.<br/>--&gt;<br/><br/>This is a security release in the 2.8.0 release line. It consists of<br/>2.8.0 plus security fixes. Users on 2.8.0 are encouraged to upgrade to<br/>2.8.1.<br/><br/>Please note that 2.8.x release line continues to be not yet ready for<br/>production use. Critical issues are being ironed out via testing and<br/>downstream adoption. Production users should wait for a subsequent<br/>release in the 2.8.x line. </pre><p>Please note, the<em> linked: true</em> attribute in the header. Only the linked releases will be available from the menu. Most probably you would like to remove this attribute from the previous release file.</p><h2 id="HowtogenerateandpushASFwebsite-Sparsecheckout">Sparse checkout</h2><p>The repository contains a lot of javadoc files. If you would like to modify only the site content you can do a sparse checkout with the following command:</p><pre>git clone <a class="external-link" href="https://gitbox.apache.org/repos/asf/hadoop-site.git" rel="nofollow">https://gitbox.apache.org/repos/asf/hadoop-site.git</a> --no-checkout</pre><pre>cd hadoop-site</pre><pre>git config core.sparsecheckout true</pre><pre>echo '/*' &gt; .git/info/sparse-checkout</pre><pre>echo '!content/docs' &gt;&gt;  .git/info/sparse-checkout</pre><pre>git checkout asf-site</pre><h2 id="HowtogenerateandpushASFwebsite-Gitlogwithoutthecontent">Git log without the content</h2><p>The repository containers both the source and the rendered version of the site. If you are interested about the pure change in the source side, you can use git log with an exclude pattern:</p><pre>git log -p -- . &quot;:(exclude)content&quot;</pre><pre><br/></pre>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

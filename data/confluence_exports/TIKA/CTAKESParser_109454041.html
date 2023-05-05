@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : CTAKESParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : CTAKESParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Chris Mattmann</span> on мар 18, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Tika now has the ability to leverage <a class="external-link" href="http://ctakes.apache.org" rel="nofollow">Apache cTAKES</a> for use in parsing biomedical information from text. This page documents how to get Tika working with cTAKES.</p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040428966 {padding: 0px;}
+div.rbtoc1683040428966 ul {margin-left: 0px;}
+div.rbtoc1683040428966 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040428966'>
+<ul class='toc-indentation'>
+<li><a href='#CTAKESParser-InstallingcTAKES'>Installing cTAKES</a></li>
+<li><a href='#CTAKESParser-SigningupforaUMLSaccount'>Signing up for a UMLS account</a></li>
+<li><a href='#CTAKESParser-PrepareyourCTAKESconfigurationpropertiesfile'>Prepare your CTAKES configuration properties file</a></li>
+<li><a href='#CTAKESParser-SettinguptheTikaConfigfile'>Setting up the Tika Config file</a></li>
+<li><a href='#CTAKESParser-Puttingitalltogether:Tika-App'>Putting it all together: Tika-App</a></li>
+<li><a href='#CTAKESParser-WillthisworkfromTikaServer?'>Will this work from Tika Server?</a>
+<ul class='toc-indentation'>
+<li><a href='#CTAKESParser-ExampleRequest'>Example Request</a></li>
+<li><a href='#CTAKESParser-ExampleResponse'>Example Response</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h1 id="CTAKESParser-InstallingcTAKES">Installing cTAKES</h1><p>The first step to getting the parser up and running is installing Apache cTAKES. Read on the following should work well on *nix systems. Windows directions are TODO. It's very important to install at least cTAKES version 3.2.2 or later.</p><ol><li><code>mkdir -p $HOME/src &amp;&amp; cd $HOME/src</code></li><li><code>curl -O <a class="external-link" href="http://mirrors.ibiblio.org/apache//ctakes/ctakes-3.2.2/apache-ctakes-3.2.2-bin.tar.gz" rel="nofollow">http://mirrors.ibiblio.org/apache//ctakes/ctakes-3.2.2/apache-ctakes-3.2.2-bin.tar.gz</a></code></li><li><code>tar xvzf *.tar.gz</code></li><li><code>export CTAKES_HOME=$HOME/src/apache-ctakes-3.2.2</code></li></ol><p>Now you have to download a separate resources package for cTAKES:</p><ol><li><code>cd $HOME/src</code></li><li><code>curl -Lo ctakes-resources-3.2.1.1-bin.zip &quot;http://downloads.sourceforge.net/project/ctakesresources/ctakes-resources-3.2.1.1-bin.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fctakesresources%2F%3Fsource%3Dtyp_redirect&amp;ts=1433609725&amp;use_mirror=softlayer-dal&quot;</code> </li><li> <code>mv *.zip apache-ctakes-3.2.2</code></li><li><code>cd apache-ctakes-3.2.2</code> 5. <code>unzip ctakes-resources-3.2.1.1-bin.zip</code></li></ol><p>After the above is done, cTAKES is installed.</p><h1 id="CTAKESParser-SigningupforaUMLSaccount">Signing up for a UMLS account</h1><p>To use cTAKES and the cTAKES Tika Parser you need a Unified Medical Language System (UMLS) account. You can sign up for one <a class="external-link" href="https://uts.nlm.nih.gov/home.html" rel="nofollow">here</a>. It can take up to 3 business days to get an account so be patient. Once your account is approved you can use the cTAKESParser and read on. Future improvements are to provide a means to include the offline UMLS dictionary.</p><h1 id="CTAKESParser-PrepareyourCTAKESconfigurationpropertiesfile">Prepare your CTAKES configuration properties file</h1><p>The cTAKESParser requires a configuration properties file. You can find an example <a class="external-link" href="https://raw.githubusercontent.com/chrismattmann/ctakesparser-utils/master/config/org/apache/tika/parser/ctakes/CTAKESConfig.properties" rel="nofollow">here</a> originally from <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1645" rel="nofollow">TIKA-1645</a> and adapted and maintained in Github now in <a class="external-link" href="https://github.com/chrismattmann/ctakesparser-utils/" rel="nofollow">ctakesparser-utils</a>.</p><p>Edit it as follows.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>aeDescriptorPath=/ctakes-clinical-pipeline/desc/analysis_engine/AggregatePlaintextUMLSProcessor.xml
+text=false
+annotationProps=BEGIN,END,ONTOLOGY_CONCEPT_ARR
+separatorChar=:
+metadata=Study Title,Study Description
+UMLSUser=your_username
+UMLPass=your_password
+</pre>
+</div></div><p>NB the <a class="unresolved" href="#">AggregatePlaintext</a>UMLSProcessor may not extract all the medication mentions: if so, try the <a class="unresolved" href="#">AggregatePlaintextFast</a>UMLSProcessor</p><p>e.g., aeDescriptorPath=/ctakes-clinical-pipeline/desc/analysis_engine/AggregatePlaintextFastUMLSProcessor.xml</p><p>Be advised that if you do implement this change within a session you may find that the database gets locked temporarily. Clear the *.lck files, or just reboot the computer.</p><p>Analysis is performed on the extracted text and/or metadata from the <a class="unresolved" href="#">AutoDetectParser</a>. cTAKESParser decorates <a class="unresolved" href="#">AutoDetectParser</a>, and then takes the extracted metadata and/or text (or both) and then adds ctakes: prefixed metadata for procedure, medication, disease and other extracted information. To use the cTAKESParser, update the metadata property to be a comma separated list of metadata fields to search for medical terminology in. Then, if you would like the parser to also search the extracted text from Tika, set <code>text=true</code>.</p><p>The <code>annotationProps</code> is a comma separated list of what cTAKES properties to extract, and <code>separatorChar</code> is what to use to separate them in the extracted field. So, we are telling cTAKES to extract the begin and end of the found text (BEGIN,END), first, and then extract the Ontology concept array (ONTOLOGY_CONCEPT_ARR). UMLS uses identifiers for each term, that can be used to then search UMLS for more information about that term - this array includes the UMLS pointer to the term, and any also identified similar terms. An example of the extracted annotationProps would be:</p><p><code>mantle cell lymphoma:40592:40612:C0334634,C0334634,C0334634,C0334634</code></p><p>In this example, a cTAKES <a class="unresolved" href="#">DiseaseDisorderMention</a> of <code>mantle cell lymphoma</code> is identified, and then its associated annotation props (the text begins at position 40592 and ends at position 40612 (could be used for highlighting), and then an associated array of medical ontology concept identifiers are provided, i.e., C0334634,C0334634,C0334634,C0334634.</p><p>You will need to place the CTAKESConfig.properties file in a classpath directory, e.g., org/apache/tika/parser/ctakes and include it on the classpath when calling the parser. Follow these steps:</p><ol><li><code>mkdir -p $HOME/src/ctakes-config/org/apache/tika/parser/ctakes &amp;&amp; cd $HOME/src/ctakes-config/org/apache/tika/parser/ctakes</code></li><li><code>curl -kO &quot;https://raw.githubusercontent.com/chrismattmann/ctakesparser-utils/master/config/org/apache/tika/parser/ctakes/CTAKESConfig.properties&quot;</code></li></ol><h1 id="CTAKESParser-SettinguptheTikaConfigfile">Setting up the Tika Config file</h1><p>You will need a custom Tika configuration file for the parser. You can find one <a class="external-link" href="https://raw.githubusercontent.com/chrismattmann/ctakesparser-utils/master/config/tika-config.xml" rel="nofollow">here</a>. The reason is that since cTAKESParser decorates <a class="unresolved" href="#">AutoDetectParser</a>, in reality, cTAKESParser can handle *any* kind of file type that it can. But you have to make cTAKESParser intercept the mime types you want it to extract biomedical information from. So if you want Tika and its cTAKESParser to etxract biomedical information from application/pdf files, you will need this custom config and to add application/pdf as a mime that the parser can deal with. The default config provided looks like:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
+&lt;properties&gt;
+  &lt;parsers&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.ctakes.CTAKESParser&quot;&gt;
+      &lt;mime&gt;application/x-isatab&lt;/mime&gt;
+      &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;/&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;
+&lt;/properties&gt;
+</pre>
+</div></div><p>This maps the cTAKESParser to <a class="unresolved" href="#">IsaTab</a> biomedical files, and then the associated default CTAKESProperties.config file described above searches in <a class="unresolved" href="#">StudyTitle</a> and <a class="unresolved" href="#">StudyDescription</a> metadata fields from that. However, you could easily add:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
+&lt;properties&gt;
+  &lt;parsers&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.ctakes.CTAKESParser&quot;&gt;
+      &lt;mime&gt;application/x-isatab&lt;/mime&gt;
+      &lt;mime&gt;application/pdf&lt;/mime&gt;
+      &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;/&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;
+&lt;/properties&gt;
+</pre>
+</div></div><p>To parse PDF files, and then set <code>text=true</code> in CTAKESProperties.config to parse PDF files and extract biomedical information.</p><p>To download and set up the custom Tika config, do the following.</p><ol><li><code>cd $HOME/src/ctakes-config</code></li><li><code>curl -kO &quot;https://raw.githubusercontent.com/chrismattmann/ctakesparser-utils/master/config/tika-config.xml&quot;</code></li></ol><h1 id="CTAKESParser-Puttingitalltogether:Tika-App">Putting it all together: Tika-App</h1><p>With all of the above information set and provided, you can call the cTAKESParser in Tika. Below is an example of how to use it on a downloaded PDF file from <a class="unresolved" href="#">PubMed</a>. You can find an example PDF file <a class="external-link" href="http://onlinelibrary.wiley.com/doi/10.1002/ajh.23615/epdf" rel="nofollow">here</a>.</p><p>The cTAKES parser can then be invoked from tika-app as follows:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -classpath $HOME/src/ctakes-config:${CTAKES_HOME}/lib/opennlp-tools-1.5.3.jar:${TIKA_HOME}/tika-app/target/tika-app-X.Y-SNAPSHOT.jar:${CTAKES_HOME}/desc:${CTAKES_HOME}/resources:${CTAKES_HOME}/lib/\* org.apache.tika.cli.TikaCLI --config=$HOME/src/ctakes-config/tika-config.xml -m Vose-2013-American_Journal_of_Hematology.pdf 
+</pre>
+</div></div><p>Which will produce (after much printing and output):</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Content-Length: 457115
+Content-Type: application/pdf
+Creation-Date: 2013-11-20T13:24:11Z
+Last-Modified: 2013-11-22T14:13:25Z
+Last-Save-Date: 2013-11-22T14:13:25Z
+WPS-ARTICLEDOI: 10.1002/ajh.23615
+WPS-JOURNALDOI: 10.1002/(ISSN)1096-8652
+WPS-PROCLEVEL: 2
+X-Parsed-By: org.apache.tika.parser.CompositeParser
+X-Parsed-By: org.apache.tika.parser.ctakes.CTAKESParser
+X-Parsed-By: org.apache.tika.parser.DefaultParser
+X-Parsed-By: org.apache.tika.parser.pdf.PDFParser
+access_permission:assemble_document: true
+access_permission:can_modify: true
+access_permission:can_print: true
+access_permission:can_print_degraded: true
+access_permission:extract_content: true
+access_permission:extract_for_accessibility: true
+access_permission:fill_in_form: true
+access_permission:modify_annotations: true
+created: Wed Nov 20 05:24:11 PST 2013
+ctakes:AnatomicalSiteMention: Cell:189:193:C0007634,C1269647
+ctakes:AnatomicalSiteMention: Media:432:437:C0162867
+ctakes:AnatomicalSiteMention: Media:593:598:C0162867
+ctakes:AnatomicalSiteMention: cell:967:971:C0007634,C1269647
+ctakes:AnatomicalSiteMention: cell:1045:1049:C0007634,C1269647
+ctakes:AnatomicalSiteMention: cell:1124:1128:C1269647,C0007634
+ctakes:AnatomicalSiteMention: Media:2134:2139:C0162867
+ctakes:AnatomicalSiteMention: cell:3716:3720:C1269647,C0007634
+ctakes:AnatomicalSiteMention: cell:3839:3843:C1269647,C0007634
+ctakes:AnatomicalSiteMention: lymph nodes:3920:3931:C0024204,C1269047
+ctakes:AnatomicalSiteMention: spleen:3933:3939:C1278932,C0037993
+ctakes:AnatomicalSiteMention: blood:3941:3946:C0005767
+ctakes:AnatomicalSiteMention: bone marrow:3952:3963:C0005953,C0005953,C0005953
+ctakes:AnatomicalSiteMention: bone:3952:3956:C1266909,C1266908,C0262950,C0262950,C0391978,C0391978
+ctakes:AnatomicalSiteMention: lymph node:4093:4103:C1269047,C0024204
+ctakes:AnatomicalSiteMention: bone marrow:4105:4116:C0005953,C0005953,C0005953
+ctakes:AnatomicalSiteMention: bone:4105:4109:C0391978,C0391978,C0262950,C1266909,C0262950,C1266908
+ctakes:AnatomicalSiteMention: arm:17428:17431:C1140618,C1269078,C0446516,C1140618,C1140618,C1269612
+ctakes:AnatomicalSiteMention: R:17505:17506:C0035639
+ctakes:AnatomicalSiteMention: arm:17520:17523:C1140618,C1269078,C1140618,C1269612,C1140618,C0446516
+ctakes:AnatomicalSiteMention: R:17568:17569:C0035639
+ctakes:AnatomicalSiteMention: R:17629:17630:C0035639
+ctakes:AnatomicalSiteMention: R:17989:17990:C0035639
+ctakes:AnatomicalSiteMention: R:18023:18024:C0035639
+ctakes:AnatomicalSiteMention: stem cell:18458:18467:C0038250,C0018956,C0038250
+ctakes:AnatomicalSiteMention: cell:18463:18467:C0007634,C1269647
+ctakes:AnatomicalSiteMention: arm:18561:18564:C1269078,C1140618,C1140618,C1269612,C0446516,C1140618
+ctakes:AnatomicalSiteMention: arm:18613:18616:C1140618,C1140618,C0446516,C1269078,C1140618,C1269612
+ctakes:AnatomicalSiteMention: arm:18644:18647:C1269078,C1140618,C0446516,C1140618,C1140618,C1269612
+ctakes:AnatomicalSiteMention: white blood cells:18942:18959:C0023516,C0023516
+ctakes:AnatomicalSiteMention: blood cells:18948:18959:C0005773
+ctakes:AnatomicalSiteMention: blood:18948:18953:C0005767
+ctakes:AnatomicalSiteMention: cells:18954:18959:C1269647,C0007634
+ctakes:AnatomicalSiteMention: WBC:19039:19042:C0023516,C0023516
+ctakes:AnatomicalSiteMention: R:19995:19996:C0035639
+ctakes:AnatomicalSiteMention: R:20250:20251:C0035639
+ctakes:AnatomicalSiteMention: R:21066:21067:C0035639
+ctakes:AnatomicalSiteMention: R:21138:21139:C0035639
+...
+ctakes:AnatomicalSiteMention: stem cell:21200:21209:C0038250,C0018956,C0038250
+ctakes:AnatomicalSiteMention: cell:21205:21209:C1269647,C0007634
+ctakes:AnatomicalSiteMention: stem cell:21331:21340:C0038250,C0018956,C0038250
+ctakes:DiseaseDisorderMention: MCL:12646:12649:C0334634,C0334634,C0334634,C0334634
+ctakes:DiseaseDisorderMention: proliferation:12709:12722:C0334094
+ctakes:DiseaseDisorderMention: mens:12922:12926:C0027662,C0027662,C0027662
+ctakes:DiseaseDisorderMention: graft-versus host disease:26944:26969:C0018133,C0018133
+ctakes:DiseaseDisorderMention: disease:26962:26969:C0012634
+ctakes:MedicationMention: lenalidomide:24088:24100:C1144149,C1144149
+ctakes:SignSymptomMention: OS:4921:4923:C0232275
+ctakes:SignSymptomMention: OS:4972:4974:C0232275
+ctakes:SignSymptomMention: OS:4995:4997:C0232275
+ctakes:SignSymptomMention: education:40715:40724:C0013658,C0013658,C0013658,C0424927,C0013658,C0013658,C0013658,C0013658
+ctakes:schema: coveredText:start:end:ontologyConceptArr
+...
+date: 2013-11-22T14:13:25Z
+dc:format: application/pdf; version=1.5
+dc:title: JW-AJH#130002 1083..1088
+dcterms:created: 2013-11-20T13:24:11Z
+dcterms:modified: 2013-11-22T14:13:25Z
+meta:creation-date: 2013-11-20T13:24:11Z
+meta:save-date: 2013-11-22T14:13:25Z
+modified: 2013-11-22T14:13:25Z
+pdf:PDFVersion: 1.5
+pdf:encrypted: false
+producer: PDFlib PLOP 2.0.0p6 (SunOS)/Adobe LiveCycle PDFG ES
+resourceName: Vose-2013-American_Journal_of_Hematology.pdf
+title: JW-AJH#130002 1083..1088
+xmp:CreatorTool: Arbortext Advanced Print Publisher 9.0.114/W
+xmpTPg:NPages: 7
+</pre>
+</div></div><h1 id="CTAKESParser-WillthisworkfromTikaServer?">Will this work from Tika Server?</h1><p>Yes, it will! However it's a little tricky since cTAKES also includes its own version of Apache CXF and the jar version numbers are different than the version Tika Server uses, causing the classpath we generated before to fail (the one for tika-app). To obviate this, follow the below steps:</p><p>First, generate a script that will build us a classpath from <code>$CTAKES_HOME/lib</code> that doesn't include the cxf jar files. This would look something like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>#!/bin/bash
+
+CLASSPATH=&quot;&quot;
+for f in $(ls ${CTAKES_HOME}/lib/*.jar); do
+    if [[ $f != *&quot;cxf&quot;* ]]; then
+        CLASSPATH+=$f
+        CLASSPATH+=&quot;:&quot;
+    fi
+done
+
+echo $CLASSPATH
+</pre>
+</div></div><p>Save this script as <code>gen-server-classpath.sh</code>. Then, start Tika-server like so:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>java -classpath ./config:${CTAKES_HOME}/lib/opennlp-tools-1.5.3.jar:${TIKA_HOME}/tika-server/target/tika-server-X.Y-SNAPSHOT.jar:${CTAKES_HOME}/desc:${CTAKES_HOME}/resources:`./gen-server-classpath.sh` org.apache.tika.server.TikaServerCli --config tika-config.xml
+</pre>
+</div></div><p>With Tika server started, let's post that biomedical PDF file to it and see what happens!</p><h2 id="CTAKESParser-ExampleRequest">Example Request</h2><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>curl -T Vose-2013-American_Journal_of_Hematology.pdf -H &quot;Content-Disposition: attachment;filename=Vose-2013-American_Journal_of_Hematology.pdf&quot; http://localhost:9998/rmeta
+</pre>
+</div></div><h2 id="CTAKESParser-ExampleResponse">Example Response</h2><p>And the output should be (much omitted from below):</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>[
+    {
+        &quot;Content-Type&quot;: &quot;application/pdf&quot;,
+        &quot;Creation-Date&quot;: &quot;2013-11-20T13:24:11Z&quot;,
+        &quot;Last-Modified&quot;: &quot;2013-11-22T14:13:25Z&quot;,
+        &quot;Last-Save-Date&quot;: &quot;2013-11-22T14:13:25Z&quot;,
+        &quot;WPS-ARTICLEDOI&quot;: &quot;10.1002/ajh.23615&quot;,
+        &quot;WPS-JOURNALDOI&quot;: &quot;10.1002/(ISSN)1096-8652&quot;,
+        &quot;WPS-PROCLEVEL&quot;: &quot;2&quot;,
+        &quot;X-Parsed-By&quot;: [
+            &quot;org.apache.tika.parser.CompositeParser&quot;,
+            &quot;org.apache.tika.parser.ctakes.CTAKESParser&quot;,
+            &quot;org.apache.tika.parser.DefaultParser&quot;,
+            &quot;org.apache.tika.parser.pdf.PDFParser&quot;
+        ],
+        &quot;X-TIKA:content&quot;: &quot;\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJW-AJH#130002 1083..1088\n\n\nContinuing medical education activity\nin American Journal of Hematology\n\nCME Author: Julie M. Vose, M.D., M.B.A.\nCME Editor: Ayalew Tefferi, M.D.\n\nCME Information: Mantle Cell Lymphoma: 2013 Update on\nDiagnosis, Risk-Stratification andClinical Management\nIf you wish to receive credit for this activity, please refer\n\nto the website: www.wileyhealthlearning.com\n\nAccreditation and Designation Statement:\n\nBlackwell Futura Media Services is accredited by the\nAccreditation Council for Continuing Medical Education to\nprovide continuing medical education for physicians.\nBlackwell Futura Media Services designates this journal-\n\nbased CME for a maximum of 1 AMA PRA Category 1\nCreditTM. Physicians should only claim credit commensu-\nrate with the extent of their participation in the activity.\n\nEducational Objectives\n\nUpon completion of this educational activity, participants\nwill be better able to:\n1. Identify the histologic types and prognostic models\n\nused for mantle cell lymphoma\n2. Explain the different options for initial therapy for man-\n\ntle cell lymphoma\n3. Explain the different options for treatment of recurrent\n\nmantle cell lymphoma\n\nActivity Disclosures\n\nNo commercial support has been accepted related to the\ndevelopment or publication of this activity.\nAuthor: Julie M. Vose, M.D., M.B.A., discloses research\n\ngrant support from Allos Therapeautics/Spectrum, Bristol-\nMyers Squibb, Celgene, Genentech, GlaxoSmithKline, Incyte\nCorp., Janssen Biotech, Millennium, Onyx Pharmaceuticals,\nPharmacyclics, Sanofi-Aventis US, Inc., and US Biotest, Inc.\nCME \n&quot;,
+        &quot;X-TIKA:parse_time_millis&quot;: &quot;366163&quot;,
+        &quot;access_permission:assemble_document&quot;: &quot;true&quot;,
+        &quot;access_permission:can_modify&quot;: &quot;true&quot;,
+        &quot;access_permission:can_print&quot;: &quot;true&quot;,
+        &quot;access_permission:can_print_degraded&quot;: &quot;true&quot;,
+        &quot;access_permission:extract_content&quot;: &quot;true&quot;,
+        &quot;access_permission:extract_for_accessibility&quot;: &quot;true&quot;,
+        &quot;access_permission:fill_in_form&quot;: &quot;true&quot;,
+        &quot;access_permission:modify_annotations&quot;: &quot;true&quot;,
+        &quot;created&quot;: &quot;Wed Nov 20 05:24:11 PST 2013&quot;,
+        &quot;ctakes:AnatomicalSiteMention&quot;: [
+            &quot;Cell:189:193:C0007634,C1269647&quot;,
+            &quot;Media:432:437:C0162867&quot;,
+            &quot;Media:593:598:C0162867&quot;,
+            &quot;cell:967:971:C0007634,C1269647&quot;,
+            &quot;cell:1045:1049:C0007634,C1269647&quot;,
+            &quot;cell:1124:1128:C0007634,C1269647&quot;,
+            &quot;Media:2134:2139:C0162867&quot;,
+            &quot;cell:3716:3720:C0007634,C1269647&quot;,
+            &quot;cell:3839:3843:C0007634,C1269647&quot;,
+            &quot;lymph nodes:3920:3931:C1269047,C0024204&quot;,
+            &quot;spleen:3933:3939:C1278932,C0037993&quot;,
+           ],
+        &quot;ctakes:DateAnnotation&quot;: [
+            &quot;October 2013:8713:8725:&quot;,
+            &quot;1/2:35241:35244:&quot;,
+            &quot;1/2:39154:39157:&quot;
+        ],
+        &quot;ctakes:DiseaseDisorderMention&quot;: [
+            &quot;Mantle Cell Lymphoma:182:202:C0334634,C0334634,C0334634,C0334634&quot;,
+            &quot;Lymphoma:194:202:C0024299,C0024299,C0024299,C0024299,C0024299,C0024299,C0024299,C0024299,C0024299&quot;,
+            &quot;ards:1673:1677:C0035222,C0035222,C0035222,C0035222,C0035222,C0035222&quot;,
+            &quot;dis:1955:1958:C0012634&quot;,
+            &quot;HEMATOLOGICAL MALIGNANCIES:3645:3671:C0376545,C0376545,C0376545&quot;,
+         ],
+        &quot;ctakes:FractionAnnotation&quot;: [
+            &quot;.1088:19:24:&quot;,
+            &quot;2013.:8781:8786:&quot;,
+            &quot;10.1002:8857:8864:&quot;,
+            &quot;.2:11412:11414:&quot;,
+            &quot;11.:11849:11852:&quot;,
+         ],
+        &quot;ctakes:MeasurementAnnotation&quot;: [
+            &quot;106 L:18964:18969:&quot;,
+            &quot;175 mg:23907:23913:&quot;
+        ],
+        &quot;ctakes:MedicationMention&quot;: [
+            &quot;duration:3987:3995:C2926735&quot;,
+            &quot;Bendamustine:5472:5484:C0525079,C0525079&quot;,
+            &quot;bortezomib:5609:5619:C1176309,C1176309&quot;,
+            &quot;Tyrosine:5735:5743:C0041485,C0041485&quot;,
+            &quot;formalin:12875:12883:C0949307,C0949307&quot;,
+            &quot;paraffin:12891:12899:C0030415&quot;,
+        ],
+        &quot;ctakes:ProcedureMention&quot;: [
+            &quot;therapy:1025:1032:C0087111,C0087111,C0087111,C0087111&quot;,
+            &quot;treatment:1095:1104:C0087111,C0087111,C1533734,C0087111,C1533734,C0087111&quot;,
+         ],
+        &quot;ctakes:RomanNumeralAnnotation&quot;: [
+            &quot;M:127:128:&quot;,
+            &quot;M:161:162:&quot;,
+            &quot;D:163:164:&quot;,
+         ],
+        &quot;ctakes:SignSymptomMention&quot;: [
+            &quot;education:43:52:C0013658,C0013658,C0013658,C0424927,C0013658,C0013658,C0013658,C0013658&quot;,
+            &quot;M:127:128:C0024554,C0024554,C0024554,C0024554&quot;,
+        ],
+        &quot;ctakes:schema&quot;: &quot;coveredText:start:end:ontologyConceptArr&quot;,
+        &quot;date&quot;: &quot;2013-11-22T14:13:25Z&quot;,
+        &quot;dc:format&quot;: &quot;application/pdf; version=1.5&quot;,
+        &quot;dc:title&quot;: &quot;JW-AJH#130002 1083..1088&quot;,
+        &quot;dcterms:created&quot;: &quot;2013-11-20T13:24:11Z&quot;,
+        &quot;dcterms:modified&quot;: &quot;2013-11-22T14:13:25Z&quot;,
+        &quot;meta:creation-date&quot;: &quot;2013-11-20T13:24:11Z&quot;,
+        &quot;meta:save-date&quot;: &quot;2013-11-22T14:13:25Z&quot;,
+        &quot;modified&quot;: &quot;2013-11-22T14:13:25Z&quot;,
+        &quot;pdf:PDFVersion&quot;: &quot;1.5&quot;,
+        &quot;pdf:encrypted&quot;: &quot;false&quot;,
+        &quot;producer&quot;: &quot;PDFlib PLOP 2.0.0p6 (SunOS)/Adobe LiveCycle PDFG ES&quot;,
+        &quot;resourceName&quot;: &quot;Vose-2013-American_Journal_of_Hematology.pdf&quot;,
+        &quot;title&quot;: &quot;JW-AJH#130002 1083..1088&quot;,
+        &quot;xmp:CreatorTool&quot;: &quot;Arbortext Advanced Print Publisher 9.0.114/W&quot;,
+        &quot;xmpTPg:NPages&quot;: &quot;7&quot;
+    }
+]
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

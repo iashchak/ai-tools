@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Class Not Found Issues</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Class Not Found Issues
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 23, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/tSklBg" rel="nofollow">https://cwiki.apache.org/confluence/x/tSklBg</a></p><h2 id="ClassNotFoundIssues-Preface">Preface</h2><p>This page discusses the various ways you see Class Not Found errors or very similar errors. It is strongly advised you read the following topics:</p><ul><li>Classloader HOWTO pages: <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/class-loader-howto.html" rel="nofollow">Tomcat 9.0</a>, <a class="external-link" href="https://tomcat.apache.org/tomcat-8.5-doc/class-loader-howto.html" rel="nofollow">Tomcat 8.5</a>, <a class="external-link" href="https://tomcat.apache.org/tomcat-7.0-doc/class-loader-howto.html" rel="nofollow">Tomcat 7.0</a>, (historic: <a class="external-link" href="https://tomcat.apache.org/tomcat-6.0-doc/class-loader-howto.html" rel="nofollow">Tomcat 6.0</a>).</li><li><a class="external-link" href="https://marc.info/?t=104317529200004&amp;r=1&amp;w=2" rel="nofollow">Don't</a> <a class="external-link" href="https://marc.info/?t=104380440100003&amp;r=1&amp;w=2" rel="nofollow">use</a> <a class="external-link" href="https://marc.info/?t=96947656900002&amp;r=1&amp;w=2" rel="nofollow">packageless</a> <a class="external-link" href="https://marc.info/?t=104491020100002&amp;r=1&amp;w=2" rel="nofollow">classes</a> <a class="external-link" href="https://marc.info/?t=104265576200003&amp;r=1&amp;w=2" rel="nofollow">and</a> <a class="external-link" href="https://marc.info/?t=104249748300001&amp;r=1&amp;w=2" rel="nofollow">declare</a> <a class="external-link" href="https://marc.info/?t=102996950100003&amp;r=1&amp;w=2" rel="nofollow">all</a> <a class="external-link" href="https://marc.info/?t=102922189400001&amp;r=1&amp;w=2" rel="nofollow">imported classes</a>!</li><li><a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=103843452413727&amp;w=2" rel="nofollow">Another answer to a classloader issue</a></li></ul><p>If you get a <code>NoClassDefFoundError</code> exception, the root cause might be the same as for a <code>ClassNotFound</code> exception.</p><h2 id="ClassNotFoundIssues-Questions">Questions</h2><ol><li><a href="#ClassNotFoundIssues-Q1">Why is jsp:useBean is not working?</a></li><li><a href="#ClassNotFoundIssues-Q2">Why do I get java.lang.NoClassDefFoundError: javax/servlet/Filter?</a></li><li><a href="#ClassNotFoundIssues-Q3">Why do I get java.lang.NoClassDefFoundError: org/xml/sax/InputSource?</a></li></ol><h2 id="ClassNotFoundIssues-Answers">Answers</h2><h3 id="ClassNotFoundIssues-Q1Whyisjsp:useBeanisnotworking?"><span class="confluence-anchor-link" id="ClassNotFoundIssues-Q1"></span>Why is <code>jsp:useBean</code> is not working?</h3><p>Make sure:</p><ul><li>Your bean is packaged in a class.</li><li><p class="auto-cursor-target">You have fully qualified your class name (e.g.: <code>com.bar.package.MyClass</code>) OR</p></li><li><p class="auto-cursor-target">You have imported your class into your jsp (e.g.: <code>&lt;%@ page import=&quot;com.bar.package.MyClass&quot;%&gt;</code> )</p></li></ul><h3 id="ClassNotFoundIssues-Q2WhydoIgetjava.lang.NoClassDefFoundError:javax/servlet/Filter?"><span class="confluence-anchor-link" id="ClassNotFoundIssues-Q2"></span>Why do I get <code>java.lang.NoClassDefFoundError: javax/servlet/Filter</code> ?</h3><p>You probably have servlet-api.jar floating around somewhere it shouldn't be. This really messes up the classloaders since Tomcat's classloaders don't act quite as normal as one expects (see links above). servlet-api.jar should only be found only once in $CATALINA_HOME/lib.</p><h3 id="ClassNotFoundIssues-Q3WhydoIgetjava.lang.NoClassDefFoundError:org/xml/sax/InputSource?"><span class="confluence-anchor-link" id="ClassNotFoundIssues-Q3"></span>Why do I get <code>java.lang.NoClassDefFoundError: org/xml/sax/InputSource</code> ?</h3><p>You have conflicting XML api jar files in your classpath. Read the README or RELEASE-NOTES for more information.</p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

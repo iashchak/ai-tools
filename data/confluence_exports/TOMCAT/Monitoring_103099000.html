@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Monitoring</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Monitoring
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 25, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/eColBg" rel="nofollow">https://cwiki.apache.org/confluence/x/eColBg</a></p><h1 id="Monitoring-TableofContents">Table of Contents</h1><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025319593 {padding: 0px;}
+div.rbtoc1683025319593 ul {margin-left: 0px;}
+div.rbtoc1683025319593 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025319593'>
+<ul class='toc-indentation'>
+<li><a href='#Monitoring-MonitoringTomcat'>Monitoring Tomcat</a>
+<ul class='toc-indentation'>
+<li><a href='#Monitoring-JVMInformation'>JVM Information</a>
+<ul class='toc-indentation'>
+<li><a href='#Monitoring-HeapandotherMemoryInformation'>Heap and other Memory Information</a></li>
+</ul>
+</li>
+<li><a href='#Monitoring-TomcatInformation'>Tomcat Information</a>
+<ul class='toc-indentation'>
+<li><a href='#Monitoring-ThreadUsage'>Thread Usage</a>
+<ul class='toc-indentation'>
+<li><a href='#Monitoring-NotusinganExecutor'>Not using an Executor</a></li>
+</ul>
+</li>
+<li><a href='#Monitoring-RequestThroughput'>Request Throughput</a></li>
+<li><a href='#Monitoring-Sessions'>Sessions</a></li>
+<li><a href='#Monitoring-JNDIDataSource'>JNDI DataSource</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#Monitoring-ExternalMonitoringTools'>External Monitoring Tools</a></li>
+<li><a href='#Monitoring-ExposingTomcatapplicationinternalsusingJMX'>Exposing Tomcat application internals using JMX</a></li>
+</ul>
+</div></p><h1 id="Monitoring-MonitoringTomcat">Monitoring Tomcat</h1><p>Monitoring of a running Tomcat instance can be done in several ways, but observing a Tomcat instance via JMX beans will give you the best information available through standard interfaces (i.e. JMX). You can find information about <a class="external-link" href="https://tomcat.apache.org/tomcat-9.0-doc/monitoring.html" rel="nofollow">connecting to Tomcat via JMX</a> in the Tomcat Users' Guide. Rather than repeating that information here (which is mostly about configuration, connection, etc.), please go read the official documentation.</p><p>This page is intended to be a community-curated collection of useful JMX beans that may be useful to you <em>after</em> you have made your JMX connection and want to observe interesting data through Tomcat's (and other) JMX beans.</p><h2 id="Monitoring-JVMInformation">JVM Information</h2><h3 id="Monitoring-HeapandotherMemoryInformation">Heap and other Memory Information</h3><p>You will certainly want to inspect your JVM's memory usage. Here are some JMX beans and attributes that can be used to do so.</p><ul><li>JMX Bean: <code>java.lang:type=Memory</code></li><li>Attribute: <code>HeapMemoryUsage</code></li></ul><p>The attribute value is a <code>javax.management.openmbean.CompositeData</code> which contains 4 keys: committed, init, max, and used. The 'used' key is probably the most useful (or a combination of 'used' / 'max' to get a memory-usage metric as a ratio).</p><ul><li>JMX Bean: <code>java.lang:type=MemoryPool,name=CMS Perm Gen</code></li><li>Attribute: <code>Usage</code></li></ul><p>Similar to the <code>HeapMemoryUsage</code> MXBean described above, this one will give you information about the &quot;<code>PermGen</code>&quot; heap generation. Depending upon your garbage collection and other memory settings, you might have different MXBeans under <code>java.lang:type=MemoryPool</code> with different names. You should inspect each one to determine if they would be useful for you to inspect.</p><h2 id="Monitoring-TomcatInformation">Tomcat Information</h2><p><strong>Version Warning</strong></p><p>These JMX bean names are accurate for the current version of Tomcat 7 (7.0.37 at the time of this writing). If you are using a different version of Tomcat, you may have to adjust the names of the beans identified on this page.</p><h3 id="Monitoring-ThreadUsage">Thread Usage</h3><ul><li><p class="auto-cursor-target"><span style="color: rgb(23,43,77);">JMX Bean:<span> </span></span><code>Catalina:type=Executor,name=[executor name]</code></p></li><li>Attributes: <code>poolSize</code>, <code>activeCount</code></li></ul><p>This is the number of threads currently in the executor's thread pool. Obviously, this is only useful if you are using an &lt;Executor&gt; (which you <em>are</em> using, of course, right?).</p><h4 id="Monitoring-NotusinganExecutor">Not using an Executor</h4><ul><li><p class="auto-cursor-target"><span style="color: rgb(23,43,77);">JMX Bean:<span> </span></span><code>Catalina: type=ThreadPool,name=&quot;[depends]&quot;</code></p></li><li>Attributes: <code>maxThreads</code>, <code>connectionCount</code></li></ul><p>This information is largely useless in Tomcat 7, as an Executor is always used and the data can be found there, while the <a class="unresolved" href="#">ThreadPool</a> has only initial configuration information: the real-time data is available from the Executor's MBean.</p><h3 id="Monitoring-RequestThroughput">Request Throughput</h3><ul><li><p class="auto-cursor-target"><span style="color: rgb(23,43,77);">JMX Bean:<span> </span></span><code>Catalina:type=GlobalRequestProcessor,name=&quot;[depends]&quot;</code></p></li><li><p class="auto-cursor-target"><span style="letter-spacing: 0.0px;">Attributes: </span><code style="letter-spacing: 0.0px;">bytesSent</code><span style="letter-spacing: 0.0px;">, </span><code style="letter-spacing: 0.0px;">bytesReceived</code><span style="letter-spacing: 0.0px;">, </span><code style="letter-spacing: 0.0px;">errorCount</code><span style="letter-spacing: 0.0px;">, </span><code style="letter-spacing: 0.0px;">maxTime</code><span style="letter-spacing: 0.0px;">, </span><code style="letter-spacing: 0.0px;">requestCount</code></p></li><li><p class="auto-cursor-target"><span style="letter-spacing: 0.0px;">Operations: </span><code style="letter-spacing: 0.0px;">resetCounters</code></p></li></ul><h3 id="Monitoring-Sessions">Sessions</h3><ul><li><p class="auto-cursor-target"><span style="color: rgb(23,43,77);">JMX Bean:<span> </span></span><code>Catalina:type=Manager,context=[context name],host=[hostname]</code></p></li><li>Attributes: <code>activeSessions</code>, <code>sessionCounter</code>, <code>expiredSessions</code></li></ul><h3 id="Monitoring-JNDIDataSource">JNDI DataSource</h3><ul><li><p class="auto-cursor-target"><span style="color: rgb(23,43,77);">JMX Bean:<span> </span></span><code>Catalina:type=DataSource,context=[context name],host=[hostname],class=javax.sql.DataSource,name=&quot;[JNDI name]&quot;</code></p></li><li><p class="auto-cursor-target"><span style="letter-spacing: 0.0px;">Attributes: </span><code style="letter-spacing: 0.0px;">numActive</code><span style="letter-spacing: 0.0px;">, </span><code style="letter-spacing: 0.0px;">numIdle</code><span style="letter-spacing: 0.0px;"> </span></p></li></ul><h1 id="Monitoring-ExternalMonitoringTools">External Monitoring Tools</h1><p>Another way to watch a Tomcat application is to use an external monitoring tool.</p><p><a class="external-link" href="https://www.moskito.org/" rel="nofollow">MoSKito</a>, is an open source, multi-purpose, non-invasive, interval-based monitoring system kit that collects, stores and provides instant analysis of a Tomcat application’s performance and behavior data.</p><p><a class="external-link" href="https://github.com/javamelody/javamelody/wiki" rel="nofollow">JavaMelody</a> can monitor your JavaEE/Tomcat application from dev to production. It is open-source and easy: get the <a class="external-link" href="https://github.com/javamelody/javamelody/wiki/Screenshots#charts" rel="nofollow">first view</a> of your application in <a class="external-link" href="https://github.com/javamelody/javamelody/wiki/UserGuide#javamelody-setup" rel="nofollow">about 2 minutes</a> from now.</p><p>Other plug-in-based monitoring software like Nagios or Icinga may need some help interacting with Tomcat's JMXProxyServlet. tools/check_jmxproxy.pl is a Perl script that can be used with these tools to monitor Tomcat via the JMXProxyServlet.</p><h1 id="Monitoring-ExposingTomcatapplicationinternalsusingJMX">Exposing Tomcat application internals using JMX</h1><p>It is possible to write custom MBeans that expose your Tomcat application internals through JMX. User-defined MBeans need to be registered with Tomcat MBean server. Once registered, user can access MBean and observe user-defined attributes and call user-defined operations, e.g.</p><ul><li>JMX Bean: <code>Counter:type=CounterManager</code></li><li>Attributes: <code>currentTime</code>, <code>currentCount</code></li><li>Operations: <code>resetCounter</code>, <code>resetCounter(int)</code></li></ul><p><a href="Example-Application-Exposing-Internals-Using-JMX_103098747.html">Example Application Exposing Internals Using JMX</a></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

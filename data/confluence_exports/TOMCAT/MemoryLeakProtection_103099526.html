@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : MemoryLeakProtection</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Archive_110694813.html">Archive</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : MemoryLeakProtection
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on сен 30, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>For some time Tomcat has had some means of protection against memory leaks when stopping or redeploying applications. This page tries to list them, and shows the situations where leaks can be detected and fixed.</p>
+
+<h1 id="MemoryLeakProtection-Diagnoseaclassloaderleakuponrequest">Diagnose a classloader leak upon request</h1>
+<p>Starting with tomcat 6.0.25, the manager webapp has a new &quot;Find Leaks&quot; button. When triggered, it displays a list of webapps (their context path) that have been stopped (this includes undeployed and redeployed ones) but whose classloader failed to be GCed.</p>
+
+<p>If a leaking webapp is redeployed several times, it will appear as many times as it actually leaked.</p>
+
+<p><strong>Caution:</strong> This diagnosis calls <code>System.gc()</code> which may not be desirable in production environments.</p>
+
+<h1 id="MemoryLeakProtection-DifferenttypesofleaksthatTomcatcandetect(ornot)">Different types of leaks that Tomcat can detect (or not)</h1>
+
+<p>When a webapp execution is stopped (this encompassed redeploy and undeploy), tomcat tries to detect and fix leaks.</p>
+
+<p>Starting with tomcat 6.0.24, messages are logged to indicate the kind of leak that was detected.</p>
+
+<h1 id="MemoryLeakProtection-Summarymatrix">Summary matrix</h1>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p><strong>Leak cause</strong></p></td>
+<td class="confluenceTd"><p><strong>Detected by tomcat</strong></p></td>
+<td class="confluenceTd"><p><strong>Fixed by tomcat</strong></p></td>
+<td class="confluenceTd"><p><strong>Possible enhancements</strong></p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-customThreadLocal">Custom ThreadLocal class</a></p></td>
+<td class="confluenceTd"><p>&gt;=6.0.24</p></td>
+<td class="confluenceTd"><p> &gt;= 7.0.6 </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-webappClassInstanceAsThreadLocalValue">Webapp class instance as ThreadLocal value</a></p></td>
+<td class="confluenceTd"><p>&gt;=6.0.24</p></td>
+<td class="confluenceTd"><p> &gt;= 7.0.6 </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-webappClassInstanceAsThreadLocalIndirectValue">Webapp class instance indirectly held through a ThreadLocal value</a></p></td>
+<td class="confluenceTd"><p>no</p></td>
+<td class="confluenceTd"><p> &gt;= 7.0.6 </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-threadLocalPseudoLeak">ThreadLocal pseudo-leak</a></p></td>
+<td class="confluenceTd"><p>&gt;=6.0.24</p></td>
+<td class="confluenceTd"><p> &gt;= 7.0.6 </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-cclThreadSpawnedByWebApp">ContextClassLoader / Threads spawned by webapps</a></p></td>
+<td class="confluenceTd"><p>&gt;=6.0.24</p></td>
+<td class="confluenceTd"><p>In 6.0.24-6.0.26 <code>TimerThread</code> are stopped but it may lead to problems. Optional from 6.0.27 with the <code>clearReferencesStopTimerThreads</code> flag. Other threads may be stopped with the <code>clearReferencesStopThreads</code> flag, but it's unsafe. </p></td>
+<td class="confluenceTd"><p> Fix the application to stop the thread when the application is stopped</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-cclThreadSpawnedByCommonClassLoader">ContextClassLoader / Threads spawned by classes loaded by the common classloader</a></p></td>
+<td class="confluenceTd"><p>&gt;=6.0.24</p></td>
+<td class="confluenceTd"><p>In 6.0.24-6.0.26 <code>TimerThread</code> are stopped but it may lead to problems. Optional from 6.0.27 with the <code>clearReferencesStopTimerThreads</code> flag. Other threads may be stopped with the <code>clearReferencesStopThreads</code> flag, but it's unsafe. </p></td>
+<td class="confluenceTd"><p>Fix the offending code (set the correct CCL when spawning the thread)</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-cclThreadSpawnedByJRE">ContextClassLoader / Threads spawned by JRE classes</a></p></td>
+<td class="confluenceTd"><p> no </p></td>
+<td class="confluenceTd"><p> &gt;=6.0.24 pre-spawns some known offenders </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-staticClassVariables">static class variables</a></p></td>
+<td class="confluenceTd"><p> no </p></td>
+<td class="confluenceTd"><p>&gt; 6.0.? . Disabled by default with tomcat 7</p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-LogFactory">LogFactory</a></p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p>&gt; 6.0.? </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-jdbc">JDBC driver registration</a></p></td>
+<td class="confluenceTd"><p> &gt; 6.0.? </p></td>
+<td class="confluenceTd"><p>&gt; 6.0.? </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p><a href="#MemoryLeakProtection-rmiTarget">RMI Target</a></p></td>
+<td class="confluenceTd"><p> </p></td>
+<td class="confluenceTd"><p>&gt; 6.0.? </p></td>
+<td class="confluenceTd"><p> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<hr/>
+
+<h2 id="MemoryLeakProtection-leaks"><a class="unresolved" href="#">ThreadLocal</a> leaks</h2>
+<p>Classloader leaks because of uncleaned <code>ThreadLocal</code> variables are quite common. Depending on the use cases, they can be detected or not.</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-customThreadLocal"></span></p>
+<h3 id="MemoryLeakProtection-Customclass">Custom <a class="unresolved" href="#">ThreadLocal</a> class</h3>
+<p>Suppose we have the following 3 classes in our webapp :</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class MyCounter {
+	private int count = 0;
+
+	public void increment() {
+		count++;
+	}
+
+	public int getCount() {
+		return count;
+	}
+}
+
+public class MyThreadLocal extends ThreadLocal&lt;MyCounter&gt; {
+}
+
+public class LeakingServlet extends HttpServlet {
+	private static MyThreadLocal myThreadLocal = new MyThreadLocal();
+
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		MyCounter counter = myThreadLocal.get();
+		if (counter == null) {
+			counter = new MyCounter();
+			myThreadLocal.set(counter);
+		}
+
+		response.getWriter().println(
+				&quot;The current thread served this servlet &quot; + counter.getCount()
+						+ &quot; times&quot;);
+		counter.increment();
+	}
+}
+</pre>
+</div></div>
+
+<p>If the <code>LeakingServlet</code> is invoked at least once and the Thread that served it is not stopped, then we created a classloader leak !</p>
+
+<p>The leak is caused because we have a custom class for the <code>ThreadLocal</code> instance, and also a custom class for the value bound to the Thread. Actually the important thing is that both classes were loaded by the webapp classloader.</p>
+
+<p>Hopefully tomcat 6.0.24 can detect the leak when the application is stopped: each Thread in the JVM is examined, and the internal structures of the Thread and <code>ThreadLocal</code> classes are introspected to see if either the <code>ThreadLocal</code> instance or the value bound to it were loaded by the <code>WebAppClassLoader</code> of the application being stopped.</p>
+
+<p>In this particular case, the leak is detected and a message is logged.  Tomcat 6.0.24 to 6.0.26 modify internal structures of the JDK (<code>ThreadLocalMap</code>) to remove the reference to the <code>ThreadLocal</code> instance, but this is unsafe (see <a href="#MemoryLeakProtection-48895">#48895</a>) so that it became optional and disabled by default from 6.0.27. Starting with Tomcat 7.0.6, the threads of the pool are renewed so that the leak is safely fixed. </p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Mar 16, 2010 11:47:24 PM org.apache.catalina.loader.WebappClassLoader clearThreadLocalMap
+SEVERE: A web application created a ThreadLocal with key of type [test.MyThreadLocal] (value [test.MyThreadLocal@4dbb9a58]) and a value of type [test.MyCounter] (value [test.MyCounter@57922f46]) but failed to remove it when the web application was stopped. To prevent a memory leak, the ThreadLocal has been forcibly removed.
+</pre>
+</div></div>
+
+<p><strong>Note</strong>: this particular leak was actually already cured by previous versions of tomcat 6, because static references of classes loaded by the webappclassloader are nullified (<a href="#MemoryLeakProtection-clearReferencesStopThreads">see later</a>).</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-webappClassInstanceAsThreadLocalValue"></span></p>
+<h3 id="MemoryLeakProtection-Webappclassinstanceasvalue">Webapp class instance as <a class="unresolved" href="#">ThreadLocal</a> value</h3>
+
+<p>Suppose that we have the following class in the common classpath (for instance in a jar in tomcat/lib) :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class ThreadScopedHolder {
+	private final static ThreadLocal&lt;Object&gt; threadLocal = new ThreadLocal&lt;Object&gt;();
+
+	public static void saveInHolder(Object o) {
+		threadLocal.set(o);
+	}
+
+	public static Object getFromHolder() {
+		return threadLocal.get();
+	}
+}
+</pre>
+</div></div>
+
+<p>And those 2 classes in the webapp :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class MyCounter {
+	private int count = 0;
+
+	public void increment() {
+		count++;
+	}
+
+	public int getCount() {
+		return count;
+	}
+}
+public class LeakingServlet extends HttpServlet {
+
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		MyCounter counter = (MyCounter)ThreadScopedHolder.getFromHolder();
+		if (counter == null) {
+			counter = new MyCounter();
+			ThreadScopedHolder.saveInHolder(counter);
+		}
+
+		response.getWriter().println(
+				&quot;The current thread served this servlet &quot; + counter.getCount()
+						+ &quot; times&quot;);
+		counter.increment();
+	}
+}
+</pre>
+</div></div>
+
+<p>If the servlet is invoked at least once, the webapp classloader would not be GCed when the app is stopped: since the classloader of <code>ThreadScopedHolder</code> is the common classloader, it remains forever which is as expected. But its <code>ThreadLocal</code> instance has a value bound to it (for the non-terminated thread(s) that served the sevlet), which is an instance of a class loaded by the webapp classloader...</p>
+
+<p>Here again, tomcat &gt;=6.0.24 will detect the leak :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Mar 17, 2010 10:23:13 PM org.apache.catalina.loader.WebappClassLoader clearThreadLocalMap
+SEVERE: A web application created a ThreadLocal with key of type [java.lang.ThreadLocal] (value [java.lang.ThreadLocal@44676e3f]) and a value of type [test.leak.threadlocal.value.MyCounter] (value [test.leak.threadlocal.value.MyCounter@62770d2e]) but failed to remove it when the web application was stopped. To prevent a memory leak, the ThreadLocal has been forcibly removed.
+</pre>
+</div></div>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-webappClassInstanceAsThreadLocalIndirectValue"></span></p>
+<h3 id="MemoryLeakProtection-Webappclassinstanceindirectlyheldthroughavalue">Webapp class instance indirectly held through a <a class="unresolved" href="#">ThreadLocal</a> value</h3>
+<p>Suppose we have the same <code>ThreadScopedHolder</code> class (in the common classloader) and <code>MyCounter</code> class in the webapp, but with the following servlet :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class LeakingServlet extends HttpServlet {
+
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		List&lt;MyCounter&gt; counterList = (List&lt;MyCounter&gt;) ThreadScopedHolder
+				.getFromHolder();
+		MyCounter counter;
+		if (counterList == null) {
+			counter = new MyCounter();
+			ThreadScopedHolder.saveInHolder(Arrays.asList(counter));
+		} else {
+			counter = counterList.get(0);
+		}
+
+		response.getWriter().println(
+				&quot;The current thread served this servlet &quot; + counter.getCount()
+						+ &quot; times&quot;);
+		counter.increment();
+	}
+}
+</pre>
+</div></div>
+
+<p>We have more or less the same kind of leak as the previous one, but this time tomcat does not detect the leak when stopping the application. The problem is that when it inspects the entries of <code>ThreadLocalMap</code>, it checks whether either the key or the value is an instance of a class loaded by the webapp classloader. Here the key is an instance of <code>ThreadLocal</code>, and the value is an instance of java.util.<code>ArrayList</code>.</p>
+
+<p>The &quot;Find leaks&quot; button in tomcat manager will report the leak when asked :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>The following web applications were stopped (reloaded, undeployed), but their
+classes from previous runs are still loaded in memory, thus causing a memory
+leak (use a profiler to confirm):
+/testWeb
+</pre>
+</div></div>
+
+<p>But it does not give any clue about what caused the leak, we would need to make a heapdump and analyse it with some tool like <a class="external-link" href="http://www.eclipse.org/mat" rel="nofollow">Eclipse MAT</a>.</p>
+
+<p>Tomcat 7.0.6 and later fix this leak by renewing threads in the pool.</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-threadLocalPseudoLeak"></span></p>
+<h2 id="MemoryLeakProtection-pseudo-leak"><a class="unresolved" href="#">ThreadLocal</a> pseudo-leak</h2>
+
+<p>Suppose we have the same <code>MyCounter</code> class as above (in the webapp) and the following servlet :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class LeakingServlet extends HttpServlet {
+	private ThreadLocal&lt;MyCounter&gt; myThreadLocal = new ThreadLocal&lt;MyCounter&gt;();
+
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		MyCounter counter = myThreadLocal.get();
+		if (counter == null) {
+			counter = new MyCounter();
+			myThreadLocal.set(counter);
+		}
+
+		response.getWriter().println(
+				&quot;The current thread served this servlet &quot; + counter.getCount()
+						+ &quot; times&quot;);
+		counter.increment();
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		// normally not needed, just to make my point
+		myThreadLocal = null;
+	}
+}
+</pre>
+</div></div>
+
+<p>Notice that the <code>ThreadLocal</code> instance is referenced through an instance variable, not a static one.</p>
+
+<p>Sun's implementation of <code>ThreadLocal</code> (and <code>WeakHashMap</code>) too is such that <code>ThreadLocalMap</code> entries whose key is GCed are not immediately removed. (The key is a weak reference to the <code>ThreadLocal</code> instance, see <code>java.lang.ThreadLocal.ThreadLocalMap.Entry&lt;T&gt; in JDK 5/6</code>. And there's no daemon thread waiting on a <code>ReferenceQueue</code>). Instead, it's only during subsequent uses of <code>ThreadLocal</code> features that each Thread removes the abandoned <code>ThreadLocalMap.Entry</code> entries (see <code>ThreadLocalMap.expungeStaleEntries()</code>.</p>
+
+<p>If many threads were used to serve our leaking webapp, but after we stop it only a couple of threads are enough to serve other webapps, one could have some threads that are no longer used, waiting for some work. Since those threads are blocked, they have no interaction with their <code>ThreadLocalMap</code> (i.e. there's no <code>ThreadLocal</code> value bound to them or removed), so that there's no opportunity to <code>expungeStaleEntries()</code>.</p>
+
+<p>Tomcat 6.0.24-6.0.26 &quot;speeds up&quot; the removal of stale entries (and thus fixes the pseudo-leak), by calling <code>expungeStaleEntries()</code> for each thread that has some stale entries. Since it's not thread-safe, it has been made optional and disabled by default from 6.0.27.</p>
+
+<p>Tomcat 7.0.6 and later fix the problem by renewing threads in the pool.</p>
+
+<h2 id="MemoryLeakProtection-Threads">Threads <a class="unresolved" href="#">ContextClassLoader</a></h2>
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-cclThreadSpawnedByWebApp"></span></p>
+<h3 id="MemoryLeakProtection-Threadsspawnedbywebapps">Threads spawned by webapps</h3>
+
+<p>If a webapp creates a thread, by default its context classloader is set to the one of the parent thread (the thread that created the new thread). In a webapp, this parent thread is one of tomcat worker threads, whose context classloader is set to the webapp classloader when it executes webapp code.</p>
+
+<p>Furthermore, the spawned thread may be executing (or blocked in) some code that involves classes loaded by the webapp, thus preventing the webapp classloader from being collected.</p>
+
+<p>So, if the spawned thread is not properly terminated when the application is stopped, the webapp classloader will leak because of the strong reference held by the spawned thread.</p>
+
+<p>Example :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class LeakingServlet extends HttpServlet {
+	private Thread leakingThread;
+
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		if (leakingThread == null) {
+			synchronized (this) {
+				if (leakingThread == null) {
+					leakingThread = new Thread(&quot;leakingThread&quot;) {
+
+						@Override
+						public void run() {
+							synchronized (this) {
+								try {
+									this.wait();
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					};
+					leakingThread.setDaemon(true);
+					//leakingThread.setContextClassLoader(null);
+					leakingThread.start();
+				}
+			}
+		}
+		response.getWriter().println(&quot;Hello world!&quot;);
+	}
+}
+</pre>
+</div></div>
+
+<p>Here, when the app is stopped, the webapp classloader is still referenced by the spawned thread both through its context classloader and its current call stack (the anonymous Thread subclass is loaded by the webapp classloader).</p>
+
+<p>When stopping an application, tomcat checks the context classloader of every Thread, and if it is the same as the app being stopped, it logs the following message :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Mar 18, 2010 11:13:07 PM org.apache.catalina.core.ApplicationContext log
+INFO: HTMLManager: stop: Stopping web application at &#39;/testWeb&#39;
+Mar 18, 2010 11:13:07 PM org.apache.catalina.loader.WebappClassLoader clearReferencesThreads
+SEVERE: A web application appears to have started a thread named [leakingThread] but has failed to stop it. This is very likely to create a memory leak.
+</pre>
+</div></div>
+
+<p>Now, if we uncomment the line <code>leakingThread.setContextClassLoader(null);</code> in the above example, tomcat (6.0.24) no longer detect the leak when the application is stopped because the spawned thread context classloader is no longer the webapp's. (the &quot;Find leaks&quot; feature in the manager will report it though)</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-cclThreadSpawnedByCommonClassLoader"></span></p>
+<h3 id="MemoryLeakProtection-Threadsspawnedbyclassesloadedbythecommonclassloader">Threads spawned by classes loaded by the common classloader</h3>
+<p>Suppose, we have the <a class="external-link" href="http://commons.apache.org/pool/" rel="nofollow">Commons Pool</a> library in the classpath of the server (e.g. the jar is in tomcat/lib), and the following servlet :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>public class LeakingServlet extends HttpServlet {
+	private GenericObjectPool objectPool;
+
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().println(&quot;Number of idle objects in the pool :&quot;+objectPool.getNumIdle());
+	}
+
+	@Override
+	public void init() throws ServletException {
+		objectPool = new GenericObjectPool();
+		objectPool.setFactory(new BasePoolableObjectFactory() {
+			private AtomicInteger counter = new AtomicInteger(0);
+
+			@Override
+			public Object makeObject() throws Exception {
+				String str = &quot;Object #&quot; + counter.incrementAndGet();
+				System.out.println(&quot;Creating &quot;+str);
+				return str;
+			}
+
+			@Override
+			public void destroyObject(Object obj) throws Exception {
+				System.out.println(&quot;Destroying &quot;+obj);
+			}
+		});
+		objectPool.setMinIdle(3);
+		objectPool.setTimeBetweenEvictionRunsMillis(1000);
+	}
+
+	@Override
+	public void destroy() {
+		try {
+			objectPool.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+</pre>
+</div></div>
+
+<p>The call to <code>GenericObjectPool.setTimeBetweenEvictionRunsMillis)</code> actually starts or reuses a <code>java.lang.Timer</code> shared between all <code>GenericObjectPool</code> instances. As long as a pool is running and at least one pool is using the timer eviction feature, the Timer lives.</p>
+
+<p>If there's no other webapp using commons-pool, there's no leak : when we stop the webapp, the servlet is stopped and the pool is closed. If it was the only pool in use, the Timer thread is also stopped and there's no leak.</p>
+
+<p>Now, imagine that there are 2 webapps using commons-pool with the timer eviction feature (imagine the above servlet is deployed in 2 webapps A and B). Suppose webapp A is deployed, then B. Since the commons-pool jar is shared between both webapps, only one Timer thread is spawned, with 2 <code>TimerTask</code>, one for each webapp, to handle the eviction of each pool instance.</p>
+
+<p>Then, if we stop webapp A, boom it's leaking! the Timer thread has its context classloader set to the <code>WebAppClassLoader</code> of webapp A. This is somehow a <a class="external-link" href="http://issues.apache.org/jira/browse/POOL-161" rel="nofollow">bug of commons-pool</a>, but tomcat 6.0.24 tries to help :</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>INFO: HTMLManager: stop: Stopping web application at &#39;/testWeb&#39;
+Destroying Object #3
+Destroying Object #2
+Destroying Object #1
+Mar 21, 2010 9:26:36 PM org.apache.catalina.loader.WebappClassLoader clearReferencesStopTimerThread
+SEVERE: A web application appears to have started a TimerThread named [Timer-0] via the java.util.Timer API but has failed to stop it. To prevent a memory leak, the timer (and hence the associated thread) has been forcibly cancelled. 
+</pre>
+</div></div>
+
+<p>So the leak is fixed, but unfortunately there's a side effect : <a href="#MemoryLeakProtection-48971">it broke webapp B eviction timer</a>. That's why stopping <code>TimerThread</code> has been made optional from 6.0.27.</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-cclThreadSpawnedByJRE"></span></p>
+<h3 id="MemoryLeakProtection-ThreadsspawnedbyJREclasses">Threads spawned by JRE classes</h3>
+
+<p>Just like third-party libraries may spawn threads that provoke leaks, some JRE classes also spawn threads that inherit from the current class loader and thus provoke leaks.</p>
+
+<p>Instead of trying to stop such threads, tomcat prefers to force the creation of such threads when the container is started, before webapps are started. The <code>JreMemoryLeakPreventionListener</code> does it for a few known offenders in the JRE.</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-staticClassVariables"></span></p>
+<h2 id="MemoryLeakProtection-staticclassvariables">static class variables</h2>
+
+<p>When an app is stopped, Tomcat (even before 6.0.24) nullifies the value of all static class variables of classes loaded by the <code>WebAppClassLoader</code>. In some cases, it may fix a classloader leak (for example because of a custom <code>ThreadLocal</code> class, see above), but even if we still have a leak, it may decrease the amount of memory lost:</p>
+
+<p>Imagine a class with the following variable :</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>private final static byte[] BUFFER = new byte[1024*1024]; //1MB buffer
+</pre>
+</div></div>
+
+<p>Normally, the 1MB buffer should be freed when the app is stopped, but only if the classloader itself can be garbage-collected. Since there are still possibilities to have a leak of the classloader, clearing the BUFFER variable allows to recover 1MB of memory.</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-LogFactory"></span></p>
+<h2 id="MemoryLeakProtection-LogFactory#"><a class="unresolved" href="#">LogFactory</a></h2>
+<p><em>to be completed</em></p>
+
+<h2 id="MemoryLeakProtection-Introspectorcache"><a class="unresolved" href="#">JavaBean</a> Introspector cache</h2>
+<p>Tomcat calls <code>java.beans.Introspector.flushCaches();</code> when an app is stoppped.</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-jdbc"></span></p>
+<h2 id="MemoryLeakProtection-JDBCdriverregistration">JDBC driver registration</h2>
+
+<p>If a webapp contains a JDBC driver (e.g. in WEB-INF/lib), the driver will be registered with the <code>DriverManager</code> when it is first used. When the application is stopped, the driver should be deregistered with <code>DriverManager</code> to avoid a classloader leak. Since applications usually forget this, tomcat helps by deregistering the driver.</p>
+
+<p><span class="confluence-anchor-link" id="MemoryLeakProtection-rmiTarget"></span></p>
+<h2 id="MemoryLeakProtection-RMItarget">RMI target</h2>
+<p><em>to be completed</em></p>
+
+<hr/>
+<h2 id="MemoryLeakProtection-References">References</h2>
+<ul>
+	<li><a class="external-link" href="http://java.dzone.com/articles/memory-leak-protection-tomcat" rel="nofollow">Mark Thomas interview on DZone</a></li>
+	<li><a class="external-link" href="http://www.eclipse.org/mat" rel="nofollow">Eclipse Memory Analysis Tool</a>
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>Related issues</p>
+<ul>
+	<li><span class="confluence-anchor-link" id="MemoryLeakProtection-49159"></span><a class="external-link" href="https://issues.apache.org/bugzilla/show_bug.cgi?id= 49159" rel="nofollow">49159</a> - Improve <a class="unresolved" href="#">ThreadLocal</a> memory leak clean-up</li>
+	<li><a class="external-link" href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4957990" rel="nofollow">Sun bug 4957990</a> - In some cases the Server JVM fails to collect classloaders. According to <a class="external-link" href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4957990" rel="nofollow">this page</a> it should have been fixed with java 6u16 but actually it was not. It seems to be fixed with 6u21 (documented <a class="external-link" href="http://download.java.net/jdk6/6u21/promoted/b03/changes/JDK6u21.list.html" rel="nofollow">here</a> and verified by the author of this wiki page).</li>
+	<li><a class="external-link" href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6916498" rel="nofollow">Sun bug 6916498</a> - An exception can keep a classloader in memory if the stack trace that was recorded when it was created contains a reference to one of its classes. Fixes were done in Tomcat for its own classes that had this issue (see <a class="external-link" href="https://issues.apache.org/bugzilla/show_bug.cgi?id=50460" rel="nofollow">BZ 50460</a>), but some library or JRE code may still create a leak that is undetected by tools because of this JVM bug. See also <a class="external-link" href="https://issues.apache.org/bugzilla/show_bug.cgi?id=53936" rel="nofollow">BZ 53936</a> for a workaround that you can implement if you are unable to fix a buggy library.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

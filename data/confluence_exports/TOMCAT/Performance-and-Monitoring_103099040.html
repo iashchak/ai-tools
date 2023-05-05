@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Performance and Monitoring</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Performance and Monitoring
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 25, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/oColBg" rel="nofollow">https://cwiki.apache.org/confluence/x/oColBg</a></p><h2 id="PerformanceandMonitoring-Preface">Preface</h2><p>This is about Tomcat performance.</p><ul><li><p><a class="external-link" href="https://marc.info/?t=104455383100002&amp;r=1&amp;w=2" rel="nofollow">Tomcat Performance Concerns</a></p></li><li><p><a class="external-link" href="https://marc.info/?t=103598885300001&amp;r=1&amp;w=2" rel="nofollow">How do I increase performance on Tomcat?</a></p></li></ul><p>Other (non-exhaustive) notes:</p><ul><li>Stress test your webapp. You can do this via <a class="external-link" href="https://jmeter.apache.org/" rel="nofollow">JMeter</a>, <a class="external-link" href="https://www.joedog.org/siege-home/" rel="nofollow">siege</a>, <a class="external-link" href="https://httpd.apache.org/test/flood/" rel="nofollow">flood</a>, and other tools. Google is your friend.</li><li>Tweak your UNIX box! Look at ulimit and kernel parameters.</li><li>Bad design will hurt performance.</li><li>Look at profiling tools for Java.</li></ul><h2 id="PerformanceandMonitoring-Questions">Questions</h2><ol><li><a href="#PerformanceandMonitoring-Q1">Is Tomcat faster than serving static HTML pages than Apache httpd?</a></li><li><a href="#PerformanceandMonitoring-Q4">How do I configure apache tomcat connectors for a heavy load site?</a></li><li><a href="#PerformanceandMonitoring-Q5">How do I make Tomcat start up faster?</a></li></ol><h2 id="PerformanceandMonitoring-Answers">Answers</h2><h3 id="PerformanceandMonitoring-Q1IsTomcatfasterthanservingstaticHTMLpagesthanApachehttpd?"><span class="confluence-anchor-link" id="PerformanceandMonitoring-Q1"></span>Is Tomcat faster than serving static HTML pages than Apache httpd?</h3><p>Yes depending on how you tune it. And NO depending on how you tune it. Anything less starts a religious war. We recommend performing your own benchmarks and <a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=106036177509367&amp;w=2" rel="nofollow">see for yourself</a>.</p><h3 id="PerformanceandMonitoring-Q4HowdoIconfigureapachetomcatconnectorsforaheavyloadsite?"><span class="confluence-anchor-link" id="PerformanceandMonitoring-Q4"></span>How do I configure apache tomcat connectors for a heavy load site?</h3><p>The following <strong>excellent</strong> article was written by Mladen Turk. He is a Developer and Consultant for JBoss Inc in Europe, where he is responsible for native integration. He is a long time commiter for Jakarta Tomcat Connectors, Apache Httpd and Apache Portable Runtime projects.</p><p><em>Fronting Tomcat with Apache or IIS - Best Practices</em></p><ul><li><a class="external-link" href="https://people.apache.org/~mturk/docs/article/ftwai.html" rel="nofollow">https://people.apache.org/~mturk/docs/article/ftwai.html</a></li></ul><h3 id="PerformanceandMonitoring-Q5HowdoImakeTomcatstartupfaster?"><span class="confluence-anchor-link" id="PerformanceandMonitoring-Q5"></span>How do I make Tomcat start up faster?</h3><p>See <a href="HowTo-FasterStartUp_103099266.html">HowTo FasterStartUp</a></p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

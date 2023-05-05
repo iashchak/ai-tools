@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : TomcatTrackNA10 PMC Sessions</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Conference-Parent-Page_107970686.html">Conference Parent Page</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : TomcatTrackNA10 PMC Sessions
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мая 27, 2010
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>The idea is to have at least a day of Tomcat in the mean <a class="unresolved" href="#">ApacheCon</a>NA10 track Additionally we will run BOFs or Meetups on one evening.</p>
+
+<p>So something like (from the old <a class="external-link" href="http://wiki.apache.org/tomcat/TomcatTrackUs09_PMC_Sessions" rel="nofollow">http://wiki.apache.org/tomcat/TomcatTrackUs09_PMC_Sessions</a>)</p>
+
+<h1 id="TomcatTrackNA10PMCSessions-SummaryofthewholeTomcattrack:">Summary of the whole Tomcat track:</h1>
+<ul>
+	<li>1 - Have an introduction.</li>
+	<li>2 - Have more details presentation on the new tech (Tomcat7, Servlet 3.0)</li>
+	<li>3 - Have a remainder of the existing new stuff (Bayeux, Comet, jdbc-pool, tomcat-lite).</li>
+	<li>4 - Have well known stuff, like admin/conf stuff, mod_jk/mod_proxy and clustering.</li>
+	<li>5 - A bunch of more technical presentations.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="TomcatTrackNA10PMCSessions-Detailedsessionpresentations:">Detailed session presentations:</h1>
+<p>Look to <a class="external-link" href="http://wiki.apache.org/tomcat/TomcatTrackUs09_PMC_Sessions" rel="nofollow">http://wiki.apache.org/tomcat/TomcatTrackUs09_PMC_Sessions</a> to see how to write a proposal.</p>
+
+<p>Something like:</p>
+
+<p>TITLE</p>
+
+<p>ABSTRACT</p>
+
+<p>PRESENTER BIO. (Don't forget your email so that you can be contacted later).</p>
+
+<h4 id="TomcatTrackNA10PMCSessions-mod_jk/mod_proxyandothers:Front-endsofTomcatClusters.">mod_jk / mod_proxy and others: Front-ends of Tomcat Clusters.</h4>
+<p>By Jean-Frederic Clere:</p>
+
+<ul>
+	<li>Tomcat is often used as a cluster and/or is the back-end server of a front-end reserve proxy. Several front-end can be used, mod_jk, mod_proxy, mod_serf, Traffic Server and mod_cluster, quick presentation of each of them, featuring: loadbalancing, failover, QoS, performances etc.
+<br class="atl-forced-newline"/></li>
+	<li>Jean-Frederic has spent more than 20 years writing client/server software. He is committer in APR, Jakarta, Httpd and Tomcat and he likes complex projects where different languages and machines are involved. Born in France, Jean-Frederic lived in Barcelona (Spain) for 14 years. Since May 2006 he lives in Neuchatel (Switzerland) where he works for <a class="external-link" href="http://www.redhat.com" rel="nofollow">RedHat</a> in the JBoss division.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-NewmemoryleakpreventionanddetectionfeaturesinTomcat7">New memory leak prevention and detection features in Tomcat 7</h4>
+<p>By Mark Thomas:</p>
+
+<ul>
+	<li>It is all too easy to trigger a memory leak within a web application, particularly in <a class="unresolved" href="#">PermGen</a> when the application is reloaded. These leaks are often the unintended and unexpected consequences of using a library or even parts of the standard Java APIs. This session will explore the various ways these leaks can be triggered, how to diagnose them when they occur and the techniques that can be used to avoid them. The session will be based around the successful memory leak prevention code recently added to Apache Tomcat codebase although the causes, process of diagnosis and the remedies are widely applicable to any J2EE application server or, in fact, any other environment that provides a 'reload' mechanism that uses multiple class loaders.
+<br class="atl-forced-newline"/></li>
+	<li>Mark has been using and developing Tomcat for over six years. He first got involved in the development of Tomcat when he needed better control over the SSL configuration than was available at the time. After fixing that first bug, he started working his way through the remaining Tomcat bugs and is still going. Along the way Mark has become a Tomcat committer and PMC member, volunteered to be the Tomcat 4 &amp; 7 release manager, created the Tomcat security pages, become a member of the ASF and joined the Apache Security Committee. He also helps maintain the ASF's Bugzilla instances. Mark has a MEng in Electronic and Electrical Engineering from the University of Birmingham, UK and is currently a Senior Software Engineer with the <a class="unresolved" href="#">SpringSource</a> Division of VMWare.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-BecomingaTomcat7superuser">Becoming a Tomcat 7 super user</h4>
+<p>By Mark Thomas:</p>
+
+<ul>
+	<li>Have you ever wanted to to do more than just download Tomcat and install some web applications? Do you want to learn more about Tomcat internals and how everything fits together? Do you want to be able to apply patches for bugs to your Tomcat installation without having to wait for the next release? If you answered yes to any of the above questions then this presentation is for you. Starting with how the Tomcat subversion repository is structured, this presentation will show you how to build each of the major Tomcat versions from source, how to use your local build to generate binary patches for specific bugs and how to extend Tomcat functionality for your environment. After an overview of the Tomcat request processing architecture, a request will be examined as it passes through Tomcat using remote debugging. Key classes and decision points will be highlighted to provide attendees with potential starting points when debugging their own issues. To finish the presentation, and to give a practical example of how the knowledge gained may be put to use, a current bug will be examined, the root cause identified and a patch to fix it generated.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-QuickstartguidetoembeddingTomcat7">Quickstart guide to embedding Tomcat 7</h4>
+<p>By Mark Thomas:</p>
+
+<ul>
+	<li>Tomcat has always been embeddable but with Tomcat 7 it has been much simpler. This presentation will show you how you can embed Tomcat in your application in just five - may need to edit this figure <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/> - lines of code. The remainder of the presentation will demonstrate how this embedded instance can be configured and will cover standard web.xml configuration, how to modify settings normally configured in server.xml and integrating with custom components such as a custom Realm.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-SecuringandmanagingyourTomcatinstallations">Securing and managing your Tomcat installations</h4>
+<p>By Mladen Turk:</p>
+
+<ul>
+	<li>Using Apache Tomcat as production application server requires some basic knowledge of using multi-tier application servers to host business logic and data access services. This talk addresses each component and technology separately and shows you how to secure your application server in each case. It focuses on security measures that needs to be considered when securing the associated communication channels that connect Web server to the application server and the application server to the database server. It also gives a glimpse overview on the threats and countermeasures needed to secure the Tomcat in production environments.
+<br class="atl-forced-newline"/></li>
+	<li>Mladen Turk is a Principal Software Engineer at JBoss, a division of Red Hat (Switzerland), where he is responsible for Native Integration, Enterprise Web Services and Multiplatform technologies. He is member of JBoss Application Server team and gives more then 20 years of experience in client/server technologies. Mladen is currently acting as Apache Tomcat PMC chair, and beside Tomcat, he actively contributes to APR, Httpd, <a class="unresolved" href="#">TrafficServer</a> and Commons projects.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-RunningTomcatStand-aloneonPort80">Running Tomcat Stand-alone on Port 80</h4>
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>By Jason Brittain [jason d0t brittain a+ gmail do+ com]:</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<ul>
+	<li>On non-Windows operating systems, Tomcat can only answer web requests on port 80 or port 443 when Tomcat is integrated with a solution that allows receiving requests on these default privileged port numbers. Because using the default port numbers is preferable or even required for many reasons, Tomcat administrators must research the solutions and choose a way to configure it to work on their servers.
+<br class="atl-forced-newline"/></li>
+	<li>There are a number of solutions for making Tomcat answer port 80 requests. We'll list the popular solutions, discuss the pros and cons of each solution, and discuss which solutions are usually preferable, and for which reasons.
+<br class="atl-forced-newline"/></li>
+	<li>Jason is a co-author of Tomcat: The Definitive Guide, now in its second edition, and has been using Tomcat and contributing to the Apache Tomcat project for over ten years. As a Debian Java committer, Jason works on the Debian and Ubuntu Tomcat 6 package. Jason is a Software Architect at <a class="unresolved" href="#">MuleSoft</a>, working on the Tcat Server product.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-IntroductiontoApacheTomcat7">Introduction to Apache Tomcat 7</h4>
+<p>By Tim Funk:</p>
+
+<ul>
+	<li>Apache Tomcat 7 is the latest version of Tomcat products. In this talk, we will overview the new features in Tomcat 7. We will highlight Servlet 3.0 features and how they apply to Tomcat, deprecations which are now gone versus Tomcat 6, and mention features still in common with Tomcat 6.
+<br class="atl-forced-newline"/></li>
+	<li>Tim Funk has been a Tomcat user for over 7 years and committer since 2003. Tim currently resides in Pennsylvania and works for Armstrong World Industries performing a range of roles, enjoying the role of developer the most. Tim has a Masters of Software Engineering from Penn State.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-Tomcat7-ImplementingaServletContainer">Tomcat 7 - Implementing a Servlet Container</h4>
+<p>By Damodar Chetty:</p>
+
+<ul>
+	<li>The servlet specification forms the requirements document that a servlet container, such as Tomcat, actually implements. To truly appreciate what a servlet container does, it is therefore critically important to first start with the servlet specification.
+<br class="atl-forced-newline"/></li>
+	<li>In this session we'll take a long hard look both at the specification as well as at how Tomcat stays true to it.
+<br class="atl-forced-newline"/></li>
+	<li>We will consider the conceptual underpinnings and implementations of aspects such as deployment descriptors, the servlet life cycle, session management, listeners, and filters.
+<br class="atl-forced-newline"/></li>
+	<li>Damodar Chetty is the author of the recently published, Tomcat 6 Developer's Guide, and is a veteran software engineer with over two decades in the field. He has graduate degrees from the University of Minnesota (Computer Engineering) and the University of Goa (MBA), and an undergraduate degree in electrical engineering form the University of Bombay.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h4 id="TomcatTrackNA10PMCSessions-TomcatVitalComponentDeepDive">Tomcat Vital Component Deep Dive</h4>
+<p>By Damodar Chetty:</p>
+
+<ul>
+	<li>In this session we'll take an up close and personal look at the most vital components that comprise Tomcat– the connector subsystem, virtual host, the context, the wrapper, and the session manager.
+<br class="atl-forced-newline"/></li>
+	<li>We will explore the implementation of the JIO and NIO connectors, look at alternative virtual hosting techniques and its context deployment responsibilities, delve into protocol handlers and the class loading mechanics associated with web application contexts, get familiar with request dispatching and the filter decoration aspects of wrappers, and immerse ourselves in the intricacies of state management with sessions.
+<br class="atl-forced-newline"/></li>
+	<li>Damodar Chetty is the author of the recently published, Tomcat 6 Developer's Guide, and is a veteran software engineer with over two decades in the field. He has graduate degrees from the University of Minnesota (Computer Engineering) and the University of Goa (MBA), and an undergraduate degree in electrical engineering form the University of Bombay.</li>
+</ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

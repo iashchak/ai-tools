@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : IntegratingTikaWithExtractingRequestHandler</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : IntegratingTikaWithExtractingRequestHandler
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="IntegratingTikaWithExtractingRequestHandler-IntegratingTikaWith">Integrating Tika With <a class="unresolved" href="#">ExtractingRequestHandler</a></h1>
+<p><strong>0. Because the online apache repositories do not have Tika-1.8-SNAPSHOT for now, we have to use local maven repository.</strong> </p>
+
+<p><strong>1. Checkout tike-trunk:</strong></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ svn co https://svn.apache.org/repos/asf/tika/trunk/ tika-trunk
+</pre>
+</div></div>
+<p><strong>2. Build Tika</strong></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ cd tika-trunk
+
+$ mvn install
+</pre>
+</div></div>
+<p><strong>3. Download tika-parsers dependencies:</strong></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ cd tika-parsers
+
+$ mvn dependency:copy-dependencies
+</pre>
+</div></div>
+<p><strong>4. Checkout lucene-solr-4-10</strong></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ svn checkout http://svn.apache.org/repos/asf/lucene/dev/branches/lucene_solr_4_10 lucene_solr_4_10
+</pre>
+</div></div>
+<p><strong>5. Modified the lucene_solr_4_10/lucene/ivy-setting.xml by uncommenting line 45-52 and line 56:</strong></p>
+
+<p>Line 45-52:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;filesystem name=&quot;local-maven-2&quot; m2compatible=&quot;true&quot; local=&quot;true&quot;&gt;
+
+        &lt;artifact
+
+            pattern=&quot;${local-maven2-dir}/[organisation]/[module]/[revision]/[module]-[revision].[ext]    &quot; /&gt;
+
+        &lt;ivy
+
+           pattern=&quot;${local-maven2-dir}/[organisation]/[module]/[revision]/[module]-[revision].pom&quot;     /&gt;
+
+    &lt;/filesystem&gt;
+</pre>
+</div></div>
+
+<p>Line 56:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>   &lt;resolver ref=&quot;local-maven-2&quot; /&gt;
+</pre>
+</div></div>
+<p><strong>6. Replace the lucene_solr_4_10/solr/contrib/extraction/ivy.xml to the following ivy.xml:</strong></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;!--
+
+   Licensed to the Apache Software Foundation (ASF) under one
+
+   or more contributor license agreements.  See the NOTICE file
+
+   distributed with this work for additional information
+
+   regarding copyright ownership.  The ASF licenses this file
+
+   to you under the Apache License, Version 2.0 (the
+
+   &quot;License&quot;); you may not use this file except in compliance
+
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+
+   software distributed under the License is distributed on an
+
+   &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+
+   KIND, either express or implied.  See the License for the
+
+   specific language governing permissions and limitations
+
+   under the License.
+
+--&gt;
+
+&lt;ivy-module version=&quot;2.0&quot;&gt;
+
+  &lt;info organisation=&quot;org.apache.solr&quot; module=&quot;extraction&quot;/&gt;
+
+  &lt;configurations defaultconfmapping=&quot;compile-&gt;master;test-&gt;master&quot;&gt;
+
+    &lt;conf name=&quot;compile&quot; transitive=&quot;false&quot;/&gt;
+
+    &lt;conf name=&quot;test&quot; transitive=&quot;false&quot;/&gt;
+
+  &lt;/configurations&gt;
+
+  &lt;dependencies&gt;
+
+    &lt;!-- Tika JARs --&gt;
+
+    &lt;dependency org=&quot;org.apache.tika&quot; name=&quot;tika-core&quot; rev=&quot;1.8-SNAPSHOT&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.tika&quot; name=&quot;tika-parsers&quot; rev=&quot;1.8-SNAPSHOT&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.tika&quot; name=&quot;tika-xmp&quot; rev=&quot;1.8-SNAPSHOT&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;!-- Tika dependencies - see http://tika.apache.org/1.3/gettingstarted.html#Using_Tika_as_a_Maven_dependency --&gt;
+
+    &lt;!-- When upgrading Tika, upgrade dependencies versions and add any new ones
+
+         (except slf4j-api, commons-codec, commons-logging, commons-httpclient, geronimo-stax-api_1.0_spec, jcip-annotations, xml-apis, asm)
+
+         WARNING: Don&#39;t add netcdf / unidataCommon (partially LGPL code) --&gt;
+
+    &lt;dependency org=&quot;org.gagravarr&quot; name=&quot;vorbis-java-tika&quot; rev=&quot;0.6&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.gagravarr&quot; name=&quot;vorbis-java-core&quot; rev=&quot;0.6&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.james&quot; name=&quot;apache-mime4j-core&quot; rev=&quot;0.7.2&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.james&quot; name=&quot;apache-mime4j-dom&quot; rev=&quot;0.7.2&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.commons&quot; name=&quot;commons-compress&quot; rev=&quot;1.9&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.pdfbox&quot; name=&quot;pdfbox&quot; rev=&quot;1.8.8&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.pdfbox&quot; name=&quot;fontbox&quot; rev=&quot;1.8.8&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.pdfbox&quot; name=&quot;jempbox&quot; rev=&quot;1.8.8&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.bouncycastle&quot; name=&quot;bcmail-jdk15&quot; rev=&quot;1.45&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.bouncycastle&quot; name=&quot;bcprov-jdk15&quot; rev=&quot;1.45&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.poi&quot; name=&quot;poi&quot; rev=&quot;3.11&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.poi&quot; name=&quot;poi-scratchpad&quot; rev=&quot;3.11&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.poi&quot; name=&quot;poi-ooxml&quot; rev=&quot;3.11&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.poi&quot; name=&quot;poi-ooxml-schemas&quot; rev=&quot;3.11&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.apache.xmlbeans&quot; name=&quot;xmlbeans&quot; rev=&quot;2.6.0&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;dom4j&quot; name=&quot;dom4j&quot; rev=&quot;${/dom4j/dom4j}&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.ccil.cowan.tagsoup&quot; name=&quot;tagsoup&quot; rev=&quot;1.2.1&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;com.googlecode.mp4parser&quot; name=&quot;isoparser&quot; rev=&quot;1.0.2&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.aspectj&quot; name=&quot;aspectjrt&quot; rev=&quot;1.8.0&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;com.drewnoakes&quot; name=&quot;metadata-extractor&quot; rev=&quot;2.6.2&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;de.l3s.boilerpipe&quot; name=&quot;boilerpipe&quot; rev=&quot;1.1.0&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;rome&quot; name=&quot;rome&quot; rev=&quot;1.0&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;jdom&quot; name=&quot;jdom&quot; rev=&quot;1.0&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;com.googlecode.juniversalchardet&quot; name=&quot;juniversalchardet&quot; rev=&quot;1.0.3&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.tukaani&quot; name=&quot;xz&quot; rev=&quot;1.5&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;com.adobe.xmp&quot; name=&quot;xmpcore&quot; rev=&quot;5.1.2&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;com.uwyn&quot; name=&quot;jhighlight&quot; rev=&quot;1.0&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;!-- Other ExtractingRequestHandler dependencies --&gt;
+
+    &lt;dependency org=&quot;com.ibm.icu&quot; name=&quot;icu4j&quot; rev=&quot;${/com.ibm.icu/icu4j}&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;xerces&quot; name=&quot;xercesImpl&quot; rev=&quot;${/xerces/xercesImpl}&quot; conf=&quot;compile&quot;/&gt;
+
+    &lt;dependency org=&quot;org.slf4j&quot; name=&quot;jcl-over-slf4j&quot; rev=&quot;${/org.slf4j/jcl-over-slf4j}&quot; conf=&quot;test&quot;/&gt;
+
+    &lt;exclude org=&quot;*&quot; ext=&quot;*&quot; matcher=&quot;regexp&quot; type=&quot;${ivy.exclude.types}&quot;/&gt;
+
+  &lt;/dependencies&gt;
+
+&lt;/ivy-module&gt;
+</pre>
+</div></div>
+<p><strong>7. Compile solr</strong></p>
+
+
+<p>Change the working directory to lucene_solr_4_10/solr/</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ ant compile
+</pre>
+</div></div>
+<p><strong>8. Generate new sha1 files for the jars</strong></p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ ant jar-checksums
+</pre>
+</div></div>
+<p><strong>9. Done. Enjoy.</strong></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

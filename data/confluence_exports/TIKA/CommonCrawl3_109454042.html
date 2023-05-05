@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : CommonCrawl3</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : CommonCrawl3
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="CommonCrawl3-RefreshingApacheTika&#39;sLarge-scaleRegressionCorpus">Refreshing Apache Tika's Large-scale Regression Corpus</h1>
+
+<p>Since the last efforts to refresh the regression corpus (see <a href="ApacheTikaHtmlEncodingStudy_109454039.html">ApacheTikaHtmlEncodingStudy</a> and <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2038" rel="nofollow">TIKA-2038</a>), <a class="external-link" href="http://commoncrawl.org/" rel="nofollow">Common Crawl</a> has added important metadata items in the indices, including: <em>mime-detected</em>, <em>languages</em> and <em>charset</em>.  I opened <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2750" rel="nofollow">TIKA-2750</a> to track progress on updating our corpus, and I describe the steps taken here.</p>
+
+<p>We are enormously grateful to Sebastian Nagel and Common Crawl for using Tika to detect file types and running it on the entire crawl.  The synergy of these two open source|data projects is phenomenal.</p>
+
+<p>As always, we're enormously grateful to <a class="external-link" href="http://www.rackspace.com" rel="nofollow">Rackspace</a> for hosting our regression testing vm.</p>
+
+<p>There are three primary goals of TIKA-2750: include more recent files, include more &quot;interesting&quot; files, and refetch some of the files that are truncated in Common Crawl.  I don't have a definition of interesting, but the goal is to include broad coverage of file formats and languages.  See below on <a href="#CommonCrawl3-CoverageMetrics">Coverage Metrics</a>.</p>
+
+<p>While I recognize that the new metadata is automatically generated and may contain errors, this new metadata allows for more accurate oversampling of file formats/charsets that are of interest.</p>
+
+<p>I started by downloading the 300 index files for September 2018's crawl: CC-MAIN-2018-39 (~226GB).</p>
+
+<p>The top 10 'detected mimes' are:</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p>mime</p></td>
+<td class="confluenceTd"><p>count</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> text/html </p></td>
+<td class="confluenceTd"><p> 2,070,375,191 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> application/xhtml+xml </p></td>
+<td class="confluenceTd"><p> 749,683,874 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> image/jpeg </p></td>
+<td class="confluenceTd"><p> 6,207,029 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> application/pdf </p></td>
+<td class="confluenceTd"><p> 4,128,740 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> application/rss+xml </p></td>
+<td class="confluenceTd"><p> 3,495,173 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> application/atom+xml </p></td>
+<td class="confluenceTd"><p> 2,868,625 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> application/xml </p></td>
+<td class="confluenceTd"><p> 1,353,092 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> image/png </p></td>
+<td class="confluenceTd"><p> 585,019 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> text/plain </p></td>
+<td class="confluenceTd"><p> 492,429 </p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p> text/calendar </p></td>
+<td class="confluenceTd"><p> 470,624 </p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<p>Given the work on TIKA-2038 and the focus on country top level domains (TLDs), I also counted the number of <em>mimes</em> by TLD and the number of <em>charsets</em> by TLD (<a class="external-link" href="https://issues.apache.org/jira/secure/attachment/12945796/CC-MAIN-2018-39-mimes-charsets-by-tld.zip" rel="nofollow">here</a>).</p>
+
+<p>Finally, I calculated the counts for pairs of 'mime' (as alleged by the http-header) and the 'detected-mime', and that is available <a class="external-link" href="https://issues.apache.org/jira/secure/attachment/12946585/CC-MAIN-2018-39-mimes-v-detected.zip" rel="nofollow">here</a>. </p>
+
+<h1 id="CommonCrawl3-Step1:SelectandRetrievetheFilesfromCommonCrawl">Step 1: Select and Retrieve the Files from Common Crawl</h1>
+
+<p>My sense from our JIRA and our user list is that people are primarily interested in office-ish files (PDF, MSOffice, RTF, eml, etc) and/or HTML.  I therefore chose to break the sampling into three passes:</p>
+
+<ol>
+	<li>PDFs, MSOffice and other office-ish files 2. Other binaries 3. HTML/Text
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>I wanted to keep the corpus to below 1 TB and on the order of a few million files.  </p>
+
+<p>The sampling frame tables are available <a class="external-link" href="http://162.242.228.174/share/commoncrawl3/sampling_frames.zip" rel="nofollow">here</a>; there's one sampling frame for each of the three file classes.  </p>
+
+<p><strong>NOTE:</strong> I hesitate even to use the terms &quot;sampling and &quot;sampling frame&quot; because I do not mean to imply that I used much rigor.  I manually calculated the sampling frames based on the total counts so that we'd have roughly the desired number of files and file types.  As I describe below, there some file types that I thought we should have more of (e.g. 'octet-stream').</p>
+
+<p>The code for everything described here is available on <a class="external-link" href="https://github.com/tballison/SimpleCommonCrawlExtractor" rel="nofollow">github</a></p>
+
+<h2 id="CommonCrawl3-Officeformats">Office formats</h2>
+<p>The top 10 file formats of this category include:</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p>mime</p></td>
+<td class="confluenceTd"><p>count</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/pdf</p></td>
+<td class="confluenceTd"><p>4,128,740</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p></td>
+<td class="confluenceTd"><p>53,579</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/msword</p></td>
+<td class="confluenceTd"><p>52,087</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/rtf</p></td>
+<td class="confluenceTd"><p>22,509</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.ms-excel</p></td>
+<td class="confluenceTd"><p>22,067</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p></td>
+<td class="confluenceTd"><p>16,290</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.oasis.opendocument.text</p></td>
+<td class="confluenceTd"><p>8,314</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p></td>
+<td class="confluenceTd"><p>6,835</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.ms-powerpoint</p></td>
+<td class="confluenceTd"><p>5,799</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.presentationml.slideshow</p></td>
+<td class="confluenceTd"><p>2,465</p></td>
+</tr>
+</tbody></table></div>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>select mime, sum(count) cnt
+from detected_mimes
+where 
+(mime ilike &#39;%pdf%&#39; 
+ OR 
+ mime similar to &#39;%(word|doc|power|ppt|excel|xls|application.*access|outlook|msg|visio|rtf|iwork|pages|numbers|keynot)%&#39;
+)
+group by mime
+order by cnt desc
+</pre>
+</div></div>
+
+<p>Given how quickly the tail drops off, we could afford to take all of the non-PDFs.  For PDFs, we created a sampling frame by TLD. </p>
+
+<p>We used <strong><code>org.tallison.cc.index.mappers.DownSample</code></strong> to select files for downloading from Common Crawl.</p>
+
+<h2 id="CommonCrawl3-OtherBinaries">Other Binaries</h2>
+<p>These are the top 10 other binaries:</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p>mime</p></td>
+<td class="confluenceTd"><p>cnt</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>image/jpeg</p></td>
+<td class="confluenceTd"><p>6,207,029</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/rss+xml</p></td>
+<td class="confluenceTd"><p>3,495,173</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/atom+xml</p></td>
+<td class="confluenceTd"><p>2,868,625</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/xml</p></td>
+<td class="confluenceTd"><p>1,353,092</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>image/png</p></td>
+<td class="confluenceTd"><p>585,019</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/octet-stream</p></td>
+<td class="confluenceTd"><p>330,029</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/json</p></td>
+<td class="confluenceTd"><p>237,232</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/rdf+xml</p></td>
+<td class="confluenceTd"><p>229,766</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>image/gif</p></td>
+<td class="confluenceTd"><p>166,851</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/gzip</p></td>
+<td class="confluenceTd"><p>151,940</p></td>
+</tr>
+</tbody></table></div>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>select mime, sum(count) cnt
+from detected_mimes
+where 
+(mime not ilike &#39;%pdf%&#39; 
+ and
+ mime not similar to &#39;%(word|doc|power|ppt|excel|xls|application.*access|outlook|msg|visio|rtf|iwork|pages|numbers|keynot)%&#39;
+ and mime not ilike &#39;%html%&#39;
+ and mime not ilike &#39;%text%&#39;
+)
+group by mime
+order by cnt desc
+</pre>
+</div></div>
+
+<p>I created the sampling ratios from for these by preferring non-xml, but likely text-containing file types.  Further, I wanted to include a fairly large portion of <em>octet-stream</em> so that we might be able to see how we can improve Tika's file detection.</p>
+
+<p>We used <strong><code>org.tallison.cc.index.mappers.DownSample</code></strong> to select files for downloading from Common Crawl.</p>
+
+<h2 id="CommonCrawl3-HTML/Text">HTML/Text</h2>
+
+<p>For the HTML/text files, I wanted to oversample files that were not ASCII/UTF-8 English, and I wanted to oversample files that had no charset detected.</p>
+
+<p>We used <strong><code>org.tallison.cc.index.mappers.DownSampleLangCharset</code></strong> to select the files for downloading from Common Crawl.</p>
+
+<h2 id="CommonCrawl3-TheOutput">The Output</h2>
+<p>In addition to storing the files, I generated a table for each pull that included information stored in the WARC file, including information from the http-headers as archived in Common Crawl.  The three table files are available <a class="external-link" href="http://162.242.228.174/share/commoncrawl3/CC-MAIN-2018-39_crawled_files_tables.zip" rel="nofollow">here</a> (116MB!). </p>
+
+<h1 id="CommonCrawl3-Step2:RefetchLikelyTruncatedFiles">Step 2: Refetch Likely Truncated Files</h1>
+<p>Common Crawl truncates files at 1MB.  We've found it useful to have truncated files in our corpus, but this disproportionately affects some file formats, such as PDF and MSAccess files, and we wanted to have some recent, largish files in the corpus.  We selected those files that were close to 1MB or were marked as truncated:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>select url,cc_digest from crawled_files
+where
+(cc_mime_detected ilike &#39;%tika%&#39;
+or cc_mime_detected ilike &#39;%power%&#39;
+or cc_mime_detected ilike &#39;%access%&#39;
+or cc_mime_detected ilike &#39;%rtf%&#39;
+or cc_mime_detected ilike &#39;%pdf%&#39;
+or cc_mime_detected ilike &#39;%sqlite%&#39;
+ or cc_mime_detected ilike &#39;%openxml%&#39;
+ or cc_mime_detected ilike &#39;%word%&#39;
+ or cc_mime_detected ilike &#39;%rfc822%&#39;
+ or cc_mime_detected ilike &#39;%apple%&#39;
+ or cc_mime_detected ilike &#39;%excel%&#39;
+ or cc_mime_detected ilike &#39;%sheet%&#39;
+ or cc_mime_detected ilike &#39;%onenote%&#39;
+or cc_mime_detected ilike &#39;%outlook%&#39;)
+and (actual_length &gt; 990000 or warc_is_truncated=&#39;TRUE&#39;)
+order by random()
+</pre>
+</div></div>
+
+<p>A rollup of the files that were to be refetched by mime type is here:</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p>mime</p></td>
+<td class="confluenceTd"><p>count</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/pdf</p></td>
+<td class="confluenceTd"><p>121,386</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p></td>
+<td class="confluenceTd"><p>3,929</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/x-tika-msoffice</p></td>
+<td class="confluenceTd"><p>3,830</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.ms-powerpoint</p></td>
+<td class="confluenceTd"><p>2,942</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/msword</p></td>
+<td class="confluenceTd"><p>2,783</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p></td>
+<td class="confluenceTd"><p>2,722</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/x-tika-ooxml</p></td>
+<td class="confluenceTd"><p>2,612</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.presentationml.slideshow</p></td>
+<td class="confluenceTd"><p>1,663</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/rtf</p></td>
+<td class="confluenceTd"><p>1,569</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.ms-excel</p></td>
+<td class="confluenceTd"><p>1,186</p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>The full table is <a class="external-link" href="http://162.242.228.174/share/commoncrawl3/to_refetch.txt.gz" rel="nofollow">here</a>.</p>
+
+<p>We used <strong><code>org.tallison.cc.WReGetter</code></strong>, a wrapper around 'wget' to re-fetch the files from the original URL.  If the refetched file was &gt; 50MB, we deleted it; and if the refetch took longer than 2 minutes, we killed the process and deleted whatever bytes had been retrieved. </p>
+
+<p>We refetched these files to a new directory and stored them by their new digest.  Each thread in WReGetter wrote to a table to record the mapping of the original digest to the new digest and whether the new file was successfully refetched and/or was too big.  Because of limitations of disc space, we stopped the refetch procedure after refetching 98,000 documents, comprising 440GB of data.</p>
+
+<p>We then randomly deleted 80% of the original truncated files and moved the other 20% to /commoncrawl3_truncated.</p>
+
+<p>Finally, we moved the refetched files into the /commoncrawl3_refetched directory.  </p>
+
+<h1 id="CommonCrawl3-Step3–AreasforImprovements">Step 3 – Areas for Improvements</h1>
+<p>We carried out this work on one of our TB drives.  We have to figure out what to keep from our older commoncrawl2 collection and then merge the two collections.  We may consider deleting some of the ISO-8859-1/Windows-1252/UTF-8, English text files.  We could also identify truncated files based on parser exceptions and move those into /commoncrawl3_truncated.</p>
+
+<h1 id="CommonCrawl3-Step4–ComparisonofContents">Step 4 – Comparison of Contents</h1>
+<p>Top 20 &quot;container&quot; file mimes:</p>
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p> Mime</p></td>
+<td class="confluenceTd"><p>Count</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/pdf</p></td>
+<td class="confluenceTd"><p>528,617</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>text/plain; charset=ISO-8859-1</p></td>
+<td class="confluenceTd"><p>184,019</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/msword</p></td>
+<td class="confluenceTd"><p>78,210</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p></td>
+<td class="confluenceTd"><p>75,739</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>text/html; charset=UTF-8</p></td>
+<td class="confluenceTd"><p>75,156</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>text/plain; charset=windows-1252</p></td>
+<td class="confluenceTd"><p>74,144</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>text/plain; charset=UTF-8</p></td>
+<td class="confluenceTd"><p>56,462</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/octet-stream</p></td>
+<td class="confluenceTd"><p>54,278</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/zip</p></td>
+<td class="confluenceTd"><p>44,989</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/rss+xml</p></td>
+<td class="confluenceTd"><p>34,213</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>image/jpeg</p></td>
+<td class="confluenceTd"><p>30,968</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/atom+xml</p></td>
+<td class="confluenceTd"><p>28,934</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>image/png</p></td>
+<td class="confluenceTd"><p>28,173</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>text/html; charset=windows-1252</p></td>
+<td class="confluenceTd"><p>26,232</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/xhtml+xml; charset=UTF-8</p></td>
+<td class="confluenceTd"><p>25,130</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>text/html; charset=ISO-8859-1</p></td>
+<td class="confluenceTd"><p>24,515</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.google-earth.kml+xml</p></td>
+<td class="confluenceTd"><p>23,391</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/xhtml+xml; charset=windows-1252</p></td>
+<td class="confluenceTd"><p>22,304</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p></td>
+<td class="confluenceTd"><p>22,084</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>application/rtf</p></td>
+<td class="confluenceTd"><p>21,811</p></td>
+</tr>
+</tbody></table></div>
+
+
+
+<p>Top 20 Languages (including embedded files) as identified by language id:</p>
+
+<div class="table-wrap"><table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"><p>Language</p></td>
+<td class="confluenceTd"><p>Number of Files</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>en</p></td>
+<td class="confluenceTd"><p>1,803,350</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>null</p></td>
+<td class="confluenceTd"><p>242,442</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>ru</p></td>
+<td class="confluenceTd"><p>155,934</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>de</p></td>
+<td class="confluenceTd"><p>109,953</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>fr</p></td>
+<td class="confluenceTd"><p>96,192</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>it</p></td>
+<td class="confluenceTd"><p>73,781</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>es</p></td>
+<td class="confluenceTd"><p>59,069</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>ja</p></td>
+<td class="confluenceTd"><p>50,941</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>pl</p></td>
+<td class="confluenceTd"><p>47,044</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>pt</p></td>
+<td class="confluenceTd"><p>35,490</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>ko</p></td>
+<td class="confluenceTd"><p>35,251</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>ca</p></td>
+<td class="confluenceTd"><p>30,717</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>fa</p></td>
+<td class="confluenceTd"><p>26,202</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>zh-cn</p></td>
+<td class="confluenceTd"><p>25,379</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>nl</p></td>
+<td class="confluenceTd"><p>23,554</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>ro</p></td>
+<td class="confluenceTd"><p>23,259</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>tr</p></td>
+<td class="confluenceTd"><p>23,111</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>da</p></td>
+<td class="confluenceTd"><p>21,967</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>br</p></td>
+<td class="confluenceTd"><p>21,420</p></td>
+</tr>
+<tr>
+<td class="confluenceTd"><p>vi</p></td>
+<td class="confluenceTd"><p>19,305</p></td>
+</tr>
+</tbody></table></div>
+
+
+<h1 id="CommonCrawl3-CodeCoverageMetrics">Code Coverage Metrics</h1>
+<p>Tobias Ospelt and Rohan Padhye (the author of <a class="unresolved" href="#">https://github.com/rohanpadhye/jqf</a>) both noted on our dev list that we could use coverage analysis to identify a minimal corpus that would cover as much of our code base as possible.  Obviously, a minimal corpus designed for our current codebase would not be guaranteed to cover new features, and we'd want to leave plenty of extra files around in the hope that some of them would capture new code paths.</p>
+
+<p>Nevertheless, if we could use jqf or another tool to reduce the corpus, that would help make our runs more efficient.</p>
+
+<p>On <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2750?page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel&amp;focusedCommentId=16676812#comment-16676812" rel="nofollow">TIKA-2750</a>, Tobias reported that his experiment with <em>afl-cmin.py</em> showed that it would take roughly four months on our single VM just to create traces (~300 files per hour).</p>
+
+<h1 id="CommonCrawl3-OtherResources">Other Resources</h1>
+<p>See <a href="ComparisonTikaAndPDFToText201811_109454043.html">ComparisonTikaAndPDFToText201811</a> for notes on a comparison of the output of pdftotext and Tika.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

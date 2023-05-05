@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaGeographicInformationParser</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Parsers_211883550.html">Parsers</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaGeographicInformationParser
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaGeographicInformationParser-TikaGeographicInformationParserTikaGeographicInformationParser_109454093.html"><a href="TikaGeographicInformationParser_109454093.html">TikaGeographicInformationParser</a></h1>
+
+
+<p>Currently Apache Tika lacks the required support to parse .iso19139 files that are crawled from the Acadis websites.There has been a issue that has been created by Prasanth Iyer (<a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1479" rel="nofollow">https://issues.apache.org/jira/browse/TIKA-1479</a>) TIKA-1479.</p>
+
+<p><strong>The Progress is as below</strong></p>
+
+<ol>
+	<li>Extract the Meta Data using Apache SIS library (Martin has been a great source of support in this regard).</li>
+</ol>
+
+
+
+<p>2. Customize the Meta Data extracted to construct Meta Data as key multi-value.</p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>3. The format finalized so far has been key1&#45;&gt;[val1,val2..] , key2&#45;&gt;[val1,val2...].</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+
+<p>I would like suggestions on the below progress. Default Meta Data extracted from Apache SIS framework is as below</p>
+
+<p><strong>Default Meta Data</strong></p>
+<hr/>
+
+<p>Metadata                                             <br/>
+  +-Character set……………………………………………………………………………………………… UTF-8 </p>
+
+<p>  +-Contact   </p>
+
+<p>  ¦   +-Role…………………………………………………………………………………………………………… Resource provider </p>
+
+<p>  ¦   +-Party   </p>
+
+<p>  ¦       +-Name………………………………………………………………………………………………… UCAR/NCAR - CISL - ACADIS </p>
+
+<p>  +-Identification info </p>
+
+<p>  ¦   +-Citation </p>
+
+<p>  ¦   ¦   +-Title……………………………………………………………………………………………… Barrow Atqasuk ARCSS Plant </p>
+
+<p>  ¦   ¦   +-Date (1 of 2) </p>
+
+<p>  ¦   ¦   ¦   +-Date……………………………………………………………………………………… Dec 16, 2013 12:00:00 AM </p>
+
+<p>  ¦   ¦   ¦   +-Date type………………………………………………………………………… Creation </p>
+
+<p>  ¦   ¦   +-Date (2 of 2) </p>
+
+<p>  ¦   ¦   ¦   +-Date……………………………………………………………………………………… Feb 5, 2015 12:00:00 AM </p>
+
+<p>  ¦   ¦   ¦   +-Date type………………………………………………………………………… Modified </p>
+
+<p>  ¦   ¦   +-Cited responsible party </p>
+
+<p>  ¦   ¦       +-Role……………………………………………………………………………………… Point of contact </p>
+
+<p>  ¦   ¦       +-Party </p>
+
+<p>  ¦   ¦           +-Name…………………………………………………………………………… Robert Hollister </p>
+
+<p>  ¦   ¦           +-Contact info </p>
+
+<p>  ¦   ¦               +-Address </p>
+
+<p>  ¦   ¦                   +-Electronic mail address…… hollistr@gvsu.edu </p>
+
+<p>  ¦   +-Abstract………………………………………………………………………………………………… These files contain data representing the periodic plant measures of species within each plot in a text tab delimited format. <br/>
+ The data presented are seasonal growth of graminoids (length of leaf and length of inflorescence) and seasonal flowering of all species (number of inflorescences in flower within a plot), collected weekly during the summers of 2012-20XX for a subset of 30 grid plots at two sites (Barrow ARCSS grid and Atqasuk ARCSS grid). </p>
+
+<p>  ¦   +-Status……………………………………………………………………………………………………… On going </p>
+
+<p>  ¦   +-Point of contact </p>
+
+<p>  ¦   ¦   +-Role………………………………………………………………………………………………… Point of contact </p>
+
+<p>  ¦   ¦   +-Party </p>
+
+<p>  ¦   ¦       +-Name……………………………………………………………………………………… Robert Hollister </p>
+
+<p>  ¦   ¦       +-Contact info </p>
+
+<p>  ¦   ¦           +-Address </p>
+
+<p>  ¦   ¦               +-Electronic mail address……………… hollistr@gvsu.edu </p>
+
+<p>  ¦   +-Resource format </p>
+
+<p>  ¦   ¦   +-Format specification citation </p>
+
+<p>  ¦   ¦       +-Alternate title………………………………………………………… Other ASCII </p>
+
+<p>  ¦   +-Descriptive keywords (1 of 5) </p>
+
+<p>  ¦   ¦   +-Keyword………………………………………………………………………………………… EARTH SCIENCE &gt; BIOSPHERE &gt; TERRESTRIAL ECOSYSTEMS &gt; ALPINE/TUNDRA </p>
+
+<p>  ¦   ¦   +-Type………………………………………………………………………………………………… Theme </p>
+
+<p>  ¦   ¦   +-Thesaurus name </p>
+
+<p>  ¦   ¦       +-Title…………………………………………………………………………………… NASA/GCMD Earth Science Keywords </p>
+
+<p>  ¦   ¦       +-Alternate title………………………………………………………… Science and Services Keywords </p>
+
+<p>  ¦   ¦       +-Date </p>
+
+<p>  ¦   ¦           +-Date…………………………………………………………………………… May 21, 2014 12:00:00 AM </p>
+
+<p>  ¦   ¦           +-Date type……………………………………………………………… Revision </p>
+
+<p>  ¦   +-Descriptive keywords (2 of 5) </p>
+
+<p>  ¦   ¦   +-Keyword………………………………………………………………………………………… FIELD SURVEY </p>
+
+<p>  ¦   ¦   +-Type………………………………………………………………………………………………… Theme </p>
+
+<p>  ¦   ¦   +-Thesaurus name </p>
+
+<p>  ¦   ¦       +-Title…………………………………………………………………………………… ACADIS Keywords </p>
+
+<p>  ¦   ¦       +-Alternate title………………………………………………………… Platforms </p>
+
+<p>  ¦   ¦       +-Date </p>
+
+<p>  ¦   ¦           +-Date…………………………………………………………………………… Oct 7, 2014 12:00:00 AM </p>
+
+<p>  ¦   ¦           +-Date type……………………………………………………………… Revision </p>
+
+
+
+
+<p><strong>Corresponding Customized Meta Data is as below</strong></p>
+<hr/>
+
+<p><a class="unresolved" href="#">CharacterSet</a>--&gt;UTF-8 </p>
+
+<p><a class="unresolved" href="#">ContactRole</a>--&gt;RESOURCE_PROVIDER </p>
+
+<p><a class="unresolved" href="#">ContactPartyName</a>--&gt;UCAR/NCAR - CISL - ACADIS </p>
+
+<p><a class="unresolved" href="#">IdentificationInfoCitationTitle</a>--&gt;Barrow Atqasuk ARCSS Plant </p>
+
+<p><a class="unresolved" href="#">CitationDate</a>CREATION--&gt;Mon Dec 16 00:00:00 PST 2013 </p>
+
+<p><a class="unresolved" href="#">CitationDatemodified</a>--&gt;Thu Feb 05 00:00:00 PST 2015 </p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p><span class="error">&#91;CitedResponsiblePartyRole&#93;</span>-&#45;&gt;Role[POINT_OF_CONTACT] </p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p><a class="unresolved" href="#">CitedResponsiblePartyName</a>--&gt;Robert Hollister </p>
+
+<p><a class="unresolved" href="#">CitedResponsiblePartyOrganizationName</a>--&gt;null </p>
+
+<p><a class="unresolved" href="#">CitedResponsiblePartyPositionName</a>--&gt;null </p>
+
+<p><a class="unresolved" href="#">CitedResponsibleParty</a>EMail--&gt;hollistr@gvsu.edu </p>
+
+<p><a class="unresolved" href="#">IdentificationInfoAbstract</a>--&gt;These files contain data representing the periodic plant measures of species within each plot in a text tab delimited format.The data presented are seasonal growth of graminoids (length of leaf and length of inflorescence) and seasonal flowering of all species (number of inflorescences in flower within a plot), collected weekly during the summers of 2012-20XX for a subset of 30 grid plots at two sites (Barrow ARCSS grid and Atqasuk ARCSS grid). </p>
+
+<p><a class="unresolved" href="#">IdentificationInfoStatus</a>--&gt;ON_GOING </p>
+
+<p><a class="unresolved" href="#">ResourceFormatSpecificationAlternativeTitle</a>--&gt;Other ASCII </p>
+
+<p><a class="unresolved" href="#">IdentificationInfoLanguage</a>--&gt;English </p>
+
+<p><a class="unresolved" href="#">IdentificationInfoTopicCategory</a>--&gt;BIOTA </p>
+
+<p><a class="unresolved" href="#">DescriptiveKeyWords</a> 1 </p>
+
+<p>======================= </p>
+
+<p>Keywords--&gt;EARTH SCIENCE &gt; BIOSPHERE &gt; TERRESTRIAL ECOSYSTEMS &gt; ALPINE/TUNDRA </p>
+
+<p><a class="unresolved" href="#">KeywordsType</a>--&gt;THEME </p>
+
+<p><a class="unresolved" href="#">ThesaurusNameTitle</a>--&gt;NASA/GCMD Earth Science Keywords </p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p><span class="error">&#91;ThesaurusNameAlternativeTitle&#93;</span>-&#45;&gt;[Science and Services Keywords] </p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p><a class="unresolved" href="#">ThesaurusNameDate</a>REVISION--&gt;Wed May 21 00:00:00 PDT 2014 </p>
+
+<p><a class="unresolved" href="#">DescriptiveKeyWords</a> 2 </p>
+
+<p>======================= </p>
+
+<p>Keywords--&gt;FIELD SURVEY </p>
+
+<p><a class="unresolved" href="#">KeywordsType</a>--&gt;THEME </p>
+
+<p><a class="unresolved" href="#">ThesaurusNameTitle</a>--&gt;ACADIS Keywords </p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p><span class="error">&#91;ThesaurusNameAlternativeTitle&#93;</span>-&#45;&gt;[Platforms] </p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p><a class="unresolved" href="#">ThesaurusNameDate</a>REVISION--&gt;Tue Oct 07 00:00:00 PDT 2014 </p>
+
+
+
+<p>I definitely feel that the Key Names could be much shorter,your suggestion would be appreciated .</p>
+
+<p>Once the format would be finalized I can go ahead and start integrating the same into Apache Tika to handle .iso19139 files to make the Tika much more robust. Feel free to Comment</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

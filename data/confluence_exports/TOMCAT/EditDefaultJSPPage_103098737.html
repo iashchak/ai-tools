@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : EditDefaultJSPPage</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="HowTo_103099265.html">HowTo</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : EditDefaultJSPPage
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on сен 20, 2009
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    
+<h2 id="EditDefaultJSPPage-EditingthedefaultJSPhomepageloadedbyTomcat">Editing the default JSP home page loaded by Tomcat</h2>
+
+<p>The contents of the default Tomcat home page comes from the ROOT webapp servlet called <code>org.apache.jsp.index_jsp</code>. The page that you see in <code>$CATALINA_HOME/webapps/ROOT/index.jsp</code><br/>
+has been precompiled into a class file (<code>org.apache.jsp.index_jsp.class</code>) stored in a JAR file (<code>catalina-root.jar</code>) in the ROOT webapp's <code>WEB-INF/lib</code> directory. Because of this servlet, Tomcat will not look at the contents of the ROOT web application's<br/>
+<code>index.jsp</code> file if you change it.</p>
+
+<p>The easiest way to change the contents of the <code>index.jsp</code> page is to remove this<br/>
+<code>index_jsp</code> servlet from the ROOT webapp. Once you remove the <code>index_jsp</code> servlet and restart Tomcat, Tomcat will see the <code>index.jsp</code> file in the ROOT directory and compile it on the fly into a class file. You now will be able to edit the ROOT/index.jsp file and have those changes take effect immediately by reloading the <code><a class="external-link" href="http://localhost:8080/" rel="nofollow">http://localhost:8080/</a></code> page.</p>
+
+<p>To remove the <code>index_jsp</code> servlet, edit the ROOT web application's configuration file,<br/>
+<code>$CATALINA_HOME/webapps/ROOT/WEB-INF/web.xml</code>. Comment out the definition of the servlet and the servlet mapping, so that section of the file will look like this (note the commented out section):</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;!-- JSPC servlet mappings start --&gt;
+
+  &lt;!-- Commenting out so I can change the index.jsp page
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;org.apache.jsp.index_jsp&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.apache.jsp.index_jsp&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;org.apache.jsp.index_jsp&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/index.jsp&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+  --&gt;
+&lt;!-- JSPC servlet mappings end --&gt;
+</pre>
+</div></div>
+
+<p>Once you disable the <code>index_jsp</code> servlet and restart Tomcat, how does Tomcat know to compile the<br/>
+<code>index.jsp</code> page in the ROOT web app's directory? Easy. First, when you request the default page of a web application, Tomcat (like every servlet container) will look for a welcome file. The default welcome files are defined at the bottom of <code>$CATALINA_HOME/conf/web.xml</code>. This web.xml file acts as a global web.xml file used for all web applications installed in Tomcat. The default welcome file list includes <code>index.jsp</code>, which means Tomcat will try to load that file (if found) in order to display it. Second, the <code>$CATALINA_HOME/conf/web.xml</code> configuration file also defines a servlet called simply <code>jsp</code>. This section of the <code>web.xml</code> file:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;!-- The mapping for the JSP servlet --&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;jsp&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;jsp&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+</pre>
+</div></div>
+
+<p>maps all <code>.jsp</code> and <code>.jspx</code> pages to the jsp servlet. The jsp servlet performs the work of compiling the source JSP file into a servlet and then executing the servlet. The JSP servlet, by default, will check the JSP source page every time it is requested to see if it was modified since the last time it was compiled. If the page changed within 4 seconds of the last time it was compiled, the servlet will recompile the source JSP page before running it. The behavior of the jsp servlet is quite configurable. You can see all its options defined in the<br/>
+<code>$CATALINA_HOME/conf/web.xml</code> configuration file.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

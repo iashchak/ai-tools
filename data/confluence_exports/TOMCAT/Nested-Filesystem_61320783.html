@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Nested Filesystem</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Archive_110694813.html">Archive</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Nested Filesystem
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span> on сен 25, 2015
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p class="line874">Java uses the JAR file format for packaging application components. Originally used simply for packaging classes and their associated resources, it is now used for package types that allow embedding of other packages such as: <span class="anchor"> </span><span class="anchor"> </span></p><ul><li>Web applications (WAR files) that may contain JAR files with classes and/or web fragments <span class="anchor"> </span></li><li>Resource adapters (J2CA RAR files) that may contain JAR files with classes or native libraries <span class="anchor"> </span></li><li>Enterprise archives (EAR files) that may contain JAR files, WARs or RARs (with their embedded JARs and libraries) <span class="anchor"> </span><span class="anchor"> </span></li></ul><p class="line874">This nesting is typically handled by expanding the packages onto the filesystem where they can be accessed using the standard JDK APIs; however, this requires a writable filesystem with space to hold the extracted packages and takes time to perform the extractions. This has the advantage that every resource contained in the package can be identified by a URL using a scheme supported directly by the JDK (using either the &quot;file&quot; protocol or the &quot;jar&quot; protocol). <span class="anchor"> </span><span class="anchor"> </span></p><p class="line862">To avoid unpacking the archive, alternative mechanisms have been build that use custom URLs and ClassLoader implementations to access their content. Examples of these are the &quot;jndi&quot; scheme used in previous versions of Tomcat or the &quot;onejar&quot; scheme used by the One-Jar project. These custom schemes may not be recognized by framework libraries and may be handled incorrectly or inefficiently. This is compounded by schemes deriving from the &quot;jar&quot; scheme with its use of non-hierarchical URIs that require special handling. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line862">This proposal explores an alternative implementation based on the use of the NIO FileSystem library introduced in Java 7. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line862">A prototype implementation is available in Tomcat's sandbox at <a class="external-link" href="http://svn.apache.org/viewvc/tomcat/sandbox/niofs/" rel="nofollow">http://svn.apache.org/viewvc/tomcat/sandbox/niofs/</a> <span class="anchor"> </span><span class="anchor"> </span></p><h1 id="NestedFilesystem-Requirements">Requirements</h1><p> </p><p class="line862">The design is predicated on the ability to create FileSystem to provide a fully-functional view of an archive's content from a !Path referring to an archive. !Paths to entries in that FileSystem may be used as the basis for other archive FileSystems. Essentially, an archive can be mounted as a FileSystem and any archives it contains can in turn be mounted to form a nested hierarchy of FileSystems. <span class="anchor"> </span><span class="anchor"> </span></p><h2 id="NestedFilesystem-FunctionalRequirements">Functional Requirements</h2><ul><li><p class="line862">A FileSystem view of an archive may be created by calling the newFileSystem(Path) method on the provider. <span class="anchor"> </span></p><ul><li><p class="line862">The FileSystem underlying the Path must support random access via the SeekableByteChannel returned from newByteChannel() <span class="anchor"> </span></p></li></ul></li><li><p class="line862">The provider's newByteChannel() operation must return a SeekableByteChannel that supports random access <span class="anchor"> </span></p></li><li><p class="line862">A FileSystem view of an archive may be created by calling the newFileSystem(URI) method on the provider. <span class="anchor"> </span></p><ul><li>The URI must be able to be converted to a Path using the Paths.get(URI) API. <span class="anchor"> </span></li><li><p class="line862">The FileSystem backing such a Path must meet the constraints defined for newFileSystem(Path) <span class="anchor"> </span></p></li></ul></li><li>The URIs for Paths returned by the provider must use standard URI syntax and support resolving of relative references <span class="anchor"> </span><span class="anchor"> </span></li></ul><h2 id="NestedFilesystem-Non-FunctionalRequirements">Non-Functional Requirements</h2><ul><li>The provider will be identified by the URI scheme &quot;archive&quot; <span class="anchor"> </span></li><li>The provider should avoid unnecessary buffering of data in memory or on disk <span class="anchor"> </span><ul><li>Buffering modes should be configurable by the user <span class="anchor"> </span></li></ul></li><li>Performance should be comparable to that achievable by extracting the archive to disk <span class="anchor"> </span><ul><li>Mount performance should be comparable to the time and resources taken to extract the archive's content <span class="anchor"> </span></li><li>File open performance should be comparable to the time taken to open a file on the default filesystem <span class="anchor"> </span></li><li>File read performance should be comparable to the time taken to read from a file on the default filesystem <span class="anchor"> </span></li><li>File seek performance should be comparable to the time taken to position within a file on the default filesystem <span class="anchor"> </span><span class="anchor"> </span></li></ul></li></ul><h1 id="NestedFilesystem-Implementation">Implementation</h1><h2 id="NestedFilesystem-ZipStructure">Zip Structure</h2><p class="line862">PKWARE's documentation on the format can be found at <a class="external-link" href="http://www.pkware.com/documents/casestudies/APPNOTE.TXT" rel="nofollow">http://www.pkware.com/documents/casestudies/APPNOTE.TXT</a> <span class="anchor"> </span><span class="anchor"> </span></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

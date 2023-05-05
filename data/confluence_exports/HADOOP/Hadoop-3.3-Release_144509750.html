@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Hadoop 3.3 Release</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-Active-Release-Lines_89071895.html">Hadoop Active Release Lines</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Hadoop 3.3 Release
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Akira Ajisaka</span>, last modified by <span class='editor'> Ayush Saxena</span> on июл 24, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 class="auto-cursor-target" id="Hadoop3.3Release-ReleaseSchedule">Release Schedule</h2><div class="table-wrap"><table class="wrapped confluenceTable"><colgroup><col/><col/><col/><col/></colgroup><tbody><tr><th class="confluenceTh">Release Number</th><th class="confluenceTh">Release Date (Planned)</th><th class="confluenceTh">Release Status</th><th colspan="1" class="confluenceTh">Feature list</th></tr><tr><td class="confluenceTd">3.3.0</td><td class="confluenceTd">2020-03-15</td><td class="confluenceTd">Released</td><td colspan="1" class="confluenceTd"><ul><li>Java 11 runtime support</li><li>HDFS RBF with security</li><li>Support non-volatile storage class memory(SCM) in HDFS cache directives</li><li>Application Catalog for YARN applications</li><li>Scheduling of opportunistic containers</li><li>Support Vector Engine ( a new accelerator hardware) based on pluggable device framework</li><li>Dynamically add or remove auxiliary services</li></ul></td></tr><tr><td colspan="1" class="confluenceTd">3.3.1</td><td colspan="1" class="confluenceTd">2021-06-15</td><td colspan="1" class="confluenceTd">Released</td><td colspan="1" class="confluenceTd"><ul><li>MAPREDUCE-7315 LocatedFileStatusFetcher to collect/publish IOStatistics</li><li>HDFS-15759 EC: Verify EC reconstruction correctness on DataNode</li><li>HDFS-15711 Add Metrics to HttpFS Server</li><li>HADOOP-17292 Using lz4-java in Lz4Codec</li><li>HADOOP-17125 Using snappy-java in SnappyCodec</li><li> HADOOP-17076 ABFS: Delegation SAS Generator Updates</li><li>HADOOP-16916 ABFS: Delegation SAS generator for integration with Ranger</li><li>HADOOP-16830 Add Public IOStatistics API</li><li>HADOOP-16730 ABFS: Support for Shared Access Signatures (SAS)</li><li>HADOOP-15891 Provide Regex Based Mount Point In Inode Tree</li></ul></td></tr><tr><td colspan="1" class="confluenceTd">3.3.2</td><td colspan="1" class="confluenceTd">2022-03-03</td><td colspan="1" class="confluenceTd">Released</td><td colspan="1" class="confluenceTd"><br/></td></tr><tr><td colspan="1" class="confluenceTd">3.3.3</td><td colspan="1" class="confluenceTd"><span style="color: rgb(33,37,41);">2022-05-17</span></td><td colspan="1" class="confluenceTd">Released</td><td colspan="1" class="confluenceTd"><br/></td></tr><tr><td colspan="1" class="confluenceTd">3.3.4</td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><br/></td></tr></tbody></table></div><h2 id="Hadoop3.3Release-ReleaseTasks">Release Tasks</h2><ul><li>Read this first: <a href="https://cwiki.apache.org/confluence/display/HADOOP2/HowToRelease">HowToRelease</a></li><li>Before doing the preparation tasks in the above articles, we have to do the following tasks: <ul><li>Create 3.4.0 and 3.3.1 versions in COMMON/HDFS/YARN/MAPREDUCE projects</li><li>Announce the process as the past RMs did. For example:<ul><li>&quot;We will cut branch-3.3 and branch-3.3.0 in this weekend.&quot;</li><li>&quot;branch-3.3 is cut, please commit a change to branch-3.3 if you want to fix the issue in 3.3.x.&quot;</li><li>&quot;branch-3.3.0 is cut, please do not commit a change to branch-3.3.0 unless it is a blocker/critical issue.&quot;</li></ul></li></ul></li></ul><h2 id="Hadoop3.3Release-3.3.1Blocker/Criticalissues">3.3.1 Blocker/Critical issues</h2><p>
+
+
+
+
+
+<div id="refresh-module-1161924057" class="refresh-module-id jira-table" >
+<p>
+    
+        
+    
+        
+    <div id="jira-issues-1161924057" style="width: 100%;  overflow: auto;"
+         class="jira-issues">
+        <table class="aui" >
+            <tbody>
+                <tr></tr>                 <tr>
+                                                                        <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Ключ
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Тема
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Тип запроса
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Создан
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Обновленный
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Длительность
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Исполнитель
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Автор
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Приоритет
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Статус
+                            </th>
+                                                                                                <th style="text-align: left;"
+                                class="jira-macro-table-underline-pdfexport">Резолюция
+                            </th>
+                                                            </tr>
+                                                                                    <tr>
+                    <td colspan="11">
+                        <div class="jira-oauth-message-marker">
+                            <div class="aui-message-container">
+                                <div class="aui-message aui-message-info info">
+                                    <span><a class="static-oauth-init" href="https://cwiki.apache.org/confluence/plugins/servlet/applinks/oauth/login-dance/authorize?applicationLinkID=5aa69414-a9e9-3523-82ec-879b028fb15b">Аутентификация</a> для получения проблем</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                            </tbody>
+        </table>
+    </div>
+            <div class="refresh-issues-bottom">
+                            <span id="total-issues-count" class="total-issues-count">
+                                            <a rel="nofollow" href="https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+in+%28HDFS%2C+YARN%2C+HADOOP%2C+MAPREDUCE%29+AND+resolution+%3D+Unresolved+AND+%22Target+Version%2Fs%22+%3D+3.3.0+AND+%22Priority%22+in+%28Blocker%2C+Critical%29+ORDER+BY+priority+DESC++&amp;src=confmacro">
+                                <span>Проблемы не найдены</span>
+                            </a>
+                                        </span>
+                                </div>
+        </p>
+
+    
+</div>
+</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

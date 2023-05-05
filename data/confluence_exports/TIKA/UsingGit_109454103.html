@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : UsingGit</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : UsingGit
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Dan Coldrick</span> on апр 26, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Apache Tika uses the <a class="external-link" href="http://git-scm.com/" rel="nofollow">Git</a> version control system. Apache provides writeable Git repositories hosted at <a class="external-link" href="https://github.com/apache/tika" rel="nofollow">Github</a> and mirrored to <a class="external-link" href="https://gitbox.apache.org" rel="nofollow">https://gitbox.apache.org</a>.</p><h1 id="UsingGit-Overview">Overview</h1><p>This page contains few migrations guides.</p><ol><li>If your source code was checkout from SVN repo, scroll down for a guide to migrate to git repo. 2. If your source code was cloned from a git repo at git-wip-us.apache.org for primary development. Please scroll down to find a guide to migrate to github repo. 3. Currently, the repository at <a class="external-link" href="https://github.com/apache/tika" rel="nofollow">https://github.com/apache/tika</a> can be used as a primary repo. If you are looking for a fresh getting started instructions, skip migration guides, start with Developer Workflow and/or Contribution workflow using Github's pull requests. </li></ol><h1 id="UsingGit-MigratingfromanexistingSVNcheckoutofTikatoGit">Migrating from an existing SVN checkout of Tika to Git</h1><p>If you need to migrate from an SVN checkout of Tika to Git, follow these instructions below.</p><ol><li><code>svn status</code> (ensure no local changes) 2. <code>mv .svn .svn.old</code> (or simply <code>find . -name &quot;*.svn&quot; -exec rm -rf {} \;</code>) 3. <code>git init</code> 4. <code>git remote add origin git@github.com:apache/tika.git</code> 5. <code>git checkout -b merge-branch</code> 6. <code>git fetch --all</code> 7. <code>git reset --hard origin/master</code> 8. <code>git checkout master</code> </li></ol><p>And on my Tika 2.x checkout the last two steps were changed to:</p><ol><li><code>git reset --hard origin/2.x</code> 2. <code>git checkout 2.x</code> </li></ol><h1 id="UsingGit-MigratingtoGithubfromgit-wip-us.apache.org">Migrating to Github from git-wip-us.apache.org</h1><p>Previously the repo was hosted on git-wip-us.apache.org, if you are one of those who cloned it from git-wip-us.a.o and wants to migrate to Github as a primary repo, follow these instructions:</p><ol><li><p class="auto-cursor-target">please update your repository's remote url:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> git remote set-url origin git@github.com/apache/tika.git </pre>
+</div></div><p class="auto-cursor-target"><br class="atl-forced-newline"/>2. If not already enabled - Goto your github account settings and please do 2-Factor-Auth for your account. It's a MUST do, no kidding. 3. Connect your apache account to github account. Click on <a class="external-link" href="https://gitbox.apache.org/setup/" rel="nofollow">https://gitbox.apache.org/setup/</a> If you type the URL manually, please note there is a '/' at the end of setup/ <br class="atl-forced-newline"/>4. Authorize your Apache account, and then Authorize your github account.</p><ol><li>If you see all three boxes green and a tick inside them, your setup is complete <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/> 2. Infra team had instructed in another mailing list that sometimes 'MFA status' might not tick in first pass. They said that the MFA status updater runs hourly so wait for an hour atleast. This usually happens when you authorize github account without 2FA, it won't go through in first pass. 3. If you face issues report to infra team! <br class="atl-forced-newline"/><br class="atl-forced-newline"/></li></ol></li></ol><h1 id="UsingGit-CheckingoutacopyofTikaandmodifyingit">Checking out a copy of Tika and modifying it</h1><p>To check out a copy of Tika, perform the following command:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>git clone git@github.com:apache/tika.git
+</pre>
+</div></div><p>This will check out a copy of the code.</p><p>Once you have the code, you can modify a file, or two, then add the files for staging/commit, and then commit them. Once done, you can also decide to push the files up to the master repository if you have write access and are a member of the PMC and/or a committer. If you don't have write access to the repository, you can follow <a class="external-link" href="https://github.com/apache/tika/#contributing-via-github" rel="nofollow">this guide</a> for issuing pull requests that committers/PMC members can merge.</p><p>Here are the steps to achieve the above if you have commit access, assuming you have 2 files, <code>file1</code> and <code>file2</code> in the repository local copy that you modified.</p><ol><li><code>git add file1 file2</code> 2. <code>git commit -m &quot;message describing change.&quot;</code> 3. <code>git push -u origin &lt;branch_name&gt;</code> <br class="atl-forced-newline"/><br class="atl-forced-newline"/><br class="atl-forced-newline"/></li></ol><h1 id="UsingGit-SuggestedDeveloperWorkflow">Suggested Developer Workflow</h1><p>As a longtime SVN user, it took me a while to figure out Git and realize its great support for use cases. Here is the one I most commonly use in Git that I think fits the Tika workflow as a PMC member/committer quite well. Imagine that you are working on an issue, call it TIKA-xxx. Either you have filed it yourself, or someone has filed it. My suggestion is to create a feature/working branch for that issue, named exactly after the JIRA issue, e.g., create a branch TIKA-xxx. Commit your changes and modifications there. Then, after the changes are applied, tested, and verified, then you can switch back to the master branch, and push your local copy to the remote. If you'd like a review before pushing (e.g., attaching a patch you have two options). You can create a patch file by diffing the branches, and then attach that to the JIRA issue. This is common and already in use using Subversion in Tika in years past. Let's take this use case to start. Inside of your tika clone, do the following:</p><ol><li><code>git branch TIKA-xxx</code> 2. modify files, change them, test, etc. 3. <code>git add &lt;changed files&gt;</code> (to see them, try <code>git status</code> or simply to stage <strong>all</strong> changes, <code>git add *</code>) 4. `git commit -m &quot;Fixes for TIKA-xxx contributed by &lt;your first name&gt; &lt;your last name&gt; &lt;your email&gt;&quot; 5. <code>git checkout master</code> 6. <code>git diff trunk..TIKA-xxx &gt; TIKA-xxx.&lt;your last name&gt;.&lt;yyMMdd&gt;.patch.txt</code> 7. Attach the patch created in 6 to JIRA. </li></ol><p>If you are <strong>not</strong> looking for a review or you have already had a review and are ready to commit the changes, push them:</p><p>0. (if you haven't already merge, the branch into master) <code>git checkout master &amp;&amp; git merge TIKA-xxx</code></p><ol><li><code>git push -u origin master</code> </li></ol><h1 id="UsingGit-SuggestedUserContributionWorkflow">Suggested User Contribution Workflow</h1><p>Users contribute patches to Tika using JIRA and/or Github. Let's take the use case for contributing via JIRA, then we'll tackle the Github one.</p><h2 id="UsingGit-JIRAcontribution">JIRA contribution</h2><p>Grab the user's patch file, and then apply it locally. Before doing so, create the feature branch by following step 1 from the Developer workflow section. Then, assuming the patch file is named according to the conventions from step 6 in the Developer workflow section, perform the following steps (make sure you are on the TIKA-xxx feature branch):</p><ol><li><code>git apply &lt; TIKA-xxx.&lt;your last name&gt;.&lt;yyMMdd&gt;.patch.txt</code> 2. Steps 3-4 from Developer workflow guide. 3. Final 2 steps from Developer workflow guide (aka the merge of feature branch step and then the push to origin trunk) </li></ol><h2 id="UsingGit-Githubcontribution">Github contribution</h2><p>If they are contributing using Github they are submitting a Pull Request for review you can easily merge their pull request into your local feature branch using Git. Assuming the Github user is &quot;user01&quot; and the branch they have created is &quot;fix-tika-stuff&quot; (you can find this information in the Tika Pull request, for example in <a class="external-link" href="https://github.com/apache/tika/pull/65" rel="nofollow">this pull request #65</a>, the username is <code>smahda</code> and branch name is <code>TIKA-1803</code>), you can merge it into your local feature branch like so (again, make sure you are on the local feature branch for your issue, TIKA-xxx first by typing <code>git checkout TIKA-xxx</code> if you aren't already):</p><ol><li><code>git pull <a class="external-link" href="https://github.com/user01/tika.git" rel="nofollow">https://github.com/user01/tika.git</a> fix-tika-stuff</code> (will find the remote github branch and merge locally) 2. test and make sure PR works, etc. Fix conflicts, etc. 3. Final 2 steps from Developer workflow guide (aka the merge of feature branch step and then the push to origin trunk)</li></ol>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

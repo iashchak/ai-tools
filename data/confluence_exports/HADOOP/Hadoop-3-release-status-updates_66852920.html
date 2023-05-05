@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Hadoop 3 release status updates</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="127405312.html">EOL (End-of-life) Release Branches</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-3.0.0-release_66852646.html">Hadoop 3.0.0 release</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Hadoop 3 release status updates
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Andrew Wang</span>, last modified on дек 15, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Hadoop3releasestatusupdates-2017-12-14">2017-12-14</h1><p>Hadoop 3.0.0 has been released! Thanks to our many contributors, and congratulations to the community on this milestone.</p><p>Thus ends our 3.0.0 release updates. The 3.0.x release series will continue to be maintained, and 3.1.0 is planned for the first half of 2018.</p><h1 id="Hadoop3releasestatusupdates-2017-12-01">2017-12-01</h1><p>Haven't written one of these in a month. I had high hopes for RC0, but it failed due to 
+<span class="jira-issue resolved" data-jira-key="HADOOP-15058" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-15058?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HADOOP-15058</a>
+                            -
+            <span class="summary">create-release site build outputs dummy shaded jars due to skipShade</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+ which Sangjin found, and then a number of other blockers were found shortly after that.</p><p>We're back to blocker burndown. My new (realistic) goal is to get 3.0.0 out before Christmas. We could always use more help with reviews; most things are patch available.</p><p> </p><p>Highlights:</p><p>Red flags:</p><p>Previously tracked blockers that have been resolved or dropped:</p><p>GA blockers:</p><ul><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-12840" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12840?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12840</a>
+                            -
+            <span class="summary">Creating a file with non-default EC policy in a EC zone is not correctly serialized in the editlog</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Has gone through several rounds of review, looks close.</li><li>
+<span class="jira-issue resolved" data-jira-key="HADOOP-15080" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-15080?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HADOOP-15080</a>
+                            -
+            <span class="summary">Aliyun OSS: update oss sdk from 2.8.1 to 2.8.3 to remove its dependency on Cat-x &quot;json-lib&quot;</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: New issue, waiting on LEGAL but we might need to pull this entire feature.</li><li>
+<span class="jira-issue resolved" data-jira-key="HADOOP-15059" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-15059?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HADOOP-15059</a>
+                            -
+            <span class="summary">3.0 deployment cannot work with old version MR tar ball which breaks rolling upgrade</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Has gone through some review and has a +1 from Daryn, could use confirmation from Vinod and others</li><li>
+<span class="jira-issue resolved" data-jira-key="HADOOP-15058" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-15058?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HADOOP-15058</a>
+                            -
+            <span class="summary">create-release site build outputs dummy shaded jars due to skipShade</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Needs review, asked Allen but might need someone else to help.</li></ul><p>GA criticals:</p><ul><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-12872" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12872?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12872</a>
+                            -
+            <span class="summary">EC Checksum broken when BlockAccessToken is enabled</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Patch needs review</li><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7381" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7381?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>YARN-7381</a>
+                            -
+            <span class="summary">Enable the configuration: yarn.nodemanager.log-container-debug-info.enabled by default in yarn-default.xml</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Has gone through some review and Wangda +1'd, could use confirmation from Ray and others</li></ul><p>Features merged for GA:</p><ul><li>Erasure coding<ul><li>Testing is still ongoing at Cloudera, which resulted in 
+<span class="jira-issue resolved" data-jira-key="HDFS-12840" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12840?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12840</a>
+                            -
+            <span class="summary">Creating a file with non-default EC policy in a EC zone is not correctly serialized in the editlog</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+ and 
+<span class="jira-issue resolved" data-jira-key="HDFS-12872" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12872?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12872</a>
+                            -
+            <span class="summary">EC Checksum broken when BlockAccessToken is enabled</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+.</li></ul></li><li>Classpath isolation (HADOOP-11656)<br/><ul><li>No change.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>We slid a couple more changes into 3.0.0 after RC0 was cancelled, making this work more complete.</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>No change.</li></ul></li><li>API-based scheduler configuration 
+<span class="jira-issue resolved" data-jira-key="YARN-5734" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-5734?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>YARN-5734</a>
+                            -
+            <span class="summary">OrgQueue for easy CapacityScheduler queue configuration management</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>No change.</li></ul></li><li>HDFS router-based configuration 
+<span class="jira-issue resolved" data-jira-key="HDFS-10467" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-10467?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>HDFS-10467</a>
+                            -
+            <span class="summary">Router-based HDFS federation</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>No change.</li></ul></li><li>Resource types 
+<span class="jira-issue resolved" data-jira-key="YARN-3926" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-3926?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>YARN-3926</a>
+                            -
+            <span class="summary">[Umbrella] Extend the YARN resource model for easier resource-type management and profiles</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>Had some post-merge issues that were resolved, nothing outstanding.</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-10-31">2017-10-31</h1><p>Lots of progress towards GA, we look on track for cutting RC0 this week. I ran the versions script to check the branch matches up with JIRA and fixed things up, and also checked that the changelog and release notes look reasonable.</p><p>Highlights:</p><ul><li>Resource types vote has passed and will be merged with branch-3.0 shortly.</li><li>Down to three blockers on the dashboard, all being actively revved.</li></ul><p>Red flags:</p><ul><li>Still need to validate that resource types is ready to go once it's merged.</li></ul><p>Previous tracked GA blockers that have been resolved or dropped:</p><ul><li>Change of ExecutionType<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7178" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7178?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7178</a>
+                            -
+            <span class="summary">Add documentation for Container Update API</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Arun got the patch in with reviews from Wangda and Haibo.</li></ul></li><li>ReservationSystem<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-4827" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-4827?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-4827</a>
+                            -
+            <span class="summary">Document configuration of ReservationSystem for FairScheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Yufei and Subru got this in.</li></ul></li><li>Rolling upgrade<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-6142" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-6142?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21148&amp;avatarType=issuetype"/>YARN-6142</a>
+                            -
+            <span class="summary">Support rolling upgrade between 2.x and 3.x</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Ray resolved this since we think it's sufficiently complete.</li></ul></li><li>Erasure coding<ul><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-12686" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12686?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12686</a>
+                            -
+            <span class="summary">Erasure coding system policy state is not correctly saved and loaded during real cluster restart</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Resolved this one to incorporate it in HDFS-12682</li></ul></li></ul><p>GA blockers:</p><ul><li><span>Rolling upgrade</span><ul><li>
+<span class="jira-issue" data-jira-key="HDFS-11096" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-11096?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HDFS-11096</a>
+                            -
+            <span class="summary">Support rolling upgrade between 2.x and 3.x</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-current
+     jira-macro-single-issue-export-pdf">Patch Available</span>
+                </span>
+: I asked Sean if we can downgrade this from blocker</li></ul></li><li>Erasure coding<ul><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-12682" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12682?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12682</a>
+                            -
+            <span class="summary">ECAdmin -listPolicies will always show SystemErasureCodingPolicies state as DISABLED</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Actively being worked on and reviewed, should be in soon</li><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-11467" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-11467?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>HDFS-11467</a>
+                            -
+            <span class="summary">Support ErasureCoding section in OIV XML/ReverseXML</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Waiting on HDFS-12682, I asked if we can work concurrently</li></ul></li></ul><p>Features merged for GA:</p><ul><li>Erasure coding<ul><li>Testing is still ongoing at Cloudera, no new bugs found recently</li><li>Closing on remaining blockers for GA</li></ul></li><li>Classpath isolation (HADOOP-11656)<br/><ul><li>
+<span class="jira-issue" data-jira-key="HADOOP-13916" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-13916?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HADOOP-13916</a>
+                            -
+            <span class="summary">Document how downstream clients should make use of the new shaded client artifacts</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+: Seems unlikely to make it</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>
+<span class="jira-issue resolved" data-jira-key="HADOOP-14876" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-14876?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HADOOP-14876</a>
+                            -
+            <span class="summary">Create downstream developer docs from the compatibility guidelines</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Patch is being actively revved and reviewed, Robert +1'd, Anu posted a big review</li><li>
+<span class="jira-issue resolved" data-jira-key="HADOOP-14875" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-14875?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HADOOP-14875</a>
+                            -
+            <span class="summary">Create end user documentation from the compatibility guidelines</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: No patch yet</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li><li>API-based scheduler configuration 
+<span class="jira-issue resolved" data-jira-key="YARN-5734" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-5734?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>YARN-5734</a>
+                            -
+            <span class="summary">OrgQueue for easy CapacityScheduler queue configuration management</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>Merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li><li>HDFS router-based configuration 
+<span class="jira-issue resolved" data-jira-key="HDFS-10467" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-10467?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>HDFS-10467</a>
+                            -
+            <span class="summary">Router-based HDFS federation</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>Merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li><li>Resource types 
+<span class="jira-issue resolved" data-jira-key="YARN-3926" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-3926?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>YARN-3926</a>
+                            -
+            <span class="summary">[Umbrella] Extend the YARN resource model for easier resource-type management and profiles</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>Vote has passed, Daniel is currently doing the mechanics of merging</li><li>Need to also perform final validation post-merge</li></ul></li></ul><p>Dropping the &quot;unmerged features&quot; section since we're not letting in anything else at this point.</p><h1 id="Hadoop3releasestatusupdates-2017-10-20">2017-10-20</h1><p>Apologies for skipping the update last week. Here's how we're tracking for GA.</p><p>Highlights:</p><ul><li>Merge of HDFS router-based federation and API-based scheduler configuration with no reported problems. Kudos to the contributors involved!</li></ul><p>Red flags:</p><ul><li>We're making a last-minute push to get resource types (but not resource profiles in). Coming this late, it's a risk, but we decided it's worthwhile for this feature. See <a class="external-link" href="https://lists.apache.org/thread.html/cc51a68f1cf21c641cf77383ee1a13e3b2ca93d2a56f5a441f42b21b@%3Cyarn-dev.hadoop.apache.org%3E" rel="nofollow">Daniel's yarn-dev email</a> for the full rationale.</li><li>Still uncovering EC bugs from testing</li></ul><p>Previously tracked GA blockers that have been resolved or dropped:</p><ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-6623" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-6623?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-6623</a>
+                            -
+            <span class="summary">Add support to turn off launching privileged containers in the container-executor</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Committed and resolved</li><li>Change of ExecutionType<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7275" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7275?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7275</a>
+                            -
+            <span class="summary">NM Statestore cleanup for Container updates</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Patch committed, resolved.</li></ul></li><li>ReservationSystem<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-4859" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-4859?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-4859</a>
+                            -
+            <span class="summary">[Bug] Unable to submit a job to a reservation when using FairScheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Yufei tested this and found things mostly worked, filed two not-blocker followons: 
+<span class="jira-issue" data-jira-key="YARN-7347" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7347?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>YARN-7347</a>
+                            -
+            <span class="summary">Fixe the bug in Fair scheduler to handle a queue named &quot;root.root&quot;</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+ and 
+<span class="jira-issue" data-jira-key="YARN-7348" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7348?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>YARN-7348</a>
+                            -
+            <span class="summary">Ignore the vcore in reservation request for fair policy queue</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+</li></ul></li></ul><p>GA blockers:</p><ul><li>Change of ExecutionType<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7178" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7178?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7178</a>
+                            -
+            <span class="summary">Add documentation for Container Update API</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Still no update from Arun, I pinged it.</li></ul></li><li>ReservationSystem<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-4827" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-4827?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-4827</a>
+                            -
+            <span class="summary">Document configuration of ReservationSystem for FairScheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Yufei said he'd work on it as of 2 days ago</li></ul></li><li>Rolling upgrade<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-6142" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-6142?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21148&amp;avatarType=issuetype"/>YARN-6142</a>
+                            -
+            <span class="summary">Support rolling upgrade between 2.x and 3.x</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: I pinged this and asked for a status update</li><li>
+<span class="jira-issue" data-jira-key="HDFS-11096" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-11096?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HDFS-11096</a>
+                            -
+            <span class="summary">Support rolling upgrade between 2.x and 3.x</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-current
+     jira-macro-single-issue-export-pdf">Patch Available</span>
+                </span>
+: I pinged this and asked for a status update</li></ul></li><li>Erasure coding<ul><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-12682" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12682?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12682</a>
+                            -
+            <span class="summary">ECAdmin -listPolicies will always show SystemErasureCodingPolicies state as DISABLED</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: New blocker filed this week, Xiao is working on it</li><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-12686" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12686?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12686</a>
+                            -
+            <span class="summary">Erasure coding system policy state is not correctly saved and loaded during real cluster restart</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: New blocker filed this week, Sammi is on it</li><li>
+<span class="jira-issue resolved" data-jira-key="HDFS-12686" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-12686?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-12686</a>
+                            -
+            <span class="summary">Erasure coding system policy state is not correctly saved and loaded during real cluster restart</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Old blocker, Huafeng is on it, waiting on review from Wei-Chiu or Sammi</li></ul></li></ul><p>Features merged for GA:</p><ul><li>Erasure coding<ul><li>Continued bug reporting and fixing based on testing at Cloudera.</li><li>Two new blockers filed this week, mentioned above.</li><li>Huafeng completed patch to reenable disabled EC tests</li></ul></li><li>Classpath isolation (HADOOP-11656)<br/><ul><li>
+<span class="jira-issue" data-jira-key="HADOOP-13916" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-13916?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HADOOP-13916</a>
+                            -
+            <span class="summary">Document how downstream clients should make use of the new shaded client artifacts</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+: I pinged it</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>
+<span class="jira-issue resolved" data-jira-key="HADOOP-14876" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-14876?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HADOOP-14876</a>
+                            -
+            <span class="summary">Create downstream developer docs from the compatibility guidelines</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Daniel has a patch up, revved based on Steve's review feedback, waiting on Steve's reply</li><li>
+<span class="jira-issue resolved" data-jira-key="HADOOP-14875" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-14875?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HADOOP-14875</a>
+                            -
+            <span class="summary">Create end user documentation from the compatibility guidelines</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: No patch yet</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li><li>API-based scheduler configuration 
+<span class="jira-issue resolved" data-jira-key="YARN-5734" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-5734?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>YARN-5734</a>
+                            -
+            <span class="summary">OrgQueue for easy CapacityScheduler queue configuration management</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>Merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li><li>HDFS router-based configuration 
+<span class="jira-issue resolved" data-jira-key="HDFS-10467" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-10467?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21141&amp;avatarType=issuetype"/>HDFS-10467</a>
+                            -
+            <span class="summary">Router-based HDFS federation</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+<ul><li>Merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li></ul><p>Unmerged features:</p><ul><li>Resource types / profiles (<a class="external-link" href="https://issues.apache.org/jira/browse/YARN-3926" rel="nofollow">YARN-3926</a> and <a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7069" rel="nofollow">YARN-7069</a>) (Wangda Tan)<ul><li>We're going to try and get in resource types for 3.0.0 and leave resource profiles for 3.1.0. Daniel is spearheading this and other major contributors like Wangda and Sunil are onboard with the plan. Branch has been created and undergone testing, I expect a merge vote ASAP.</li><li>This is our biggest remaining risk.</li></ul></li><li>YARN native services (<a class="external-link" href="https://issues.apache.org/jira/browse/YARN-5079" rel="nofollow">YARN-5079</a>) (Jian He)<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7351" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7351?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7351</a>
+                            -
+            <span class="summary">Fix high CPU usage issue in RegistryDNS</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+ is blocking</li><li>Allen is reviewing YARN-7127 with some design-level questions about the API and architecture</li><li>This doesn't look like this is getting in based on YARN-7127 discussion</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-10-06">2017-10-06</h1><p>The beta1 RC0 vote passed, and beta1 is out! Now tracking GA features.</p><p>Highlights:</p><ul><li>3.0.0-beta1 has been released!</li><li>Router-based federation merge vote should be about to pass</li><li>API-based scheduler configuration merge vote is out, has the votes so far</li></ul><p>Red flags:</p><ul><li>Still need to nail down whether we're going to try and merge resource profiles. I've been emailing with Wangda and Daniel about this, we need to reach a decision ASAP (might already be too late).</li><li>Still waiting on Allen to review YARN native services feature.</li></ul><p>Previously tracked GA blockers that have been resolved or dropped:</p><ul><li>
+<span class="jira-issue" data-jira-key="YARN-7134" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7134?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>YARN-7134</a>
+                            -
+            <span class="summary">AppSchedulingInfo has a dependency on capacity scheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+:  Wangda downgraded this to &quot;Major&quot;, dropping from list.</li></ul><p>GA blockers:</p><ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-6623" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-6623?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-6623</a>
+                            -
+            <span class="summary">Add support to turn off launching privileged containers in the container-executor</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Actively being reviewed</li><li>Change of ExecutionType<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7275" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7275?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7275</a>
+                            -
+            <span class="summary">NM Statestore cleanup for Container updates</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Kartheek has posted a patch, waiting for review</li><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7178" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7178?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7178</a>
+                            -
+            <span class="summary">Add documentation for Container Update API</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: No update from Arun, though it's just a docs patch</li></ul></li><li>ReservationSystem<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-4859" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-4859?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-4859</a>
+                            -
+            <span class="summary">[Bug] Unable to submit a job to a reservation when using FairScheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Yufei has picked this up</li><li>
+<span class="jira-issue resolved" data-jira-key="YARN-4827" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-4827?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-4827</a>
+                            -
+            <span class="summary">Document configuration of ReservationSystem for FairScheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Yufei has picked this up, just a docs patch</li></ul></li><li>Rolling upgrade<ul><li>
+<span class="jira-issue resolved" data-jira-key="YARN-6142" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-6142?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21148&amp;avatarType=issuetype"/>YARN-6142</a>
+                            -
+            <span class="summary">Support rolling upgrade between 2.x and 3.x</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Ray is still going through JACC and proto output</li><li>
+<span class="jira-issue" data-jira-key="HDFS-11096" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-11096?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"/>HDFS-11096</a>
+                            -
+            <span class="summary">Support rolling upgrade between 2.x and 3.x</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-current
+     jira-macro-single-issue-export-pdf">Patch Available</span>
+                </span>
+: Sean has revved the patch and is waiting on reviews from Ray, Allen</li></ul></li></ul><p>Features merged for GA:</p><ul><li>Erasure coding<ul><li>Continued bug reporting and fixing based on testing at Cloudera.</li><li>Still need to finish the 3.0 must-do's</li></ul></li><li>Classpath isolation (HADOOP-11656)<br/><ul><li>HADOOP-14771 is still floating, along with adding documentation.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>Synced with Daniel, he plans to wrap up the remaining  stuff next week</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li></ul><p>Unmerged features:</p><ul><li>Resource types / profiles (<a class="external-link" href="https://issues.apache.org/jira/browse/YARN-3926" rel="nofollow">YARN-3926</a> and <a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7069" rel="nofollow">YARN-7069</a>) (Wangda Tan)<ul><li>This has been merged for 3.1.0, YARN-7069 tracks follow on work</li><li>Wangda said that he's okay waiting for 3.1.0 for this, we're waiting on Daniel. I synced with Daniel earlier this week, and he wants to try and get some of it into 3.0.0. Waiting on an update.</li><li>I still need a JIRA query for tracking the state of this.</li></ul></li><li><div>HDFS router-based federation (<a class="external-link" href="https://issues.apache.org/jira/browse/HDFS-10467" rel="nofollow">HDFS-10467</a>) (Inigo Goiri and Chris Douglas)</div><ul><li>Merge vote should close any minute now</li></ul></li><li>API-based scheduler configuration (Jonathan Hung)<ul><li>Merge vote is out, will close next week</li></ul></li><li>YARN native services (<a class="external-link" href="https://issues.apache.org/jira/browse/YARN-5079" rel="nofollow">YARN-5079</a>) (Jian He)<ul><li>Subtasks were filed to address Allen's review comments from the previous merge vote, only one pending </li><li>We need to confirm with Allen that this is ready to go, he hasn't been reviewing</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-09-29">2017-09-29</h1><p>After about a month of slip, RC0 has been sent out for a VOTE. Focus now turns to GA, where we will attempt to keep the original beta1 target date (early November).</p><p>Highlights:</p><ul><li>RC0 vote was sent out on Thursday, two binding +1's so far.</li></ul><p>Red flags:</p><ul><li>Resource profiles still has a number of pending subtasks, which is concerning from a schedule perspective. I emailed Wangda about this, and we need to discuss with other key contributors.</li><li>Native services has one pending subtask but we haven't gotten follow-on reviews from Allen (who -1'd the earlier merge vote). Need to confirm that we've satisfied his feedback.</li></ul><p>Previously tracked beta1 blockers that have been resolved or dropped:</p><ul><li>YARN-6623 was pushed out of beta1 to GA, has been committed so we can drop it from tracking.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14897" rel="nofollow">HADOOP-14897</a> (Loosen compatibility guidelines for native dependencies): Patch committed!</li></ul><p>beta1 blockers:</p><ul><li>None, RC0 is out</li></ul><p>GA blockers:</p><ul><li>
+<span class="jira-issue" data-jira-key="YARN-7134" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7134?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>YARN-7134</a>
+                            -
+            <span class="summary">AppSchedulingInfo has a dependency on capacity scheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+ : this one popped out of nowhere, I don't have an update yet.</li><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7178" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7178?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7178</a>
+                            -
+            <span class="summary">Add documentation for Container Update API</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: this also popped out of nowhere, no update yet.</li><li>
+<span class="jira-issue resolved" data-jira-key="YARN-7275" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-7275?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-7275</a>
+                            -
+            <span class="summary">NM Statestore cleanup for Container updates</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Ditto</li><li>
+<span class="jira-issue resolved" data-jira-key="YARN-4859" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-4859?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-4859</a>
+                            -
+            <span class="summary">[Bug] Unable to submit a job to a reservation when using FairScheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Ditto</li><li>
+<span class="jira-issue resolved" data-jira-key="YARN-4827" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-4827?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"/>YARN-4827</a>
+                            -
+            <span class="summary">Document configuration of ReservationSystem for FairScheduler</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+: Ditto</li></ul><p>Features merged for GA:</p><ul><li>Erasure coding<ul><li>People are looking more at the flaky tests and nice-to-haves</li><li>Some bugs reported and being fixed based on testing at Cloudera</li><li>Need to finish the 3.0 must-do's.</li></ul></li><li>Addressing incompatible changes (YARN-6142 and HDFS-11096)<br/><ul><li>Sean has posted a new rev of the rolling upgrade script</li><li>Some YARN PB backward compat issues that we decided weren't blockers and are scheduled for GA</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13917" rel="nofollow">HADOOP-13917</a> (Ensure nightly builds run the integration tests for the shaded client): Resolved, Sean retriggered and determined that this works.</li><li>HADOOP-14771 is still floating, along with adding documentation.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>A few subtasks are targeted at GA</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li></ul><p>Unmerged features:</p><ul><li>Resource profiles (<a class="external-link" href="https://issues.apache.org/jira/browse/YARN-3926" rel="nofollow">YARN-3926</a> and <a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7069" rel="nofollow">YARN-7069</a>) (Wangda Tan)<ul><li>This has been merged for 3.1.0, YARN-7069 tracks follow on work</li><li>~7 patch available subtasks, I asked Wangda to set up a JIRA query for tracking this</li></ul></li><li><div>HDFS router-based federation (<a class="external-link" href="https://issues.apache.org/jira/browse/HDFS-10467" rel="nofollow">HDFS-10467</a>) (Inigo Goiri and Chris Douglas)</div><ul><li>Inigo sent out the merge vote</li></ul></li><li>API-based scheduler configuration (Jonathan Hung)<ul><li>Jonathan sent out a discuss thread for merge, thinking is early next week. Larry did a security-oriented review.</li></ul></li><li>YARN native services (<a class="external-link" href="https://issues.apache.org/jira/browse/YARN-5079" rel="nofollow">YARN-5079</a>) (Jian He)<ul><li>Subtasks were filed to address Allen's review comments from the previous merge vote, only one pending </li><li>We need to confirm with Allen that this is ready to go, he hasn't been reviewing</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-09-22">2017-09-22</h1><p>We've had some late breaking blockers related to Docker support that are delaying the release. We're on a day-by-day slip at this point.</p><p> </p><p>Highlights:</p><ul><li>I did a successful test create-release earlier this week.</li></ul><p>Red flags:</p><ul><li>Docker work resulted in some last minute blockers</li></ul><p><span>Previously tracked beta1 blockers that have been resolved or dropped:</span></p><div><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14771" rel="nofollow">HADOOP-14771</a> (hadoop-client does not include hadoop-yarn-client): Dropped this from the blocker list as it's mainly for documentation purposes</li><li>HDFS-12247 (<span>Rename AddECPolicyResponse to AddErasureCodingPolicyResponse) </span>was committed.</li></ul></div><div>beta1 blockers:</div><div><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-6623" rel="nofollow">YARN-6623</a> (<span>Add support to turn off launching privileged containers in the container-executor): This is a newly escalated blocker related to the Docker work in YARN. Patch is up but we're still waiting on a commit.</span></li><li><span><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14897" rel="nofollow">HADOOP-14897</a> (<span>Loosen compatibility guidelines for native dependencies): Raised by Chris Douglas, Daniel will post a patch soon.</span></span></li></ul><p>beta1 features:</p><ul><li>Erasure coding<ul><li>Resolved last must-do for beta1!</li><li>People are looking more at the flaky tests and nice-to-haves</li><li>Eddy continues to make improvements to block reconstruction codepaths</li></ul></li><li>Addressing incompatible changes (YARN-6142 and HDFS-11096)<br/><ul><li>Ray has gone through almost all the YARN protos and thinks we're okay to move forwards.</li><li>I think we'll move forward without this committed, given that Sean has run it successfully.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13917" rel="nofollow">HADOOP-13917</a> (Ensure nightly builds run the integration tests for the shaded client): Sean wants to get this in before beta1 if there's time, it's already catching issues. Relies on YETUS-543 which I reviewed, waiting on Allen.</li><li>HADOOP-14771 might be squeezed in if there's time.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>HADOOP-14897 Above mentioned blocker filed by Chris Douglas.</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li></ul><p>GA features:</p><ul><li>Resource profiles (Wangda Tan)<ul><li>Merge vote was sent out. Since branch-3.0 has been cut, this can be merged to trunk (3.1.0) and then backported once we've completed testing.</li></ul></li><li><div>HDFS router-based federation (Chris Douglas)</div><ul><li>This is like YARN federation, very separate and doesn't add new APIs, run in production at MSFT.</li><li>If it passes Cloudera internal integration testing, I'm fine putting this in for GA.</li></ul></li><li>API-based scheduler configuration (Jonathan Hung)<ul><li>Jonathan mentioned that his main goal is to get this in for 2.9.0, which seems likely to go out after 3.0.0 GA since there hasn't been any serious release planning yet. Jonathan said that delaying this until 3.1.0 is fine.</li></ul></li><li>YARN native services<ul><li>Still not 100% clear when this will land.</li></ul></li></ul></div><h1 id="Hadoop3releasestatusupdates-2017-09-19">2017-09-19</h1><p>Sorry for the late update. We're down to one blocker and one EC must do! Made great progress over the last week and a bit.</p><p>We will likely cut RC0 this week.</p><p>Highlights:</p><ul><li>Down to just two blocker issues!</li></ul><p>Red flags:</p><ul><li>HDFS unit tests are quite flaky. Some blockers were filed and then resolved or downgraded. More work to do here.</li></ul><p>Previously tracked beta1 blockers that have been resolved or dropped:</p><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14738" rel="nofollow">HADOOP-14738</a> (Remove S3N and obsolete bits of S3A; rework docs): Committed!</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14284" rel="nofollow">HADOOP-14284</a><span> (Shade Guava everywhere): We resolved this since we decided it was unnecessary for beta1.</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7162" rel="nofollow">YARN-7162</a> (Remove XML excludes file format): Robert committed after review from Junping.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14847" rel="nofollow">HADOOP-14847</a> (Remove Guava Supplier and change to java Supplier in AMRMClient and AMRMClientAysnc): Committed!</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14238" rel="nofollow">HADOOP-14238</a><span> (Rechecking Guava's object is not exposed to user-facing API): We dropped this off the blocker list in the absence of other known issues</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14835" rel="nofollow">HADOOP-14835</a> (mvn site build throws SAX errors): I committed after further discussion and review with Sean Mackrory and Allen. Planning to switch to japicmp for later releases.<span><br/></span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HDFS-12218" rel="nofollow">HDFS-12218</a><span> (Rename split EC / replicated block metrics in BlockManager): Committed.</span></li></ul><p> </p><div>beta1 blockers:</div><div><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14771" rel="nofollow" style="font-size: 14.0px;">HADOOP-14771</a><span style="font-size: 14.0px;"> (hadoop-client does not include hadoop-yarn-client): This was committed but then reverted since it broke the build. Haibo and Sean are actively pressing towards a correct fix.</span></li></ul><p><span style="font-size: 14.0px;"><br/></span></p><p>beta1 features:</p><ul><li>Erasure coding<ul><li>Resolved a number of must-dos<ul><li>HDFS-7859 (fsimage changes) was committed!</li><li>HDFS-12395 (edit log changes) was also committed!</li><li>HDFS-12218 is discussed above.</li></ul></li><li>Remaining blockers:<ul><li>HDFS-12447 is to refactor some of the fsimage code, Andrew needs to review</li></ul></li><li>Also been progress cleaning up the flaky unit tests, still more to do</li></ul></li><li>Addressing incompatible changes (YARN-6142 and HDFS-11096)<br/><ul><li>Ray has gone through almost all the YARN protos and thinks we're okay to move forwards.</li><li>I think we'll move forward without this committed, given that Sean has run it successfully.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>We have just HADOOP-14771 left.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>This was committed! Some follow-on work filed for GA.</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li></ul><p>GA features:</p><ul><li>Resource profiles (Wangda Tan)<ul><li>Merge vote was sent out. Since branch-3.0 has been cut, this can be merged to trunk (3.1.0) and then backported once we've completed testing.</li></ul></li><li><div>HDFS router-based federation (Chris Douglas)</div><ul><li>This is like YARN federation, very separate and doesn't add new APIs, run in production at MSFT.</li><li>If it passes Cloudera internal integration testing, I'm fine putting this in for GA.</li></ul></li><li>API-based scheduler configuration (Jonathan Hung)<ul><li>Jonathan mentioned that his main goal is to get this in for 2.9.0, which seems likely to go out after 3.0.0 GA since there hasn't been any serious release planning yet. Jonathan said that delaying this until 3.1.0 is fine.</li></ul></li><li>YARN native services<ul><li>Still not 100% clear when this will land.</li></ul></li></ul></div><h1 id="Hadoop3releasestatusupdates-2017-09-07">2017-09-07</h1><p>Slightly early update since I'll be out tomorrow. We're one week out, and focus is on blocker burndown.</p><p>Highlights:</p><ul><li>3.1.0 release planning is underway, led by Wangda. Target release date is in January.</li></ul><p>Red flags:</p><ul><li>YARN native services merge vote got a -1 for beta1, I recommended we drop it from beta1 and retarget for a later release.</li><li>11 blockers on the dashboard, one more than last week <img class="emoticon emoticon-sad" src="images/icons/emoticons/sad.svg" data-emoticon-name="sad" alt="(грусть)"/></li></ul><p><span>Previously tracked beta1 blockers that have been resolved or dropped:</span></p><ul><li><span>HADOOP-14826 was duped to HADOOP-14738.</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-5536" rel="nofollow">YARN-5536</a> (Multiple format support (JSON, etc.) for exclude node file in NM graceful decommission with timeout): Downgraded in priority in favor of YARN-7162 which Robert has posted a patch for.<span><br/></span></li><li>MAPREDUCE-6941 (The default setting doesn't work for MapReduce job): I resolved this and Junping confirmed this is fine.</li></ul><div>beta1 blockers:</div><div><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14738" rel="nofollow">HADOOP-14738</a> (<span>Remove S3N and obsolete bits of S3A; rework docs): Steve has been actively revving this with our new committer Aaron Fabbri ready to review. The scope has expanded from HADOOP-14826, so it's not just a doc update.</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14284" rel="nofollow">HADOOP-14284</a> (Shade Guava everywhere): No change since last week. This is an umbrella JIRA.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14771" rel="nofollow">HADOOP-14771</a> (hadoop-client does not include hadoop-yarn-client): Patch up, needs review, still waiting on Busbey. Bharat gave it a review.</li><li><span><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7162" rel="nofollow">YARN-7162</a> (<span>Remove XML excludes file format): Robert has posted a patch and is waiting for a review.</span></span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14238" rel="nofollow">HADOOP-14238</a> (Rechecking Guava's object is not exposed to user-facing API): Bharat took this up and turned it into an umbrella.<ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14847" rel="nofollow">HADOOP-14847</a> (<span>Remove Guava Supplier and change to java Supplier in AMRMClient and AMRMClientAysnc) Bharat </span>posted a patch on a subtask to fix the known Guava Supplier issue in AMRMClient. Needs a review.</li></ul></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14835" rel="nofollow" style="font-size: 14.0px;">HADOOP-14835</a><span style="font-size: 14.0px;"> (mvn site build throws SAX errors): I'm working on this. Debugged it and have a proposed patch up, discussing with Allen.</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HDFS-12218" rel="nofollow">HDFS-12218</a> (Rename split EC / replicated block metrics in BlockManager): I'm working on this, just need to commit it, already have a +1 from Eddy.<br/><span style="font-size: 14.0px;"><br/></span></li></ul><p>beta1 features:</p><ul><li>Erasure coding<ul><li>There are three must-dos, all being actively worked on.</li><li>HDFS-7859 is being actively reviewed and revved by Sammi and Kai and Eddy.</li><li>HDFS-12395 was split out of HDFS-7859 to do the edit log changes.</li><li>HDFS-12218 is discussed above.</li></ul></li><li>Addressing incompatible changes (YARN-6142 and HDFS-11096)<br/><ul><li>Ray and Allen reviewed Sean's HDFS rolling upgrade scripts.</li><li>Sean did a run through of the HDFS JACC report and it looked fine.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>Sean has retriaged the subtasks and has been posting patches.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>Daniel has been collecting feedback on dev lists, but still needs a detailed review of the patch.</li></ul></li><li>YARN native services<ul><li>Jian sent out the merge vote, but it's been -1'd for beta1 by Allen. I propose we drop this from beta1 scope and retarget.</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li></ul><p>GA features:</p><ul><li>Resource profiles (Wangda Tan)<ul><li>Merge vote was sent out. Since branch-3.0 has been cut, this can be merged to trunk (3.1.0) and then backported once we've completed testing.</li></ul></li><li><div>HDFS router-based federation (Chris Douglas)</div><ul><li>This is like YARN federation, very separate and doesn't add new APIs, run in production at MSFT.</li><li>If it passes Cloudera internal integration testing, I'm fine putting this in for GA.</li></ul></li><li>API-based scheduler configuration (Jonathan Hung)<ul><li>Jonathan mentioned that his main goal is to get this in for 2.9.0, which seems likely to go out after 3.0.0 GA since there hasn't been any serious release planning yet. Jonathan said that delaying this until 3.1.0 is fine.</li></ul></li></ul></div><h1 id="Hadoop3releasestatusupdates-2017-09-01">2017-09-01</h1><p>We're two weeks out from beta1, focus is on blocker burndown.</p><p>Highlights:</p><ul><li>S3Guard merged!</li><li>TSv2 alpha2 merged!</li><li>branch-3.0 has been cut after discussion on dev lists.</li></ul><p>Red flags:</p><ul><li>10 blockers on the dashboard, closed and bumped some but new ones appeared.</li><li>Still need to land YARN native services and fix some S3Guard doc issues for beta1.</li><li>Rolling upgrade JIRAs for YARN and HDFS are not making any visible progress</li></ul><p>Previously tracked beta1 blockers that have been resolved:</p><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13363" rel="nofollow">HADOOP-13363</a> (Upgrade to protobuf 3): I dropped this from beta1 since it's simply not going to happen in time.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7076" rel="nofollow">YARN-7076</a>: This was quickly resolved! Thanks Jian, Junping, Jason for the action.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7094" rel="nofollow">YARN-7094</a> (Document that server-side graceful decom is currently not recommended): Patch committed!</li></ul><p>beta1 blockers:</p><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14826" rel="nofollow">HADOOP-14826</a><span> (review S3 docs prior to 3.0.0-beta1): New blocker with S3Guard merged. Should just be a quick doc update.</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14284" rel="nofollow">HADOOP-14284</a> (Shade Guava everywhere): Agreement to shade yarn-client at at HADOOP-14771. Shading hadoop-hdfs is still being discussed?</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14771" rel="nofollow">HADOOP-14771</a><span> (hadoop-client does not include hadoop-yarn-client): Patch up, needs review, waiting on Busbey</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-5536" rel="nofollow" style="font-size: 14.0px;">YARN-5536</a><span style="font-size: 14.0px;"> (Multiple format support (JSON, etc.) for exclude node file in NM graceful decommission with timeout): We're waiting on input from Junping.</span></li><li><span style="font-size: 14.0px;">MAPREDUCE-6941 (The default setting doesn't work for MapReduce job): Ray thinks this is a Won't Fix, waiting on Junping to confirm.</span></li><li><span style="font-size: 14.0px;">HADOOP-14238 (Rechecking Guava's object is not exposed to user-facing API): This relates to HADOOP-14771, I left a JIRA comment.</span></li></ul><p>beta1 features:</p><ul><li>Erasure coding<ul><li>There are three must-dos. Two have patches, one might not be a must-do.</li><li>HDFS-11882 has been revved and reviewed, seems close</li><li>HDFS-11467 and HDFS-7859 are related, Sammi/Eddy/Kai are discussing, Sammi thinks we can still make beta1.</li></ul></li><li>Addressing incompatible changes (YARN-6142 and HDFS-11096)<ul><li>Sean has HDFS rolling upgrade scripts up, waiting on Ray to add some YARN/MR coverage too.</li><li>Need to do a final runthrough of the JACC reports for YARN and HDFS.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>Sean has retriaged the subtasks and has been posting patches.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>New patch is up, but needs review. Daniel asked Chris Douglas and Steve Loughran.</li></ul></li><li>YARN native services<ul><li>Jian sent out the merge vote</li></ul></li><li><div>TSv2 alpha 2</div><ul><li>This was merged, no problems thus far <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></li></ul></li></ul><p>GA features:</p><ul><li>Resource profiles (Wangda Tan)<ul><li>Merge vote was sent out. Since branch-3.0 has been cut, this can be merged to trunk (3.1.0) and then backported once we've completed testing.</li></ul></li><li><div>HDFS router-based federation (Chris Douglas)</div><ul><li>This is like YARN federation, very separate and doesn't add new APIs, run in production at MSFT.</li><li>If it passes Cloudera internal integration testing, I'm fine putting this in for GA.</li></ul></li><li>API-based scheduler configuration (Jonathan Hung)<ul><li>Jonathan mentioned that his main goal is to get this in for 2.9.0, which seems likely to go out after 3.0.0 GA since there hasn't been any serious release planning yet. Jonathan said that delaying this until 3.1.0 is fine.</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-08-25">2017-08-25</h1><p>Another month flew by without an update. This is a big one.</p><p>Red flags:</p><ul><li>11 blockers still on the dashboard, with some filed recently. Need to burn these down.</li><li>There are many branch merges proposals flying around for features that were not originally being tracked for beta1 and GA. Introducing new code always comes with risk, so I'm working with the different contributors involved to discuss target versions, confirm readiness, and define quality bars for merge.</li></ul><p>Miscellaneous blockers:</p><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14284" rel="nofollow">HADOOP-14284</a> (Shade Guava everywhere): We have agreement to shade the yarn client JAR. Shading hadoop-hdfs is still being discussed. </li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13363" rel="nofollow">HADOOP-13363</a> (Upgrade to protobuf 3): Waiting on the Guava shading first.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7076" rel="nofollow">YARN-7076</a>: New blocker, we need an assignee.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-7094" rel="nofollow">YARN-7094</a> (Document that server-side graceful decom is currently not recommended): Robert has a patch up, needs review. This is a stopgap for the old blocker YARN-5464.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/YARN-5536" rel="nofollow">YARN-5536</a> (<span>Multiple format support (JSON, etc.) for exclude node file in NM graceful decommission with timeout): Robert has a proposal that needs to be pushed on.</span></li></ul><p>beta1 features:</p><ul><li>Erasure coding<ul><li>There are three must-dos. Two have patches, one might not be a must-do.</li><li>I pinged the pluggable policy JIRA to see if metadata and API compatibility is complete.</li></ul></li><li>Addressing incompatible changes (YARN-6142 and HDFS-11096)<ul><li>Sean has HDFS rolling upgrade scripts up, waiting on Ray to add some YARN/MR coverage too.</li><li>Need to do a final runthrough of the JACC reports for YARN and HDFS.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>We're down to the wire on this, I pinged Sean for an update.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>I pinged the JIRA on this too, no updated patch since May</li></ul></li></ul><p>Features under discussion:</p><p>I discussed with a number of lead contributors on these features that were previously not on my radar.</p><p>3.0.0-beta1:</p><div><ul><li>YARN native services (Jian He)<ul><li>I was convinced that this is very separate from the core. I'll get someone from Cloudera to run it through our integration tests to verify it doesn't break anything downstream, then happy to merge.</li></ul></li><li><div>TSv2 alpha 2 (Vrushali C)</div><ul><li><div>Despite being called &quot;alpha 2&quot;, this is more like &quot;beta&quot; in terms of readiness. Twitter is planning to roll it out to production. Seems quite done.</div></li><li><div>I double checked with Haibo, and he successfully ran it through our internal integration testing.</div></li></ul></li></ul></div><p>3.0.0 GA:</p><div><ul><li>Resource profiles (Wangda Tan)<ul><li>Alpha feature, APIs are not stable yet. Has some compatible PB changes, will verify rolling upgrade from branch-2. Touches some core parts of YARN.</li><li>Decided that it's too close to beta1 for this, we're going to test it a lot and make sure it's ready for 3.0.0 GA.</li></ul></li><li><div>HDFS router-based federation (Chris Douglas)</div><ul><li><div>This is like YARN federation, very separate and doesn't add new APIs, run in production at MSFT.</div></li><li><div>If it passes Cloudera internal integration testing, I'm fine putting this in for GA.</div></li></ul></li></ul></div><p>3.1.0:</p><div><ul><li>Storage Policy Satisfier (Uma Gangumalla)<ul><li>We're resolving some design discussions on JIRA. Plan is to do some MVP work on the API to get this into 3.1, and if we're happy with the second phase, consider for 3.0 GA.</li></ul></li><li><div>HDFS tiered storage (Chris Douglas):</div><ul><li><div>This touches some core stuff, and the write path is still being worked on. Still somewhat useful with just the read path. Targeting at 3.1.0 gives enough time to wrap this up.</div></li></ul></li></ul></div><h1 id="Hadoop3releasestatusupdates-2017-07-28">2017-07-28</h1><p>Long time since the previous update. In the meanwhile, we released alpha4! Onward to beta1.</p><p>Red flags:</p><ul><li>Beta1 is targeted for 09/15, and there are a number of blockers we kicked down the road that need to be resolved.</li></ul><p>Miscellaneous blockers</p><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14284" rel="nofollow">HADOOP-14284</a> (Shade Guava everywhere): This one is stalled, concerning.</li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13363" rel="nofollow">HADOOP-13363</a> (Upgrade to protobuf 3): Waiting on the Guava shading first.</li></ul><p>beta1 features:</p><ul><li>Erasure coding<ul><li>Need to wrap up pluggable EC work and other must-dos, reasonable confidence since these are actively being worked on</li></ul></li><li>Addressing incompatible changes<ul><li>YARN-6142 (compatibility with 2.x): Still need automated testing for this</li><li>HDFS-11096 (compatibility with 2.x): Sean has revived efforts here and has a rolling upgrade script under review, closing on some incompats we found too.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>The subtasks were not completed for alpha4. Sean has revived efforts and is committed to finishing this for beta1.</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>Daniel posted an initial patch for discussion, but stalled out</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-04-21">2017-04-21</h1><p>Red flags:</p><ul><li>Less than a month out and some new blockers just surfaced, need to keep pushing.</li></ul><p>Miscellaneous blockers</p><ul><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-14284" rel="nofollow">HADOOP-14284</a> (<span>Shade Guava everywhere): Progressing, though trying to resolve Curator issues</span></li><li><a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13363" rel="nofollow">HADOOP-13363</a> (Upgrade to protobuf 3): Waiting on the Guava shading first<span><br/></span></li><li>HADOOP-14330 (Kerby breaks multiple SPN support): uncovered from secure testing with Oozie, unknown if other Kerby bugs are lurking</li><li>YARN-5894 (fst licensing): no assignee yet</li></ul><p>alpha3 features:</p><ul><li>Erasure coding<ul><li>Good burndown of remaining blockers for alpha3, seems on track</li><li>HDFS-11643 (<span>Balancer fencing fails when writing erasure coded lock file): Close to commit</span></li><li><span>HDFS-11644 (<span>DFSStripedOutputStream should not implement Syncable): API-related issue that affects YARN and HBase</span></span></li></ul></li></ul><p>beta1 features:</p><ul><li>Addressing incompatible changes<ul><li>YARN-6142 (compatibility with 2.x): Still need automated testing for this</li><li>HDFS-11096 (compatibility with 2.x): Still need automated testing for this</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>Sean has not yet resumed work, but still plans to complete API-related subtasks before alpha3</li></ul></li><li>Compat guide (<a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-13714" rel="nofollow">HADOOP-13714</a>)<ul><li>Daniel has started working on this</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-02-21">2017-02-21</h1><p>Red flags:</p><ul><li>Not much movement on EC blockers since last update. Moved out planned alpha3 date as a result from mid-April to mid-May.</li></ul><p>alpha3 features:</p><ul><li>Erasure coding<ul><li>Some discussion around configuration of enabled EC policies.</li><li>Manoj and Andrew are working on EC CLI improvements (HDFS-11405, HDFS-11426, HDFS-11427, HDFS-11428)</li><li>Manoj continues to work on OIV improvements (HDFS-10983)</li><li>Kai Sasaki revving patch on HDFS-8196 for webUI additions after reviews from Takanobu Asanuma and Andrew</li></ul></li><li>Tomcat to Jetty conversions<br/><ul><li>HDFS-10860 (HttpFS): This was committed! Will remove section for next update.</li></ul></li></ul><p>beta1 features:</p><ul><li>Addressing incompatible changes<ul><li>YARN-6142 (compatibility with 2.x): Subtask at YARN-6143 has made good progress thanks to Sunil and Wangda, seems close to commit.</li><li>HDFS-11096 (compatibility with 2.x): Nothing further pending on this JIRA, but would like automated test runs setup to catch future breakages.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>Sean plans to work on this in March/April, which lines up with the new alpha3 schedule</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-02-03">2017-02-03</h1><p>3.0.0-alpha2 was released last week, onward to alpha3!</p><p>Notable release blockers:</p><ul><li>Since alpha3 is planned as the last alpha before beta, the goal is to be feature complete by alpha3. beta1 can be used to stage any remaining incompatible changes, or nice-to-have feature-related work.</li><li>No other release blockers are filed.</li></ul><p>alpha3 features:</p><ul><li>Erasure coding<br/><ul><li>All must-do JIRAs are now marked as blockers for alpha3, goal is for EC to be feature complete and API stable by alpha3.</li><li>Light development activity. Andrew did some reviews, Manoj is working on OIV improvements.</li></ul></li><li>Tomcat to Jetty conversions<br/><ul><li>HDFS-10860 (HttpFS): Patch has gone through multiple revs and has a +1 pending from Xiao</li></ul></li></ul><p>beta1 features:</p><ul><li>Addressing incompatible changes<ul><li>YARN-6142 (compatibility with 2.x): Tracking JIRA filed and assigned to Ray</li><li>HDFS-11096 (compatibility with 2.x): Nothing further pending on this JIRA, but would like automated test runs setup to catch future breakages.</li></ul></li><li>Classpath isolation (HADOOP-11656)<ul><li>Andrew has asked Sean for an ETA on completing the remaining subtasks, ideally by alpha3 but latest beta1</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-01-19">2017-01-19</h1><p>branch-3.0.0-alpha2 has been created in git. Still on track for planned alpha2 release at the end of January.</p><p>Notable release blockers:</p><ul><li>YARN-5667 (Move HBase backend code in ATS v2 into its separate module): One subtask left at YARN-5928, looks close to commit.</li><li>Also resolved blockers like HADOOP-13996, YARN-6071, YARN-5646, YARN-6072, HADOOP-13961, HDFS-11312, YARN-6068, HADOOP-13780 since last update. Wow!</li></ul><p>Development activity</p><ul><li>Addressing incompatible changes<ul><li>HDFS-11096 (compatibility with 2.x): Sean filed and fixed HDFS-11312, which was a PB incompatibility. Seems like this work is complete on the HDFS side, but we still need YARN and MR help.</li></ul></li><li>Erasure coding<ul><li>Andrew went through and re-triaged all the JIRAs on HDFS-8031, using the &quot;hdfs-ec-3.0-must-do&quot; and &quot;hdfs-ec-3.0-nice-to-have&quot; labels. HDFS-8031 more closely reflects what we want to get done for 3.0, and the labels are now tracked on the JIRA dashboard.</li></ul></li><li>Classpath isolation (HADOOP-11565)<ul><li>Arun added a Maven variable to skip shading for faster build times. No progress on subtasks required for beta1.</li></ul></li><li>Tomcat to Jetty conversions<ul><li>HADOOP-13597 (KMS): this patch went in</li><li>HDFS-10860 (HttpFS): Patch up and gone through initial review</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2017-01-04">2017-01-04</h1><p>Notable release blockers:</p><p>Down to just four release blockers, three of which have patches posted and seem to be close.</p><ul><li>HADOOP-13780 (L&amp;N updates): Patch is posted and +1'd, likely will be committed soon.</li><li>HADOOP-13896 (distribution tarball missing jars): Tiny patch is posted, pending review and precommit.</li><li><span>YARN-6022 (<span>Revert changes of AbstractResourceRequest): Patch is posted and been reviewed, looks close.</span></span></li><li>YARN-5667 (Move HBase backend code in ATS v2 into its separate module): One subtask left at YARN-5928, PA but no progress recently.<span><span><br/></span></span></li></ul><p>Development activity</p><ul><li>Addressing incompatible changes<ul><li>MAPREDUCE-6704: resolved!</li><li>YARN-5882 (issuing YARN delegation tokens even in insecure deployments): Jian reverted YARN-4126 pending further discussion, so no longer a blocker.</li><li>HDFS-11096 (compatibility with 2.x): Sean reviewed the JACC output and posted a big comment on possible source/binary incompatibilities.</li></ul></li><li>Erasure coding<ul><li>Still slowly burning down must-dos from the JIRA query.</li></ul></li><li>Classpath isolation (HADOOP-11565)<ul><li>HADOOP-11804 (shaded client jars): Initial patch has been committed, Sean also filed follow-on JIRAs for related work we need to clean up before beta1.</li></ul></li><li>Tomcat to Jetty conversions<ul><li>HADOOP-13597 (KMS): +1 pending a few nits</li><li>HDFS-10860 (HttpFS): Patch up and gone through initial review</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2016-12-09">2016-12-09</h1><p>Notable release blockers:</p><ul><li>HADOOP-13780: L&amp;N updates from Jetty bump. Xiao has picked this up, no patch yet though.</li></ul><p>Development activity</p><ul><li>Addressing incompatible changes<ul><li>MAPREDUCE-6704: still seems close after examination of Docker issue</li><li>YARN-5882 (issuing YARN delegation tokens even in insecure deployments): Andrew proposed we revert YARN-4126 to unblock the release while discussion continues</li><li>YARN-5559: Resolved!</li><li>YARN-5184: Resolved!</li><li>HDFS-11096 (compatibility with 2.x): Discussion still underway. Kihwal and Eric worked to resolve HDFS-11207 which reverted some incompatible DN/NN changes that broke rolling upgrade.</li></ul></li><li>Erasure coding<ul><li>Still slowly burning down must-dos from the JIRA query.</li></ul></li><li>Classpath isolation (HADOOP-11565)<ul><li>HADOOP-11804 (shaded client jars): Sean added integration tests for WebHDFS and things seem close.</li></ul></li><li>Tomcat to Jetty conversion (HDFS-11096, HDFS-10860)<ul><li>HDFS-11096 (KMS): patch is under review</li><li>HDFS-10860 (HttpFS): no patch yet</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2016-11-28">2016-11-28</h1><p>Notable release blockers:</p><ul><li>org.json:json: legal-discuss has allowed <a class="external-link" href="https://lists.apache.org/thread.html/bb18f942ce7eb83c11438303c818b885810fb76385979490366720d5@%3Clegal-discuss.apache.org%3E" rel="nofollow">grandfathering in releases until April 30, 2017</a> for usages of org.json:json. HADOOP-13050 bumping the problematic AWS SDK dependency has been committed. We're in the clear.</li><li>HADOOP-13780: L&amp;N updates from Jetty bump. Still unassigned.</li></ul><p>Development activity</p><ul><li>Addressing incompatible changes<ul><li>MAPREDUCE-6704: still seems close after examination of Docker issue</li><li>YARN-5882: issuing YARN delegation tokens even in insecure deployments, discussion underway</li><li>YARN-5559: found via JDiff analysis, fix some accidental incompats</li><li>YARN-5184: found via downstream testing. New abstract methods added to public class.</li><li>HDFS-11096 (compatibility with 2.x): Summary of a discussion between Andrew and Karthik was posted, seeking additional community feedback.</li></ul></li><li>Erasure coding<ul><li>Slowly burning down the must-dos from the JIRA query.</li></ul></li><li>Classpath isolation (HADOOP-11565)<ul><li>HADOOP-11804 (shaded client jars): POC testing with Avro and HBase seem to work, waiting on additional testing and reviews.</li></ul></li><li>Tomcat to Jetty conversion (HDFS-11096, HDFS-10860)<ul><li>Initial patch posted on HDFS-11096 for KMS conversion.</li></ul></li></ul><h1 id="Hadoop3releasestatusupdates-2016-11-16">2016-11-16</h1><p>Notable release blockers:</p><ul><li>HADOOP-11694: Need to upgrade AWS SDK dependency, org.json:json fallout</li><li>HADOOP-13780: L&amp;N updates from Jetty bump</li></ul><p>Development activity</p><ul><li>Addressing incompatible changes<ul><li>MAPREDUCE-6704: make the default pseudo-cluster work without additional env var configuration, seems close?</li><li>YARN-5882: issuing YARN delegation tokens even in insecure deployments, discussion underway</li><li>YARN-5559: found via JDiff analysis, fix some accidental incompats</li><li>YARN-5184: found via downstream testing. New abstract methods added to public class.</li></ul></li><li>Erasure coding<ul><li>Work continues on API refinements and supportability-related JIRAs.</li></ul></li><li>Classpath isolation (HADOOP-11565)<ul><li>HADOOP-11804 (shaded client jars): Multiple revs have been posted based on review feedback.</li></ul></li></ul><p> </p><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;background-color: rgb(245,245,245);"><br/></span></div><div><span style="font-size: 24.0px;background-color: rgb(245,245,245);"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:03</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

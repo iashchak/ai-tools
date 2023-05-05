@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : S3A: FileNotFound Exception on Read</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-AWS_73630377.html">Hadoop-AWS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : S3A: FileNotFound Exception on Read
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Aaron Fabbri</span>, last modified on июл 19, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>This page describes FileNotFoundExceptions that may occur after a successful open().</p><h2 id="S3A:FileNotFoundExceptiononRead-ExampleStackTrace">Example Stack Trace</h2><p class="p1"> </p><pre class="p1">java.io<a class="external-link" href="http://java.io" rel="nofollow">.FileNotFoundException: Reopen at position 0 on s3a://bucket-name/test/some-file: com.amazonaws.services.s3.model.AmazonS3Exception: The specified key does not exist. (Service: Amazon S3; Status Code: 404; Error Code: NoSuchKey; Request ID: 58552EC03A3499D7), S3 Extended Request ID: thYjg0cDPGceq5M3n5T2nLmRDfFnoAeyiVMx8rOvYv/IHDPZiBnL5oAOPjdw44rQgzngDk4wELY=</a></pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutor.handleErrorResponse(AmazonHttpClient.java:1588)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeOneRequest(AmazonHttpClient.java:1258)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeHelper(AmazonHttpClient.java:1030)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutor.doExecute(AmazonHttpClient.java:742)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutor.executeWithTimer(AmazonHttpClient.java:716)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutor.execute(AmazonHttpClient.java:699)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutor.access$500(AmazonHttpClient.java:667)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient$RequestExecutionBuilderImpl.execute(AmazonHttpClient.java:649)</pre><pre class="p1">        at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:513)</pre><pre class="p1">        at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:4221)</pre><pre class="p1">        at com.amazonaws.services.s3.AmazonS3Client.invoke(AmazonS3Client.java:4168)</pre><pre class="p1">        at com.amazonaws.services.s3.AmazonS3Client.getObject(AmazonS3Client.java:1378)</pre><pre class="p1">        at org.apache.hadoop.fs.s3a.S3AInputStream.reopen(S3AInputStream.java:160)</pre><pre class="p1">        at org.apache.hadoop.fs.s3a.S3AInputStream.onReadFailure(S3AInputStream.java:350)</pre><pre class="p1">        at org.apache.hadoop.fs.s3a.S3AInputStream.read(S3AInputStream.java:323)</pre><pre class="p1">        at <a class="external-link" href="http://java.io" rel="nofollow">java.io</a>.FilterInputStream.read(FilterInputStream.java:83)</pre><p> </p><h2 id="S3A:FileNotFoundExceptiononRead-CausesofThisError">Causes of This Error</h2><ol><li>The file was deleted after the client successfully opened it.  Upon trying to read the data, it is discovered the file is no longer present.</li><li>If you are running with S3Guard enabled, there are two possible causes:<ol><li>Eventual consistency:  Although the open() was successful because the file's metadata was found in S3Guard's MetadataStore, the file is still not available in S3 by the time the client tried to read its data.  This is expected to be rare, as GET is generally consistent on S3.  There may be a case where a previous GET of the same path before it existed (negative GET) is cached by S3 infrastructure and it improperly treats the file as still missing.  Unfortunately, S3 documentation on this behavior is hard to find.</li><li>S3Guard MetadataStore is out of sync with S3.   This can happen if there are clients modifying the same bucket that do not have S3Guard enabled.  This can cause the S3Guard MetadataStore to get out of sync with the S3 metadata.  This condition can also occur if the client (S3A) crashes between updating S3 and updating the S3Guard MetadataStore.  This case can be resolved by clearing the MetadataStore (e.g. drop the DynamoDB table) and then re-running your job.</li></ol></li></ol><p> </p><p> </p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

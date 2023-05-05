@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Memory</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Memory
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 25, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/RSolBg" rel="nofollow">https://cwiki.apache.org/confluence/x/RSolBg</a></p><h2 id="Memory-Preface">Preface</h2><p>This page discusses various memory issues. In a nutshell - if your computer has less than 128MB of ram - you will probably have trouble. Anyhow, also read the following threads for other memory related issues:</p><ul><li><a class="external-link" href="https://marc.info/?t=104388973000006&amp;r=1&amp;w=2" rel="nofollow">java.lang.OutOfMemoryError during deploy</a></li><li><a class="external-link" href="https://marc.info/?t=104378347700007&amp;r=1&amp;w=2" rel="nofollow">Memory requirements</a></li><li><a class="external-link" href="https://marc.info/?t=104333066400004&amp;r=1&amp;w=2" rel="nofollow">Memory Mgmt Tomcat</a></li><li><a class="external-link" href="https://marc.info/?t=103011379700006&amp;r=1&amp;w=2" rel="nofollow">Tomcat Out of memory</a></li><li><a class="external-link" href="https://marc.info/?t=104519961700002&amp;r=1&amp;w=2" rel="nofollow">Tracking memory usage over time</a></li></ul><p>Also look at <a class="external-link" href="https://www.yourkit.com/" rel="nofollow">YourKit</a>, or maybe you IDE has a profiling tool in it, or other profiling tools are available. (The following tools were recommended by many people in the past, but now seem to be discontinued by their vendors: JProbe by Quest Software — the company was acquired by Dell, OptimizeIt by Borland). This is not an endorsement for them, I just notice other people like them.</p><h2 id="Memory-Questions">Questions</h2><ol><li><a href="#Memory-Q1">How do I adjust memory settings?</a></li><li><a href="#Memory-Q2">Why do I get OutOfMemoryError errors?</a></li><li><a href="#Memory-Q3">How much memory is Tomcat/webapp/??? using?</a></li></ol><h2 id="Memory-Answers">Answers</h2><h3 id="Memory-Q1HowdoIadjustmemorysettings?"><span class="confluence-anchor-link" id="Memory-Q1"></span>How do I adjust memory settings?</h3><p>First look at <code>java -X</code> to determine what parameters to set. Then you can set them via the environment variable <code>CATALINA_OPTS</code> (using <code>JAVA_OPTS</code> also works, but is not recommended). This variable is usually set in a file <code>bin/setenv.sh</code> or <code>bin/setenv.bat</code> that you may need to create by yourselves.</p><p>The <code>setenv</code> file is documented in RUNNING.txt in your version of Tomcat. The environment variables are described in a comment at the top of catalina.bat or catalina.sh files.</p><h3 id="Memory-Q2WhydoIgetOutOfMemoryErrorerrors?"><span class="confluence-anchor-link" id="Memory-Q2"></span>Why do I get <code>OutOfMemoryError</code> errors?</h3><p>Many reasons.</p><ul><li>You're out of memory. Simple as that - add more to your heap.</li><li>You're out of memory. You have code which is hanging onto object references and the garbage collector can't do its job. Get a profiler to debug this one.</li><li>You ran out of file descriptors. If you are on a *nix system, it has been observed that an <code>OutOfMemoryError</code> can be thrown if you run out of file descriptors. This can occur if your threshold is too low. The <code>ulimit</code> program can help you out here. You also may need to account for socket connections too when thinking about these thresholds. Google is your friend for getting more information about this topic.</li><li>You have too many threads running. Some OS's have a limit to the number of threads which may be executed by a single process. (Which is what the JVM is.) Refer to your OS docs for more information on how to raise this threshold.</li><li>If you have a lot of servlets or JSP's, you may need to increase your permanent generation. By default, it is 64MB. Quadrupling it to be <code>-XX:MaxPermSize=256m</code> might be a good start.</li><li>Your OS limits the amount of memory your process may take. OK, this one is grasping at straws.</li><li>The JVM has a bug. This has been known to happen with JVM1.2.? and using EJB's with another servlet engine.</li><li>Not actually a reason - but on your particular platform, look at the <code>java -X</code> options. They may be VERY helpful.</li><li><a class="external-link" href="https://victor-jan.blogspot.com/2010/05/memory-leaks-where-classloader-cannot.html" rel="nofollow">Your classloaders are not being garbage collected</a>.</li><li>You run out of process memory (non java/GC memory), for example when using java.util.zip classes or JNI classes allocating process memory. See <a class="external-link" href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4797189" rel="nofollow">Instantiating Inflater/Deflater causes OutOfMemoryError; finalizers not called promptly enough</a></li></ul><p>See also <a href="OutOfMemory_103099557.html">OutOfMemory</a> and <a href="MemoryLeakProtection_103099526.html">MemoryLeakProtection</a>.</p><h3 id="Memory-Q3HowmuchmemoryisTomcat/webapp/???using?"><span class="confluence-anchor-link" id="Memory-Q3"></span>How much memory is Tomcat/webapp/??? using?</h3><ul><li>To find out how much memory Tomcat is using, you might be able to use the <code>Runtime</code> class provided by the JDK.</li><li>You can't find out how much memory a webapp is using. The JVM doesn't give us these detail.</li><li>You can't find out how much memory a ??? is using. The JVM doesn't give us these detail.</li><li>That being said, a memory profiling tool might prove the above statements wrong - but you probably don't want to use them in a production environment.</li></ul><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Hadoop 3.1 Release</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="127405312.html">EOL (End-of-life) Release Branches</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Hadoop 3.1 Release
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Gabor Bota</span>, last modified by <span class='editor'> Akira Ajisaka</span> on июн 10, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong>Now branch-3.1 is EOL:</strong> <a class="external-link" href="https://lists.apache.org/thread.html/re6114c3adb5886fb5cd8b537bafa81252c5be62da25f7775fb84c9d8%40%3Ccommon-dev.hadoop.apache.org%3E" rel="nofollow">https://lists.apache.org/thread.html/re6114c3adb5886fb5cd8b537bafa81252c5be62da25f7775fb84c9d8%40%3Ccommon-dev.hadoop.apache.org%3E</a></p><h1 id="Hadoop3.1Release-Releaseschedule">Release schedule</h1><p><br/></p><div class="table-wrap"><table class="wrapped confluenceTable"><colgroup><col/><col/><col/></colgroup><tbody><tr><th class="confluenceTh">Release Number</th><th class="confluenceTh">Release Date (Planned)</th><th class="confluenceTh">Release Status</th></tr><tr><td class="confluenceTd">3.1.0</td><td class="confluenceTd"><strong><span style="color: rgb(23,43,77);">Feb 28, 2018</span></strong></td><td class="confluenceTd"><strong>RELEASED</strong></td></tr><tr><td colspan="1" class="confluenceTd">3.1.1</td><td colspan="1" class="confluenceTd"><strong><span style="color: rgb(0,0,0);">Aug 8, 2018</span></strong></td><td colspan="1" class="confluenceTd"><strong>RELEASED</strong></td></tr><tr><td colspan="1" class="confluenceTd">3.1.2</td><td colspan="1" class="confluenceTd"><strong>Feb 6, 2019</strong></td><td colspan="1" class="confluenceTd"><strong>RELEASED</strong></td></tr><tr><td colspan="1" class="confluenceTd">3.1.3</td><td colspan="1" class="confluenceTd"><strong><span style="color: rgb(51,51,51);">Oct 21, 2019</span></strong></td><td colspan="1" class="confluenceTd"><strong>RELEASED</strong></td></tr><tr><td colspan="1" class="confluenceTd">3.1.4</td><td colspan="1" class="confluenceTd"><strong>Aug 3, 2020</strong></td><td colspan="1" class="confluenceTd"><strong>RELEASED</strong></td></tr><tr><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><br/></td></tr></tbody></table></div><h1 id="Hadoop3.1Release-Statusfor3.1.4release">Status for 3.1.4 release</h1><p><strong><em>Collecting materials.</em></strong></p><h3 id="Hadoop3.1Release-Blocker/Criticalfor3.1.4:">Blocker/Critical for 3.1.4:</h3><p>
+
+
+
+
+
+<div id="refresh-module-1295447992" class="refresh-module-id jira-table" >
+<p>
+    
+        
+    
+        
+    <div id="jira-issues-1295447992" style="width: 100%;  overflow: auto;"
+         class="jira-issues">
+        <table class="aui" >
+            <tbody>
+                <tr></tr>                 <tr>
+                                                                                                                                    <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="key">Ключ</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="summary">Тема</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="type">Тип запроса</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="created">Создан</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="updated">Обновленный</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="due">Длительность</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="assignee">Исполнитель</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="reporter">Автор</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="priority">Приоритет</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="status">Статус</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="resolution">Резолюция</span>
+                                </th>
+                                                                                        </tr>
+                                                                                                                    <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16754?src=confmacro">HADOOP-16754</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16754?src=confmacro">
+                                            Fix docker failed to build yetus/hadoop
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16754?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            дек 09, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            июл 03, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Kevin Su
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Kevin Su
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16907?src=confmacro">HADOOP-16907</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16907?src=confmacro">
+                                            Update Netty to 4.1.46Final
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16907?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"
+                                                alt="Improvement"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            мар 04, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            мар 10, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Wei-Chiu Chuang
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Wei-Chiu Chuang
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Duplicate
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16891?src=confmacro">HADOOP-16891</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16891?src=confmacro">
+                                            Upgrade jackson-databind to 2.9.10.3
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16891?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 27, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            мар 04, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Siyao Meng
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Siyao Meng
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16882?src=confmacro">HADOOP-16882</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16882?src=confmacro">
+                                            Update jackson-databind to 2.9.10.2 in branch-3.1, branch-2.10
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16882?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"
+                                                alt="Improvement"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 25, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 29, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Lisheng Sun
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Wei-Chiu Chuang
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15181?src=confmacro">HDFS-15181</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15181?src=confmacro">
+                                            Webhdfs getTrashRoot() causes internal AccessControlException
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15181?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 18, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 19, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Kihwal Lee
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Kihwal Lee
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Duplicate
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15012?src=confmacro">HDFS-15012</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15012?src=confmacro">
+                                            NN fails to parse Edit logs after applying HDFS-13101
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15012?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            ноя 25, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            дек 18, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Shashikant Banerjee
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Eric Lin
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15186?src=confmacro">HDFS-15186</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15186?src=confmacro">
+                                            Erasure Coding: Decommission may generate the parity block&#39;s content with all 0 in some case
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15186?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 20, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            янв 04, 2022
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Yao Guangdong
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Yao Guangdong
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/critical.svg"
+                                             alt="Critical"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15293?src=confmacro">HDFS-15293</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15293?src=confmacro">
+                                            Relax the condition for accepting a fsimage when receiving a checkpoint 
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-15293?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            апр 21, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            июн 10, 2021
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Chen Liang
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Chen Liang
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/critical.svg"
+                                             alt="Critical"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/YARN-10347?src=confmacro">YARN-10347</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/YARN-10347?src=confmacro">
+                                            Fix double locking in CapacityScheduler#reinitialize in branch-3.1
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/YARN-10347?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            июл 08, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            июл 14, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Masatake Iwasaki
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Masatake Iwasaki
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/critical.svg"
+                                             alt="Critical"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16949?src=confmacro">HADOOP-16949</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16949?src=confmacro">
+                                            pylint fails in the build environment
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16949?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            мар 30, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            апр 04, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Akira Ajisaka
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Akira Ajisaka
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/critical.svg"
+                                             alt="Critical"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                        <tr>
+                    <td colspan="11">
+                        <div class="jira-oauth-message-marker">
+                            <div class="aui-message-container">
+                                <div class="aui-message aui-message-info info">
+                                    <span><a class="static-oauth-init" href="https://cwiki.apache.org/confluence/plugins/servlet/applinks/oauth/login-dance/authorize?applicationLinkID=5aa69414-a9e9-3523-82ec-879b028fb15b">Аутентификация</a> для получения проблем</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                            </tbody>
+        </table>
+    </div>
+            <div class="refresh-issues-bottom">
+                            <span id="total-issues-count" class="total-issues-count">
+                                                                        <span>Отображение 10 из</span>
+                                                <a rel="nofollow" title="Просмотрите все совпадающие проблемы в Jira."
+                           href="https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+in+%28HADOOP%2C+MAPREDUCE%2C+HDFS%2C+YARN%29+AND+priority+in+%28Blocker%2C+Critical%29+AND+%22Target+Version%2Fs%22+%3D+3.1.4+ORDER+BY+priority+DESC%2C+updated+DESC+&amp;src=confmacro">
+                                                            Проблем: 11
+                                                    </a>
+                                        </span>
+                                </div>
+        </p>
+
+    
+</div>
+</p><div><br/></div><h3 id="Hadoop3.1Release-Issueswithfixedversion3.1.4">Issues with fixed version 3.1.4</h3><div>
+
+
+
+
+
+<div id="refresh-module--1888872931" class="refresh-module-id jira-table" >
+<p>
+    
+        
+    
+        
+    <div id="jira-issues--1888872931" style="width: 100%;  overflow: auto;"
+         class="jira-issues">
+        <table class="aui" >
+            <tbody>
+                <tr></tr>                 <tr>
+                                                                                                                                    <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="key">Ключ</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="summary">Тема</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="type">Тип запроса</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="created">Создан</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="updated">Обновленный</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="due">Длительность</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="assignee">Исполнитель</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="reporter">Автор</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="priority">Приоритет</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="status">Статус</span>
+                                </th>
+                                                                                                                                                                                        <th style="text-align: left;"
+                                    class="jira-macro-table-underline-pdfexport jira-tablesorter-header">
+                                    <span class="jim-table-header-content" sort-column-key="resolution">Резолюция</span>
+                                </th>
+                                                                                        </tr>
+                                                                                                                    <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-14509?src=confmacro">HDFS-14509</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-14509?src=confmacro">
+                                            DN throws InvalidToken due to inequality of password when upgrade NN 2.x to 3.x
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-14509?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            мая 23, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            окт 12, 2022
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Yuxuan Wang
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Yuxuan Wang
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-17014?src=confmacro">HADOOP-17014</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-17014?src=confmacro">
+                                            Upgrade jackson-databind to 2.9.10.4
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-17014?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            апр 26, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            окт 25, 2021
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Siyao Meng
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Siyao Meng
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16109?src=confmacro">HADOOP-16109</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16109?src=confmacro">
+                                            Parquet reading S3AFileSystem causes EOF
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16109?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21146&amp;avatarType=issuetype"
+                                                alt="Sub-task"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 13, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            июл 02, 2021
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Steve Loughran
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Dave Christianson
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16776?src=confmacro">HADOOP-16776</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16776?src=confmacro">
+                                            backport HADOOP-16775: distcp copies to s3 are randomly corrupted
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16776?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"
+                                                alt="Improvement"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            дек 23, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            дек 04, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Amir Shenavandeh
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Amir Shenavandeh
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16754?src=confmacro">HADOOP-16754</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16754?src=confmacro">
+                                            Fix docker failed to build yetus/hadoop
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16754?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            дек 09, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            июл 03, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Kevin Su
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Kevin Su
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16982?src=confmacro">HADOOP-16982</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16982?src=confmacro">
+                                            Update Netty to 4.1.48.Final
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16982?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21148&amp;avatarType=issuetype"
+                                                alt="Task"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            апр 13, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            апр 16, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Lisheng Sun
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Wei-Chiu Chuang
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16891?src=confmacro">HADOOP-16891</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16891?src=confmacro">
+                                            Upgrade jackson-databind to 2.9.10.3
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16891?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 27, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            мар 04, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Siyao Meng
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Siyao Meng
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16882?src=confmacro">HADOOP-16882</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16882?src=confmacro">
+                                            Update jackson-databind to 2.9.10.2 in branch-3.1, branch-2.10
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HADOOP-16882?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21140&amp;avatarType=issuetype"
+                                                alt="Improvement"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 25, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            фев 29, 2020
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Lisheng Sun
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Wei-Chiu Chuang
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowNormal">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/YARN-10055?src=confmacro">YARN-10055</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/YARN-10055?src=confmacro">
+                                            bower install fails
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/YARN-10055?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            дек 23, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            дек 23, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Akira Ajisaka
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Akira Ajisaka
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                                                        <tr class="rowAlternate">
+                                                                                                                        <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-14910?src=confmacro">HDFS-14910</a>
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-14910?src=confmacro">
+                                            Rename Snapshot with Pre Descendants Fail With IllegalArgumentException.
+                                        </a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <a href="https://issues.apache.org/jira/browse/HDFS-14910?src=confmacro"><img
+                                                src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"
+                                                alt="Bug"
+                                                class="icon"/></a>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            окт 17, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            окт 24, 2019
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Wei-Chiu Chuang
+                                                                    </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Íñigo Goiri
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <img src="https://issues.apache.org/jira/images/icons/priorities/blocker.svg"
+                                             alt="Blocker"
+                                             class="icon"/>
+                                                                    </td>
+                                                            <td nowrap="true"                                    class="jira-macro-table-underline-pdfexport" >
+                                                                            <!-- The new status lozengens support for Jira 6.2 or later. Otherwise we use the icon.-->
+                                                                                    <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+    ">
+                                                Resolved
+                                            </span>
+                                                                                                            </td>
+                                                            <td                                     class="jira-macro-table-underline-pdfexport" >
+                                                                            Fixed
+                                                                    </td>
+                                                    </tr>
+                                                                                                                        <tr>
+                    <td colspan="11">
+                        <div class="jira-oauth-message-marker">
+                            <div class="aui-message-container">
+                                <div class="aui-message aui-message-info info">
+                                    <span><a class="static-oauth-init" href="https://cwiki.apache.org/confluence/plugins/servlet/applinks/oauth/login-dance/authorize?applicationLinkID=5aa69414-a9e9-3523-82ec-879b028fb15b">Аутентификация</a> для получения проблем</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                            </tbody>
+        </table>
+    </div>
+            <div class="refresh-issues-bottom">
+                            <span id="total-issues-count" class="total-issues-count">
+                                                                        <span>Отображение 10 из</span>
+                                                <a rel="nofollow" title="Просмотрите все совпадающие проблемы в Jira."
+                           href="https://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+in+%28HADOOP%2C+MAPREDUCE%2C+HDFS%2C+YARN%29+AND+fixVersion+%3D+3.1.4+ORDER+BY+priority+DESC%2C+updated+DESC+++&amp;src=confmacro">
+                                                            Проблем: 309
+                                                    </a>
+                                        </span>
+                                </div>
+        </p>
+
+    
+</div>
+</div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;"><br/></span></div><div><span style="font-size: 24.0px;background-color: rgb(245,245,245);"><br/></span></div><div><span style="font-size: 24.0px;background-color: rgb(245,245,245);"><br/></span></div>
+                    </div>
+
+                                                            <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/144511191/144511192.png">red.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/144511191/144511193.png">green.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/144511191/144511194.png">Yellow.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:03</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

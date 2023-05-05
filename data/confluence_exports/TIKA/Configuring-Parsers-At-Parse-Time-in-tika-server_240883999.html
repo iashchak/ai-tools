@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Configuring Parsers At Parse Time in tika-server</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="TikaServer_148639291.html">TikaServer</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Configuring Parsers At Parse Time in tika-server
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on фев 15, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>With tika-server, Tika parsers can be configured at startup time via <code>tika-config.xml</code> OR at parse-time (per file) via headers.   </p><p><strong>NOTE: </strong>Parse-time/per file configuration was brought in slowly and was not well designed for extensibility (committers are standing by for a redesign!).</p><p>For the following reasons, when using Tika programmatically parse-time (per file) configurations must be set via the ParseContext for several reasons:</p><ul><li>Parsers may be loaded either via SPI or via the tika-config.xml – it is not easy to set configurations on the target parser.</li><li>A given parser is likely wrapped in a CompositeParser and/or the AutoDetectParser, and it is not straightforward to be able to set parameters on the target parser.</li><li>Parsers are used across threads so the configuration for a given file cannot be applied the parser generally.</li></ul><p>Specifically, there are two popular config objects that are used in this way: the <a class="external-link" href="https://tika.apache.org/2.7.0/api/org/apache/tika/parser/pdf/PDFParserConfig.html" rel="nofollow">PDFParserConfig</a> and <a class="external-link" href="https://tika.apache.org/2.7.0/api/org/apache/tika/parser/ocr/TesseractOCRConfig.html" rel="nofollow">TesseractOCRParserConfig</a>.  The parsers check for those configs in the ParseContext before parsing a file.  These changes should only apply to the given file that is being parsed. These configs should not make changes to the configuration of the underlying parsers nor affect the parsing of other files.</p><h2 id="ConfiguringParsersAtParseTimeintikaserver-SettingParametersviaHeaders">Setting Parameters via Headers</h2><p>As of February 2023 (version 2.7.0), Tika only directly supports configuration of the PDFParser and the TesseractOCRParser via headers.  To set parameters for the PDFParser:</p><p>1) Create the header key by prepending <code>X-Tika-PDF</code> to a parameter, e.g. <code>X-Tika-PDFOcrStrategy</code></p><p>2) Set the value (e.g. <code>ocr_only</code>) </p><p>To see the available parameters for the PDFParser, see: <a href="109454066.html">PDFParser (Apache PDFBox)</a>.</p><p>To set parameters for the TesseractOCRParser, prepend <code>X-Tika-OCR</code> to the parameter.</p><p>See the unit tests in the <code>tika-server-standard</code>'s <code>TikaResourceTest</code>, e.g. <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-server/tika-server-standard/src/test/java/org/apache/tika/server/standard/TikaResourceTest.java#L279" rel="nofollow">testOCRLanguageConfig()</a><a class="external-link" href="https://github.com/apache/tika/blob/main/tika-server/tika-server-standard/src/test/java/org/apache/tika/server/standard/TikaResourceTest.java#L279" rel="nofollow">.</a></p><h2 id="ConfiguringParsersAtParseTimeintikaserver-CustomizingConfiguration">Customizing Configuration</h2><p>This functionality can be extended to other parsers by adding a class that implements <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-server/tika-server-core/src/main/java/org/apache/tika/server/core/ParseContextConfig.java" rel="nofollow">ParseContextConfig</a> and loading it via SPI. See the example of <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-server/tika-server-standard/src/main/java/org/apache/tika/server/standard/config/PDFServerConfig.java" rel="nofollow">PDFServerConfig</a>, and make sure to add your class via services, e.g. <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-server/tika-server-standard/src/main/resources/META-INF/services/org.apache.tika.server.core.ParseContextConfig" rel="nofollow">org.apache.tika.server.core.ParseContextConfig</a>.</p><p><br/></p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

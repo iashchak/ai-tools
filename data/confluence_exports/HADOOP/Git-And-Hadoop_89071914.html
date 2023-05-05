@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Git And Hadoop</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-Contributor-Guide_89071892.html">Hadoop Contributor Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Git And Hadoop
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Arpit Agarwal</span>, last modified by <span class='editor'> Marton Elek</span> on янв 02, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Note: This content was moved over from <a class="external-link" href="https://wiki.apache.org/hadoop/GitAndHadoop" rel="nofollow">https://wiki.apache.org/hadoop/GitAndHadoop</a></em></p><p><br/></p><p>This page tells you how to work with Git. See <a href="How-To-Contribute_70255755.html">How To Contribute</a> for instructions on building and testing Hadoop.</p><p><br/></p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025379684 {padding: 0px;}
+div.rbtoc1683025379684 ul {margin-left: 0px;}
+div.rbtoc1683025379684 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025379684'>
+<ul class='toc-indentation'>
+<li><a href='#GitAndHadoop-KeyGitConcepts'>Key Git Concepts</a></li>
+<li><a href='#GitAndHadoop-Checkingoutthesource'>Checking out the source</a></li>
+<li><a href='#GitAndHadoop-Graftsforcompleteprojecthistory'>Grafts for complete project history</a></li>
+<li><a href='#GitAndHadoop-ForkingontoGitHub'>Forking onto GitHub</a></li>
+<li><a href='#GitAndHadoop-Branching'>Branching</a>
+<ul class='toc-indentation'>
+<li><a href='#GitAndHadoop-Creatingthebranch'>Creating the branch</a></li>
+<li><a href='#GitAndHadoop-CreatingPatchesforattachmenttoJIRAissues'>Creating Patches for attachment to JIRA issues</a></li>
+<li><a href='#GitAndHadoop-Updatingyourpatch'>Updating your patch</a></li>
+<li><a href='#GitAndHadoop-DerivingBranchesfromBranches'>Deriving Branches from Branches</a></li>
+<li><a href='#GitAndHadoop-Whattodowhenyourpatchiscommitted'>What to do when your patch is committed</a></li>
+</ul>
+</li>
+</ul>
+</div></p><h2 id="GitAndHadoop-KeyGitConcepts">Key Git Concepts</h2><p>The key concepts of Git.<br/><br/></p><ol><li> Git doesn't store changes, it snapshots the entire source tree. Good for fast switch and rollback, bad for binaries. (as an enhancement, if a file hasn't changed, it doesn't re-replicate it).</li><li> Git stores all &quot;events&quot; as SHA1 checksummed objects; you have deltas, tags and commits, where a commit describes the status of items in the tree.</li><li> Git is very branch centric; you work in your own branch off local or central repositories</li><li> You had better enjoy merging.</li></ol><p><br/></p><p><a class="external-link" href="https://github.com/" rel="nofollow">GitHub</a> provide some good lessons on git at <a class="external-link" href="http://learn.github.com" rel="nofollow">http://learn.github.com</a></p><p>Apache serves up read-only Git versions of their source at <a class="external-link" href="http://git.apache.org/" rel="nofollow">http://git.apache.org/</a>. Committers can commit changes to writable Git repository. See <a class="external-link" href="https://wiki.apache.org/hadoop/HowToCommit" rel="nofollow">https://wiki.apache.org/hadoop/HowToCommit</a></p><h2 id="GitAndHadoop-Checkingoutthesource">Checking out the source</h2><p>You need a copy of git on your system. Some IDEs ship with Git support; this page assumes you are using the command line.<br/><br/>Clone a local Git repository from the Apache repository. The Hadoop subprojects (common, HDFS, and MapReduce) live inside a combined repository called `hadoop.git`.<br/><br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git clone https://gitbox.apache.org/repos/asf/hadoop.git</pre>
+</div></div><p><br/></p><p>The total download is a few hundred MB, so the initial checkout process works best when the network is fast. Once downloaded, Git works offline -though you will need to perform your initial builds online so that the build tools can download dependencies.</p><h2 id="GitAndHadoop-Graftsforcompleteprojecthistory">Grafts for complete project history</h2><p>The Hadoop project has undergone some movement in where its component parts have been versioned. Because of that, commands like `git log --follow` needs to have a little help. To graft the history back together into a coherent whole, insert the following contents into <code>hadoop/.git/info/grafts</code>:<br/><br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default"># Project split
+5128a9a453d64bfe1ed978cf9ffed27985eeef36 6c16dc8cf2b28818c852e95302920a278d07ad0c
+6a3ac690e493c7da45bbf2ae2054768c427fd0e1 6c16dc8cf2b28818c852e95302920a278d07ad0c
+546d96754ffee3142bcbbf4563c624c053d0ed0d 6c16dc8cf2b28818c852e95302920a278d07ad0c
+# Project un-split in new writable git repo
+a196766ea07775f18ded69bd9e8d239f8cfd3ccc 928d485e2743115fe37f9d123ce9a635c5afb91a
+cd66945f62635f589ff93468e94c0039684a8b6d 77f628ff5925c25ba2ee4ce14590789eb2e7b85b</pre>
+</div></div><p><br/><br/>You can then use commands like <code>git blame --follow</code> with success.<br/><br/></p><h2 id="GitAndHadoop-ForkingontoGitHub">Forking onto GitHub</h2><p>You can create your own fork of the ASF project. This is required if you want to contribute patches by submitting pull requests. However you can choose to skip this step and attach patch files directly on Apache Jiras.<br/><br/></p><ol><li>Create a GitHub login at <a class="external-link" href="http://github.com/" rel="nofollow">http://github.com/</a> ; Add your public SSH keys</li><li>Go to <a class="external-link" href="https://github.com/apache/hadoop/" rel="nofollow">https://github.com/apache/hadoop/</a></li><li>Click fork in the github UI. This gives you your own repository URL.</li><li>In the existing clone, add the new repository:</li></ol><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git remote add -f github git@github.com:MYUSERNAMEHERE/hadoop.git</pre>
+</div></div><p><br/><br/>This gives you a local repository with two remote repositories: <code>origin</code> and <code>github</code>. <code>origin</code> has the Apache branches, which you can update whenever you want to get the latest ASF version:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default"> git checkout -b trunk origin/trunk
+ git pull origin
+</pre>
+</div></div><p><br/><br/>Your own branches can be merged with trunk, and pushed out to GitHub. To generate patches for attaching to Apache JIRAs, check everything in to your specific branch, merge that with (a recently pulled) trunk, then diff the two:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git diff trunk &gt; ../hadoop-patches/HADOOP-XYX.patch
+</pre>
+</div></div><p><br/></p><h2 id="GitAndHadoop-Branching">Branching</h2><p>Git makes it easy to branch. The recommended process for working with Apache projects is: one branch per JIRA issue. That makes it easy to isolate development and track the development of each change. It does mean if you have your own branch that you release, one that merges in more than one issue, you have to invest some effort in merging everything in. Try not to make changes in different branches that are hard to merge, and learn your way round the git rebase command to handle changes across branches. Better yet: do not use rebase once you have created a chain of branches that each depend on each other</p><h3 id="GitAndHadoop-Creatingthebranch"><br/>Creating the branch</h3><p>Creating a branch is quick and easy<br/><br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">#start off in the apache trunk
+git checkout trunk
+#create a new branch from trunk
+git branch HDFS-775
+#switch to it
+git checkout HDFS-775
+#show what&#39;s branch you are in
+git branch</pre>
+</div></div><p><br/><br/><br/>Remember, this branch is local to your machine. Nobody else can see it until you push up your changes or generate a patch, or you make your machine visible over the network to interested parties.</p><h3 id="GitAndHadoop-CreatingPatchesforattachmenttoJIRAissues">Creating Patches for attachment to JIRA issues</h3><p>Assuming your trunk repository is in sync with the Apache projects, you can use <code>git diff</code> to create a patch file.<br/>First, have a directory for your patches:<br/><br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">mkdir ../hadoop-patches</pre>
+</div></div><p><br/><br/>Then generate a patch file listing the differences between your trunk and your branch</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">git diff trunk &gt; ../hadoop-patches/HDFS-775-1.patch</pre>
+</div></div><p><br/><br/>The patch file is an extended version of the unified patch format used by other tools; type {{{git help diff}}} to get more details on it. Here is what the patch file in this example looks like$ cat ../outgoing/HDFS-775-1.patch</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">diff --git src/java/org/apache/hadoop/hdfs/server/datanode/FSDataset.java src/java/org/apache/hadoop/hdfs/server/datanode/FSDataset.java
+index 42ba15e..6383239 100644
+--- src/java/org/apache/hadoop/hdfs/server/datanode/FSDataset.java
++++ src/java/org/apache/hadoop/hdfs/server/datanode/FSDataset.java
+@@ -355,12 +355,14 @@ public class FSDataset implements FSConstants, FSDatasetInterface {
+       return dfsUsage.getUsed();
+     }
+
++    /**
++     * Calculate the capacity of the filesystem, after removing any
++     * reserved capacity.
++     * @return the unreserved number of bytes left in this filesystem. May be zero.
++     */
+     long getCapacity() throws IOException {
+-      if (reserved &gt; usage.getCapacity()) {
+-        return 0;
+-      }
+-
+-      return usage.getCapacity()-reserved;
++      long remaining = usage.getCapacity() - reserved;
++      return remaining &gt; 0 ? remaining : 0;
+     }
+
+     long getAvailable() throws IOException {</pre>
+</div></div><h3 id="GitAndHadoop-Updatingyourpatch"><br/>Updating your patch</h3><p>If your patch is not immediately accepted, do not be offended: it happens to us all. It introduces a problem: your branches become out of date. You need to check out the latest apache version, merge your branches with it, and then push the changes back to GitHub.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default"> git checkout trunk
+ git pull apache
+ git checkout mybranch
+ git merge trunk
+ git push github mybranch</pre>
+</div></div><p><br/><br/><br/>Your branch is up to date, and new diffs can be created and attached to patches.</p><h3 id="GitAndHadoop-DerivingBranchesfromBranches"><br/>Deriving Branches from Branches</h3><p>If you have one patch that depends upon another, you should have a separate branch for each one. Simply merge the changes from the first branch into the second, so that it is always kept up to date with the first changes. To create a patch file for submission as a JIRA patch, do a diff between the two branches, not against trunk.<br/><br/><em><strong>do not play with rebasing once you start doing this as you will make merging a nightmare</strong></em></p><h3 id="GitAndHadoop-Whattodowhenyourpatchiscommitted"><br/>What to do when your patch is committed</h3><p>Once your patch is committed into Git, you do not need the branch any more. You can delete it straight away, but it is safer to verify the patch is completely merged in.</p><p><br/>Pull down the latest release and verify that the patch branch is synchronized</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default"> git checkout trunk
+ git pull apache
+ git checkout mybranch
+ git merge trunk
+ git diff trunk
+</pre>
+</div></div><p><br/><br/>The output of the last command should be nothing: the two branches should be identical. You can then prove to git that this is true by switching back to the trunk branch and merging in the branch, an operation which will not change the source tree, but update git's branch graph.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default"> git checkout trunk
+ git merge mybranch
+
+</pre>
+</div></div><p><br/>Now you can delete the branch without being warned by git</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default"> git branch -d mybranch
+</pre>
+</div></div><p><br/><br/>Finally, propagate that deletion to your private github repository</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default"> git push github --delete mybranch</pre>
+</div></div><p><br/><br/><br/><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

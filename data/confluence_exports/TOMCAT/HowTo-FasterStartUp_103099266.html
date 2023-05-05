@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : HowTo FasterStartUp</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="HowTo_103099265.html">HowTo</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : HowTo FasterStartUp
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Mark Thomas</span> on июл 18, 2017
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="HowToFasterStartUp-HowdoImakeTomcatstartupfaster?">How do I make Tomcat startup faster?</h1>
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025319456 {padding: 0px;}
+div.rbtoc1683025319456 ul {margin-left: 0px;}
+div.rbtoc1683025319456 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025319456'>
+<ul class='toc-indentation'>
+<li><a href='#HowToFasterStartUp-HowdoImakeTomcatstartupfaster?'>How do I make Tomcat startup faster?</a>
+<ul class='toc-indentation'>
+<li><a href='#HowToFasterStartUp-General'>General</a></li>
+<li><a href='#HowToFasterStartUp-JARscanning'>JAR scanning</a>
+<ul class='toc-indentation'>
+<li><a href='#HowToFasterStartUp-Configureyourwebapplication'>Configure your web application</a></li>
+<li><a href='#HowToFasterStartUp-RemoveunnecessaryJARs'>Remove unnecessary JARs</a></li>
+<li><a href='#HowToFasterStartUp-ExcludeJARsfromscanning'>Exclude JARs from scanning</a></li>
+<li><a href='#HowToFasterStartUp-Disablesupport'>Disable WebSocket support</a></li>
+</ul>
+</li>
+<li><a href='#HowToFasterStartUp-EntropySource'>Entropy Source</a></li>
+<li><a href='#HowToFasterStartUp-Startingseveralwebapplicationsinparallel'>Starting several web applications in parallel</a></li>
+<li><a href='#HowToFasterStartUp-Other'>Other</a>
+<ul class='toc-indentation'>
+<li><a href='#HowToFasterStartUp-Memory'>Memory</a></li>
+<li><a href='#HowToFasterStartUp-Config'>Config</a></li>
+<li><a href='#HowToFasterStartUp-Webapplication'>Web application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p>This section provides several recommendations on how to make your web application and Apache Tomcat as a whole to start up faster.</p>
+
+<h2 id="HowToFasterStartUp-General">General</h2>
+
+<p>Before we continue to specific tips and tricks, the general advice is that if Tomcat hangs or is not responsive, you have to perform diagnostics. That is to <strong>take several thread dumps</strong> to see what Tomcat is really doing. See <a class="unresolved" href="#">Troubleshooting and Diagnostics</a> page for details.</p>
+
+<h2 id="HowToFasterStartUp-JARscanning">JAR scanning</h2>
+
+<p>The <a href="Specifications_103100166.html">Servlet 3.0 specification</a> (chapter 8) introduced support for several &quot;plugability features&quot;. Those exist to simplify a structure of a web application and to simplify plugging of additional frameworks. Unfortunately, these features require scanning of JAR and class files, which may take noticeable time. Conformance to the specification requires that the scanning were performed by default, but you can configure your own web application in several ways to avoid it (see below). It is also possible to configure which JARs Tomcat should skip.</p>
+
+<p>For further talk, the features that require scanning are:</p>
+
+<p>Introduced by Servlet 3.0:</p>
+
+<ul>
+	<li>SCI (<code>javax.servlet.ServletContainerInitializer</code>)</li>
+	<li>Web fragments (<code>META-INF/web-fragment.xml</code>)</li>
+	<li>Resources of a web application bundled in jar files (<code>META-INF/resources/*</code>)</li>
+	<li>Annotations that define components of a web application (<code>@WebServlet</code> etc.)</li>
+	<li>Annotations that define components for 3-rd party libraries initialized by an SCI (arbitrary annotations that are defined in <code>@HandlesTypes</code> annotation on a SCI class)
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>Older features, introduced by earlier specifications:</p>
+
+<ul>
+	<li>TLD scanning, (Discovery of tag libraries. Scans for Tag Library Descriptor files, <code>META-INF/**/*.tld</code>).
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>Among the scans the annotation scanning is the slowest. That is because each class file (except ones in ignored JARs) has to be read and parsed looking for annotations in it.</p>
+
+<p>An example of a container-provided SCI that triggers annotation scanning is the <a class="unresolved" href="#">WebSocket</a> API implementation which is included with standard distribution in all versions of Tomcat 8 and with Tomcat 7 starting with 7.0.47. An SCI class declared there triggers scanning for <a class="unresolved" href="#">WebSocket</a> endpoints (the classes annotated with <code>@ServerEndpoint</code> or implementing <code>ServerApplicationConfig</code> interface or extending the abstract <code>Endpoint</code> class). If you do not need support for <a class="unresolved" href="#">WebSockets</a>, you may remove the <a class="unresolved" href="#">WebSocket</a> API and <a class="unresolved" href="#">WebSocket</a> implementation JARs from Tomcat (<code>websocket-api.jar</code> and <code>tomcat7-websocket.jar</code> or <code>tomcat-websocket.jar</code>).</p>
+
+<p><em>A note on TLD scanning</em>: In Tomcat 7 and earlier the TLD scanning happens twice,</p>
+
+<ul>
+	<li>first, at startup time, to discover listeners declared in tld files (done by <code>TldConfig</code> class),</li>
+	<li>second, by JSP engine when generating java code for a JSP page (done by <code>TldLocationsCache</code>).
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>The second scanning is more noticeable, because it prints a diagnostic message about scanned JARs that contained no TLDs. In Tomcat 8 the TLD scanning happens only once at startup time (in <code>JasperInitializer</code>).</p>
+
+<h3 id="HowToFasterStartUp-Configureyourwebapplication">Configure your web application</h3>
+
+<p>See chapter in <a class="external-link" href="http://tomcat.apache.org/migration-7.html#Annotation_scanning" rel="nofollow">Tomcat 7 migration guide</a>.</p>
+
+<p>There are two options that can be specified in your <code>WEB-INF/web.xml</code> file:</p>
+
+<ol>
+	<li>Set <code>metadata-complete=&quot;true&quot;</code> attribute on the <code>&lt;web-app&gt;</code> element. 2. Add an empty <code>&lt;absolute-ordering /&gt;</code> element.
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>Setting <code>metadata-complete=&quot;true&quot;</code> disables scanning your web application and its libraries for classes that use annotations to define components of a web application (Servlets etc.). The <code>metadata-complete</code> option is not enough to disable all of annotation scanning. If there is a SCI with a <code>@HandlesTypes</code> annotation, Tomcat has to scan your application for classes that use annotations or interfaces specified in that annotation.</p>
+
+<p>The <code>&lt;absolute-ordering&gt;</code> element specifies which web fragment JARs (according to the names in their <code>WEB-INF/web-fragment.xml</code> files) have to be scanned for SCIs, fragments and annotations. An empty <code>&lt;absolute-ordering/&gt;</code> element configures that none are to be scanned.</p>
+
+<p>In Tomcat 7 the <code>absolute-ordering</code> option affects discovery both of SCIs provided by web application and ones provided by the container (i.e. by the libraries in <code>$CATALINA_HOME/lib</code>). In Tomcat 8 the option affects the web application ones only, while the container-provided SCIs are always discovered, regardless of <code>absolute-ordering</code>. In such case the <code>absolute-ordering</code> option alone does not prevent scanning for annotations, but the list of JARs to be scanned will be empty, and thus the scanning will complete quickly. The classes in <code>WEB-INF/classes</code> are always scanned regardless of <code>absolute-ordering</code>.</p>
+
+<p>Scanning for web application resources and TLD scanning are not affected by these options.</p>
+
+
+<h3 id="HowToFasterStartUp-RemoveunnecessaryJARs">Remove unnecessary JARs</h3>
+
+<p>Remove any JAR files you do not need. When searching for classes every JAR file needs to be examined to find the needed class. If the jar file is not there - there is nothing to search.</p>
+
+<p><em>Note</em> that a web application should never have its own copy of Servlet API or Tomcat classes. All those are provided by the container (Tomcat) and should never be present in the web application. If you are using Apache Maven, such dependencies should be configured with <code>&lt;scope&gt;provided&lt;/scope&gt;</code>. See also a <a class="external-link" href="http://stackoverflow.com/questions/1031695/how-to-exclude-jars-generated-by-maven-war-plugin" rel="nofollow">stackoverflow page</a>.</p>
+
+<h3 id="HowToFasterStartUp-ExcludeJARsfromscanning">Exclude JARs from scanning</h3>
+
+<p>In Tomcat 7 JAR files can be excluded from scanning by listing their names or name patterns in a <a class="external-link" href="http://tomcat.apache.org/tomcat-7.0-doc/config/systemprops.html#JAR_Scanning" rel="nofollow">system property</a>. Those are usually configured in the <code>conf/catalina.properties</code> file.</p>
+
+<p>In Tomcat 8 there are several options available. You can use a <a class="external-link" href="http://tomcat.apache.org/tomcat-8.0-doc/config/systemprops.html#JAR_Scanning" rel="nofollow">system property</a> or configure a <code>&lt;JarScanFilter&gt;</code> <a class="external-link" href="http://tomcat.apache.org/tomcat-8.0-doc/config/jar-scan-filter.html" rel="nofollow">element</a> in the <a class="external-link" href="http://tomcat.apache.org/tomcat-8.0-doc/config/context.html" rel="nofollow">context file</a> of your web application.</p>
+
+<h3 id="HowToFasterStartUp-Disablesupport">Disable <a class="unresolved" href="#">WebSocket</a> support</h3>
+
+<p>There exists an attribute on <code>Context</code> element, <code>containerSciFilter</code>. It can be used to disable container-provided features that are plugged into Tomcat via SCI API: WebSocket support (in Tomcat 7 and later), JSP support (in Tomcat 8 and later).</p>
+
+<p>The class names to filter can be detected by looking into <code>META-INF/services/javax.servlet.ServletContainerInitializer</code> files in Tomcat JARs. For WebSocket support the name is <code>org.apache.tomcat.websocket.server.WsSci</code>, for JSP support the name is <code>org.apache.jasper.servlet.JasperInitializer</code>. e.g.:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;Context containerSciFilter=&quot;WsSci&quot; /&gt;
+</pre>
+</div></div>
+
+<p>The impact of disabling WebSocket support will depend on how many JARs were being scanned for WebSocket annotations and whether any other SCIs trigger annotation scans. Generally, it is the first SCI scan that has the biggest performance impact. The impact of additional scans is minimal.</p>
+
+<p>References: <a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=55855" rel="nofollow">Bug 55855</a>, <a class="external-link" href="http://tomcat.apache.org/tomcat-8.0-doc/config/context.html" rel="nofollow">Tomcat 8 Context documentation</a></p>
+
+<h2 id="HowToFasterStartUp-EntropySource">Entropy Source</h2>
+<p>Tomcat 7+ heavily relies on SecureRandom class to provide random values for its session ids and in other places. Depending on your JRE it can cause delays during startup if entropy source that is used to initialize SecureRandom is short of entropy. You will see warning in the logs when this happens, e.g.:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;DATE&gt; org.apache.catalina.util.SessionIdGenerator createSecureRandom
+INFO: Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [5172] milliseconds.
+</pre>
+</div></div>
+
+<p>There is a way to configure JRE to use a non-blocking entropy source by setting the following system property: <code>-Djava.security.egd=file:/dev/./urandom</code></p>
+
+<p>Note the &quot;<code>/./</code>&quot; characters in the value. They are needed to work around known <a class="external-link" href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721" rel="nofollow">Oracle JRE bug #6202721</a>. See also <a class="external-link" href="http://openjdk.java.net/jeps/123" rel="nofollow">JDK Enhancement Proposal 123</a>. It is known that implementation of <a class="unresolved" href="#">SecureRandom</a> was improved in Java 8 onwards.</p>
+
+<p>Also note that replacing the blocking entropy source (/dev/random) with a non-blocking one actually reduces security because you are getting less-random data. If you have a problem generating entropy on your server (which is common), consider looking into entropy-generating hardware products such as &quot;EntropyKey&quot;.</p>
+
+<h2 id="HowToFasterStartUp-Startingseveralwebapplicationsinparallel">Starting several web applications in parallel</h2>
+
+<p>With Tomcat 7.0.23+ you can configure it to start several web applications in parallel. This is disabled by default but can be enabled by setting the <code>startStopThreads</code> attribute of a <strong>Host</strong> to a value greater than one.</p>
+
+<h2 id="HowToFasterStartUp-Other">Other</h2>
+
+<h3 id="HowToFasterStartUp-Memory">Memory</h3>
+
+<p>Tweak memory parameters - Google is your friend.</p>
+
+
+<h3 id="HowToFasterStartUp-Config">Config</h3>
+
+<p>Trim the config files as much as possible. XML parsing is not cheap. The less there is to parse - the faster things will go.</p>
+
+<h3 id="HowToFasterStartUp-Webapplication">Web application</h3>
+
+<ol>
+	<li>Remove any web applications that you do not need. (So remove the all the web applications installed with tomcat) 2.  Make sure your code is not doing slow things. (Use a profiler)
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

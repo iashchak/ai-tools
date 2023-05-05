@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : ThirdPartySonaType</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : ThirdPartySonaType
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ThirdPartySonaType-StagingandPublishingonOSSRH">Staging and Publishing on OSSRH</h1>
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040428510 {padding: 0px;}
+div.rbtoc1683040428510 ul {margin-left: 0px;}
+div.rbtoc1683040428510 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040428510'>
+<ul class='toc-indentation'>
+<li><a href='#ThirdPartySonaType-StagingandPublishingonOSSRH'>Staging and Publishing on OSSRH</a></li>
+<li><a href='#ThirdPartySonaType-UtilityScript'>Utility Script</a></li>
+<li><a href='#ThirdPartySonaType-GettingStarted'>Getting Started</a></li>
+<li><a href='#ThirdPartySonaType-Staging'>Staging</a></li>
+<li><a href='#ThirdPartySonaType-Conclusion'>Conclusion</a></li>
+<li><a href='#ThirdPartySonaType-SomenotesonUCARThirdPartyJars'>Some notes on UCAR Third Party Jars</a></li>
+</ul>
+</div>
+
+<p>As part of the ongoing effort to extend the wrappers available within Tika, it has become the task of some Tika committers to actively ensure that third party (permissively licensed) artifacts are available via <a class="external-link" href="http://search.maven.org/" rel="nofollow">Maven Central</a>. The enabling platform through which we can ensure availability of such artifacts is the <a class="external-link" href="https://oss.sonatype.org" rel="nofollow">Sonatype Open Source Software Repository Hosting</a> otherwise known as OSSRH.</p>
+
+<p>All artifacts on OSSRH are eventually mirrored to Maven Central.</p>
+
+<p>An example of when this task has been required (and for which this documentation was produced) is the effort to make available <a class="external-link" href="https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/edu/ucar/" rel="nofollow">edu.ucar</a> official releases for Tika to consume. These artifacts are extremely valuable to extending Tika's support for detection, classification, extraction and parsing of an array of scientific <a class="unresolved" href="#">MimeType</a>'s for which <a class="external-link" href="http://www.unidata.ucar.edu/" rel="nofollow">Unidata</a> develop and make available excellent parsers.</p>
+
+<h1 id="ThirdPartySonaType-UtilityScript">Utility Script</h1>
+
+<p>A utility script which aims to automate this process has been posted to Tika Jira issue <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1572" rel="nofollow">TIKA-1572</a>.</p>
+
+<h1 id="ThirdPartySonaType-GettingStarted">Getting Started</h1>
+
+<p>If you wish to manually publish artifacts onto OSSRH, then simply follow the <a class="external-link" href="http://central.sonatype.org/pages/ossrh-guide.html" rel="nofollow">OSSRH Guide</a>. No effort has been made to replicate this guide as the documentation is already sufficient. Once you are set up with an account, etc. please follow on to the content below.</p>
+
+<h1 id="ThirdPartySonaType-Staging">Staging</h1>
+
+<p>When you have identified which artifacts you wish to upload to OSSRH simply follow the documentation on <a class="external-link" href="http://central.sonatype.org/pages/manual-staging-bundle-creation-and-deployment.html" rel="nofollow">manual staging and deployment</a>. This involves <a class="external-link" href="http://central.sonatype.org/pages/manual-staging-bundle-creation-and-deployment.html#signing-components" rel="nofollow">signing the components</a>, then deploying them using the left hand <strong><em>Staging Upload</em></strong> tab on <a class="external-link" href="https://oss.sonatype.org" rel="nofollow">OSSRH</a></p>
+
+<h1 id="ThirdPartySonaType-Conclusion">Conclusion</h1>
+<p>If when using this documentation you find that there are errors or that it is incomplete, please <a class="external-link" href="http://tika.apache.org/mail-lists.html" rel="nofollow">Contact Us</a>.</p>
+
+<h1 id="ThirdPartySonaType-SomenotesonUCARThirdPartyJars">Some notes on UCAR Third Party Jars</h1>
+<p>Original reasoning behind providing the document for publishing third party jar's can be attributed to the desire for us to consume release artifacts specifically from the <a class="external-link" href="https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/" rel="nofollow">Unidata Release Respository</a>. In order to ensure that Tika uses the most up-to-date Unidata dependencies for handling Mimetypes such as netCDF4 &amp; 3, HDF5 &amp; 4, GRIB files, etc. we've compiled the following list of dependencies which must be signed then released.</p>
+<ul>
+	<li><a class="external-link" href="https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/edu/ucar/cdm/" rel="nofollow">edu.ucar.cdm</a></li>
+	<li><a class="external-link" href="https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/edu/ucar/grib/" rel="nofollow">edu.ucar.grib</a></li>
+	<li><a class="external-link" href="https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/edu/ucar/netcdf4/" rel="nofollow">edu.ucar.netcdf4</a></li>
+	<li><a class="external-link" href="https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/edu/ucar/thredds-parent/" rel="nofollow">thredds-parent</a></li>
+	<li><a class="external-link" href="https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/edu/ucar/httpservices/" rel="nofollow">ucar.httpservices</a></li>
+</ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

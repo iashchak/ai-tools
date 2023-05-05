@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Managing Tomcat&#39;s Dependency on the Eclipse JDT Core Batch Compiler</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Archive_110694813.html">Archive</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Managing Tomcat&#39;s Dependency on the Eclipse JDT Core Batch Compiler
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on апр 11, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="ManagingTomcat&#39;sDependencyontheEclipseJDTCoreBatchCompiler-Update:April2019">Update: April 2019</h2><p>For some time now, Eclipse has been publishing the JDT JAR to Maven central. Therefore the following simplified policy is now followed:</p><ol><li>Use the latest available JAR from Maven central that supports the minimum Java version required by Tomcat.</li><li>POMs, build dependencies and any other dependency reference refers to the JAR available from Maven central.</li></ol><p><br/></p><h2 id="ManagingTomcat&#39;sDependencyontheEclipseJDTCoreBatchCompiler-Background">Background</h2><p><span class="anchor"> </span><span class="anchor"> </span></p><p class="line874">Tomcat depends on JDT to enable it to support the compilation of JSPs while running on a JRE. This ensures JSP compilation works out of the box. Tomcat can be configured to use javac if running on a JDK but that has proved problematic in the past - mainly around ensuring that tools.jar is on the class path. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line862">For folks that use Tomcat with Maven in embedded mode it is important that the Maven dependencies are valid and correct. There have been problems in this area in the past such as <a class="external-link" href="https://issues.apache.org/bugzilla/show_bug.cgi?id=50604" rel="nofollow">bug 50604</a>. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line862">The root cause of the issue is that the <a class="external-link" href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.eclipse.jdt.core.compiler%22%20AND%20a%3A%22ecj%22%27" rel="nofollow">small (~2MB) JDT JAR</a> we use is not officially released to Maven Central by Eclipse. One or more volunteers upload the JAR and it typically appears 2-4 weeks after the Eclipse release. <span class="anchor"> </span><span class="anchor"> </span></p><p class="line862">There is a <a class="external-link" href="https://search.maven.org/#search%7cga%7c1%7cg%3A%22org.eclipse.tycho%22%20AND%20a%3A%22org.eclipse.jdt.core%22" rel="nofollow">larger JAR (5.3MB)</a> with contains the same functionality that is officially uploaded by Eclipse. It usually appears in Maven Central sooner that the smaller JAR. <span class="anchor"> </span></p><h2 id="ManagingTomcat&#39;sDependencyontheEclipseJDTCoreBatchCompiler-Policy">Policy</h2><p><br/></p><ol><li>Tomcat releases will always package the 'small' JDT JAR as they have done for several years. <span class="anchor"> </span><span class="anchor"> </span></li><li class="gap">The POMs used when uploading a release to Maven Central will always include references to valid JARs that are known to already exist in Maven central. <span class="anchor"> </span><span class="anchor"> </span></li><li class="gap">The POMs will continue to reference the 'small' Eclipse JAR as a non-optional dependency by default. <span class="anchor"> </span><span class="anchor"> </span></li><li class="gap">Tomcat's dependency on JDT will not normally be updated until the 'small' JAR is available in Maven Central. At that point all the dependencies (JAR that ships with Tomcat, JAR defined as dependency for Jasper JARs, JAR defined as dependency for emebedded JARs) will be updated together. <span class="anchor"> </span><span class="anchor"> </span></li><li class="gap">If we need to update the JDT dependency before the 'small' JAR is available in Maven central (e.g. security issue, access new features such as Java 9 support for testing etc.) then we will use the following fallback options for the POM references: <span class="anchor"> </span><ul><li>if the 'small' JDT JAR is not available, use the 'large' one; <span class="anchor"> </span></li><li>if neither the 'small' nor the 'large' JDT JARs are available continue to reference the pre-update version of the 'small' JDT JAR. <span class="anchor"> </span><span class="anchor"> </span></li></ul></li><li class="gap">The changelog should make clear which dependencies have been updated and which have not.</li></ol>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : http workshop 2019</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : http workshop 2019
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on июн 06, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Overall the workshop was extremely useful. I learned a huge amount and came away much better informed about the current state of HTTP and the direction things are heading in.</p><p>These notes should be read in conjunction with the notes (<a class="external-link" href="https://daniel.haxx.se/blog/2019/04/02/the-http-workshop-2019-begins/" rel="nofollow">day 1</a>, <a class="external-link" href="https://daniel.haxx.se/blog/2019/04/04/more-amsterdamned-workshop/" rel="nofollow">day 2</a> and <a class="external-link" href="https://daniel.haxx.se/blog/2019/04/04/workshop-season-4-finale/" rel="nofollow">day 3</a>) and the <a class="external-link" href="https://github.com/HTTPWorkshop/workshop2019/wiki/Conversation-Starters" rel="nofollow">list of Conversation Starters</a>. The following notes use the same order as the list of conversation starters.</p><h2 id="httpworkshop2019-Security">Security</h2><h3 id="httpworkshop2019-H2-theimportantbits">H2 - the important bits</h3><p>Implementations have max stream values that range from 30 to 256 with most using 100. We currently use 200.</p><p><strong>Action</strong>: <s>Consider reducing default max streams to 100</s>. Done</p><p>Implementations have max header list sizes that range from 16kB to 4GB. Most use 16kB or 32kB. We use 4GB.</p><p><strong>Action</strong>: <s>Consider reducing default max header list size.</s> Done</p><p>Other values were consistent with typical implementations.</p><p>Connection coalescence.</p><p><strong>Action</strong>: Consider implementing RFC 8336</p><p><strong>Action</strong>: Review HTTP/2 extension for secondary certificates</p><h3 id="httpworkshop2019-SignedExchanges">Signed Exchanges</h3><p>Could be handled with a dedicated Servlet.  Possibly the Default Servlet in a similar manner to compression.</p><p>Might need changes to mapping.  Or at least how users think about mapping.  One way to route correctly would be to have the default host handle all the signed exchanges.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-TrafficAnalysis">Traffic Analysis</h3><p>No action required from us at this point.</p><h3 id="httpworkshop2019-EmbeddingdecryptionkeysinPCAP">Embedding decryption keys in PCAP</h3><p>OpenSSL has a callback for writing the TLS key log for debug purposes.</p><p><strong>Action</strong>: We should add support for this to Tomcat-Native.</p><h3 id="httpworkshop2019-Genericoverlaynetworks">Generic overlay networks</h3><p>No action required from us at this point.</p><h3 id="httpworkshop2019-InterceptingQUIC">Intercepting QUIC</h3><p>Testing QUIC / HTTP/3 implementations is going to be tricky.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-HTTPStateTokens">HTTP State Tokens</h3><p>Use an opaque token on the client to reference state held on the server.</p><p>Sort of equivalent to a cookie that only holds a session ID.</p><p>Would require servers and proxies to maintain much more state.</p><p>There are several new(ish) cookie features we aren't using and should consider. See <a class="external-link" href="https://scotthelme.co.uk/tough-cookies/" rel="nofollow">https://scotthelme.co.uk/tough-cookies/</a></p><p><strong>Action</strong>: Review new(ish) cookie features</p><h2 id="httpworkshop2019-BreakingoutofRequest/Response">Breaking out of Request/Response</h2><h3 id="httpworkshop2019-Prefer-Push">Prefer-Push</h3><p>Server push has minimal benefit for browsers.</p><p>Neater solution to transclusion.</p><p>Likely to require application level implementation since you need to know which resources (if any) to push.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-WebSocket">WebSocket</h3><p>I was surprised at the level of dislike of WebSocket.</p><p>Most people in the room wanted to see it go.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-hxURIs">hx URIs</h3><p>No action required from us at this point.</p><h3 id="httpworkshop2019-Extendingh2forbi-directionalmessaging">Extending h2 for bi-directional messaging</h3><p>This is a potential replacement for WebSocket</p><p>Proxy may interfere with HTTP/2 push</p><p>Would require Tomcat changes to implement.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-PartialPOSTreplay">Partial POST replay</h3><p>Handles failover for POST requests that take longer than the standard drain time.</p><p>Would require Tomcat changes to implement.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-HTTPretries">HTTP retries</h3><p>Aims to provide better signalling.</p><p>Would require Tomcat changes to implement.</p><p>May require Servlet spec changes.</p><p>May need to relax HTTP spec.</p><p>No action required from us at this point.</p><h2 id="httpworkshop2019-Headers">Headers</h2><h3 id="httpworkshop2019-Sec-Fetch-*">Sec-Fetch-*</h3><p>Aim to protect authenticated client session</p><p>Should be possible to implement in an application. Not sure if a general (e.g. filter) implementation would be possible.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-OriginPolicy">Origin Policy</h3><p>Aims to headers that apply site-wide from every response. e.g. CSP, CORS (4k for Twitter!)</p><p>Would be static files in a known location for Tomcat. Could also be configuration driven and served by a standard servlet.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-StructuredHeaders">Structured Headers</h3><p>Actively being worked on in the HTTP working group</p><p>Would require a new header parser for Tomcat.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-Web-compatibleheadervalues">Web-compatible header values</h3><p>Standard approach to header parsing.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-ClientHints">Client Hints</h3><p>Only on secure connections.</p><p>Reduce client fingerprinting.</p><p>Replace UA and accept-* headers</p><p>Could make use of / be replaced by origin policy</p><p>May impact on Tomcat's current content negotiation.</p><p>No action required from us at this point.</p><h2 id="httpworkshop2019-Other">Other</h2><h3 id="httpworkshop2019-PartiallyReliableHTTP">Partially Reliable HTTP</h3><p>Used video as an example.</p><p>If some TCP frames are lost it isn't always worth trying to recover them.</p><p>Jitter is worse than lost data.</p><p>Would need Servlet API changes to support this.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-SEARCHmethod">SEARCH method</h3><p>c.f. POST retries</p><p>Many POSTs are for searches and could be cached and could be safely re-tried</p><p>Is a new method (SEARCH) required.</p><p>Depends on being able to normalize the search query.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-VTest">VTest</h3><p>Possible platform for common test cases</p><p>Little varnish focused at the moment.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-CDNs">CDNs</h3><p>Proxy status header is being discussed.</p><p>There is a caching test suite we could use.</p><p><strong>Action</strong>: Run the caching test suite against Tomcat</p><h3 id="httpworkshop2019-EOSdetectioninH2">EOS detection in H2</h3><p>Consider the following sequence:</p><ul><li>client req then EOS</li><li>server response then EOS</li><li>server shutsdown</li><li>client sends window update</li><li>TCP reset</li><li>reponse truncated</li></ul><p>Send a ping and wait for ACK before shutting down server.</p><p>Half-close didn't cover all use cases.</p><p>Implies TCP reset packages &quot;jump&quot; the queue.</p><p><strong>Action</strong>: Check Tomcat's close behaviour</p><h3 id="httpworkshop2019-Responsesources">Response sources</h3><p>pre-fetch - new document</p><p>pre-load - resource in document</p><p>Need to be aware of browser behaviour for push.  See links in day2 notes for additional reading.</p><p>No action required from us at this point.</p><h3 id="httpworkshop2019-Earlyhints">Early hints</h3><p>103 status code</p><p>RFC 8297</p><p>Implementation would require Tomcat changes.</p><p>No action required from us at this point.</p><p><br/></p><h2 id="httpworkshop2019-Additionalnotes">Additional notes</h2><h3 id="httpworkshop2019-HTTP/2Priority">HTTP/2 Priority</h3><p>Includes the browser's view of prioritisation.</p><p>Audio and video add a time factor that isn't currently taken into account.</p><p><strong>Action</strong>: Test Tomcat with the prioritisation test page</p><p>The larger the send buffer, the harder it is to do prioritisation.</p><p><strong>Action</strong>: Review Tomcat's buffering. Committed buffers make (re-)prioritisation harder.</p><h3 id="httpworkshop2019-QUIC&amp;HTTP/3">QUIC &amp; HTTP/3 </h3><p>Consensus among those I spoke to was that Tomcat should wait as things are still in flux. It may be possible to use an external QUIC implementation (like we do OpenSSL).</p><p><strong>Action</strong>: Investigate TCP fast open. Can Tomcat make use of it? What is involved?</p><p><strong>Action</strong>: Investigate TLS 1.3 early data. Can Tomcat make use of it? What is involved?</p><h3 id="httpworkshop2019-Alt-Src">Alt-Src</h3><p>Discussions continue about different channels for passing this to clients.</p><p>It will be needed to HTTP/3.</p><p>No action needed until we start HTTP/3 implementation.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

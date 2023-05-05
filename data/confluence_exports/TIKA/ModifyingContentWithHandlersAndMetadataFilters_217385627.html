@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : ModifyingContentWithHandlersAndMetadataFilters</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_109454051.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : ModifyingContentWithHandlersAndMetadataFilters
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on фев 17, 2023
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ModifyingContentWithHandlersAndMetadataFilters-ModifyingContentwiththeAutoDetectParserConfig,Handlers,MetadataFiltersandMetadataWriteFilters">Modifying Content with the AutoDetectParserConfig, Handlers, Metadata Filters and Metadata WriteFilters</h1><p>There are several ways to modify, limit or process content during or after the parse.  In the following, we describe the four main categories.</p><h2 id="ModifyingContentWithHandlersAndMetadataFilters-1.ContentHandlers">1. ContentHandlers</h2><p>These are applied during the parse by classes that implement <code>org.xml.saxContentHandler</code>.  A small handful may cache contents in memory.  One small risk for these is that there's no guarantee that parsers will pass in meaningful amounts of text in the call to <code>characters()</code>; theoretically, a parser could write one character at a time, which would render a regex matching handler useless.</p><p>Programmatically, users have control to use any of the <code>ContentHandlers</code> in <code>tika-core</code> or they can write their own <code>ContentHandlers</code>.  If doing this, make sure to consider the <code>ContentHandlerDecorator</code> which allows overriding only the methods you need; also consider using the <code>TeeContentHandler</code>, which allows multiple handlers to be run during the parse.</p><p>An example of using the <code>TeeContentHandler </code>to add a language detection handler to the regular <code>ToXMLContentHandler</code>:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>TeeContentHandler</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Default" data-theme="Default">...
+ContentHandler xmlHandler = new ToXMLContentHandler();
+LanguageHandler langHandler = new LanguageHandler();
+ContentHandler tee = new TeeContentHandler(xmlHandler, langHandler);
+parser.parse(stream, tee, metadata, context);
+LanguageResult result = langHandler.getLanguage();
+metadata.set(TikaCoreProperties.LANGUAGE, result.getLanguage());
+...</pre>
+</div></div><p><br/></p><p>Some common content handlers are specified for tika-server's <code>/tika json output</code> and the <code>/rmeta</code> endpoint by appending &quot;/xml&quot;, &quot;/text&quot;, &quot;/html&quot;, &quot;/body&quot; or &quot;/ignore&quot; to the endpoint.</p><p>To set custom <code>ContentHandlerDecorators </code>via <code>tika-config.xml</code>, set the <code>ContentHandlerDecoratorFactory</code> in the <code>&lt;autoDetectParserConfig/&gt;</code> element in <code>tika-config.xml</code>.</p><p>In this example, we're calling a <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-parsers/tika-parsers-standard/tika-parsers-standard-package/src/test/java/org/apache/tika/sax/UpcasingContentHandlerDecoratorFactory.java" rel="nofollow">test class</a> that simply upcases all characters in the content handler.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ContentHandlerDecoratorFactory</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;!-- we&#39;re including the &lt;parsers/&gt; element to show that it is a separate element from the
+       autoDetectParserConfig element.  If it is not included, the standard default parser will
+       be used --&gt;
+  &lt;parsers&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.DefaultParser&quot;&gt;
+      &lt;parser-exclude class=&quot;org.apache.tika.parser.microsoft.OfficeParser&quot;/&gt;
+    &lt;/parser&gt;
+    &lt;parser class=&quot;org.apache.tika.parser.microsoft.OfficeParser&quot;&gt;
+      &lt;params&gt;
+        &lt;param name=&quot;byteArrayMaxOverride&quot; type=&quot;int&quot;&gt;700000000&lt;/param&gt;
+      &lt;/params&gt;
+    &lt;/parser&gt;
+  &lt;/parsers&gt;  
+  &lt;!-- note that the autoDetectParserConfig element is separate from the &lt;parsers/&gt; element.
+       The composite parser built in the &lt;parsers/&gt; element is used as the base parser
+       for the AutoDetectParser. --&gt;
+  &lt;autoDetectParserConfig&gt;
+    &lt;contentHandlerDecoratorFactory class=&quot;org.apache.tika.sax.UpcasingContentHandlerDecoratorFactory&quot;/&gt;
+  &lt;/autoDetectParserConfig&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><h2 id="ModifyingContentWithHandlersAndMetadataFilters-2.MetadataFilters">2. Metadata Filters</h2><p>These are applied at the end of the parse.  These are intended to modify the contents of a metadata object for different purposes:</p><ol><li>Enrich the data (similar to a ContentHandler) -- these metadata filters might run language detection on the cached contents at the end of the parse.</li><li>Modify the metadata contents – one might want to run a regex over a specific field and extract only the information matching a regex, for example.</li><li>Modify the metadata keys – If you need to rename metadata keys before emitting the object to, say, OpenSearch, you can use the <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-core/src/main/java/org/apache/tika/metadata/filter/FieldNameMappingFilter.java" rel="nofollow">FieldNameMappingFilter</a></li><li>Limit the metadata fields -- let's say you only want <code>dc:title</code> and <code>text</code>, you can use these: <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-core/src/main/java/org/apache/tika/metadata/filter/ExcludeFieldMetadataFilter.java" rel="nofollow">ExcludeFieldMetadataFilter</a> or <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-core/src/main/java/org/apache/tika/metadata/filter/IncludeFieldMetadataFilter.java" rel="nofollow">IncludeFieldMetadataFilter</a> <strong>NOTE:</strong> these were created before we had MetadataWriteFilters; those are probably a better option for this behavior.</li></ol><p>Metadata filters are specified in the <code>&lt;metadataFilters/&gt;</code> element in <code>tika-config.xml</code>.  They are run in order, and order matters.</p><p>See <a href="TikaServerEndpointsCompared_181305579.html">TikaServerEndpointsCompared</a> for which endpoints apply metadataFilters in tika-server.  Metadata filters are applied in tika-pipes and tika-app when using the -J option.  MetadataFilters are not applied when Tika streams output.</p><h3 id="ModifyingContentWithHandlersAndMetadataFilters-FieldNameMappingFilter">FieldNameMappingFilter</h3><p>This is used to select fields to include and to rename fields from the Tika names to preferred names.  This was initially designed for modifying field names before emitting document to OpenSearch or Solr.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>FieldNameMappingFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.FieldNameMappingFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;excludeUnmapped&gt;true&lt;/excludeUnmapped&gt;
+        &lt;mappings&gt;
+          &lt;mapping from=&quot;X-TIKA:content&quot; to=&quot;content&quot;/&gt;
+          &lt;mapping from=&quot;Content-Length&quot; to=&quot;length&quot;/&gt;
+          &lt;mapping from=&quot;dc:creator&quot; to=&quot;creators&quot;/&gt;
+          &lt;mapping from=&quot;dc:title&quot; to=&quot;title&quot;/&gt;
+          &lt;mapping from=&quot;Content-Type&quot; to=&quot;mime&quot;/&gt;
+          &lt;mapping from=&quot;X-TIKA:EXCEPTION:container_exception&quot; to=&quot;tika_exception&quot;/&gt;
+        &lt;/mappings&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 id="ModifyingContentWithHandlersAndMetadataFilters-DateNormalizingMetadataFilter">DateNormalizingMetadataFilter</h3><p>Some file formats store timezone, others don't. By default, OpenSearch and Solr need timezones.  This filter respects dates with timezones, and blindly adds a UTC timezone to dates that do not have a time zone.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>DateNormalizingMetadataFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;!-- depending on the file format, some dates do not have a timezone. This
+     filter arbitrarily assumes dates have a UTC timezone and will format all
+     dates as yyyy-MM-dd&#39;T&#39;HH:mm:ss&#39;Z&#39; whether or not they actually have a timezone.
+     --&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.DateNormalizingMetadataFilter&quot;/&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 id="ModifyingContentWithHandlersAndMetadataFilters-GeoPointMetadataFilter">GeoPointMetadataFilter</h3><p>If a metadata object has a <code>TikaCoreProperties.LATITUDE</code> and a <code>TikaCoreProperties.LONGITUDE</code>, this concatenates those fields with a comma delimiter as <code>LATITUDE,LONGITUDE</code> and adds that value to the field specified by <code>geoPointFieldName</code>.  <strong>Note: </strong>This was added in Tika 2.5.1.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>GeoPointMetadataFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.GeoPointMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;-- default: &quot;location&quot; --&gt;
+        &lt;geoPointFieldName&gt;myGeoPoint&lt;/geoPointFieldName&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 id="ModifyingContentWithHandlersAndMetadataFilters-TikaEvalMetadataFilter">TikaEvalMetadataFilter</h3><p>If the tika-eval-core jar is on the classpath, this filter should be added automatically. Users may specify it as below.  This runs Tika's custom version of OpenNLP's language detector and includes counts for tokens, unique tokens, alphabetic tokens and the &quot;oov&quot; (% out of vocabulary) statistic. See <a href="TikaEval_109454084.html">TikaEval</a> for more details on the <code>tika-eval-app</code>.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>TikaEvalMetadataFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.eval.core.metadata.TikaEvalMetadataFilter&quot;/&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 id="ModifyingContentWithHandlersAndMetadataFilters-LanguageDetection">LanguageDetection</h3><p>Two language detectors have a metadata filter option (OpenNLPMetadataFilter and the OptimaizeMetadataFilter).  These are applied to the <code>X-TIKA:content</code> field at the end of the parse.  This is an example of specifying the OptimaizeLanguageDetector. The language id will be added to the metadata  object with the TikaCoreProperties.TIKA_DETECTED_LANGUAGE key.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>LanguageDetection</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.langdetect.optimaize.metadatafilter.OptimaizeMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;maxCharsForDetection&gt;10000&lt;/maxCharsForDetection&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metaFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 id="ModifyingContentWithHandlersAndMetadataFilters-ClearByMimeMetadataFilter">ClearByMimeMetadataFilter</h3><p>When using the <code>RecursiveParserWrapper</code> (the <code>/rmeta </code>endpoint in <code>tika-server</code> or the <code>-J</code> option in <code>tika-app</code>), you can delete metadata objects for specific file types.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>ClearByMimeMetadataFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.ClearByMimeMetadataFilter&quot;&gt;
+      &lt;params&gt;
+		&lt;!-- this will remove metadata objects for jpegs and pdfs; more seriously, 
+             this may be useful for image files or emf or wmf depending on your use case --&gt;
+        &lt;mimes&gt;
+          &lt;mime&gt;image/jpeg&lt;/mime&gt;
+          &lt;mime&gt;application/pdf&lt;/mime&gt;
+        &lt;/mimes&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metaFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><h3 class="auto-cursor-target" id="ModifyingContentWithHandlersAndMetadataFilters-IncludeFieldMetadataFilter">IncludeFieldMetadataFilter</h3><p class="auto-cursor-target">This removes all other metadata fields after the parse except those specified here.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>MetadataFilters</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.IncludeFieldMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;include&gt;
+          &lt;field&gt;X-TIKA:content&lt;/field&gt;
+          &lt;field&gt;extended-properties:Application&lt;/field&gt;
+          &lt;field&gt;Content-Type&lt;/field&gt;
+        &lt;/include&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;
+
+</pre>
+</div></div><h2 id="ModifyingContentWithHandlersAndMetadataFilters-3.MetadataWriteFilters">3. Metadata Write Filters</h2><p>These filters are applied during the parse.</p><p>The primary goal of the metadata write filters is to limit the the amount of data written to a metadata object for two purposes:</p><ol><li>Limit the total number of bytes written to a metadata objects (prevent DoS from files with large amounts of metadata)</li><li>Limit the fields written to a metadata object (decrease bytes held in memory during the parse and decrease the bytes sent over the wire/written to a file after the parse</li></ol><p>To configure the <a class="external-link" href="https://github.com/apache/tika/blob/main/tika-core/src/main/java/org/apache/tika/metadata/writefilter/StandardWriteFilter.java" rel="nofollow">StandardWriteFilter</a>, set the properties in its factory in the <code>&lt;autoDetectParserConfig/&gt;</code> element in the <code>tika-config.xml </code>file.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>StandardWriteFilter</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;autoDetectParserConfig&gt;
+    &lt;metadataWriteFilterFactory class=&quot;org.apache.tika.metadata.writefilter.StandardWriteFilterFactory&quot;&gt;
+      &lt;params&gt;
+		&lt;!-- all measurements are in UTF-16 bytes. If any values are truncated, 
+			TikaCoreProperties.TRUNCATED_METADATA is set to true in the metadata object --&gt;
+
+        &lt;!-- the maximum size for a metadata key. --&gt;
+        &lt;maxKeySize&gt;1000&lt;/maxKeySize&gt;
+
+        &lt;!-- max total size for a field in UTF-16 bytes.  If a field has multiple values, 
+			their lengths are summed to calculate the field size. --&gt;
+        &lt;maxFieldSize&gt;10000&lt;/maxFieldSize&gt;
+
+        &lt;!-- max total estimated byte is a sum of the key sizes and values --&gt;
+        &lt;maxTotalEstimatedBytes&gt;100000&lt;/maxTotalEstimatedBytes&gt;
+  
+        &lt;!-- limit the count of values for multi-valued fields --&gt;
+        &lt;maxValuesPerField&gt;100&lt;/maxValuesPerField&gt;
+        &lt;!-- include only these fields. NOTE, however that there a several fields that are 
+			 important to the parse process and these fields are always allowed in addition 
+			 (see ALWAYS_SET_FIELDS and ALWAYS_ADD_FIELDS in the StandardWriteFilter --&gt;
+        &lt;includeFields&gt;
+          &lt;field&gt;dc:creator&lt;/field&gt;
+          &lt;field&gt;dc:title&lt;/field&gt;
+        &lt;/includeFields&gt;
+      &lt;/params&gt;
+    &lt;/metadataWriteFilterFactory&gt;
+  &lt;/autoDetectParserConfig&gt;
+&lt;/properties&gt;</pre>
+</div></div><p class="auto-cursor-target">If you need different behavior, implement a <code>WriteFilterFactory</code>, add it to your classpath and specify it in the <code>tika-config.xml</code>.</p><p><br/></p><h2 id="ModifyingContentWithHandlersAndMetadataFilters-4.AutoDetectParserConfig">4. AutoDetectParserConfig</h2><p><span class="confluence-anchor-link" id="ModifyingContentWithHandlersAndMetadataFilters-AutoDetectParserConfig"></span></p><p>We've mentioned briefly above some of the factories that can be modified in the <code>AutoDetectParserConfig</code>.  There are other parameters that can be used to modify the behavior of the <code>AutoDetectParser</code> via the<code> tika-config.xml</code>.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeHeader panelHeader pdl" style="border-bottom-width: 1px;"><b>AutoDetectParserConfig</b></div><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: xml; gutter: false; theme: Default" data-theme="Default">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;properties&gt;
+  &lt;autoDetectParserConfig&gt;
+    &lt;params&gt;
+      &lt;!-- if the incoming metadata object has a ContentLength entry and it is larger than this
+           value, spool the file to disk; this is useful for some file formats that are more efficiently
+           processed via a file instead of an InputStream --&gt;
+      &lt;spoolToDisk&gt;100000&lt;/spoolToDisk&gt;
+      &lt;!-- the next four are parameters for the SecureContentHandler --&gt;
+      &lt;!-- threshold used in zip bomb detection. This many characters must be written
+           before the maximum compression ratio is calculated --&gt;
+      &lt;outputThreshold&gt;10000&lt;/outputThreshold&gt;
+      &lt;!-- maximum compression ratio between output characters and input bytes --&gt;
+      &lt;maximumCompressionRatio&gt;100&lt;/maximumCompressionRatio&gt;
+      &lt;!-- maximum XML element nesting level --&gt;
+      &lt;maximumDepth&gt;100&lt;/maximumDepth&gt;
+      &lt;!-- maximum embedded file depth --&gt;
+      &lt;maximumPackageEntryDepth&gt;100&lt;/maximumPackageEntryDepth&gt;
+      &lt;!-- as of Tika &amp;gt; 2.7.0, you can skip the check and exception for a zero-byte inputstream--&gt;
+      &lt;throwOnZeroBytes&gt;false&lt;/throwOnZeroBytes&gt;
+    &lt;/params&gt;
+    &lt;!-- as of Tika 2.5.x, this is the preferred way to configure digests --&gt;
+    &lt;digesterFactory class=&quot;org.apache.tika.parser.digestutils.CommonsDigesterFactory&quot;&gt;
+      &lt;params&gt;
+        &lt;markLimit&gt;100000&lt;/markLimit&gt;
+        &lt;!-- this specifies SHA256, base32 and MD5 --&gt;
+        &lt;algorithmString&gt;sha256:32,md5&lt;/algorithmString&gt;
+      &lt;/params&gt;
+    &lt;/digesterFactory&gt;   
+  &lt;/autoDetectParserConfig&gt;
+&lt;/properties&gt;</pre>
+</div></div><p class="auto-cursor-target">TODO: add an example of the EmbeddedDocumentExtractorFactory</p><p class="auto-cursor-target">TODO: add a 5th? section for writelimiting</p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

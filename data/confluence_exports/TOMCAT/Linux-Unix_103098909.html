@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Linux Unix</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Linux Unix
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 25, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/HSolBg" rel="nofollow">https://cwiki.apache.org/confluence/x/HSolBg</a></p><h2 id="LinuxUnix-Preface">Preface</h2><h2 id="LinuxUnix-Questions">Questions</h2><ol><li><a href="#LinuxUnix-Q5">I have Tomcat x.y.z installed as part of my OS. Is it good to use?</a></li><li><a href="#LinuxUnix-Q1">When I run ps (on Linux), why do I see my java process a bazillion times!</a></li><li><a href="#LinuxUnix-Q2">How do I run without an X server and still get graphics?</a></li><li><a href="#LinuxUnix-Q3">Tomcat dies after I log out!</a></li><li><p class="auto-cursor-target"><a href="#LinuxUnix-Q4"><span style="color: rgb(23,43,77);">Catalina.log contains : &quot;SEVERE:<span> </span></span>StandardServer<span style="color: rgb(23,43,77);">.await: create[8005] : Throwable occurred: java.net.BindException: The socket name is not available on this system.</span></a></p></li><li><p class="auto-cursor-target"><a href="#LinuxUnix-Q6">Examples web application does not start. A ClassNotFoundException occurs.</a></p></li></ol><h2 id="LinuxUnix-Answers">Answers</h2><h3 id="LinuxUnix-Q5IhaveTomcatx.y.zinstalledaspartofmyOS.Isitgoodtouse?"><span class="confluence-anchor-link" id="LinuxUnix-Q5"></span>I have Tomcat x.y.z installed as part of my OS. Is it good to use?</h3><p>Many Linux distributions provide a pre-packaged version of Apache Tomcat.</p><p>These packages work fine and are easy to install for a normal single-instance case, but they make it more difficult for more specific use cases, and more difficult for people on the <a class="external-link" href="https://tomcat.apache.org/lists.html#tomcat-users" rel="nofollow">Tomcat User mailing list</a> to help you. That is because each of these packages distributes the files of Tomcat in different places on the disk, sets different environment variables, sets different links from one directory to the other in the filesystem, etc.. Moreover, some of those packages are notably outdated.</p><p>So it would be better to install a &quot;standard&quot; tomcat downloaded from the website <a class="external-link" href="https://tomcat.apache.org/" rel="nofollow">https://tomcat.apache.org/</a>, to some directory like <code>/opt/tomcat</code>, and follow the instructions that are given in the &quot;RUNNING.txt&quot; file.</p><p>This way, everyone here knows what you are talking about and has a good idea of where things are.</p><p>Several notes:</p><ul><li>Download a &quot;binary&quot; version. There is usually no need to re-compile Tomcat from the source code.</li><li>Either a &quot;tar.gz&quot; or a &quot;zip&quot; file is fine. The &quot;tar.gz&quot; files use GNU extensions to the tar file format (as mentioned in &quot;README&quot; file in the download area). You need a GNU-compatible version of <code>tar</code> to unpack them.</li><li>Learn how to run Tomcat with separate values of <code>CATALINA_HOME</code> and <code>CATALINA_BASE</code>, as explained in &quot;RUNNING.txt&quot;. This will simplify further upgrades and maintenance.</li></ul><h3 id="LinuxUnix-Q1WhenIrunps(onLinux),whydoIseemyjavaprocessabazilliontimes!"><span class="confluence-anchor-link" id="LinuxUnix-Q1"></span>When I run ps (on Linux), why do I see my java process a bazillion times!</h3><p>Linux implemented threads as processes. Due to other gory details that is beyond the scope of this FAQ - the ps command doesn't work correctly with respect to threads.</p><h3 id="LinuxUnix-Q2HowdoIrunwithoutanXserverandstillgetgraphics?"><span class="confluence-anchor-link" id="LinuxUnix-Q2"></span>How do I run without an X server and still get graphics?</h3><p>You either need to run headless or run an alternate X-server. Some more information can be found <a class="external-link" href="https://marc.info/?t=104803047600003&amp;r=1&amp;w=2" rel="nofollow">here</a>, <a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=102335321103262&amp;w=2" rel="nofollow">here</a>, or <a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=101614645312259&amp;w=2" rel="nofollow">here</a>. Or if your are using a JVM 1.4 or better, you can use the system property <code>java.awt.headless=true</code></p><h3 id="LinuxUnix-Q3TomcatdiesafterIlogout!"><span class="confluence-anchor-link" id="LinuxUnix-Q3"></span>Tomcat dies after I log out!</h3><p>This is a common complaint when using Solaris. Make sure you use <code>nohup</code> and see <a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=104809785114238&amp;w=2" rel="nofollow">this thread</a></p><h3 id="LinuxUnix-Q4Errormessage:&quot;SEVERE:StandardServer.await:create[8005]:Throwableoccurred:java.net.BindException:Thesocketnameisnotavailableonthissystem.&quot;"><span class="confluence-anchor-link" id="LinuxUnix-Q4"></span>Error message: &quot;SEVERE: StandardServer.await: create[8005]: Throwable occurred: java.net.BindException: The socket name is not available on this system.&quot;</h3><p>This error message can have 2 causes:</p><ol><li>Java on AIX isn't supporting IPv6 properly. Fix by inserting <code>-Djava.net.preferIPv4Stack=true</code> into JAVA_OPTS</li><li>Your networking configuration is not correct. If you attempt to <code>ping localhost</code> and don't see <strong>127.0.0.1</strong> you need to look into your <code>/etc/host.conf</code> (most Unixes/Linux) or <code>/etc/netsvc.conf</code> (AIX) file to ensure that something like <em>&quot;hosts = local, bind&quot;</em> is present.</li></ol><h3 id="LinuxUnix-Q6Exampleswebapplicationdoesnotstart.AClassNotFoundExceptionoccurs."><span class="confluence-anchor-link" id="LinuxUnix-Q6"></span>Examples web application does not start. A ClassNotFoundException occurs.</h3><p>Go into <code>webapps/examples/WEB-INF/classes</code> and check whether the class file mentioned in the error message does exist.</p><p>If you downloaded a tar.gz file and used a non-GNU version of tar (e.g. on Solaris) it may use wrong (truncated) file names on files that are deep in the hierarchy. This occurs silently: there may be no error or warning during unpacking. One place that is known to suffer from this is the examples web application. The workaround is to download a &quot;zip&quot; file instead of a &quot;tar.gz&quot; one. <a class="external-link" href="https://marc.info/?t=139353831200006&amp;r=1&amp;w=2" rel="nofollow">thread</a></p><p><br/></p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

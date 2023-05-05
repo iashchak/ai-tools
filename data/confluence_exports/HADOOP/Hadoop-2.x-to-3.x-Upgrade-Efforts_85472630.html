@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Hadoop 2.x to 3.x Upgrade Efforts</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Hadoop 2.x to 3.x Upgrade Efforts
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Suma Shivaprasad</span>, last modified on июн 13, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><br/></p><p><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683025378568 {padding: 0px;}
+div.rbtoc1683025378568 ul {margin-left: 0px;}
+div.rbtoc1683025378568 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683025378568'>
+<ul class='toc-indentation'>
+<li><a href='#Hadoop2.xto3.xUpgradeEfforts-UpgradeTestsforHDFS/YARN'>Upgrade Tests for HDFS/YARN</a></li>
+<li><a href='#Hadoop2.xto3.xUpgradeEfforts-Workloads'>Workloads</a></li>
+</ul>
+</div></p><p>This document tracks on-going efforts to upgrade from Hadoop 2.x to Hadoop 3.x  - Refer Umbrella Jira <a class="external-link" href="https://issues.apache.org/jira/browse/HADOOP-15501" rel="nofollow">HADOOP-15501</a> for current status on this.</p><h2 id="Hadoop2.xto3.xUpgradeEfforts-UpgradeTestsforHDFS/YARN">Upgrade Tests for HDFS/YARN</h2><p>The following scenarios were tested while upgrading from Hadoop 2.8.4 to Hadoop 3.1.0</p><p><br/></p><div class="table-wrap"><table class="relative-table confluenceTable" style="width: 45.8237%;"><colgroup><col style="width: 19.2649%;"/><col/><col style="width: 51.4575%;"/><col style="width: 14.1952%;"/><col/><col style="width: 15.0824%;"/></colgroup><tbody><tr><th colspan="1" class="confluenceTh">Type</th><th colspan="1" class="confluenceTh">Component</th><th class="confluenceTh">Scenario</th><th class="confluenceTh">Issues Found</th><th colspan="1" class="confluenceTh">Resolution</th><th class="confluenceTh">Overall Status</th></tr><tr><td colspan="1" class="confluenceTd">EXPRESS/ROLLING UPGRADE</td><td colspan="1" class="confluenceTd">HDFS</td><td class="confluenceTd">Starting 3.1.0 NameNode/DataNode with custom MetricsPlugin configured in hadoop2-metrics.properties</td><td class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue" data-jira-key="HADOOP-15502" >
+                    <a href="https://issues.apache.org/jira/browse/HADOOP-15502?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HADOOP-15502</a>
+                            -
+            <span class="summary">Rolling upgrade from HADOOP 2.x to 3.x breaks due to backward in-compatible change in MetricsPlugin interface</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-default
+     jira-macro-single-issue-export-pdf">Open</span>
+                </span>
+</p></div></td><td colspan="1" class="confluenceTd"><p>Workaround is applicable only for EXPRESS UPGRADE -</p><p>Replace MetricsPlugin implementation jars( eg: HadoopTimelineMetricsSink) with recompiled jars which use package &quot;<span style="color: rgb(51,51,51);">org.apache.commons.configuration2&quot;</span></p></td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td colspan="1" class="confluenceTd"><span>EXPRESS UPGRADE</span></td><td colspan="1" class="confluenceTd">YARN</td><td class="confluenceTd">Starting Hadoop 3.1.0 YARN daemons</td><td class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><br/></td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td colspan="1" class="confluenceTd">ROLLING UPGRADE</td><td colspan="1" class="confluenceTd">HDFS</td><td colspan="1" class="confluenceTd"><span style="color: rgb(51,51,51);">3.1.0 NN is started with rollingUpgrade with default policy configured for Erasure coding</span></td><td colspan="1" class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue resolved" data-jira-key="HDFS-13596" >
+                    <a href="https://issues.apache.org/jira/browse/HDFS-13596?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>HDFS-13596</a>
+                            -
+            <span class="summary">NN restart fails after RollingUpgrade from 2.x to 3.x</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+</p></div></td><td colspan="1" class="confluenceTd">Workaround Not known</td><td colspan="1" class="confluenceTd"><img class="emoticon emoticon-cross" src="images/icons/emoticons/error.svg" data-emoticon-name="cross" alt="(ошибка)"/></td></tr><tr><td colspan="1" class="confluenceTd"><span>ROLLING UPGRADE</span></td><td colspan="1" class="confluenceTd">YARN</td><td colspan="1" class="confluenceTd">Start 3.1.0 NM in batches after starting RM.</td><td colspan="1" class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue resolved" data-jira-key="YARN-8346" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-8346?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>YARN-8346</a>
+                            -
+            <span class="summary">Upgrading to 3.1 kills running containers with error &quot;Opportunistic container queue is full&quot;</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+</p></div></td><td colspan="1" class="confluenceTd">Fixed</td><td colspan="1" class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr><tr><td colspan="1" class="confluenceTd"><p>EXPRESS/ROLLING</p><p>UPGRADE</p></td><td colspan="1" class="confluenceTd">YARN</td><td class="confluenceTd">RM started with recovery enabled</td><td class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue resolved" data-jira-key="YARN-8068" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-8068?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>YARN-8068</a>
+                            -
+            <span class="summary">Application Priority field causes NPE in app timeline publish when Hadoop 2.7 based clients to 2.8+</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+</p></div></td><td colspan="1" class="confluenceTd">Fixed</td><td class="confluenceTd"><strong><img class="emoticon emoticon-tick" src="images/icons/emoticons/check.svg" data-emoticon-name="tick" alt="(отметить)"/></strong></td></tr></tbody></table></div><p><br/></p><h2 id="Hadoop2.xto3.xUpgradeEfforts-Workloads">Workloads</h2><p><br/></p><div class="table-wrap"><table class="relative-table confluenceTable" style="width: 55.1624%;"><colgroup><col style="width: 14.8421%;"/><col style="width: 41.4737%;"/><col style="width: 19.2632%;"/><col/><col style="width: 12.9474%;"/></colgroup><tbody><tr><th colspan="1" class="confluenceTh">Application Type</th><th class="confluenceTh">Upgrade Type</th><th class="confluenceTh">Issues Found</th><th colspan="1" class="confluenceTh">Status</th><th class="confluenceTh">Overall Status</th></tr><tr><td colspan="1" class="confluenceTd">MR</td><td class="confluenceTd"><span>EXPRESS/ROLLING UPGRADE </span></td><td class="confluenceTd"><div class="content-wrapper"><p>
+<span class="jira-issue resolved" data-jira-key="YARN-8346" >
+                    <a href="https://issues.apache.org/jira/browse/YARN-8346?src=confmacro" class="jira-issue-key"><img class="icon"
+                                                                                      src="https://issues.apache.org/jira/secure/viewavatar?size=xsmall&amp;avatarId=21133&amp;avatarType=issuetype"/>YARN-8346</a>
+                            -
+            <span class="summary">Upgrading to 3.1 kills running containers with error &quot;Opportunistic container queue is full&quot;</span>
+                                                <span class="aui-lozenge aui-lozenge-subtle             aui-lozenge-success
+     jira-macro-single-issue-export-pdf">Resolved</span>
+                </span>
+</p></div></td><td colspan="1" class="confluenceTd">Fixed</td><td class="confluenceTd"><strong><span class="confluence-embedded-file-wrapper"><img class="confluence-embedded-image emoticon emoticon-tick confluence-external-resource" draggable="false" alt="(tick)" src="images/icons/emoticons/check.svg" data-image-src="https://cwiki.apache.org/confluence/s/en_GB/7701/d7b403a44466e5e8970db7530201039d865e79e1/_/images/icons/emoticons/check.svg"></span></strong></td></tr><tr><td colspan="1" class="confluenceTd">HIVE on TEZ</td><td class="confluenceTd"><br/></td><td class="confluenceTd"><span>Hive with older versions of Tez (0.7, 0.8.x) with Hadoop 2 client ran into UT failures </span></td><td colspan="1" class="confluenceTd"><p>Tez 0.10.0 will support Hadoop 3</p><ul><li style="list-style-type: circle;"><p><span style="color: rgb(0,151,167);"><a class="external-link" href="https://issues.apache.org/jira/browse/TEZ-3923" rel="nofollow">TEZ-3923</a></span> <span style="color: rgb(51,51,51);">Move master to Hadoop 3+ and create separate 0.9.x line</span></p></li><li style="list-style-type: circle;"><p><a class="external-link" href="https://issues.apache.org/jira/browse/TEZ-3252" rel="nofollow"><span style="color: rgb(0,151,167);">TEZ-3252</span></a> - <span style="color: rgb(51,51,51);">[Umbrella] Enable support for Hadoop-3.x </span></p><p><span style="color: rgb(51,51,51);"><br/></span></p></li></ul><div><span style="color: rgb(51,51,51);"><br/></span></div></td><td class="confluenceTd"><p><strong><span class="confluence-embedded-file-wrapper"><img class="confluence-embedded-image emoticon emoticon-tick confluence-external-resource" draggable="false" alt="(tick)" src="images/icons/emoticons/check.svg" data-image-src="https://cwiki.apache.org/confluence/s/en_GB/7701/d7b403a44466e5e8970db7530201039d865e79e1/_/images/icons/emoticons/check.svg"></span></strong></p></td></tr><tr><td colspan="1" class="confluenceTd">Spark 2.2/2.3</td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><div class="content-wrapper"><p>Spark 2.2/2.3 has a fork of older version of Hive (1.2) which does not work with Hadoop 3</p><p><br/></p><p><span>Ongoing efforts in community to build/validate Spark with Hadoop 3 Libraries</span></p><ul><ul><li style="list-style-type: circle;"><p><a class="external-link" href="https://issues.apache.org/jira/browse/SPARK-23534" rel="nofollow"><span style="color: rgb(17,85,204);">SPARK-23534</span></a><span style="color: rgb(0,0,0);">  Umbrella jira to Build/test with Hadoop 3</span></p></li><li style="list-style-type: circle;"><p><a class="external-link" href="https://issues.apache.org/jira/browse/SPARK-23710" rel="nofollow"><span style="color: rgb(17,85,204);">SPARK-23710</span></a><span style="color: rgb(0,0,0);">  Upgrade to Hive 2.x ( which builds with Hadoop 3)</span></p><p><span style="color: rgb(0,0,0);"><br/></span></p></li></ul></ul><p><br/></p><p><br/></p><p><br/></p><p><br/></p></div></td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><strong>IN-PROGRESS</strong></td></tr><tr><td colspan="1" class="confluenceTd">PIG</td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><p><br/></p></td><td colspan="1" class="confluenceTd"><p><span style="color: rgb(0,0,0);">Support for Hadoop 3 In-Progress in the community - targeted for </span><span style="color: rgb(0,0,0);">PIG 0.18.0 </span></p><p><a class="external-link" href="https://issues.apache.org/jira/browse/PIG-5253" rel="nofollow"><span style="color: rgb(17,85,204);">PIG-5253</span></a><span style="color: rgb(0,0,0);">    </span><span style="color: rgb(51,51,51);">Pig Hadoop 3 support</span></p><p><br/></p></td><td colspan="1" class="confluenceTd"><strong>IN-PROGRESS</strong></td></tr><tr><td colspan="1" class="confluenceTd">OOZIE</td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd">Dependent on PIG support for Hadoop 3</td><td colspan="1" class="confluenceTd"><p><span style="color: rgb(0,0,0);">Support for Hadoop 3 In-Progress in the community - Targeted for OOZIE-5.1.0</span></p><p><a class="external-link" href="https://issues.apache.org/jira/browse/OOZIE-2973" rel="nofollow"><span style="color: rgb(17,85,204);">OOZIE-2973</span></a><span style="color: rgb(0,0,0);">  </span><span style="color: rgb(51,51,51);">Make sure Oozie works with Hadoop 3</span></p></td><td colspan="1" class="confluenceTd"><p><br/></p><p><strong>IN-PROGRESS</strong></p></td></tr><tr><td colspan="1" class="confluenceTd">MR with Native Task Optimization</td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd">Validation Pending</td><td colspan="1" class="confluenceTd"><br/></td></tr><tr><td colspan="1" class="confluenceTd">MR with Shared Cache Manager</td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><br/></td><td colspan="1" class="confluenceTd"><span>Validation Pending</span></td><td colspan="1" class="confluenceTd"><br/></td></tr></tbody></table></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

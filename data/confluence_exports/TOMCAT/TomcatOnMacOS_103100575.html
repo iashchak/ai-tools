@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : TomcatOnMacOS</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OS_107970699.html">OS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : TomcatOnMacOS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on сен 22, 2010
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h2 id="TomcatOnMacOS-RunningTomcatonMacOSX">Running Tomcat on Mac OS X</h2>
+
+<p>For an updated guide for installing Tomcat 5/6 on Mac OS X 10.6 using <a class="unresolved" href="#">MacPorts</a> check <a class="external-link" href="http://serverfault.com/questions/183496/full-guide-for-installing-tomcat-on-os-x" rel="nofollow">http://serverfault.com/questions/183496/full-guide-for-installing-tomcat-on-os-x</a></p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>[See below for later updates to this 2004 posting]</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>These notes are the result of several weeks playing with different things and asking a LOT of questions on several mailing lists.</p>
+
+<p>I hope these notes are of use to someone out there.</p>
+
+<h4 id="TomcatOnMacOS-THEENVIRONMENT">THE ENVIRONMENT</h4>
+
+<p>Java is installed by default on every MacOS X installation.  MacOS X 10.2 (<em>Jaguar</em>) comes with Java 1.3; MacOS X 10.3 (<em>Panther</em>) comes with Java 1.4.  MacOS X 10.4 (<em>Tiger</em>) comes with Java 1.4.2 installed, but Java 1.5 can be downloaded.  MacOS X 10.5 (<em>Leopard</em>) comes with Java 1.5.  MacOS X 10.5 (<em>Snow Leopard</em>) comes with Java 1.6.  It is possible to run Java 1.4 on MacOS X <em>Jaguar</em> but it may interfere with operation of the standard environment.</p>
+
+<p> <em><code>JAVA_HOME</code> is at <code>/Library/Java/Home</code>, but this is a link into a directory <code>/System/Frameworks/JavaJVM.Framework/Versions</code> which is used to switch between versions easily.  There is a link <code>Current</code> and <code>CurrentVersion</code> which matches up the current Java environment with the appropriate version.</em></p>
+
+<h3 id="TomcatOnMacOS-THESITUATION">THE SITUATION</h3>
+<p>I wanted to learn about Java Servlet Pages (JSP) on my Macintosh (with MacOS X). I installed it the first time on a Windows XP Professional system, but my development machine is a Macintosh.</p>
+
+
+<h3 id="TomcatOnMacOS-THESOLUTION">THE SOLUTION</h3>
+<p>Since I had already installed and played with a separate install of Tomcat (the version installed by Apple's XCode was out of date, as was the version I downloaded from another site), I was ready to give up!</p>
+
+<p>In my case I wanted to get rid of all the other Tomcat installations and start from scratch.</p>
+
+<p><strong>Step 1: Download Tomcat</strong></p>
+
+<p>Download Jakarta Tomcat from the Tomcat home page, and get the binary version - I_downloaded <em>jakarta-tomcat-5.0.27.tar.gz</em>.</p>
+
+<p>Extract the files (unless your browser automatically extracts them).</p>
+
+<p>Navigate (using the Finder) to <em>Macintosh HD &gt; Library</em>.</p>
+
+<p>If there is not already a folder in <em>Macintosh HD &gt; Library</em> called <em>Tomcat</em>, then create one.</p>
+
+<p>If there is already a <em>Tomcat</em> folder (presumably from an out-of-date installation), delete all the files already in that folder.</p>
+
+<p><strong>Step 2: Extract tomcat archive</strong></p>
+
+<p>Copy all the unstuffed files from the <em>jakarta-tomcat-5.0.27.tar.gz</em> download and put all the files into the <em>Tomcat</em> folder.</p>
+
+<p>I just named it <em>Tomcat</em> as it saves some typing in the Terminal <img class="emoticon emoticon-smile" src="images/icons/emoticons/smile.svg" data-emoticon-name="smile" alt="(улыбка)"/></p>
+
+<p>So the directory structure becomes:</p>
+
+<p><em>Macintosh HD &gt; Library &gt; Tomcat &gt;</em> &lt;extracted files&gt;</p>
+
+<p><strong>Step 3: Configure tomcat-users.xml</strong></p>
+
+<p>Open the <code>/Library/Tomcat/conf/tomcat-users.xml</code> file with a plain text editor. The default Tomcat installation only has the basic roles and users set up.</p>
+
+<p>What is configured as default is:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> &lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+ &lt;tomcat-users&gt;
+   &lt;role rolename=&quot;tomcat&quot;/&gt;
+   &lt;role rolename=&quot;role1&quot;/&gt;
+   &lt;user username=&quot;tomcat&quot; password=&quot;tomcat&quot; roles=&quot;tomcat&quot;/&gt;
+   &lt;user username=&quot;both&quot; password=&quot;tomcat&quot; roles=&quot;tomcat,role1&quot;/&gt;
+   &lt;user username=&quot;role1&quot; password=&quot;tomcat&quot; roles=&quot;role1&quot;/&gt;
+ &lt;/tomcat-users&gt;
+</pre>
+</div></div>
+
+<p>An example of what it <em>should</em> look like follows:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> &lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+ &lt;tomcat-users&gt;
+  &lt;role rolename=&quot;tomcat&quot;/&gt;
+  &lt;role rolename=&quot;role1&quot;/&gt;
+  &lt;role rolename=&quot;manager&quot;/&gt;
+  &lt;role rolename=&quot;admin&quot;/&gt;
+  &lt;user username=&quot;tomcat&quot; password=&quot;tomcat&quot; roles=&quot;tomcat,admin,manager&quot;/&gt;
+  &lt;user username=&quot;both&quot; password=&quot;tomcat&quot; roles=&quot;tomcat,role1&quot;/&gt;
+  &lt;user username=&quot;role1&quot; password=&quot;tomcat&quot; roles=&quot;role1&quot;/&gt;
+ &lt;/tomcat-users&gt;
+</pre>
+</div></div>
+
+<p>In this case a role, a user and password have been set up with the name <em>tomcat</em>. You can change this later.</p>
+
+<p><strong>Step 4: Start Tomcat</strong></p>
+
+<p>To start Tomcat, open a shell command prompt (using, for instance, the Terminal application).</p>
+
+<p>The path to Tomcat via the Finder is <em>Macintosh HD &gt; Library &gt; Tomcat</em>.</p>
+
+<p>But to get to that directory using the Terminal, type in:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>cd /Library/Tomcat/bin
+</pre>
+</div></div>
+<p>Do an <code>ls</code> - you should see a file called <code>startup.sh</code>.</p>
+
+<p>Any file in this directory ending in <code>.sh</code> can be executed in the terminal by putting a period and a slash before the file name (eg: <code>startup.sh</code>).  The following example executes the tomcat startup script:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>./startup.sh &amp;&amp; tail -f ../logs/catalina.out
+</pre>
+</div></div>
+<p>Terminal should display four lines looking something like this:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Using CATALINA_BASE:   /library/tomcat
+Using CATALINA_HOME:   /library/tomcat
+Using CATALINA_TMPDIR: /library/tomcat/temp
+Using JAVA_HOME:       /Library/Java/Home
+Users-Computer:/library/tomcat/bin user$ 
+</pre>
+</div></div>
+
+<p>There are some notes and a couple of Preference Panes for automating the starting and stopping of Tomcat. After trying them all on five different computers - this is the simplest!</p>
+
+<p><strong>Step 5: Test installation</strong> Open a browser window, and enter <a class="external-link" href="http://127.0.0.1:8080" rel="nofollow">http://127.0.0.1:8080</a> - the default Tomcat page should open.</p>
+
+<p>If you click the <em>Tomcat Administrator</em> or <em>Tomcat Manager</em> links in the upper left hand of the default Tomcat page, you will be asked for a user name and password.</p>
+
+<p>As mentioned above, use <em>tomcat</em> for the user name, and <em>tomcat</em> for the password.</p>
+
+<p>By : Brynley Blake (31 August 2004)</p>
+
+<p>With <em>considerable</em> help from Joachim, Tracy, Tom, Samuel and Jonel from the Apple Web and Java Developer mailing lists.</p>
+
+<h3 id="TomcatOnMacOS-Updatedfor2006">Updated for 2006</h3>
+<p>Basil Bourque says:</p>
+
+<p>Today (2006-04-05) I disovered a somewhat different recipe to running Tomcat 5.5.16 on Mac OS X 10.4.6.</p>
+
+<ul class="alternate">
+	<li>Today's Tomcat (v5.5) wants to run on Java 5, but Apple's command line defaults to Java 4 (1.4.2). Surprisingly, Tomcat's script works around this.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>I did not need to set any environment variables (JAVA_HOME).</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>But I did need to fix vital file permissions in the downloaded Tomcat folder.</li>
+</ul>
+
+
+<h3 id="TomcatOnMacOS-AlsoUpdatedin2010">Also Updated in 2010</h3>
+<p>By Pid: I removed some of the original statements about setting JAVA_HOME as they did not match my experience of installing Tomcat on OS X. It's also certainly overkill to install an application just to be able to set an environment variable.</p>
+
+
+<h4 id="TomcatOnMacOS-(1)UpgradetoMacOSX10.4.6">(1) Upgrade to Mac OS X 10.4.6</h4>
+<ul class="alternate">
+	<li>I do not know if 10.4.6 is required, but it sure made an easy Tomcat install.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Apply all of Apple's Software Updates, especially the Java 5 update.</li>
+</ul>
+
+
+<h4 id="TomcatOnMacOS-(2)Downloadapache-tomcat-5.5.16">(2) Download apache-tomcat-5.5.16</h4>
+<ul class="alternate">
+	<li>Unzip.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Move it to your home folder.</li>
+</ul>
+
+
+<h4 id="TomcatOnMacOS-(3)FixtheUnixfilepermissions">(3) Fix the Unix file permissions</h4>
+<ul class="alternate">
+	<li>Download the freeware BatChmod, a GUI wrapper around the Unix &quot;chmod&quot; command.</li>
+</ul>
+
+
+<p>  <a class="external-link" href="http://macchampion.com/arbysoft/" rel="nofollow">http://macchampion.com/arbysoft/</a></p>
+
+<ul class="alternate">
+	<li>Drag and drop the entire Tomcat folder onto the BatChmod icon.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Check *all* the checkboxes.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Click &quot;Apply&quot; and give your Administrator password.</li>
+</ul>
+
+
+<h4 id="TomcatOnMacOS-(4)StartTomcat">(4) Start Tomcat</h4>
+<ul class="alternate">
+	<li>Launch /Applications/Utilities/Terminal.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Navigate to the Tomcat folder (apache-tomcat-5.5.16):
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  cd ~/apache-tomcat-5.5.16
+</pre>
+</div></div></li>
+	<li>Run the startup script:
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  ./bin/startup.sh
+</pre>
+</div></div></li>
+	<li>You should see something like this:
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>Using CATALINA_BASE:   /Users/basilbourque/apache-tomcat-5.5.16
+Using CATALINA_HOME:   /Users/basilbourque/apache-tomcat-5.5.16
+Using CATALINA_TMPDIR: /Users/basilbourque/apache-tomcat-5.5.16/temp
+Using JRE_HOME:       /System/Library/Frameworks/JavaVM.framework/Versions/1.5/Home
+</pre>
+</div></div></li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Notice that somehow the startup script(s) have used Java 5 on Mac OS X even though it is not the default Java runtime at the command line. I hope to parse that script later to discover how they did this.</li>
+</ul>
+
+
+<h4 id="TomcatOnMacOS-(5)TestTomcat">(5) Test Tomcat</h4>
+<ul class="alternate">
+	<li>Launch a web browser such as Safari.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Goto <a class="external-link" href="http://127.0.0.1:8080/" rel="nofollow">http://127.0.0.1:8080/</a></li>
+</ul>
+
+
+<ul class="alternate">
+	<li>You should see the cute Tomcat logo on the welcome page.</li>
+</ul>
+
+
+<p>You are technically done at this point. But as a good pratice, I also did the following additional steps.</p>
+
+<h4 id="TomcatOnMacOS-(6)StarttheFirewall">(6) Start the Firewall</h4>
+<ul class="alternate">
+	<li>System Preferences &gt; Sharing &gt; Firewall &gt; Start</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Also, click the Advanced button on that panel, to (a) block UDP, and (b) start logging. It is fascinating to see how quickly a computer directly on the Internet starts to get queried/tested/attacked. Open /Applications/Utilities/Console to see the log.</li>
+</ul>
+
+
+<h4 id="TomcatOnMacOS-(7)EnablePort-Forwarding">(7) Enable Port-Forwarding</h4>
+<ul class="alternate">
+	<li>Add a rule to do port-forwarding from port 80 to Tomcat's default port 8080. Type this in the Terminal:
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>sudo ipfw add 100 fwd 127.0.0.1,8080 tcp from any to any 80 in
+</pre>
+</div></div>
+Or use this nifty program, another GUI wrapper around the ipfw command line, Simple Port Forwarder:
+<a class="external-link" href="http://www.4dresources.com/files/" rel="nofollow">http://www.4dresources.com/files/</a></li>
+</ul>
+
+
+<p>The Sharing SysPref will get cranky when you add an ipfw rule behind its back; it disables its user interface. To use the Sharing SysPref again you'll have to clear that rule, the one we added and numbered 100. To delete a rule, either read the ipfw man page, or use Simple Port Forwarder again. Quit the System Preferences program, and re-launch it to re-enable its Firewall panel.</p>
+
+<h4 id="TomcatOnMacOS-(8)TestTomcat">(8) Test Tomcat</h4>
+<ul class="alternate">
+	<li>Launch a web browser such as Safari.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>Goto:
+<a class="external-link" href="http://127.0.0.1/" rel="nofollow">http://127.0.0.1/</a></li>
+</ul>
+
+
+<p>Notice that we left off the port number this time, so the web browser defaults to port 80. Or you can explicitly say port 80:
+<a class="external-link" href="http://127.0.0.1:80/" rel="nofollow">http://127.0.0.1:80/</a></p>
+
+<ul class="alternate">
+	<li>You should see the cute Tomcat logo on the welcome page.</li>
+</ul>
+
+
+<ul class="alternate">
+	<li>To be sure it is working, and not cached by the browser:</li>
+</ul>
+
+
+<p>• Try another browser.</p>
+
+<p>• Click the Reload button in the toolbar of the browser.</p>
+
+<p>• Choose the Reload command, such as View &gt; Reload Page in Safari.</p>
+
+<h4 id="TomcatOnMacOS-(9)Walkthedog">(9) Walk the dog</h4>
+<ul class="alternate">
+	<li>Enjoy an all-too-rare moment of computing satisfaction.</li>
+</ul>
+
+
+<p>As best as I can recall, that is all I had to do today. I hope I am not steering you wrong. I did assume at first that Java 5 would not be used be default, so I wasted time messing with the path ($PATH) and setting the environment variable JAVA_HOME. But I undid those, as they failed. I then tried the simple steps above, and it worked.</p>
+
+<p>I hope to refresh my own web site with this info:
+<a class="external-link" href="http://www.BasilBourque.org/" rel="nofollow">http://www.BasilBourque.org/</a></p>
+
+<p>Tip: You can drag and drop from the Finder to the Terminal, to avoid typing file and folder names.</p>
+
+<p>--Basil Bourque</p>
+
+<h3 id="TomcatOnMacOS-Updatedfor2008">Updated for 2008</h3>
+<p>Michael Valentiner says:</p>
+
+<p>Today (2008-02-03) I verified running Tomcat 6.0.14 on Mac OS X 10.5.1.</p>
+
+<p>Like Basil, I did not need to set up JAVA_HOME and I did need to fix Unix file permissions.</p>
+
+<p>Unlike Basil, the System Preferences &gt; Sharing &gt; Firewall has moved to System Preferences &gt; Security &gt; Firewall.  I was able to enable logging, but haven't figured out how to block UDP.</p>
+
+<h3 id="TomcatOnMacOS-Updatedfor2009">Updated for 2009</h3>
+<p>Chris Latko says:</p>
+
+<p>To have Tomcat 6.0.x launch on boot on Mac OS X 10.5.x, you need to add a LaunchDaemon. Create a file called org.apache.tomcat.plist in /Library/LaunchDaemons/ with the following content:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple Computer//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+	&lt;key&gt;Disabled&lt;/key&gt;
+	&lt;false/&gt;
+	&lt;key&gt;Label&lt;/key&gt;
+	&lt;string&gt;com.apache.tomcat&lt;/string&gt;
+	&lt;key&gt;ProgramArguments&lt;/key&gt;
+	&lt;array&gt;
+		&lt;string&gt;/Library/Tomcat/bin/startup.sh&lt;/string&gt;
+	&lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+	&lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</pre>
+</div></div>
+
+<h3 id="TomcatOnMacOS-Updatedfor2009.1">Updated for 2009</h3>
+<p>Greg Woolsey says:</p>
+
+<p>For Tomcat 5.5.x (and probably 6.0, as the scripts don't appear to have changed much) you need a slightly modified plist, that calls catalina.sh in a manner compatible with the requirements of launchd: <a class="external-link" href="http://developer.apple.com/MacOsX/launchd.html" rel="nofollow">http://developer.apple.com/MacOsX/launchd.html</a>.  Specifically, the script must be run with the &quot;run&quot; parameter instead of &quot;start&quot;, as start backgrounds the Java process and exits the script.  This causes launchd to think the service is done, and kills the java process as part of it's cleanup.</p>
+
+<p>My plist assumes Tomcat is installed in /Library/Tomcat/tomcat-version, with a symbolic link called &quot;Home&quot; pointing to the version to use.  </p>
+
+<p>Save this file as /Library/LaunchDaemons/org.apache.tomcat.plist:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple Computer//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+	&lt;key&gt;Disabled&lt;/key&gt;
+	&lt;false/&gt;
+	&lt;key&gt;Label&lt;/key&gt;
+	&lt;string&gt;org.apache.tomcat&lt;/string&gt;
+	&lt;key&gt;ProgramArguments&lt;/key&gt;
+	&lt;array&gt;
+		&lt;string&gt;/Library/Tomcat/Home/bin/catalina.sh&lt;/string&gt;
+		&lt;string&gt;run&lt;/string&gt;
+	&lt;/array&gt;
+	&lt;key&gt;RunAtLoad&lt;/key&gt;
+	&lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</pre>
+</div></div>
+
+<p>If you have a web app that doesn't want to shut down nicely (my company's product is one), then to avoid the need to force quit Tomcat just to turn off your Mac, use a startup script instead of a daemon plist.</p>
+
+<p>Add this line to /etc/hostconfig as root:</p>
+
+<p>TOMCAT=<span style="text-decoration: line-through;">YES</span></p>
+
+<p>Then, as root, create /Library/StartupItems/Tomcat, writable only by the owner (root).</p>
+
+<p>Inside this, create two files - Tomcat (script) and StartupParameters.plist.  Again, make them writable only by root, and the script executable by everyone.</p>
+
+<p>Contents of StartupParameters.plist:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple Computer//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+	&lt;key&gt;Description&lt;/key&gt;
+	&lt;string&gt;Tomcat Server&lt;/string&gt;
+	&lt;key&gt;OrderPreference&lt;/key&gt;
+	&lt;string&gt;Late&lt;/string&gt;
+	&lt;key&gt;Provides&lt;/key&gt;
+	&lt;array&gt;
+		&lt;string&gt;Tomcat&lt;/string&gt;
+	&lt;/array&gt;
+	&lt;/dict&gt;
+&lt;/plist&gt;
+</pre>
+</div></div>
+
+<p>Contents of the Tomcat script file:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>#!/bin/sh
+#
+# /Library/StartupItems/Tomcat/Tomcat
+#
+# A script to automatically start up Tomcat on system bootup
+# for Mac OS X. This is actually just a wrapper script around
+# the standard catalina.sh script, which is included in
+# the distribution.
+#
+
+# Suppress the annoying &quot;$1: unbound variable&quot; error when no option
+# was given
+if [ -z $1 ] ; then
+	echo &quot;Usage: $0 [start|stop|restart] &quot;
+	exit 1
+fi
+
+# Source the common setup functions for startup scripts
+test -r /etc/rc.common || exit 1
+. /etc/rc.common
+
+# The path to the catalina.sh script. 
+# The currently used version is in /Library/Tomcat/Home/bin
+SCRIPT=&quot;/Library/Tomcat/Home/bin/catalina.sh&quot;
+
+# file to hold the process ID on start so it can be killed by stop.
+export CATALINA_PID=&quot;/Library/Tomcat/Home/server.pid&quot;
+
+StartService ()
+{
+	if [ &quot;${TOMCAT:=-NO-}&quot; = &quot;-YES-&quot; ] ; then
+		ConsoleMessage &quot;Starting Tomcat server&quot;
+		$SCRIPT start &gt; /dev/null 2&gt;&amp;1
+	fi
+}
+
+StopService ()
+{
+	ConsoleMessage &quot;Stopping Tomcat server&quot;
+	$SCRIPT stop -force &gt; /dev/null 2&gt;&amp;1
+}
+
+RestartService ()
+{
+	ConsoleMessage &quot;Restarting Tomcat server&quot;
+	StopService
+	StartService
+}
+
+if test -x $SCRIPT ; then
+	RunService &quot;$1&quot;
+else
+	ConsoleMessage &quot;Could not find Tomcat control script!&quot;
+fi
+</pre>
+</div></div>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

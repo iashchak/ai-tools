@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Building Tomcat on MacOS</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="OS_107970699.html">OS</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Building Tomcat on MacOS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on ноя 06, 2018
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Building Tomcat from source on MacOS can require some additional work, especially if you want to build all of the optional items such as <code>libtcnative</code>.</p>
+
+<h2 id="BuildingTomcatonMacOS-BuildingTomcat">Building Tomcat</h2>
+
+<p>Building Tomcat itself is fairly straightforward. Simply download the source distribution of Tomcat and follow the instructions in the BUILDING.txt file bundled with the distribution.</p>
+
+<p>Briefly, you'll need:</p>
+
+<ol>
+	<li>The Tomcat source tarball (the ZIP file is fine, but we're on UNIX, so the tarball is more natural)</li>
+	<li>A Java Development Kit, available from <a class="external-link" href="https://jdk.java.net/" rel="nofollow">Java.net</a></li>
+	<li>Apache ant, available from the <a class="external-link" href="https://ant.apache.org/bindownload.cgi" rel="nofollow">Apache ant downloads</a> page
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>Once you have all that,</p>
+
+<p> <code>ant deploy</code></p>
+
+<p>You may have to set your <code>JAVA_HOME</code> environment variable and/or specify the full path to your <code>ant</code> binary.</p>
+
+<h2 id="BuildingTomcatonMacOS-Buildinglibtcnative">Building libtcnative</h2>
+
+<p>Building <code>libtcnative</code> it fairly straightforward as well, but you will need a number of prerequisites that are not terribly obvious as to how to get them.</p>
+
+<ol>
+	<li>Xcode command-line tools, available from <a class="external-link" href="https://developer.apple.com/download/more/" rel="nofollow">Apple's developer tools download site</a>. Make sure you get the proper version for your XCode version (if you have XCode already installed) and your OS version (10.x)</li>
+	<li><p>Apache Portal Runtime (APR), available either directly from Apache (<a class="external-link" href="https://apr.apache.org/download.cgi" rel="nofollow">APR downloads</a>) or by using <a class="unresolved" href="#">https://brew.sh/</a> (<code>brew install apr</code>)<br/>
+ 1. (Optional) OpenSSL 1.1.1 (latest at the time of this writing), available either directly from OpenSSL (<a class="unresolved" href="#">OpenSSL Downloads</a>) or by using <a href="Building-Tomcat-on-MacOS_103098603.html">brew</a> ({{{brew install openssl1</p></li>
+</ol>
+
+
+<p>Download and unpack the libtcnative sources:</p>
+
+<p> <code>$ tar xzf tomcat-native-x.y.x.tar.gz</code><br/>
+ <code>$ cd tomcat-native-x.y.z/native</code></p>
+
+<h3 id="BuildingTomcatonMacOS-UsingOpenSSL">Using OpenSSL</h3>
+<p>If using OpenSSL:</p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>  <code>$ ./configure &#45;&#45;with-ssl=[path to OpenSSL] --with-apr=[path to APR] --with-java-home=[your java home]</code></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>For example:</p>
+
+<p>  <code>$ ./configure --with-ssl=/usr/local/Cellar/openssl@1.1/1.1.1 --with-apr=/usr/local/Cellar/apr/1.6.5 --with-java-home=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home</code></p>
+
+<h3 id="BuildingTomcatonMacOS-WithoutOpenSSL(LibreSSL)">Without OpenSSL (LibreSSL)</h3>
+
+<p>If not using OpenSSL:</p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>  <code>./configure &#45;&#45;with-ssl=yes --with-apr=[path to APR] --with-java-home=[your java home]</code></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>  <code>./configure --with-ssl=yes --with-apr=/usr/local/Cellar/apr/1.6.5 --with-java-home=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home</code></p>
+
+
+<p>In either case (OpenSSL or not), proceed with the build process:</p>
+
+<p> <code>make</code></p>
+
+<p>Once this process has completed, your built libraries can be found in <code>.libs/</code>.</p>
+
+<h2 id="BuildingTomcatonMacOS-Installinglibtcnative">Installing libtcnative</h2>
+
+<p>While you can set <code>ld.library.path</code> to include libraries from all over the place, I recommend that you copy everything into one place so you can easily find everything and it won't interfere with anything else on your system.</p>
+
+<p>First, copy the <code>libtcnative</code> binaries from where they were built:</p>
+
+ <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> $ cp -aR tomcat-native-x.y.z/native/.libs/* apache-tomcat-x.y.z-src/output/build/bin/</pre>
+</div></div>
+
+<p>Next, copy the APR libraries:</p>
+
+ <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> $ cp -aR $APR_HOME/libexec/lib/* apache-tomcat-x.y.z-src/output/build/bin/</pre>
+</div></div>
+
+<p>Finally, if you are using a custom OpenSSL build, copy those libraries as well:</p>
+
+ <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> $ cp -aR $OPENSSL_HOME/lib/* apache-tomcat-x.y.z-src/output/build/bin/</pre>
+</div></div>
+
+<h2 id="BuildingTomcatonMacOS-RunningTomcatwithlibtcnative">Running Tomcat with libtcnative</h2>
+
+<p>Tomcat (really Java) needs to know where to find these native libraries. We do that by setting the <code>java.library.path</code> environment variable for the JVM during startup. The easiest way to do this is by setting <code>CATALINA_OPTS</code> on startup. This can be done by adding this line to <code>bin/setenv.sh</code>:</p>
+
+<p> <code>export CATALINA_OPTS=&quot;-Djava.library.path=$CATALINA_HOME/bin&quot;</code></p>
+
+<p>Then you can startup Tomcat as usual, either:</p>
+
+<p> <code>$ bin/startup.sh</code></p>
+
+<p>or</p>
+
+<p> <code>$ bin/catalina.sh start</code></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

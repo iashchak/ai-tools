@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : Metadata Filters</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="RecursiveMetadata_109454069.html">RecursiveMetadata</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="RecursiveParserWrapper_181309139.html">RecursiveParserWrapper</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : Metadata Filters
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Tim Allison</span>, last modified on июн 04, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>In Tika 2.x, users may define metadata filters for the <a href="RecursiveParserWrapper_181309139.html">RecursiveParserWrapper</a> in the <code>tika-config.xml</code> file.  These filters will be applied by the RecursiveParserWrapper after the parse.  There are two primary goals to metadata filters:</p><ol><li>Limit the amount of data returned to the client to only the desired information</li><li>In the tika-pipes module, modify the metadata for the emitters.</li></ol><p>These filters are not currently applied after the completion of the parse for each embedded object.  So, they do not decrease the amount of memory required by Tika to hold the output of the full parse in memory.</p><p>Users may specify multiple filters.  They are applied in the order specified in the <code>tika-config.xml</code> file.</p><h2 id="MetadataFilters-FieldNameMappingFilter">FieldNameMappingFilter</h2><p>This filter allows users to map field names from the Tika field names to custom field names.  In the following example, the filter change the names of the metadata fields from the from element to the to element, and (because <code>excludeUnmapped</code> is set to <code>true</code>, this filter will remove all metadata that does not have a key of &quot;X-TIKA:content&quot;, &quot;dc:title&quot; or &quot;dc:created&quot;.  If <code>excludeUnmapped</code> is set to <code>false</code>, this filter will apply the mappings but maintain all other metadata.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.FieldNameMappingFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;excludeUnmapped&gt;true&lt;/excludeUnmapped&gt;
+        &lt;mappings&gt;
+          &lt;mapping from=&quot;X-TIKA:content&quot; to=&quot;content&quot;/&gt;
+          &lt;mapping from=&quot;dc:title&quot; to=&quot;title&quot;/&gt;
+          &lt;mapping from=&quot;dc:created&quot; to=&quot;date&quot;/&gt;
+        &lt;/mappings&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+
+</pre>
+</div></div><p><br/></p><h2 id="MetadataFilters-IncludeFieldMetadataFilter">IncludeFieldMetadataFilter</h2><p>This filter will include only the fields specified and will leave the field names as they are.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+    &lt;metadataFilters&gt;
+        &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.IncludeFieldMetadataFilter&quot;&gt;
+            &lt;params&gt;
+                &lt;include&gt;
+                    &lt;field&gt;X-TIKA:content&lt;/field&gt;
+                    &lt;field&gt;extended-properties:Application&lt;/field&gt;
+                    &lt;field&gt;Content-Type&lt;/field&gt;
+                &lt;/include&gt;
+            &lt;/params&gt;
+        &lt;/metadataFilter&gt;
+    &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><h2 id="MetadataFilters-ExcludeFieldMetadataFilter">ExcludeFieldMetadataFilter</h2><p>This filter will allow all metadata items to pass through except for the excluded keys.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.ExcludeFieldMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;exclude&gt;
+          &lt;field&gt;dc:title&lt;/field&gt;
+          &lt;field&gt;dc:creator&lt;/field&gt;
+        &lt;/exclude&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><h2 id="MetadataFilters-ClearByMImeMetadataFilter">ClearByMImeMetadataFilter</h2><p>This filter removes all metadata from files of specific mime types.  For example, you may want to parse EMF files because they can contain embedded files, but you might not want to include the metadata or content from those files in what you show to users.</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>&lt;properties&gt;
+  &lt;metadataFilters&gt;
+    &lt;metadataFilter class=&quot;org.apache.tika.metadata.filter.ClearByMimeMetadataFilter&quot;&gt;
+      &lt;params&gt;
+        &lt;mimes&gt;
+          &lt;mime&gt;image/emf&lt;/mime&gt;
+          &lt;mime&gt;image/jpeg&lt;/mime&gt;
+        &lt;/mimes&gt;
+      &lt;/params&gt;
+    &lt;/metadataFilter&gt;
+  &lt;/metadataFilters&gt;
+&lt;/properties&gt;</pre>
+</div></div><p><br/></p><h2 id="MetadataFilters-TikaEvalMetadataFilter">TikaEvalMetadataFilter</h2><p><strong>TODO: fill in</strong></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

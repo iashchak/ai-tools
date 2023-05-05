@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaAndNLTK</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaAndNLTK
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaAndNLTK-NaturalLanguageToolkit(NLTK)withTika">Natural Language Toolkit (NLTK) with Tika</h1>
+
+<p>NLTK is a python library and in order to integrate and use its capabilities with Tika one must install the server endpoint created for NTLK using Flask to extract Named Entities from text passed to it.</p>
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429980 {padding: 0px;}
+div.rbtoc1683040429980 ul {margin-left: 0px;}
+div.rbtoc1683040429980 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429980'>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndNLTK-NaturalLanguageToolkit(NLTK)withTika'>Natural Language Toolkit (NLTK) with Tika</a>
+<ul class='toc-indentation'>
+<li><a href='#TikaAndNLTK-Installation'>Installation</a></li>
+<li><a href='#TikaAndNLTK-StartNLTKServer'>Start NLTK Server</a></li>
+<li><a href='#TikaAndNLTK-PreparingresourcesforNLTKinTika-App'>Preparing resources for NLTK in Tika-App</a></li>
+<li><a href='#TikaAndNLTK-RunningNLTKwithTika'>Running NLTK with Tika</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h2 id="TikaAndNLTK-Installation">Installation</h2>
+<ol>
+	<li><strong>Simple with pip</strong> 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  $ pip install --process-dependency-links nltkrest
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ 2. <strong>Setuptools and/or Distribute</strong>: The module can be downloaded from <a class="external-link" href="https://github.com/manalishah/NLTKRest" rel="nofollow">github</a> and then installed with the following commands: 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  $ cd NLTKRest/nltkrest
+  $ python setup.py install nltkrest
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<p>After installation you will have a command called <em>nltk-server</em>. By default it starts a REST server on port 8881. You can change the port by typing <em>--port</em> or <em>-p</em>. You can also turn on verbose mode by typing <em>-v</em>.</p>
+
+
+<h2 id="TikaAndNLTK-StartNLTKServer">Start NLTK Server</h2>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>$ nltk-server -v --port 8888
+</pre>
+</div></div>
+
+<p>You should see a message:<br/>
+Running on <a class="external-link" href="http://127.0.0.1:8888" rel="nofollow">http://127.0.0.1:8888</a> The server is up and ready!</p>
+
+<h2 id="TikaAndNLTK-PreparingresourcesforNLTKinTika-App">Preparing resources for NLTK in Tika-App</h2>
+<p>You can either perform steps 1 &amp; 2 together or just 3.</p>
+
+<ol>
+	<li><strong>Activate Named Entity Parser</strong>  In order to use any of the <a class="external-link" href="https://wiki.apache.org/tika/TikaAndNER#Activate_Named_Entity_Parser" rel="nofollow">NamedEntityParser</a> implementations in Tika , the parser responsible for handling the name recognition task needs to be enabled. This can be done with Tika Config XML file, as follows 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+ &lt;properties&gt;
+     &lt;parsers&gt;
+         &lt;parser class=&quot;org.apache.tika.parser.ner.NamedEntityParser&quot;&gt;
+             &lt;mime&gt;text/plain&lt;/mime&gt;
+             &lt;mime&gt;text/html&lt;/mime&gt;
+             &lt;mime&gt;application/xhtml+xml&lt;/mime&gt;
+         &lt;/parser&gt;
+     &lt;/parsers&gt;
+ &lt;/properties&gt;
+ </pre>
+</div></div>
+ This configuration has to be supplied in the later phases, so store it as 'tika-config.xml'.
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+ 2. <strong>Supply NLTKServer.properties file</strong>
+<br class="atl-forced-newline"/>
+ It is imperative that Tika should know on what host you are running the <em>nltk-server</em>. By default Tika will assume your server runs on port 8881. In order to specify any other port, you must supply a NLTKServer.properties file. Sample NLTKServer.properties file. My file looks like the following: 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> nltk.server.url=http://localhost:8881
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+ In an nutshell 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> #Create a directory for keeping the config and properties file.
+ export NLTK_RES=$HOME/NLTKRest-resources
+ mkdir -p $NLTK_RES
+ cd $NLTK_RES
+ #config file must be stored in this directory
+ pwd
+
+ export PATH_PREFIX=&quot;$NLTK_RES/org/apache/tika/parser/ner/nltk&quot;
+ mkdir -p $PATH_PREFIX
+ #create and edit the properties file
+ vim $PATH_PREFIX/NLTKServer.properties
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/>
+<br class="atl-forced-newline"/>
+ 3. <strong>Download NLTKRest-resources</strong>
+<br class="atl-forced-newline"/>
+ Better yet, you could skip the previous two steps completely and save the hassle. Simply download the project <a class="external-link" href="https://github.com/manalishah/NLTKRest-resources" rel="nofollow">NLTKRest-resources</a> and edit the properties file
+<br class="atl-forced-newline"/>
+ <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> cd $HOME &amp;&amp; git clone https://github.com/manalishah/NLTKRest-resources
+ export NLTK_RES=$HOME/NLTKRest-resources
+ vim $NLTK_RES/org/apache/tika/parser/ner/nltk/NLTKServer.properties
+ </pre>
+</div></div>
+<br class="atl-forced-newline"/></li>
+</ol>
+
+
+<h2 id="TikaAndNLTK-RunningNLTKwithTika">Running NLTK with Tika</h2>
+<p>Finally, we've reached this point where we can smile and let Tika do the working!</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>
+export TIKA_APP={your/path/to/tika-app}/target/tika-app-1.13-SNAPSHOT.jar
+
+#set the system property to use NLTKNERecogniser class
+java -Dner.impl.class=org.apache.tika.parser.ner.nltk.NLTKNERecogniser -classpath $NLTK_RES:$TIKA_APP org.apache.tika.cli.TikaCLI --config=$NLTK_RES/tika-config.xml -m  http://www.hawking.org.uk/
+
+</pre>
+</div></div>
+
+<p>This will output metadata along with named entities extracted using nltk:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>NER_NAMES: Gonville
+NER_NAMES: Einstein
+NER_NAMES: Briefer History
+NER_NAMES: ALS
+NER_NAMES: Unbreakable Code
+NER_NAMES: Click
+NER_NAMES: Cambridge
+NER_NAMES: George
+NER_NAMES: Lucasian Professor
+NER_NAMES: Stephen Hawking
+NER_NAMES: Latest
+NER_NAMES: Hubble
+NER_NAMES: 1979
+NER_NAMES: Brief History
+NER_NAMES: California
+NER_NAMES: University
+NER_NAMES: 1663
+NER_NAMES: 1982
+NER_NAMES: London
+NER_NAMES: US National Academy
+NER_NAMES: Baby Universe
+NER_NAMES: Home About Stephen The Computer Stephen
+NER_NAMES: Applied Mathematics
+NER_NAMES: Santa Cruz
+NER_NAMES: Leiden University
+NER_NAMES: CBE
+NER_NAMES: Science
+NER_NAMES: Caius College
+NER_NAMES: HUDF09 Team
+NER_NAMES: Dennis Stanton Avery
+NER_NAMES: 2009
+NER_NAMES: ESA
+NER_NAMES: Annie
+NER_NAMES: NASA
+NER_NAMES: Black Holes
+NER_NAMES: Universe
+NER_NAMES: Sally Tsui
+NER_NAMES: eXtreme Deep Field
+NER_NAMES: Centre
+NER_NAMES: Royal Society
+NER_NAMES: Weebly
+NER_NAMES: Cambridge Lectures Publications Books Images Films Videos Stephen
+NER_NAMES: 1963
+NER_NAMES: Unbreakable Code Hot
+NER_NAMES: Isaac Newton
+NER_NAMES: Lucy
+NER_NAMES: Stephen
+</pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

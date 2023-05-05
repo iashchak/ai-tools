@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : FDA Validation</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : FDA Validation
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 24, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>FDA (21 CFR Part 11) Validation</p><p><em>Permalink</em> to this page: <a href="https://cwiki.apache.org/confluence/x/BSolBg" rel="nofollow">https://cwiki.apache.org/confluence/x/BSolBg</a></p><h2 id="FDAValidation-Preface">Preface</h2><p>This page discusses using Tomcat in an <a class="external-link" href="http://www.fda.gov/" rel="nofollow">FDA</a> <a class="external-link" href="http://www.fda.gov/cdrh/comp/guidance/938.html" rel="nofollow">validated</a> environment, i.e. one where <a class="external-link" href="http://www.21cfrpart11.com/" rel="nofollow">21 CFR Part 11</a> regulations apply.</p><p>Please note that although this page mentions specific companies, we do not explicitly endorse or sell anyone's services. Tomcat and Apache are not-for-profit organizations. This page is also far from a complete listing of vendors and support options. It is meant as a demonstration showing that these options do exist and that running Tomcat in a validated environment is both feasible and reasonable.</p><h2 id="FDAValidation-Questions">Questions</h2><ol><li><a href="#FDAValidation-Q1">Can Tomcat be used in a validated environment?</a></li><li><a href="#FDAValidation-Q2">Has anyone actually done it?</a></li><li><a href="#FDAValidation-Q3">Is Tomcat itself validated?</a></li><li><a href="#FDAValidation-Q4">What kind of support is there around validating Tomcat?fully and accurately</a></li><li><a href="#FDAValidation-Q5">How do I know I have a validated release? How do I know no one has tampered with the release package?</a></li><li><a href="#FDAValidation-Q6">What about security? I'm concerned about attacks.</a></li></ol><h2 id="FDAValidation-Answers">Answers</h2><h3 id="FDAValidation-Q1CanTomcatbeusedinavalidatedenvironment?"><span class="confluence-anchor-link" id="FDAValidation-Q1"></span>Can Tomcat be used in a validated environment?</h3><p>Yes. There's nothing in Tomcat's design or implementation that prevent it from being used in a validated environment. The same validation procedures and guidelines that apply to most software packages apply to Tomcat as well. Being an open-source application does not preclude Tomcat validation. In fact, it helps in at least one key aspect: the source code itself can be audited, as can the commit and change logs for the software.</p><h3 id="FDAValidation-Q2Hasanyoneactuallydoneit?"><span class="confluence-anchor-link" id="FDAValidation-Q2"></span>Has anyone actually done it?</h3><p>Yes. As shown in <a class="external-link" href="https://marc.info/?l=tomcat-user&amp;m=109836874319797&amp;w=2" rel="nofollow">this user mailing list archive</a>, Merck and other large companies are using Tomcat in a validated environment. In addition, there is at least one application provider (<a class="external-link" href="http://www.interchangedigital.com/" rel="nofollow">Interchange Digital</a>) whose application runs on Tomcat that has deployed said package in numerous pharma data centers.</p><h3 id="FDAValidation-Q3IsTomcatitselfvalidated?"><span class="confluence-anchor-link" id="FDAValidation-Q3"></span>Is Tomcat itself validated?</h3><p>Yes. Tomcat itself is validated to the extent it can be. Tomcat <a class="external-link" href="https://tomcat.apache.org/whichversion.html" rel="nofollow">implements</a> several <a href="Specifications_103100166.html">Java EE Specifications</a>, most important of them are the Servlet Specification and the Java Server Pages (JSP) Specification. Each of these specifications has a Technology Compatibility Kit (TCK), which is a collection of tests to certify a given product meets the Specification fully and accurately.</p><p>The <a class="external-link" href="https://www.apache.org/" rel="nofollow">Apache Software Foundation</a> is licensed to run these TCKs. They are run against every major Tomcat release. <strong>No Tomcat release is pronounced stable unless it has passed both of these TCKs with 100% compliance</strong>. Therefore, every stable Tomcat release is validated to the extent of Tomcat's core functionality.</p><p>Furthermore, any company of individual may <a class="external-link" href="http://java.sun.com/scholarship/" rel="nofollow">apply</a> to obtains and use these TCKs themselves. That way, you can re-validated Tomcat including any custom patches you have implemented.</p><p>However, we cannot validate your application's use of Tomcat. You're on your own there.</p><h3 id="FDAValidation-Q4WhatkindofsupportistherearoundvalidatingTomcat?"><span class="confluence-anchor-link" id="FDAValidation-Q4"></span>What kind of support is there around validating Tomcat?</h3><p>Several kinds. They include:</p><ul><li>There are numerous smaller <a href="SupportAndTraining_103100272.html">vendors</a> and several large ones, including IBM, HP, Sun, and Novell, who offer Tomcat consulting and support services, including application auditing, environment assessments, and risk analysis.</li><li>There are numerous vendors in addition to the above consultants, like <a class="external-link" href="http://www.springsource.com/" rel="nofollow">SpringSource</a> (formerly Covalent) and <a class="external-link" href="http://www.jboss.org/" rel="nofollow">JBoss</a>, who offer 24/7/365 enterprise-level support for Tomcat.</li><li>The Tomcat <a class="external-link" href="https://tomcat.apache.org/lists.html" rel="nofollow">mailing lists</a> are extremely active and contain members of many of the above organizations, including contractors available for hire.</li></ul><h3 id="FDAValidation-Q5HowdoIknowIhaveavalidatedrelease?HowdoIknownoonehastamperedwiththereleasepackage?"><span class="confluence-anchor-link" id="FDAValidation-Q5"></span>How do I know I have a validated release? How do I know no one has tampered with the release package?</h3><p>All Tomcat releases are signed using the Release Manager's <a class="external-link" href="https://en.wikipedia.org/wiki/GNU_Privacy_Guard" rel="nofollow">PGP</a> key. The key is also available in the KEYS file that ships with every Tomcat release. The same KEYS file is also available in the Tomcat Git repository (<a class="external-link" href="https://gitbox.apache.org/repos/asf?p=tomcat.git;a=blob_plain;f=KEYS;hb=HEAD" rel="nofollow">here</a>). The PGP signatures are available on all the Tomcat download pages, and can (and should!) be used to verify the release really is the signed distribution.</p><p>As for tampering: every Tomcat release is also digested using the SHA-512 algorithm as specified in <a class="external-link" href="https://tools.ietf.org/html/rfc6234" rel="nofollow">RFC6234</a>. The SHA-512 digest is included in all the download pages. Users run <code>sha512sum</code> on their local machine to verify that the digest of what they downloaded is the same as that published in the Apache download pages. That way, users are assured the distribution has not been modified since the Release Manager signed it.</p><h3 id="FDAValidation-Q6Whataboutsecurity?I&#39;mconcernedaboutattacks."><span class="confluence-anchor-link" id="FDAValidation-Q6"></span>What about security? I'm concerned about attacks.</h3><p>There's no need to be. See the <a href="Security_103099051.html">security page</a> of this FAQ for more information.</p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

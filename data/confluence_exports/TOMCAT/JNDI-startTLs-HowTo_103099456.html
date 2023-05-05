@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : JNDI startTLs HowTo</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="HowTo_103099265.html">HowTo</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : JNDI startTLs HowTo
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Timothy A. Funk</span> on мар 21, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><strong>Note:</strong> Nowadays StartTLS support is implemented in JDNIRealm of Tomcat — starting with Tomcat 7.0.60, 8.0.21 (<a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=49785" rel="nofollow">BZ 49785</a>).</p><p>This old page describes an alternative solution and is kept as a historic reference. Note that BZ 49785 has a <a class="external-link" href="https://bz.apache.org/bugzilla/show_bug.cgi?id=49785#c1" rel="nofollow">link</a> to this page.</p><h2 id="JNDIstartTLsHowTo-JNDIStartTLS">JNDI StartTLS <a href="HowTo_103099265.html">HowTo</a></h2><p>In reference to: <a class="external-link" href="http://www.mail-archive.com/users@tomcat.apache.org/msg80660.html" rel="nofollow">http://www.mail-archive.com/users@tomcat.apache.org/msg80660.html</a> this Howto describes the configuration of a JNDI Realm connecting to an LDAP directory using StartTLS for connection establishment.</p><p>StartTLS is the method of negotiating a TLS connection. For LDAP it was first time in RFC 2830, then refined in RFC 4513.</p><p>Tomcat does not support this out of the box. Using JNDI Realm's <code>contextFactory</code> feature however, we can still achieve this:</p><pre>&lt;Realm className=&quot;org.apache.catalina.realm.JNDIRealm&quot;
+     connectionURL=&quot;ldap://primary.ldap.dir:389&quot;
+     alternateURL=&quot;ldap://secondary.ldap.dir:389&quot;
+     connectionName=&quot;uid=binddn&quot; connectionPassword=&quot;password.&quot;
+     userBase=&quot;ou=people,dc=brainsware,dc=org&quot; userSearch=&quot;uid={0}&quot;
+     contextFactory=&quot;tc.startTLS.LdapTlsContextFactory /&gt;</pre><p>Using the code provided by Felix Schumacher in this post: <a class="external-link" href="http://www.mail-archive.com/users@tomcat.apache.org/msg80693.html" rel="nofollow">http://www.mail-archive.com/users@tomcat.apache.org/msg80693.html</a> - You can download it here: <a class="unresolved" href="#">LdapTlsContextFactory.java</a>. We have to compile it into a JAR and put in a place where Tomcat can find it: <code>lib</code>. Then we simply reference its full name in <code>contextFactory</code>. <code>LdapTlsContextFactory</code> will now do the negotiation initialization. Afterwards the created object will be used for every authentication attempt. Beware that the code will not check the hostname of the server with respect to its certificate. If you don't want this behaviour remove the call to <code>tls.setHostNameVerifier(...)</code>.</p><h2 id="JNDIstartTLsHowTo-FurtherSteps">Further Steps</h2><p>The code probably needs auditing. More testing. And definitely more tightening: e.g.: When starting the negotiation the client (Tomcat + <code>LdapTlsContextFactory</code>) sends an <code>SSLv2Hello</code>, which is anything but desirable. This could be due to Sun’s poor defaults in their SSL implementation, an oversight in the code, or because I’ve missed out a JVM startup options.</p><p><br/></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

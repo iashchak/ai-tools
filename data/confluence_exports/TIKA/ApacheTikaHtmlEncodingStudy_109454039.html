@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : ApacheTikaHtmlEncodingStudy</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : ApacheTikaHtmlEncodingStudy
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ApacheTikaHtmlEncodingStudy-ApacheTika&#39;sHtmlEncodingStudy">Apache Tika's Html Encoding Study</h1>
+<p>In support of <a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-2038" rel="nofollow">TIKA-2038</a>, we gathered a new subset of html pages from CC-MAIN-2017-04.</p>
+
+<p>This page offers a first rough draft of the process.  Some of the code is available on a personal <a class="external-link" href="https://github.com/tballison/SimpleCommonCrawlExtractor" rel="nofollow">github site</a>.  This code relies heavily on Dominik Stadler's <a class="external-link" href="https://github.com/centic9/CommonCrawlDocumentDownload" rel="nofollow">CommonCrawlDocumentDownload</a> code, and the author of SimpleCommonCrawlExtractor is extremely grateful to Dominik.</p>
+
+<ol>
+	<li>Determined which top level domains (TLDs) were of interest 2. Downloaded the 300 index files from Common Crawl via Groovy (217 GB of data):<br/>
+    
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>        def cc = &quot;CC-MAIN-2017-04&quot;
+        def url1 = &quot;https://commoncrawl.s3.amazonaws.com/cc-index/collections/&quot;
+        def url2 = &quot;/indexes/cdx-&quot;
+
+        (0..299).each{ i -&gt;
+            def u = url1+cc+url2+&quot;$i&quot;.padLeft(5, &#39;0&#39;)+&quot;.gz&quot;
+            def p = &quot;wget -q $u&quot;.execute()
+            p.waitForProcessOutput(System.out, System.err);
+        }
+    </pre>
+</div></div>
+ 3.#3 Counted the number of pages per TLD that had &quot;html/text&quot; in the http Content-Type header
+<br class="atl-forced-newline"/>
+    Map:
+    <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>       java -cp cc-extractor-0.0.1.jar org.tallison.cc.index.CCIndexBatchReader 
+           10 /data1/commoncrawl_indices/CC-MAIN-2017-04/ CountMimesByTopLevelDomains 
+           mime_tld_counts
+    </pre>
+</div></div></li>
+</ol>
+
+
+<p>    Reduce:</p>
+    <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>       java -cp cc-extractor-0.0.1.jar org.tallison.cc.index.reducers.DoubleKeyReducer 
+           mime_tld_counts mime_tld_total.txt
+    </pre>
+</div></div>
+<p><br class="atl-forced-newline"/>
+ 4.#4 Created sampling frequencies per TLD, with a target of 50k per TLD, with the exception of 100k for &quot;.com&quot; – this was done by loading mime_tld_total.txt into a database and doing some <code>group by</code> queries.  See <a class="unresolved" href="#">tld_mimes.txt</a>.
+<br class="atl-forced-newline"/>
+ 5. Randomly sampled according to the sampling frequencies per TLD from the 300 index files
+<br class="atl-forced-newline"/>
+    Map:</p>
+    <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>       java -cp cc-extractor-0.0.1.jar org.tallison.cc.index.CCIndexBatchReader 
+           10 /data1/commoncrawl_indices/CC-MAIN-2017-04/ DownSample 
+           tld_mimes.txt tld_mimes_down_sampled
+    </pre>
+</div></div>
+
+<p>    Reduce:</p>
+    <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>       java -cp cc-extractor-0.0.1.jar org.tallison.cc.index.reducers.ConcatReducer 
+           tld_mimes_down_sampled tld_mimes_down_sampled_index
+    </pre>
+</div></div>
+<p><br class="atl-forced-newline"/>
+ 6.#6 Pulled the data from Common Crawl</p>
+    <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>       java -cp cc-extractor-0.0.1.jar org.tallison.cc.CCGetter 
+           tld_mimes_down_sampled_index /data4/docs/commoncrawl_html_study 
+           cc_html_study_crawl_status.txt
+    </pre>
+</div></div>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

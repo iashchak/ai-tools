@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : UsingPhp</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : UsingPhp
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on апр 23, 2012
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="UsingPhp-UsingPHPWithTomcat">Using PHP With Tomcat</h1>
+
+<p>This tutorial shows how to use PHP version 4 with Tomcat version 4 or later.  The tutorial was originally written and sent to the tomcat-dev mailing list by Jean-Frederic Clere (on his vacation, no less <img class="emoticon emoticon-wink" src="images/icons/emoticons/wink.svg" data-emoticon-name="wink" alt="(подмигивание)"/> ) and Henri Gomez.</p>
+
+<p>PHP version 5 is not currently supported as it does not include the necessary servlet code.</p>
+
+<h2 id="UsingPhp-Prerequisites">Prerequisites</h2>
+<ul>
+	<li>Download PHP (this tutorial uses PHP 4.3.5)</li>
+	<li>Download Tomcat (this tutorial uses Tomcat 5.0.19)</li>
+	<li>Define <code>$JAVA_HOME</code> for your JDK installation</li>
+	<li>Define <code>$TOMCAT_HOME</code> for your Tomcat installation</li>
+	<li>Define <code>$PHP_HOME</code> for your PHP installation
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="UsingPhp-PatchforPHPconfigureScript">Patch for PHP configure Script</h2>
+
+<p>There is a patch required to compile PHP 4 to use Tomcat 5.</p>
+
+<p>Prior to version 2.4 of Servlet Specification, the name of the servlet jar file was <code>servlet.jar</code>.  In version 2.4 of the Servlet Specification, this name was changed to <code>servlet-api.jar</code>.  Tomcat 4 uses the name <code>servlet.jar</code>, whereas Tomcat 5 and later uses <code>servlet-api.jar</code>. This causes problems with PHP's <code>configure</code> script.</p>
+
+<p>This patch for PHP's configure script will fix this problem:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>--- configure.org       2004-04-07 11:20:24.000000000 +0200
++++ configure   2004-04-07 11:22:50.000000000 +0200
+      if test &quot;$withval&quot; = &quot;yes&quot;; then
+        SERVLET_CLASSPATH=.
+      else
++      if test -f $withval/common/lib/servlet-api.jar; then
++        SERVLET_CLASSPATH=$withval/common/lib/servlet-api.jar
++      fi
++
+        if test -f $withval/lib/servlet.jar; then
+          SERVLET_CLASSPATH=$withval/lib/servlet.jar
+       fi
+</pre>
+</div></div>
+
+<h2 id="UsingPhp-Patchforsapi/servlet/servlet.java">Patch for sapi/servlet/servlet.java</h2>
+
+<p>enum is now a reserved word with Java 5, thus causing servlet.java to break the make process.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>--- servlet.java.orig   2005-09-26 22:25:55.000000000 -0400
++++ servlet.java        2005-09-26 22:26:11.000000000 -0400
+@@ -63,12 +63,12 @@
+     if (!request.getMethod().equals(&quot;POST&quot;)) {
+       result = request.getQueryString();
+     } else {
+-      Enumeration enum = request.getParameterNames();
++      Enumeration xenum = request.getParameterNames();
+       String concat = &quot;&quot;;
+       result = &quot;&quot;;
+
+-      while (enum.hasMoreElements()) {
+-        String name  = (String)enum.nextElement();
++      while (xenum.hasMoreElements()) {
++        String name  = (String)xenum.nextElement();
+         String value = request.getParameter(name);
+
+         try {
+</pre>
+</div></div>
+
+<h2 id="UsingPhp-PHPInstallation">PHP Installation</h2>
+<ul>
+	<li>Extract the source code to PHP in a work directory</li>
+	<li>Patch if needed (that is, patch if building PHP to run with Tomcat version 5 or later)</li>
+	<li>Run <code>configure</code>, then <code>make</code> in the top directory of the PHP sources: 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> ./configure --with-servlet=$TOMCAT_HOME --with-java=$JAVA_HOME
+ make</pre>
+</div></div></li>
+	<li>A jar file and dynamic library are produced from the <code>make</code>: <code>sapi/servlet/phpsrvlt.jar and libs/libphp4.so</code>.
+<br class="atl-forced-newline"/></li>
+	<li>Copy the jar file to your web application's class repository, or, alternately, to Tomcat's common class repository (as is shown here): 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> cp $PHP_HOME/sapi/servlet/phpsrvlt.jar $TOMCAT_HOME/common/lib</pre>
+</div></div>
+<br class="atl-forced-newline"/></li>
+	<li>Declare PHP servlet and servlet-mapping in the web applications <code>web.xml</code> file, or in Tomcat's shared <code>web.xml</code> file:
+	<ul>
+		<li>Copy from <code>$PHP_HOME/sapi/servlet/web.xml</code> the servlet and servlet-mapping and paste into the file <code>$TOMCAT_HOME/conf/web.xml</code>.
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+	<li>Modify your LD_LIBRARY_PATH to include the dynamic library produced in the first step above: 
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> LD_LIBRARY_PATH=$PHP_HOME/libs
+ export LD_LIBRARY_PATH</pre>
+</div></div>
+	<ul>
+		<li>As an option, you can put libphp4.so someplace where java is already looking, any place in  System.getProperty(&quot;java.library.path&quot;), such as any of:
+ <div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  /usr/lib/jdk1.5.0_04/jre/lib/i386/client:/usr/lib/jdk1.5.0_04/jre/lib/i386:/usr/lib/jdk1.5.0_04/jre/../lib/i386</pre>
+</div></div>
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+</ul>
+
+
+<h2 id="UsingPhp-FedoraCore1IssueswithTomcat5.5.9,PHP4.3.11andjdk1.5.0_03">Fedora Core 1 Issues with Tomcat 5.5.9, PHP 4.3.11 and jdk1.5.0_03</h2>
+<p>This may have just been an issue with the particular system I was building, but I was unable to set $JAVA_HOME, $PHP_HOME, $TOMCAT_HOME, or $LD_LIBRARY_PATH at the command line. The workaround was to edit <code>/etc/profile</code> and add the variables there (i.e., and the line </p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> JAVA_HOME=/usr/java/jdk1.5.0_03</pre>
+</div></div>
+<p> and add <code>JAVA_HOME</code> to the <code>export</code> variables).</p>
+
+<ul>
+	<li>If <code>make</code> returns an error where <code>javac</code> is not a recognized command, you'll need to patch the Makefile produced by <code>./configure</code>. Look for &quot;<code>&amp;&amp; javac</code>&quot; and replace it with the full path to javac (i.e., &quot;
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> &amp;&amp; /usr/java/jdk1.5.0_03/bin/javac</pre>
+</div></div>
+&quot;).</li>
+	<li>If <code>make</code> returns an error regarding &quot;enum&quot; while trying to build phpsrvlt.jar, you'll need to edit <code>$PHP_HOME/sapi/servlet/servlet.java</code> and replace <code>enum</code> with <code>xenum</code>.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="UsingPhp-StartTomcat">Start Tomcat</h2>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre> $TOMCAT_HOME/bin/startup.sh.
+</pre>
+</div></div>
+
+<h2 id="UsingPhp-Testing">Testing</h2>
+
+<p>Verify the following is in your webapp's web.xml (creates the servlet entries and maps .php to that servlet and mentioned in the PHP installation steps above):</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    &lt;servlet&gt;
+        &lt;servlet-name&gt;php&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;net.php.servlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;php-formatter&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;net.php.formatter&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;php&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.php&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;php-formatter&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.phps&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+</pre>
+</div></div>
+
+<p>Verify that phpsrvlt.jar is in you WEB-INF/lib directory, or the tomcat common/lib directory (as mentioned above in the PHP installation steps)</p>
+
+<p>Create a file named test.php in the docBase directory of your webapp.</p>
+
+<p>In that file, simply put:</p>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>   &lt;?php phpinfo(); ?&gt;
+</pre>
+</div></div>
+
+<p>Point your browser at the file by navigating to <a class="external-link" href="http://localhost:8080/test.php" rel="nofollow">http://localhost:8080/test.php</a></p>
+
+<p>If everything is working as it should, you will see an informational status page produced by PHP.</p>
+
+<hr/>
+<p><a class="unresolved" href="#">CategoryFAQ</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

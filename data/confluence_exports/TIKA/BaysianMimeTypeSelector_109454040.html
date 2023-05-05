@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : BaysianMimeTypeSelector</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : BaysianMimeTypeSelector
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Describe <a href="BaysianMimeTypeSelector_109454040.html">BaysianMimeTypeSelector</a> here.</p>
+
+<p><a class="external-link" href="https://issues.apache.org/jira/browse/TIKA-1517" rel="nofollow">TIKA-1517 [MIME type selection with probability</a>]</p>
+
+<p>The motivation is that the current implemenation within <a class="unresolved" href="#">MimeTypes</a> for detecting mime types in Tika is a bit stiff and less flexible(at the time the article is being written, the current version of <a class="unresolved" href="#">MimeTypes</a> which has 3 detection approaches to identify mime types is implemented with a fall-back strategy), the detection highly depends on the magic byte detection.</p>
+
+<p>The last two approaches (i.e. extension and metatdatahint matching) are subsidiary and auxiliary in the final detection decsion. In other words, the decision that comes from the last two approach will probablly be considered when there is a tie to break in the magic bytes detection as there might be multiple mime types estimated by magic bytes method, in this situation file extension and metadatahint will be used.</p>
+
+<p>It is also possible that in some situations the type given by the file extension and metadata hint matching are more specialized than magic bytes method, then the most specialized or specific type gets returned. This implementation seems to exhibt a bit inflexibilities in some situations where users prefer a particular type of detection e.g. they might only trust or prefer their file extensions.</p>
+
+<p>Perhaps, in the future we might have more probablistic mime detection algorithms being considered for deploying into Tika, probably from this perspective, the current implementation also seems to give less space for expanding with more detection methods in Tika.</p>
+
+<p>Therefore, it would be great to have a feature like Tika-1517 where user can add weights or preference on the detection method they want to use for detecitng mime types.</p>
+
+<p>More information with this intuition of the feature - probabilistic mime type selection can be found in Tika 1517. The algorithm behind this feature is actually a simple or naive baysian rule, we eventually compute 3 scores each of which corresponds to a detection method, the one that gives the maximum score or posterior probability will be returned as final detected type.</p>
+
+<p>The idea can be also simply illustrated with the samlam bayesian network toolkit which is available for download on <a class="external-link" href="http://reasoning.cs.ucla.edu/samiam/index.php" rel="nofollow">http://reasoning.cs.ucla.edu/samiam/index.php</a></p>
+
+<p>The following  screenshot with some examples illustrates the intuition and idea with the toolkit, please note under the hood, the same baysian network is implemented in this feature in Tika.</p>
+
+<p>The important thing to be noted is that each detection method needs to be assigned with a conditional probability and prior, which could be all regarded as a value of trust.</p>
+
+<p>Initially</p>
+
+<p>The prior for the type detected by each the detection method is 0.5, this forces our prior estimation to be stochastic; The virtue of the baysian rule is to incorperate the notion of condition probability, which in this case needs to be specified by users in terms of their own preference or the domain knowledege where they know for certain which method they want to trust most and how much they want to trust; In order to estimate or find the exact and intuitive value, this mentioned toolkit can be used to explore their conditional probability settings.</p>
+
+<p>The following shows the initial conditional probability values used in the default setting for the feature in Tika.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/* conditional probability: probability of the type estimated by the Magic test given that the type is the type predicted by the magic test.  */ private static final float DEFAULT_MAGIC_TRUST = 0.9f;
+</pre>
+</div></div>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/* conditional probability: probability of the type estimated by the metadata hint test given that the type is the type predicted by the metadata hint test.*/ private static final float DEFAULT_META_TRUST = 0.8f;
+</pre>
+</div></div>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/* conditional probability: probability of the type estimated by the extension test given that the type is the type predicted by the extension test.*/ private static final float DEFAULT_EXTENSION_TRUST = 0.8f;
+</pre>
+</div></div>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/* conditional probability: probability of the type Not estimated by the Magic test given that the type is not the type predicted by the magic test.*/ 0.9f
+</pre>
+</div></div>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/* conditional probability: probability of the type Not estimated by the meadata test given that the type is not the type predicted by the metadata test.*/ 0.8f
+</pre>
+</div></div>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/* conditional probability: probability of the type Not estimated by the extension test given that the type is not the type predicted by the extension test.*/ 0.8f
+</pre>
+</div></div>
+<p><code><a class="external-link" href="https://lh4.googleusercontent.com/wUrj6keimRl2xjZjxutax0jXyhIbHBkOtNZTwLoHmU2q_VFq_fVxLBP1YRv29teUZdbdvXunj7xiTtC3GLtCErsg_yz2NaftfVO9YF9rmdD18QRgaHoYJ21k-kEb2WrOw6NST8U" rel="nofollow">https://lh4.googleusercontent.com/wUrj6keimRl2xjZjxutax0jXyhIbHBkOtNZTwLoHmU2q_VFq_fVxLBP1YRv29teUZdbdvXunj7xiTtC3GLtCErsg_yz2NaftfVO9YF9rmdD18QRgaHoYJ21k-kEb2WrOw6NST8U</a>|height=&quot;381px;&quot;,width=&quot;563px;&quot;</code></p>
+
+<p>The above tells that the file extension and contentMetadata matching method fail to detect a type (i.e. they both return byte-stream as the type), and only the magic test returns a non-byte-stream type, then the type estimated by magic test has a higher posterior probability 90%;</p>
+
+<p><code><a class="external-link" href="https://lh5.googleusercontent.com/FO5VfTBjcTuogGvGz0XecZ_3oSABCNdswjFum-ILO1_37VPK6WiSD8vXMggPNPvGRagyXvrymeQU9iM9Ta69vVJyLT7guSE-6srV5efQMHKHSDdO0H_ZU4tjHaga2wlY_c_QBEE" rel="nofollow">https://lh5.googleusercontent.com/FO5VfTBjcTuogGvGz0XecZ_3oSABCNdswjFum-ILO1_37VPK6WiSD8vXMggPNPvGRagyXvrymeQU9iM9Ta69vVJyLT7guSE-6srV5efQMHKHSDdO0H_ZU4tjHaga2wlY_c_QBEE</a>|height=&quot;364px;&quot;,width=&quot;562px;&quot;</code></p>
+
+<p>The above screenshot shows magic Test and file extension method do not agree on the same type, the posterior probability of the type estimated by magic test is 69.23%</p>
+
+<p><code><a class="external-link" href="https://lh4.googleusercontent.com/3Q68oP4-IFoAP5woGiqiaSLN_JwN11ZBylS2l9NlmPQg16ZxGezBK6vxBxl4sEz5xOgy_A-2pfAMgz2bmy4gEPu829tYAnnWG03rQaV-tLKs_j_B-WZ5kwGwF_oOSJeGDwF6SwU" rel="nofollow">https://lh4.googleusercontent.com/3Q68oP4-IFoAP5woGiqiaSLN_JwN11ZBylS2l9NlmPQg16ZxGezBK6vxBxl4sEz5xOgy_A-2pfAMgz2bmy4gEPu829tYAnnWG03rQaV-tLKs_j_B-WZ5kwGwF_oOSJeGDwF6SwU</a>|height=&quot;368px;&quot;,width=&quot;595px;&quot;</code></p>
+
+<p>This one shows the posterior probability of the type estimated by the glob test(file extension matching), and the magic test(magic byte matching) does not agree with it on the same type, so the type predicted by the glob test is lower and it is 30.77%; (note the content test(content metadata machine) above fails to detect a type, so it is not participating into compuation of the final posterior probability for the type estimated by glob test);</p>
+
+<p>Kindly note, usually the metadata hint is present in the http response header, if we bluntly or directly give a file to the feature in Tika, the meta data hint usually is absent.</p>
+
+<hr/>
+<p>How to use this feature in Tika (proposed use)</p>
+
+<p>If a user wanted to use this feature, the following code would be needed.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>tika = new Tika(new TikaConfig() {
+                @Override
+                protected Detector getDefaultDetector(MimeTypes types,
+                        ServiceLoader loader) {
+                    /*
+                     * here is an example with the use of the builder to
+                     * instantiate the object.
+                     */
+                    Builder builder = new ProbabilisticMimeDetectionSelector.Builder();
+                    ProbabilisticMimeDetectionSelector proDetector = new ProbabilisticMimeDetectionSelector(
+                            types, builder.priorMagicFileType(0.5f)
+                                    .priorExtensionFileType(0.5f)
+                                    .priorMetaFileType(0.5f));
+                    return new DefaultProbDetector(proDetector, loader);
+                }
+            });
+</pre>
+</div></div>
+<ul>
+	<li>The idea is simple that we overwrite the getDefaultDetector() by  providing the <a class="unresolved" href="#">DefaultProbDetector</a> which extends the <a class="unresolved" href="#">CompositeDetector</a>, a  <a class="unresolved" href="#">CompositeDetector</a> is one (whose supertype is Detector) that takes a  list of detectors, and when its detect() method gets called, each  detector in the list is called sequentially one after another. The  original implemenation of getDefaultDetector() in <a class="unresolved" href="#">TikaConfig</a> returns an  instance of “DefaultDetector” that also extends the <a class="unresolved" href="#">CompositeDetector</a> by  providing a list of detectors that includes “MimeTypes” which is the  native implemenation with 3 detectors (i.e. magic bytes, extension and  metadatahint). However, <a class="unresolved" href="#">DefaultProbDetector</a> replaces this <a class="unresolved" href="#">MimeTypes</a> with  <a class="unresolved" href="#">ProbabilisticMimeDetectionSelector</a>.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>In order to set the preferential weights, an instance of  <a class="unresolved" href="#">ProbabilisticMimeDetectionSelector</a> can be created in the above example  snippet.</p>
+
+<p>Alternatively, if we dont want to go with the default settings with  <a class="unresolved" href="#">ProbabilisticMimeDetectionSelector</a>, it is ok to just ignore the  arguments by calling only “return new <a class="unresolved" href="#">DefaultProbDetector</a>();”.</p>
+
+<ul>
+	<li>Alternatively, if we dont want to write some extra code, the following can also be used.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>/*
+             * an xml file needs to be given to tell where the detector is
+             * located, customers can build their own detectors by including or
+             * excluding this feature or any detectors in the composite list at
+             * their will.
+             */
+            tika = new Tika(new TikaConfig(
+                    new File(&quot;TIKA-detector-sample.xml&quot;)));
+</pre>
+</div></div>
+<p><strong>TIKA-detector-sample.xml</strong></p>
+
+<p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;!--</p>
+
+<ul>
+	<li>Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.  See the NOTICE file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License.  You may obtain a copy of the License at <a class="external-link" href="http://www.apache.org/licenses/LICENSE-2.0" rel="nofollow">http://www.apache.org/licenses/LICENSE-2.0</a> Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>--&gt; &lt;properties&gt;</p>
+
+<ul>
+	<li>&lt;detectors&gt;
+	<ul>
+		<li>&lt;detector class=&quot;org.apache.tika.detect.DefaultProbDetector&quot;/&gt;<br/>
+ &lt;/detectors&gt;
+<br class="atl-forced-newline"/></li>
+	</ul>
+	</li>
+</ul>
+
+
+<p>&lt;/properties&gt;</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

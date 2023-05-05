@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : RecursiveMetadata</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : RecursiveMetadata
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    
+
+
+
+<p><strong>Index</strong></p>
+
+<style type='text/css'>/*<![CDATA[*/
+div.rbtoc1683040429882 {padding: 0px;}
+div.rbtoc1683040429882 ul {margin-left: 0px;}
+div.rbtoc1683040429882 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1683040429882'>
+<ul class='toc-indentation'>
+<li><a href='#RecursiveMetadata-Introduction'>Introduction</a></li>
+<li><a href='#RecursiveMetadata-Jukka&#39;sExample'>Jukka&#39;s Example</a>
+<ul class='toc-indentation'>
+<li><a href='#RecursiveMetadata-MainfromJukka&#39;sExample'>Main from Jukka&#39;s Example</a>
+<ul class='toc-indentation'>
+<li><a href='#RecursiveMetadata-SettingupRecursiveParsing'>Setting up Recursive Parsing</a></li>
+<li><a href='#RecursiveMetadata-ParsingaFile'>Parsing a File</a></li>
+</ul>
+</li>
+<li><a href='#RecursiveMetadata-Jukka&#39;sParser'>Jukka&#39;s RecursiveMetadata Parser</a>
+<ul class='toc-indentation'>
+<li><a href='#RecursiveMetadata-Constructor'>RecursiveMetadataParser Constructor</a></li>
+<li><a href='#RecursiveMetadata-parse'>RecursiveMetadataParser parse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href='#RecursiveMetadata-TrackinghowfardowntheRabbitHoleyouhavegone'>Tracking how far down the Rabbit Hole you have gone</a></li>
+<li><a href='#RecursiveMetadata-Surprise!ZipsHaveTextToo!'>Surprise! Zips Have Text Too!</a></li>
+<li><a href='#RecursiveMetadata-IntegrationoftheintoTika'>Integration of the RecursiveParserWrapper into Tika</a></li>
+</ul>
+</div>
+
+<h1 id="RecursiveMetadata-Introduction">Introduction</h1>
+<p>After the <a href="MetadataDiscussion_109454061.html">MetadataDiscussion</a> page was created, Jukka Zitting offered an example of how to get to recursive metadata when parsing with an <a class="unresolved" href="#">AutoDetectParser</a>, and later updated that example with how to get both text and metadata for nested documents using the <a class="unresolved" href="#">AutoDetectParser</a>.</p>
+
+<p>If you parse an archive (zip, tar, etc.) the parsed document contains other documents, and any of those documents could also be archives containing other documents, and so on. The example on this page shows you how to do the following:</p>
+
+<ul>
+	<li>Set up the parse context so nested documents will be parsed.</li>
+	<li>Wrap the <a class="unresolved" href="#">AutoDetectParser</a> so you can get the text and metadata for each nested document.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="RecursiveMetadata-Jukka&#39;sExample">Jukka's Example</h1>
+<p>Here is the full source for Jukka's example for how to get access to nested metadata and document body text. This example writes the metadata and body text for each nested document to standard output. More details about how Jukka's example works are in subsections below.</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  public static void main(String[] args) throws Exception {
+       Parser parser = new RecursiveMetadataParser(new AutoDetectParser());
+       ParseContext context = new ParseContext();
+       context.set(Parser.class, parser);
+
+       ContentHandler handler = new DefaultHandler();
+       Metadata metadata = new Metadata();
+
+       InputStream stream = TikaInputStream.get(new File(args[0]));
+       try {
+           parser.parse(stream, handler, metadata, context);
+       } finally {
+           stream.close();
+       }
+   }
+
+   private static class RecursiveMetadataParser extends ParserDecorator {
+
+       public RecursiveMetadataParser(Parser parser) {
+           super(parser);
+       }
+
+       @Override
+       public void parse(
+               InputStream stream, ContentHandler ignore,
+               Metadata metadata, ParseContext context)
+               throws IOException, SAXException, TikaException {
+           ContentHandler content = new BodyContentHandler();
+           super.parse(stream, content, metadata, context);
+
+           System.out.println(&quot;----&quot;);
+           System.out.println(metadata);
+           System.out.println(&quot;----&quot;);
+           System.out.println(content.toString());
+       }
+   }
+</pre>
+</div></div>
+
+<h2 id="RecursiveMetadata-MainfromJukka&#39;sExample">Main from Jukka's Example</h2>
+
+<h3 id="RecursiveMetadata-SettingupRecursiveParsing">Setting up Recursive Parsing</h3>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  public static void main(String[] args) throws Exception {
+       Parser parser = new RecursiveMetadataParser(new AutoDetectParser());
+       ParseContext context = new ParseContext();
+       context.set(Parser.class, parser);
+</pre>
+</div></div>
+
+<p>The example starts by setting up recursive parsing. If you are parsing text files, word documents, etc. then you'll never notice if recursive parsing is enable or not. If you are parsing containers like zip files and tar.gz files, the only way to get the text for the files contained by the containers is to enable recursive parsing.</p>
+
+<p>The way to enable recursive parsing is to create a <a class="unresolved" href="#">ParseContext</a> and add a parser to it as shown on the line <code>context.set(Parser.class, parser)</code>. This is the parser that will be used to parse any nested documents. </p>
+
+<p>In this case the parser is a <a class="unresolved" href="#">RecursiveMetadataParser</a> that is a wrapper around an <a class="unresolved" href="#">AutoDetectParser</a>. The <a href="RecursiveMetadata_109454069.html">RecursiveMetadata</a> parser is part of Jukka's example and more details are given below.</p>
+
+<h3 id="RecursiveMetadata-ParsingaFile">Parsing a File</h3>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>       ContentHandler handler = new DefaultHandler();
+       Metadata metadata = new Metadata();
+
+       InputStream stream = TikaInputStream.get(new File(args[0]));
+       try {
+           parser.parse(stream, handler, metadata, context);
+       } finally {
+           stream.close();
+       }
+</pre>
+</div></div>
+
+<p>The rest of the main function parses a file. The parser used to parse the root document is the same parser that was added to the <a class="unresolved" href="#">ParseContext</a> as the parser to use for nested documents. </p>
+
+<p>Looking at the Tika API (<a class="external-link" href="http://tika.apache.org/0.7/api/" rel="nofollow">http://tika.apache.org/0.7/api/</a>), I don't see a <a class="unresolved" href="#">DefaultHandler</a> class or a <a class="unresolved" href="#">TikaInputStream</a>. In the place of <a class="unresolved" href="#">DefaultHandler</a> you could use <a class="unresolved" href="#">BodyContentHandler</a>, and in the place of <a class="unresolved" href="#">TikaInputStream</a> you could use <a class="unresolved" href="#">FileInputStream</a>. </p>
+
+<h2 id="RecursiveMetadata-Jukka&#39;sParser">Jukka's <a href="RecursiveMetadata_109454069.html">RecursiveMetadata</a> Parser</h2>
+<h3 id="RecursiveMetadata-Constructor"><a class="unresolved" href="#">RecursiveMetadataParser</a> Constructor</h3>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>   private static class RecursiveMetadataParser extends ParserDecorator {
+       public RecursiveMetadataParser(Parser parser) {
+           super(parser);
+       }
+</pre>
+</div></div>
+
+<p>The <a class="unresolved" href="#">RecursiveMetadataParser</a> extends <a class="unresolved" href="#">ParserDecorator</a>. All the constructor has to do is let the <a class="unresolved" href="#">ParserDecorator</a> superclass know which parser object is being decorated.</p>
+
+<h3 id="RecursiveMetadata-parse"><a class="unresolved" href="#">RecursiveMetadataParser</a> parse</h3>
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>       @Override
+       public void parse(
+               InputStream stream, ContentHandler ignore,
+               Metadata metadata, ParseContext context)
+               throws IOException, SAXException, TikaException {
+           ContentHandler content = new BodyContentHandler();
+           super.parse(stream, content, metadata, context);
+
+           System.out.println(&quot;----&quot;);
+           System.out.println(metadata);
+           System.out.println(&quot;----&quot;);
+           System.out.println(content.toString());
+       }
+
+   }
+</pre>
+</div></div>
+
+<p>The parse method is where you get access to the metadata and the body text. When the parser set in <a class="unresolved" href="#">ParseContext</a> is used to parse a nested document, a new Metadata object is created and passed to the parse method. Since the example put a <a class="unresolved" href="#">RecursiveMetadataParser</a> in the <a class="unresolved" href="#">ParseContext</a>, <a class="unresolved" href="#">RecursiveMetadataParser</a>'s parse method is called. Before calling <code>super.parse</code>, the metadata object is empty. After <code>super.parse</code> returns, the metadata object contains all of the metadata the decorated parser found and <code>System.out.println(metadata)</code> prints all of the metadata to standard output.</p>
+
+<p>By creating a new <a class="unresolved" href="#">BodyContentHandler</a> and passing that to <code>super.parse</code>, the text for each document is captured without mixing it with text from other documents.</p>
+
+<h1 id="RecursiveMetadata-TrackinghowfardowntheRabbitHoleyouhavegone">Tracking how far down the Rabbit Hole you have gone</h1>
+<p>When using the code above, if you have a container format that contains another container, you may wish to keep track of where in the stack you are. To do that, you'd want code something like:</p>
+
+<div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>    private static class RecursiveTrackingMetadataParser extends ParserDecorator {
+        private String location;
+        private int unknownCount = 0;
+
+        public RecursiveTrackingMetadataParser(Parser parser, String location) {
+            super(parser);
+            this.location = location;
+            if (! this.location.endsWith(&quot;/&quot;)) {
+               this.location += &quot;/&quot;;
+            }
+        }
+
+        @Override
+        public void parse(
+                InputStream stream, ContentHandler ignore,
+                Metadata metadata, ParseContext context)
+                throws IOException, SAXException, TikaException {
+            // Work out what this thing is
+            String objectName = null;
+            if (metadata.get(TikaMetadataKeys.RESOURCE_NAME_KEY) != null) {
+               objectName = metadata.get(TikaMetadataKeys.RESOURCE_NAME_KEY);
+            } else if (metadata.get(TikaMetadataKeys.EMBEDDED_RELATIONSHIP_ID) != null) {
+               objectName = metadata.get(TikaMetadataKeys.EMBEDDED_RELATIONSHIP_ID);
+            } else {
+               objectName = &quot;embedded-&quot; + (++unknownCount);
+            }
+            String objectLocation = this.location + objectName;
+
+            // Fetch the contents, and recurse if possible
+            ContentHandler content = new BodyContentHandler();
+            Parser preContextParser = context.get(Parser.class);
+            context.set(Parser.class, new RecursiveTrackingMetadataParser(getWrappedParser(), objectLocation));
+            super.parse(stream, content, metadata, context);
+            context.set(Parser.class, preContextParser);
+
+            // Report what this one is
+            System.out.println(&quot;----&quot;);
+            System.out.println(&quot;Resource is &quot; + objectLocation);
+            System.out.println(&quot;----&quot;);
+            System.out.println(metadata);
+            System.out.println(&quot;----&quot;);
+            System.out.println(content.toString());
+        }
+    }
+</pre>
+</div></div>
+
+
+<h1 id="RecursiveMetadata-Surprise!ZipsHaveTextToo!">Surprise! Zips Have Text Too!</h1>
+<p>The great thing about <a class="unresolved" href="#">AutoDetectParser</a> is that it can parse and extract text from almost anything. In particular, it can parse zip, tar, tar.bz2, and other archives that contain documents. If you have a zip file with 100 text files in it, using Jukka's example code you can get the text and metadata for each file nested inside of the zip file. What you might not expect is that you also get metadata and body text for the zip file itself.</p>
+
+<p>Maybe this doesn't surprise you at all. My first reaction when I saw both metadata AND text for the zip file itself was &quot;What text could a zip file possibly have?&quot; My naive assumption was that a zip file wouldn't contain any text, and my assumption was wrong.</p>
+
+<p>I was thinking that a zip, tar, or other archive file was simply a container for other files, and so didn't have any text of its own. Tika looks at archives differently; Tika sees an archive as being like a directory in a file system, and the text for an archive is a list of the contents of the archive.</p>
+
+<p>If you have a zip file that contains 100 text files, after using the code on this page to get the text and metadata for each file, you will get the text and metadata for 101 files: 100 text files, and 1 zip file. The text for the zip file will list the names for each of the 100 text files it contains.</p>
+
+<p>If you aren't interested in seeing text and metadata for the zip file itself, you'll want to take a look at <code>metadata.get(Metadata.CONTENT_TYPE))</code> for each file Tika parses so you can skip the archives themselves. For a zip file, the content type is &quot;application/zip&quot;.</p>
+
+<h1 id="RecursiveMetadata-IntegrationoftheintoTika">Integration of the <a href="RecursiveParserWrapper_181309139.html">RecursiveParserWrapper</a> into Tika</h1>
+<p>A <a href="RecursiveParserWrapper_181309139.html">RecursiveParserWrapper</a> that is based on Jukka and Nick's example above was added to Tika as of 1.7.</p>
+
+<p>The wrapper returns a list of Metadata objects – the first contains the metadata+content for the container document and the rest contain the metadata+content for each embedded document. The content of each document is stored in &quot;X-TIKA:content&quot;, and the embedded document's location in the container document is stored in &quot;X-TIKA:embedded_resource_path&quot; (e.g. &quot;embedded-1/embed1.zip/embed2.zip/embed3.pdf&quot;).</p>
+
+<p>A downside to the wrapper is that it breaks the Tika goal of streaming output – the wrapper caches all metadata+content in memory.  This wrapper must be used with care.</p>
+
+<p>As of Tika 1.7, a JSONified view of this output was integrated into tika-app (the -J option) and tika-server (&quot;/rmeta&quot;).</p>
+
+<p>This format serves as the basis for the upcoming tika-eval module that will help with comparisons of the output of different versions of Tika or other content extractors.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

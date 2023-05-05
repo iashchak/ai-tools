@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Connector API refactoring</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Connector API refactoring
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Remy Maucherat</span>, last modified on мая 04, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Note: <span style="color: rgb(255,102,0);">This proposal has been withdrawn at least for Tomcat 10.0</span></p><p>During the Tomcat 10 development cycle, one of the goals is to remove redundant object attributes and simplify. A major area of duplication was TLS configuration. Moving to a related topic, the rest of the Connector configuration is the biggest offender. While it (thankfully) works, it sets configuration properties through a chain of objects using reflection and weird constructor initialization. For example, setting the connection timeout on the Connector element in server.xml will call setConnectionTimeout on AbstractProtocol using reflection, then setConnectionTimeout on AbstractEndpoint, then setSoTimeout on SocketProperties.</p><p>in practical terms, this replaces:</p><blockquote><p>&lt;Connector port=&quot;8080&quot; protocol=&quot;org.apache.coyote.http11.Http11Nio2Protocol&quot; connectionTimeout=&quot;20000&quot;<br/>   socket.directBuffer=&quot;false&quot; redirectPort=&quot;8443&quot; maxConnections=&quot;150&quot;&gt;<br/>   &lt;UpgradeProtocol className=&quot;org.apache.coyote.http2.Http2Protocol&quot; /&gt;<br/>&lt;/Connector&gt;<br/><br/>&lt;Connector port=&quot;8443&quot; protocol=&quot;org.apache.coyote.http11.Http11NioProtocol&quot; SSLEnabled=&quot;true&quot; scheme=&quot;https&quot; secure=&quot;true&quot;<br/>   socket.directBuffer=&quot;true&quot; socket.directSslBuffer=&quot;true&quot;<br/>   sslImplementationName=&quot;<a class="external-link" href="http://org.apache.tomcat.util.net" rel="nofollow">org.apache.tomcat.util.net</a>.openssl.OpenSSLImplementation&quot;&gt;<br/>   &lt;SSLHostConfig honorCipherOrder=&quot;false&quot;&gt;<br/>     &lt;Certificate certificateKeyFile=&quot;${catalina.home}/conf/newkey.txt.pem&quot;<br/>       certificateFile=&quot;${catalina.home}/conf/newcert.pem&quot; type=&quot;RSA&quot; /&gt;<br/>   &lt;/SSLHostConfig&gt;<br/>   &lt;UpgradeProtocol className=&quot;org.apache.coyote.http2.Http2Protocol&quot; /&gt;<br/>&lt;/Connector&gt;</p></blockquote><p><br/>with:</p><blockquote><p>&lt;Connector redirectPort=&quot;8443&quot;&gt;<br/>  &lt;Protocol&gt;<br/>    &lt;Endpoint className=&quot;<a class="external-link" href="http://org.apache.tomcat.util.net" rel="nofollow">org.apache.tomcat.util.net</a>.Nio2Endpoint&quot;<br/>        port=&quot;8080&quot; maxConnections=&quot;150&quot;&gt;<br/>      &lt;SocketProperties soTimeout=&quot;20000&quot; directBuffer=&quot;false&quot; /&gt;<br/>    &lt;/Endpoint&gt;<br/>    &lt;UpgradeProtocol className=&quot;org.apache.coyote.http2.Http2Protocol&quot; /&gt;<br/>  &lt;/Protocol&gt;<br/>&lt;/Connector&gt;</p><p>&lt;Connector scheme=&quot;https&quot; secure=&quot;true&quot;&gt;<br/>  &lt;Protocol&gt;<br/>    &lt;Endpoint port=&quot;8443&quot; SSLEnabled=&quot;true&quot;<br/>      sslImplementationName=&quot;<a class="external-link" href="http://org.apache.tomcat.util.net" rel="nofollow">org.apache.tomcat.util.net</a>.openssl.OpenSSLImplementation&quot;&gt;<br/>     &lt;SocketProperties directBuffer=&quot;true&quot; directSslBuffer=&quot;true&quot; /&gt;<br/>      &lt;SSLHostConfig honorCipherOrder=&quot;false&quot;&gt;<br/>        &lt;Certificate certificateKeyFile=&quot;${catalina.home}/conf/newkey.txt.pem&quot;<br/>           certificateFile=&quot;${catalina.home}/conf/newcert.pem&quot; type=&quot;RSA&quot; /&gt;<br/>      &lt;/SSLHostConfig&gt;<br/>    &lt;/Endpoint&gt; <br/>    &lt;UpgradeProtocol className=&quot;org.apache.coyote.http2.Http2Protocol&quot; /&gt;<br/>  &lt;/Protocol&gt;<br/>&lt;/Connector&gt;</p></blockquote><p><br/></p><p>The XML now respects the actual object structure (and said objects can be regular beans) so that the digester uses fewer hacks. All the attribute pass-through can now be removed to a large extent. For embedded, this is the same situation but the user has more objects to manipulate.</p><p>On the downside the server.xml is not exactly easier. Especially the mundane port configuration is now on the very much nested Endpoint element (it clearly does belong there of course). A hard topic is that the various attributes which were all on the Connector element (except TLS, from a recent change) while they are now located on the object to which they belong (this is a good idea but people will need to get used to it ...).</p><p>On the upside, a lot of boilerplate code can be removed, including the ProtocolHandler subclasses since it does not need a class tied to its endpoint type. Only the endpoint class is used to select between NIO, NIO2 and APR. Sensible defaults could also help mitigate the problems described above.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

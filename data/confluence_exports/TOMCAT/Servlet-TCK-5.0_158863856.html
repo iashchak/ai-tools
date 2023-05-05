@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Servlet TCK 5.0</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Jakarta-EE-TCKs_103088319.html">Jakarta EE TCKs</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Servlet TCK 5.0
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on ноя 23, 2020
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="ServletTCK5.0-Running">Running</h1><h2 id="ServletTCK5.0-Tomcat">Tomcat</h2><h3 id="ServletTCK5.0-setenv.[sh|bat]">setenv.[sh|bat]</h3><p>Set the following system properties</p><ul><li>-Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE=true</li></ul><h3 id="ServletTCK5.0-context.xml">context.xml</h3><p>Make the following changes:</p><pre>&lt;Context crossContext=&quot;true&quot; resourceOnlyServlets=&quot;jsp&quot;&gt;</pre><pre>   &lt;CookieProcessor className=&quot;org.apache.tomcat.util.http.LegacyCookieProcessor&quot; alwaysAddExpires=&quot;true&quot; forwardSlashIsSeparator=&quot;false&quot; /&gt;</pre><pre>   ...</pre><p>&lt;/Context&gt;</p><h3 id="ServletTCK5.0-server.xml">server.xml</h3><pre>Enable h2c on port 8080, and add some trailer headers<br/>&lt;Connector ... allowedTrailerHeaders=&quot;myTrailer, myTrailer2&quot; &gt;</pre><pre>    &lt;UpgradeProtocol className=&quot;org.apache.coyote.http2.Http2Protocol&quot; /&gt;</pre><pre>&lt;/Connector&gt;</pre><p>Enable TLS on port 8443</p><p>&lt;Connector port=&quot;8443&quot; protocol=&quot;HTTP/1.1&quot; SSLEnabled=&quot;true&quot;&gt;</p><p>    &lt;SSLHostConfig protocols=&quot;TLSv1.2&quot; truststoreFile=&quot;conf/cacerts.jks&quot;&gt;</p><p>        &lt;Certificate certificateKeystoreFile=&quot;conf/clientcert.jks&quot;</p><p>                     certificateKeystorePassword=&quot;changeit&quot;</p><p>                     type=&quot;RSA&quot; /&gt;</p><p>    &lt;/SSLHostConfig&gt;</p><p>&lt;/Connector&gt;</p><p>Note: Set protocols=&quot;TLSv1.2&quot; to disable TLSv1.3 since the TCK requires post-handshake authentication and the Java 11 client does not support that.</p><h3 id="ServletTCK5.0-tomcat-users.xml">tomcat-users.xml</h3><p>Make the following changes:</p><pre>&lt;user username=&quot;CN=CTS, OU=Java Software, O=Sun Microsystems Inc., L=Burlington, ST=MA, C=US&quot; roles=&quot;Administrator&quot;/&gt;<br/>&lt;user username=&quot;j2ee&quot; password=&quot;j2ee&quot; roles=&quot;Administrator,Employee&quot; /&gt;<br/>&lt;user username=&quot;javajoe&quot; password=&quot;javajoe&quot; roles=&quot;VP,Manager&quot; /&gt;</pre><h3 id="ServletTCK5.0-web.xml">web.xml</h3><p>Remove the sections setting the default character encoding for requests and responses to UTF-8.</p><h2 id="ServletTCK5.0-TestSuite">Test Suite</h2><p>Download the Jakarta Servlet 5.0.0 TCK</p><p><a class="external-link" href="https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9/promoted/servlet-tck-5.0.0.zip" rel="nofollow">https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9/promoted/servlet-tck-5.0.0.zip</a></p><p>Extract to SERVLET_TCK_HOME</p><p>cd $SERVLET_TCK_HOME/bin/certificates</p><p>Convert cts_cert to a truststore doing: &quot;keytool -import -alias cts -file cts_cert -storetype JKS -keystore cacerts.jks&quot; password should be &quot;changeit&quot;</p><p>Add $SERVLET_TCK_HOME/bin/certificates/cacerts.jks and $SERVLET_TCK_HOME/bin/certificates/clientcert.jks in the Tomcat conf folder</p><p><br/></p><p>Edit $SERVLET_TCK_HOME/bin/ts.jte</p><p>You'll need to set the following properties (adjust the paths and values for your environment)</p><p><br/></p><p>web.home=/path/to/tomcat</p><pre>servlet.classes=${web.home}/lib/servlet-api.jar:${web.home}/lib/annotations-api.jar</pre><pre>webServerHost=localhost</pre><pre>webServerPort=8080</pre><pre>securedWebServicePort=8443<br/><br/>command.testExecute += -<a class="external-link" href="http://Djavax.net" rel="nofollow" style="letter-spacing: 0.0px;">Djavax.net</a><span style="letter-spacing: 0.0px;">.ssl.trustStore=${ts.home}/bin/certificates/cacerts.jks</span></pre><pre>command.textExecute -= -Djava.endorsed.dirs=${endorsedlib.dir} (Java 11 only)<br/>
+</pre><pre>set JAVA_HOME</pre><pre>cd $SERVLET_TCK_HOME/bin</pre><pre>ant gui</pre><pre>Accept the defaults and then run the tests</pre><h1 id="ServletTCK5.0-Expectedresults">Expected results</h1><p>A default 10.0.x build (as of 10.0.0-M10) with the above configuration and the 5.0.0 TCK triggers 1 test failure with the following JREs:</p><ul><li>Adopt OpenJDK 8u275 b01</li><li>Adopt OpenJDK 11.0.9 b11 (TCK and Tomcat)</li></ul><p>1 Expected failures</p><ul><li>1 x default context path test as Tomcat configuration always overrides this</li></ul><p>Fixed TCK bugs</p><ul><li><a class="external-link" href="https://github.com/eclipse-ee4j/jakartaee-tck/pull/338" rel="nofollow">PR 338</a><ul><li>Incorrect major version (1 failure),</li><li>Using LF rather an CRLF (15 failures)</li><li>Strange /j_security_check test (2 failures)</li><li>Missing annotation marker in Java 8 signature tests (1 failure)</li><li>Re-do Java 11 signature test based on Java 8</li><li>Fix regression in error page tests (1 failure)</li><li>Java 11 issues with HTTP/2 client</li></ul></li></ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : Ciphers</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Security_103099051.html">Security</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : Ciphers
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on июн 06, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="Ciphers-TLSCiphersuitechoice">TLS Cipher suite choice</h1><p class="line862">There is no right choice since there are always trade-offs to make between better security better interoperability, better performance etc.. Where you choose to draw that line is a choice you need to make. The following information is provided to help you make that choice. The ratings provided are those calculated by the excellent<span> </span><a class="external-link" href="https://www.ssllabs.com/ssltest" rel="nofollow" style="text-decoration: none;">SSL Labs Test</a>. Keep in mind that, as more vulnerabilities are discovered, these ratings are only ever going to get worse over time. The results shown on this page were correct at the time they were generated.</p><p class="line867"><br/></p><h2 id="Ciphers-BIO/NIO/NIO2withJSSEResults(Default)">BIO/NIO/NIO2 with JSSE Results (Default)</h2><div class="table-wrap"><table class="wrapped confluenceTable"><tbody><tr><td class="confluenceTd"><p class="line862"><br/></p></td><td class="confluenceTd"><p class="line862">Java 6</p></td><td class="confluenceTd"><p class="line862">Java 7</p></td><td class="confluenceTd"><p class="line862">Java 8</p></td><td class="confluenceTd"><p class="line862">Java 9</p></td><td class="confluenceTd"><p class="line862">Java 10</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 7</p></td><td class="confluenceTd"><p class="line862">C</p></td><td class="confluenceTd"><p class="line862">B</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 8</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">B</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 8.5</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">B</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 9</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr></tbody></table></div><p class="line874">Note: These results were obtained using the JCE Unlimited Strength Jurisdiction Policy Files</p><p class="line874">Note: The Java 6 results are capped at C because Java 6 does not support TLS 1.1 or 1.2.</p><p class="line874">Note: The Java 7 results are capped at B because Java 7 does not support AEAD ciphers.</p><p class="line874">The equivalent OpenSSL cipher configurations used to obtain the above results are:</p><div class="table-wrap"><table class="wrapped confluenceTable"><tbody><tr><td class="confluenceTd"><p class="line862">Java 6</p></td><td class="confluenceTd"><p class="line862">HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!DHE</p></td></tr><tr><td class="confluenceTd"><p class="line862">Java 7</p></td><td class="confluenceTd"><p class="line862">HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!kRSA:!DHE</p></td></tr><tr><td class="confluenceTd"><p class="line862">Java 8</p></td><td class="confluenceTd"><p class="line862">HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!kRSA</p></td></tr><tr><td class="confluenceTd"><p class="line862">Java 9</p></td><td class="confluenceTd"><p class="line862">HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!kRSA</p></td></tr></tbody></table></div><p class="line874">Note: kRSA ciphers are not excluded in Java 6 since they are likely to be the only ones left</p><p class="line874">Note: In Java 7 and earlier DHE ciphers use insecure DH keys with no means to configure longer keys which is why DHE ciphers are excluded in those Java versions.</p><p class="line867"><br/></p><h2 id="Ciphers-NIO/NIO2withJSSE+OpenSSLResults(Default)">NIO/NIO2 with JSSE+OpenSSL Results (Default)</h2><div class="table-wrap"><table class="wrapped confluenceTable"><tbody><tr><td class="confluenceTd"><p class="line862"><br/></p></td><td class="confluenceTd"><p class="line862">Java 6</p></td><td class="confluenceTd"><p class="line862">Java 7</p></td><td class="confluenceTd"><p class="line862">Java 8</p></td><td class="confluenceTd"><p class="line862">Java 9</p></td><td class="confluenceTd"><p class="line862">Java 10</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 8.5</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 9</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr></tbody></table></div><p class="line862">The OpenSSL cipher configuration used was<span> </span><strong>HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!kRSA</strong>. Up-to-date selection of secure cipher suites in OpenSSL format is available at<span> </span><a class="external-link" href="https://wiki.mozilla.org/Security/Server_Side_TLS" rel="nofollow" style="text-decoration: none;">Mozilla wiki</a>.</p><p class="line867"><br/></p><h2 id="Ciphers-APRwithOpenSSLResults(Default)">APR with OpenSSL Results (Default)</h2><div class="table-wrap"><table class="wrapped confluenceTable"><tbody><tr><td class="confluenceTd"><p class="line862"><br/></p></td><td class="confluenceTd"><p class="line862">Java 6</p></td><td class="confluenceTd"><p class="line862">Java 7</p></td><td class="confluenceTd"><p class="line862">Java 8</p></td><td class="confluenceTd"><p class="line862">Java 9</p></td><td class="confluenceTd"><p class="line862">Java 10</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 7</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 8</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 8.5</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr><tr><td class="confluenceTd"><p class="line862">Tomcat 9</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">N/A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td><td class="confluenceTd"><p class="line862">A</p></td></tr></tbody></table></div><p class="line862">The OpenSSL cipher configuration used was<span> </span><strong>HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!kRSA</strong>. Up-to-date selection of secure cipher suites in OpenSSL format is available at<span> </span><a class="external-link" href="https://wiki.mozilla.org/Security/Server_Side_TLS" rel="nofollow" style="text-decoration: none;">Mozilla wiki</a>.</p><p class="line867"><br/></p><h2 id="Ciphers-Environment">Environment</h2><p class="line874">The results above were generated with:</p><ul><li>Java 6, 64-bit, update 45</li><li>Java 7, 64-bit, update 80</li><li>Java 8, 64-bit, update 172</li><li>Java 9, 9.0.4</li><li>Apache Tomcat 7.0.88-dev, r1737253.</li><li>Apache Tomcat 8.0.53-dev, r1737224.</li><li>Apache Tomcat 8.5.32-dev, r1737241.</li><li>Apache Tomcat 9.0.9-dev, r1737193.</li><li>tc-native 1.2.16</li></ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : AJP with stunnel</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="FAQ_103098750.html">FAQ</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Connectors_103098826.html">Connectors</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : AJP with stunnel
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified by <span class='editor'> Konstantin Kolinko</span> on ноя 24, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p><em>Permalink</em> to this page; <a href="https://cwiki.apache.org/confluence/x/TCglBg" rel="nofollow">https://cwiki.apache.org/confluence/x/TCglBg</a></p><h1 id="AJPwithstunnel-AJPoverstunnel">AJP over stunnel</h1><p>stunnel is a little more complicated than a normal protocol because it can be used in a number of different ways. I'll give some contrived examples to see how you can set it up in different ways, depending upon the support for encryption of the underlying protocol.</p><p>This wiki entry is intended to be a starter-guide and not a replacement for the fine <a class="external-link" href="https://www.stunnel.org/docs.html" rel="nofollow">documentation provided by the stunnel team</a>.</p><p>Let's say that you have an HTTPS server, but your client can't speak HTTPS for some reason. If you set up stunnel on the <em>client</em> side, you can connect locally to the stunnel server and have it establish a secure-connection to the remote server running HTTPS. Like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  client -&gt; localhost:12345 (stunnel)
+  stunnel -&gt; remote_host:443 (httpd)</pre>
+</div></div><p>As far as the client is concerned, it's using HTTP to talk to localhost. But really it's talking to remote_host:443, so everyone is happy. (Yes, there are issues with URLs and redirects produced by the server, but that's out of scope for this discussion).</p><p>Let's take another example: you have clients that are HTTPS-capable, but the service you are running can only support HTTP for some reason, and you want to secure it. Set up stunnel on the <em>server</em>, then have your remote clients connect to <em>it</em> and tunnel to localhost. Like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  client -&gt; remote_host:443 (stunnel)
+  stunnel -&gt; localhost:8080 (httpd)</pre>
+</div></div><p>As far as the client is concerned, it's using HTTPS to communicate with remote_host:443, but really it's connecting to remote_host:8080. (Yes, there are some issues with URLs and redirects but that's out of scope for this discussion.)</p><p>So what if the underling protocol doesn't support TLS at all? Well, then you have to set up stunnel on <em>both sides</em> of the tunnel, like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  client (mod_jk) -&gt; localhost:12345 (stunnel)
+  stunnel -&gt; remote_host:12345 (stunnel)
+  stunnel -&gt; localhost:8009 (Tomcat)
+</pre>
+</div></div><p>The setup for stunnel looks like this for the client (on the web server):</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  sslVersion = all
+  options = NO_SSLv2
+  options = NO_SSLv3
+  client = yes
+  
+  [ajp13s]
+  accept=localhost:8009
+  connect=remote_host:8010
+</pre>
+</div></div><p>On the server, it looks like this:</p><div class="preformatted panel" style="border-width: 1px;"><div class="preformattedContent panelContent">
+<pre>  sslVersion = all
+  options = NO_SSLv2
+  options = NO_SSLv3
+  client = no
+  
+  [ajp13s]
+  accept=8010
+  connect=localhost:8009
+</pre>
+</div></div><p>On the web server, set your worker's host to &quot;localhost&quot; and port to 8009. mod_jk will connect to localhost:8009 which stunnel will accept and forward over the network to remote_host:8010 which will be accepted by stunnel on the server and forwarded to localhost:8009 on the server.</p><p>stunnel is great because it will auto-reconnect if the connection is dropped for some reason. Remember a few things with stunnel:</p><ol><li>Depending upon the version, you might only be able to use TLSv1 (and not e.g. TLSv1.2)</li><li>stunnel generally ignores certificate issues, such as expiration, etc. You might want to configure it with a little more care than the default. <strong>THIS ALSO MEANS IT DOES NOT AUTHENTICATE THE SERVER BY DEFAULT</strong>. You could accidentally connect to a malicious server.</li></ol><p>This should be enough to get you started. Please refer to the <a class="external-link" href="https://www.stunnel.org/docs.html" rel="nofollow">official stunnel documentation</a> for specifics.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

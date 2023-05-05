@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : SummerOfCode2009</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Migrated-Content_103100198.html">Migrated Content</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="GSOC_103099234.html">GSOC</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : SummerOfCode2009
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span>, last modified on мар 28, 2010
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Project: Convert current Tomcat valves to Servlet Filters. </p>
+
+
+<p>Abstract: Apache Tomcat is an implementation of the Java Servlet and <a class="unresolved" href="#">JavaServer</a> Pages technologies. It is famous and widely used. It is also a component of an Application Server named JBoss Application Server. My task in this project is to convert current Tomcat valve based implementation into Servlet Filters which is consistent with the Servlet Specification. </p>
+
+
+<p>Here is the roughly plan for this project: </p>
+
+<p>Week 1: finish the very first valve - <a href="AccessLogValve_103098448.html">AccessLogValve</a>, including testing and documentation work. The deliverables after this week are the source code of <a class="unresolved" href="#">AccessLogFilter</a>, including unit test code and documentation of this class.</p>
+
+<p>Week 2: finish working with the <a class="unresolved" href="#">ErrorReportValve</a> and SSLValve</p>
+
+<p>Week 3: finish working with <a class="unresolved" href="#">StandardEngineValve</a>, move its functionality into some &quot;engine&quot; level filter. And I also need to twist the &quot;Engine&quot;, &quot;Host&quot;, &quot;Context&quot; and &quot;Wrapper&quot; class a little to move on in this week.</p>
+
+<p>Week 4: finish working with <a class="unresolved" href="#">StandardHostValve</a>, move its functionality into some &quot;host&quot; level filter.</p>
+
+<p>Week 5: finish working with <a class="unresolved" href="#">StandardContextValve</a>, move its functionality into some &quot;context&quot; level filter.</p>
+
+<p>Week 6: finish working with <a class="unresolved" href="#">StandardWrapperValve</a>, move its functionality into some &quot;indivisual servlet&quot; level filter.</p>
+
+<p>Week 7 - 8: Do some integration test with current work to guarantee I do not break anything.</p>
+
+<p>Week 9: finish working with <a class="unresolved" href="#">RequestFilterValve</a> and its 2 subclasses, refactor their functionality out into 3 corresponding filter classes.</p>
+
+<p>Week 10 - 11: Refactor the functionality out of the <a class="unresolved" href="#">AuthenticatorBase</a> class and its subclasses into some structure which is consistent with the Servlet Container Profile in JSR-196.</p>
+
+<p>Week 12: Integration test all the work. Check the missing documents and complete them.</p>
+
+
+
+<p>====================================================================================================</p>
+
+
+
+<p>Here I'd like to give some design option and my thinkings of this project. Thank you for your comment. </p>
+
+<ol>
+	<li><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>Since valves have different levels, such as server level, engine level, host level, context level. And there are several places for the configuration: server.xml, web.xml. For server level, both server.xml and web.xml is suitable, since both of them are some kind of global. For engine and host level, I think server.xml is much more suitable. And we could also use "$CATALINA_BASE/conf/[enginename]/engine-filters.default" for engine level filters, "$CATALINA_BASE/conf/[enginename]/[hostname]/host-filters.default" for host level filters and "$CATALINA_BASE/conf/[enginename]/[hostname]/context.xml.default" for context levelfilters. This is the options for configuration file location that I could think about. In my opinion, we could put all these configuration in server.xml for simplicity, but keep an eye on those "$CATALINA_BASE/conf/[enginename]/[hostname]/" path just like tomcat deal with context.xml.default now.
+<br class="atl-forced-newline" /></p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /></li>
+</ol>
+
+
+<p>markt - Are Valves going to be removed completely?</p>
+<ul>
+	<li>If yes, it just becomes a one-for-one replacement (all references to valves in code and config changes to filters) once all the valves are available. In the meantime, filters can be configured in contexts (per app or globally) for testing purposes.</li>
+	<li>If no, I'd be tempted to use web.xml to configure filters. There is already a global web.xml. Adding the option of a per engine and per host web.xml should be doable.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>xxd - How about the pipeline? If we remove those valves, this class needs not to be existed. I found that this class is not widely used outside the hierarchy  of container interface. And since these classes all implements Lifecycle interface, the start() and stop() method will be invoked no matter whether these classes implement the Pipeline interface or not at a glance. And the code in <a class="unresolved" href="#">StandardPipeline</a> are generally about manipulating valves, so if we could remove all those valve structures, this class could be eliminated either. Any comments? </p>
+<ul>
+	<li>and if we configure filters in web.xml, how do we differ engine and host level filters? And context and wrapper (if exists) level filters of course should be configurated in the corresponding web.xml, since it goes with the servlet specification.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>2. Filters has orders, so the order they appear in the configuration file should be maintained. And some filter has to be the first one in the filter chain. I could not get an idea to guarantee this elegantly other than give some comment in the configuration file or in the documentation. </p>
+
+<p>markt - Filter order</p>
+<ul>
+	<li>This is already defined in the servlet spec. Look to see how Tomcat handles this currently.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>xxd - I know the order of context level and wrapper level filters is already defined in the servlet spec. What I mean is the filters of engine and host level. </p>
+
+<p>markt - Order should be:<br/>
+(1) Global filters (2) Engine filters (3) Host filters (4) Context filters Where a filter is defined at multiple levels, merge the configurations using the Servlet 3.0 rules with the *lowest* level taking precedence (ie context &gt; host &gt; engine &gt; global).</p>
+
+<p>3. I will modify the digestor code in order to load the configuration about filters in, <a class="unresolved" href="#">ContextRuleSet</a>.java, <a class="unresolved" href="#">EngineRuleSet</a>.java, <a class="unresolved" href="#">HostRuleSet</a>.java in particular. And those filters information will be store in an order map (I'd like to choose treeMap now) – <a class="unresolved" href="#">TreeMap</a>&lt;FilterMetaInfo, Filter&gt;. The <a href="https://cwiki.apache.org/confluence/display/TOMCAT/FilterMetaInfo">FilterMetaInfo</a> class is generally like this: </p>
+
+<p>	private final <a href="https://cwiki.apache.org/confluence/display/TOMCAT/FilterLevels">FilterLevels</a> level;</p>
+
+<p>	private final int order;</p>
+
+<p><a href="https://cwiki.apache.org/confluence/display/TOMCAT/FilterLevels">FilterLevels</a> is an enum which contains: ENGINE, HOST, CONTEXT. </p>
+
+<p>markt - Point of execution</p>
+<ul>
+	<li>This raises an interesting point. Is one single filter chain created in the same way as it is now or do we create multiple filter chains - one per engine / host / context - much like valves are now. Just because filters are defined at the engine level that doesn't necessarily mean they have to execute there</li>
+	<li>Which raises the next question - which class loader loads the engine and host filters? Single filter chain implies that the webapp must do the loading. That could limit what the filter can do. Is that an issue?
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>xxd - I think all the filters need to be formed as a chain, and will be invoked when the request comes in. Those engine and host level is just ordinary filters after they are added into the filter chain. But before it, they have some global attributes compared with context level filters. So, could we just add those engine and host level filters into the filter chain when the filter chain is created? But for sake of performance, I think we could cache those high level filters since they are global to some degree. </p>
+
+<p>For the discussing of configuration location of those converted filters, please refer to <a class="external-link" href="http://wiki.apache.org/tomcat/SummerOfCode2009/LoadingFilterConfiguration" rel="nofollow">http://wiki.apache.org/tomcat/SummerOfCode2009/LoadingFilterConfiguration</a>. </p>
+
+
+<p>4. Do I need to remove all the pipeline facility or can I try to remove as much logic as possible from <a class="unresolved" href="#">StandardEngineValve StandardHostValve</a>/StandardHostValve? I found that those valve just delegate to the lower level pipeline(valves), and the lowest <a class="unresolved" href="#">StandardWrapperValve</a> will actually finish the job (filterChain and/or the servlet invocation). </p>
+
+<p>markt - See comment on point 3</p>
+<ul>
+	<li>Right now I don't know. I'd like to remove all the valve code if possible. It depends how much access to Tomcat internals the filters end up needing. This question  probably needs to be deferred until we have some working filters to make judgements based on.
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p>xxd - All these jobs should be finished somewhere, if we do not use valves. Can I just override the invoke() method of Container interface for <a class="unresolved" href="#">StandardEngine StandardHost</a>/StandardContext/StandardWrapper, and high level container will call the invoke() method of the container which have a lower level than itself, for example, in invoke() method of <a class="unresolved" href="#">StandardEngine</a>, the invoke() method of <a class="unresolved" href="#">StandardHost</a> will be called. And I will move all the valve invoke() logic into the corresponding invoke() method of its container.</p>
+
+<p>By the way, I'd like to added all the filters configurated in the server.xml file into the filterChain when the filterChain is created(in <a class="unresolved" href="#">ApplicationFilterFactory</a>.java line 143 or so, after &quot;StandardContext context = (StandardContext) wrapper.getParent();&quot;) in the order of be configed in server.xml or some other configuration location. The general algorithm is like this: first, get to engine and host level through context (through getParent()); then add host and engine level filters into filter chain in the order of Engine -&gt; Host -&gt; Context. Is that a proper place for me to add those logic? What's the opinion of yours?</p>
+
+<p>markt - The long term aim is to remove Valves entirely</p>
+
+<p>5. Valve interface has a event() method which is used to process a comet event. Filters need not to worry about whether it is a comet event or not. So how can we reflect this part in our new filter-based structure? </p>
+
+<p>markt - implements <a class="unresolved" href="#">CometFilter</a> interface to support comet based request.</p>
+
+<p>6. Do we really need to move the logic in <a class="unresolved" href="#">StandardEngine StandardHost</a>/StandardContextValve into some filters? Since the logic of these classes is purely servlet-engine concerned, I do not think those logic could be reused by filters. Any comments? </p>
+
+<p>markt - Whilst removal is the aim, it may well end up making sense to keep some internal Valves.</p>
+
+<p>7. My solution now to load configuration in $CATALINA_BASE/conf/server.xml is to add a <a class="unresolved" href="#">CallMapParamRule</a>.class to collect the attribute-value pairs into a map, and this map is the initiation parameter of a filter. A method with signature – &quot;addFilterWithConfig(Class&lt;? extends Filter&gt; filterClass, Map&lt;String, String&gt; paramMap)&quot; will be added in <a class="unresolved" href="#">StandardEngine</a>/Host/Context to add new filters into it. The main content of <a class="unresolved" href="#">CallMapParamRule</a> is as blow: </p>
+
+<p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p><p>    public void begin(String namespace, String name, Attributes attributes)<br/>
+            throws Exception {<br/>
+        for (int i = 0, count = attributes.getLength(); i &lt; count; i++) {<br/>
+            // here we do not deal with the className attribute, since it<br/>
+            // is used as the class name that will be initiated.<br/>
+            if("className".equalsIgnoreCase(attributes.getLocalName<img class="emoticon" src="images/icons/emoticons/information.png" height="16" width="16" align="absmiddle" alt="" border="0"/>)) {<br/>
+                continue;<br/>
+            }<br/>
+            paramMap.put(attributes.getLocalName<img class="emoticon" src="images/icons/emoticons/information.png" height="16" width="16" align="absmiddle" alt="" border="0"/>, attributes.getValue<img class="emoticon" src="images/icons/emoticons/information.png" height="16" width="16" align="absmiddle" alt="" border="0"/>);<br/>
+        }<br/>
+        digester.getLogger().debug(paramMap);<br/>
+        Object parameters[] = (Object[]) digester.peekParams();<br/>
+        parameters[paramIndex] = paramMap;<br/>
+    }</p></p><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p /><p />
+
+<p>In order to add those newly added filters into the <a class="unresolved" href="#">FilterChain</a>, the <a class="unresolved" href="#">ApplicationFilterFactory</a> class also need to be altered. </p>
+
+<p>Any comments about this solution? Or are there a better one?</p>
+
+<p>8. I've posted the patch file of the source code for loading configuration of filters from server.xml and hacking those loaded filters into filter chain as attachment of this wiki page. Any comments are welcomed. And the source code could reduce duplicating code by altering the Container interface. But I do not know the influence of this action. So I added the corresponding code into <a class="unresolved" href="#">StandardEngine</a>, <a class="unresolved" href="#">StandardHost</a> and <a class="unresolved" href="#">StandardContext</a> respectively. </p>
+
+<p>9. I've made a seperate wiki page for the configuration location of those newly added filters. Here is the link: <a class="external-link" href="http://wiki.apache.org/tomcat/SummerOfCode2009/LoadingFilterConfiguration" rel="nofollow">http://wiki.apache.org/tomcat/SummerOfCode2009/LoadingFilterConfiguration</a></p>
+
+<hr/>
+<p><a href="https://cwiki.apache.org/confluence/display/TOMCAT/CategoryGSOC">CategoryGSOC</a></p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

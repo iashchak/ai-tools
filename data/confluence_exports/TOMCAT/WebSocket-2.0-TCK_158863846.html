@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Apache Tomcat : WebSocket 2.0 TCK</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Apache Tomcat</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Apache-Tomcat-Home_61320756.html">Apache Tomcat Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Design-and-Development-Issues_61320762.html">Design and Development Issues</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Jakarta-EE-TCKs_103088319.html">Jakarta EE TCKs</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Apache Tomcat : WebSocket 2.0 TCK
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mark Thomas</span>, last modified on апр 13, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="WebSocket2.0TCK-Running">Running</h1><h2 id="WebSocket2.0TCK-Tomcat">Tomcat</h2><p>Set the following system properties</p><ul><li>org.apache.tomcat.websocket.DISABLE_BUILTIN_EXTENSIONS=true</li><li>org.apache.tomcat.websocket.ALLOW_UNSUPPORTED_EXTENSIONS=true</li><li>org.apache.tomcat.websocket.DEFAULT_PROCESS_PERIOD=0</li></ul><h2 id="WebSocket2.0TCK-TestSuite">Test Suite</h2><p>Download the Jakarta WebSocket 2.0 TCK</p><p><a class="external-link" href="https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9/promoted/websocket-tck-2.0.0.zip" rel="nofollow">https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9/promoted/websocket-tck-2.0.0.zip</a></p><p><a class="external-link" href="https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/staged-910/jakarta-websocket-tck-2.0.1.zip" rel="nofollow">https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/staged-910/jakarta-websocket-tck-2.0.1.zip</a></p><p>Extract to WEBSOCKET_TCK_HOME</p><p><br/></p><p>Edit $WEBSOCKET_TCK_HOME/bin/ts.jte</p><p>You'll need to set the following properties (adjust the paths and values for your environment)</p><pre>webServerHost=localhost</pre><pre>webServerPort=8080</pre><pre>securedWebServicePort=8443</pre><pre>websocket.api=/home/mark/repos/asf-public/tomcat/trunk/output/build/lib/websocket-api.jar</pre><pre>websocket.classes=/home/mark/repos/asf-public/tomcat/trunk/output/build/lib/tomcat-websocket.jar:/home/mark/repos/asf-public/tomcat/trunk/output/build/lib/servlet-api.jar:/home/mark/repos/asf-public/tomcat/trunk/output/build/lib/tomcat-util.jar:/home/mark/repos/asf-public/tomcat/trunk/output/build/lib/tomcat-api.jar:/home/mark/repos/asf-public/tomcat/trunk/output/build/bin/tomcat-juli.jar<br/><br/>Add the following to the command.testExecute property (to prevent entropy issues slowing the tests down)<br/>-Djava.security.egd=<a class="external-link" href="http://file/dev/./urandom" rel="nofollow">file:/dev/./urandom</a><br/><br/></pre><p>Do not reduce ws_wait below the default of 5s as it is likely to trigger test failures.</p><p><br/></p><pre>set JAVA_HOME</pre><pre>Run ant gui</pre><p>Accept the defaults and then run the tests</p><h1 id="WebSocket2.0TCK-Expectedresults(JakartaEE9)">Expected results (Jakarta EE 9)</h1><p>A default 10.0.x build (as of 10.0.5) running with the 2.0.1 TCK build triggers 0 test failures with the following JRE(s):</p><ul><li>Adopt OpenJDK 11.0.9 b11 (TCK and Tomcat)</li></ul><p>5 Tests 'fixed' by appropriate system property configuration (see above).</p><ul><li>4 x extensions (TCK assumes invalid extensions are ignored)<br/>Consider making TCK smarter so it ignores other extensions the server may advertise. Better still, detect them first and then exclude them from this test.<br/>Need to discuss expected behaviour if an unknown extension is specified. Are these required or optional?</li><li>1 x timeout related test expects more frequent expiration checks</li></ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:01</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

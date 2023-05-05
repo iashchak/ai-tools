@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hadoop : Develop on Apple Silicon (M1) macOS</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Hadoop</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home_65866089.html">Home</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Hadoop-Contributor-Guide_89071892.html">Hadoop Contributor Guide</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Hadoop : Develop on Apple Silicon (M1) macOS
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> Mingliang Liu</span>, last modified on мар 22, 2021
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Hadoop uses some dependences that do not work natively with Apple Silicon (M1) machines. If you would like to develop and build Hadoop on your macOS with M1 chip / ARM64 CPU, follow steps in this page.</p><h2 id="DeveloponAppleSilicon(M1)macOS-ProtocolBuffers(protobuf)">Protocol Buffers (protobuf)</h2><p>Hadoop 3 has moved to newer version of protobuf package (version 3.7.0 in trunk as of Mar 2021), though you can use old versions especially if you need to build both on Hadoop 2 and Hadoop 3 with one protobuf version. However, Apple M1 does not work with protobuf 2.5.0 - when installing protobuf from source you will get unsupported CPU architecture error. The simply solution is to use the same new protobuf version.</p><h2 id="DeveloponAppleSilicon(M1)macOS-protobuf-maven-plugin">protobuf-maven-plugin</h2><p>You may get following error:</p><pre><code class="language-txt">[ERROR] Failed to execute goal org.xolstice.maven.plugins:protobuf-maven-plugin:0.5.1:compile-custom (default) on project hadoop-yarn-csi: Missing:
+[ERROR] ----------
+[ERROR] 1) io.grpc:protoc-gen-grpc-java:exe:linux-aarch_64:1.15.1</code></pre><p>This is because the grpc package is not releasing binaries for ARM64. One way of solving this is to specify the properties <code>os.detected.classifier</code> to be osx-x86_64 instead of osx-aarch_64 For example, you can put following code in your <code>~/.m2/settings.xml</code> file:</p><pre>&lt;settings&gt;<br/>    &lt;activeProfiles&gt;<br/>        &lt;activeProfile&gt;<br/>            apple-silicon<br/>        &lt;/activeProfile&gt;<br/>    &lt;/activeProfiles&gt;<br/>    &lt;profiles&gt;<br/>        &lt;profile&gt;<br/>            &lt;id&gt;apple-silicon&lt;/id&gt;<br/>            &lt;properties&gt;<br/>                &lt;os.detected.classifier&gt;osx-x86_64&lt;/os.detected.classifier&gt;<br/>            &lt;/properties&gt;<br/>        &lt;/profile&gt;<br/>    &lt;/profiles&gt;<br/>&lt;/settings&gt;</pre><h2 id="DeveloponAppleSilicon(M1)macOS-frontend-maven-plugin"><s>frontend-maven-plugin</s></h2><p><s>This plugin is used to install node.js and yarn locally. <a class="external-link" href="https://issues.apache.org/jira/browse/YARN-6278" rel="nofollow">YARN-6278</a> added <code>yarn-ui</code> profile to pom.xml leveraging this plugin to automatically install node.js and yarn locally under <code>target/webapp</code> directory. Latest versions of this plugin supports Apple M1 chip but Hadoop is still using an older version that does not. As a result, <span style="color: rgb(41,41,41);">when detecting an ARM CPU on your Apple M1, this plugin will generate a download link for a Darwin ARM64 build of Node, which doesn’t exist. So the workaround is to manually upgrade this version to 1.10+. For this you can update the version in <code>h</code><span><code>adoop-project/pom.xml</code> file.</span></span></s></p><p><s>Later Hadoop release will have this plugin upgrade. </s></p><p>UPDATE: Fixed by YARN-10706.</p>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 11:02</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

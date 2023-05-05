@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TIKA : TikaEvalAndStructuralComponents</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">TIKA</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            TIKA : TikaEvalAndStructuralComponents
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+    
+        
+    
+        
+        
+            Created by <span class='author'> ASF Infrabot</span> on мар 26, 2019
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <h1 id="TikaEvalAndStructuralComponents-EvaluatingStructuralComponentsinExtractedContentwiththetika-evalModule">Evaluating Structural Components in Extracted Content with the tika-eval Module</h1>
+
+<p><strong>NOTE:</strong> This page assumes basic knowledge of the tika-eval workflow.  Please see <a href="TikaEval_109454084.html">TikaEval</a> and make sure that you understand how the tika-eval modules works on text before considering structure.</p>
+
+<h2 id="TikaEvalAndStructuralComponents-Background">Background</h2>
+
+<p>File formats often contain structural or stylistic elements, and Apache Tika attempts to normalize and represent some of these features in its XHTML output.  As of Tika 1.20, users can get counts of common XHTML tags (in Profile mode) and/or comparison counts of common XHTML tags (in Compare mode).  Users can also count &quot;tag exceptions&quot; – cases where the structure tags violate XML/XHTML requirements, e.g. <code>&lt;b&gt;&lt;i&gt;&lt;/b&gt;&lt;/i&gt;</code>.</p>
+
+<h1 id="TikaEvalAndStructuralComponents-KnownLimitations">Known Limitations</h1>
+<p>1) Simply counting structure tags offers only a rudimentary insight into the structure of a single extract or as a comparison between two extracts of the same source file.  One might want to apply a more advanced tree-based similarity/distance metric between two extracts – our <a class="external-link" href="https://issues.apache.org/jira/projects/TIKA/summary" rel="nofollow">JIRA</a> is open and committers are standing by.</p>
+
+<p>2) If one one tool's extracts have more <code>&lt;p&gt;</code> elements than do another tool's that doesn't necessarily tell you that one extract is better than another. <br/>
+ For example, one tool  – Tool A – might add <code>&lt;p&gt;</code> elements for every new line in a PDF:</p>
+
+<p>   <code>&lt;p&gt;The quick brown fox&lt;/p&gt;</code></p>
+
+<p>   <code>&lt;p&gt;jumped over the lazy dog&lt;/p&gt;</code></p>
+
+<p> Another tool – Tool B – might apply heuristics to reconstruct logical paragraphs, such as<br/>
+   <code>&lt;p&gt;The quick brown fox jumped over the lazy dog. &lt;/p&gt;</code></p>
+
+<p>3) The tika-eval module is currently using <a class="unresolved" href="#">TagSoup</a> on *.html files.  <a class="unresolved" href="#">TagSoup</a> is designed to silently fix structural problems in the HTML so no exceptions will likely be thrown for non-compliant HTML.  We may alter this behavior in the future.</p>
+
+<p>Tool A would have more <code>&lt;p&gt;</code> tags, but Tool B is probably capturing better information about the structure of the document.</p>
+
+<h1 id="TikaEvalAndStructuralComponents-IntendedUsesandScope">Intended Uses and Scope</h1>
+
+<p>While there are obvious limitations, the tag capability will allow users to identify:</p>
+<ul>
+	<li>If one tool is completely skipping or capturing fewer structural elements.  One could imagine a regression in Tika that dropped footnotes in DOCX, and this would quickly show that there were fewer <code>&lt;div&gt;</code> elements in the output from the more recent version; or one could quickly see that one parser is extracting URLs (<code>&lt;a&gt;</code>) elements from PDFs, but another isn't.</li>
+	<li>Structural problems in Tika's XHTML output – there is an XML exception flag in the database if an error was thrown parsing Tika's output
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h1 id="TikaEvalAndStructuralComponents-HowtoCountStructuralComponents">How to Count Structural Components</h1>
+
+<p>If you are using Tika to generate .json files, follow the directions on <a href="TikaEval_109454084.html">TikaEval</a> for how to create a directory of extracts, <strong>but</strong> don't include the <code>-t</code> option: <code>java -jar tika-app.X.Y.jar -J -i input_dir -o extracts</code>.  This has the effect of storing the content that is extracted as XHTML, and it sets a metadata value of <code>ToXMLContentHandler</code> for the key <code>X-TIKA:content_handler</code>.  When tika-eval finds that value set in the metadata, it parses the XHTML with a SAXParser to count the structure tags and extract the text.</p>
+
+<h1 id="TikaEvalAndStructuralComponents-IncludedTags">Included Tags</h1>
+
+<p>As of Tika 1.21, the tika-eval module includes the following structural components:</p>
+
+<ul>
+	<li>&lt;a&gt;</li>
+	<li>&lt;b&gt;</li>
+	<li>&lt;div&gt;</li>
+	<li>&lt;i&gt;</li>
+	<li>&lt;img&gt;</li>
+	<li>&lt;li&gt;</li>
+	<li>&lt;ol&gt;</li>
+	<li>&lt;p&gt;</li>
+	<li>&lt;table&gt;</li>
+	<li>&lt;td&gt;</li>
+	<li>&lt;title&gt;</li>
+	<li>&lt;tr&gt;</li>
+	<li>&lt;u&gt;</li>
+	<li>&lt;ul&gt;
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<p><strong>NOTE:</strong> For most parsers, aside from the HTML parser, Tika injects the file's &quot;title&quot; metadata component into the <code>&lt;title&gt;</code> tag.  For example, if the &quot;title&quot; metadata element in a PDF is &quot;Tika 2.0 – NextGen Extraction&quot;, that will be injected into the XHTML as both a metadata item <code>dc:title</code>, and in the content within <code>&lt;title&gt;</code> tags.  The HTML parser passes through the source HTML page's <code>&lt;title&gt;</code> contents.</p>
+
+<p>Given how much Tika relies on <code>&lt;div&gt;</code> tags, we may at some point want to include the <code>class</code> information so that we can tell instantly if there's a change in e.g. <code>&lt;div class=&quot;slide-notes&quot;&gt;</code> elements.</p>
+
+<p>For now, we've chosen not to include the <code>&lt;h*&gt;</code> tags because, while the HTML parser passes those through, the other parsers do not tend to generate header tags.</p>
+
+<h1 id="TikaEvalAndStructuralComponents-Reports">Reports</h1>
+<p>While we added structural component extraction in Tika 1.20, we only added report writing in 1.21-SNAPSHOT.  Users of Tika 1.20 can use the H2 database directly for reporting, generate their own reports via a custom XML reporting config file or use the updated report configuration files from 1.21-SNAPSHOT available: <a class="external-link" href="https://github.com/apache/tika/blob/master/tika-eval/src/main/resources/profile-reports.xml" rel="nofollow">for profile mode</a> and <a class="external-link" href="https://github.com/apache/tika/blob/master/tika-eval/src/main/resources/comparison-reports.xml" rel="nofollow">for comparison mode</a>.</p>
+
+<h2 id="TikaEvalAndStructuralComponents-ProfileMode">Profile Mode</h2>
+<p>As of Tika 1.21-SNAPSHOT, there are reports for:</p>
+
+<ul>
+	<li>Tags by mime – each row is a mime type, and there's a single column for the sum of the tags of each tag type</li>
+	<li>Tag exceptions by mime – each row is a mime type, and there's a count for the number of XHTML extract files that triggered a parse exception in tika-eval</li>
+	<li>Tag exception details – this lists every XHTML extract file that triggered a parse exception in tika-eval
+<br class="atl-forced-newline"/></li>
+</ul>
+
+
+<h2 id="TikaEvalAndStructuralComponents-ComparisonMode">Comparison Mode</h2>
+<p>As of Tika 1.21-SNAPSHOT, there are reports for:</p>
+<ul>
+	<li>Tag comparisons by mime – each row is a mime type pair (mime type as identified by tool A and mime type as identified by tool B), and there are pairs of columns for each tag, e.g. <code>tags_div_a</code> contains the sum of the <code>div</code> tags in extracts from tool A and <code>tags_div_b</code> contains the sum of the div tags in extracts from tool B.</li>
+	<li>Tag exceptions by mime pair – each row is a mime type pair (<code>mime_type_a</code> and <code>mime_type_b</code>) and there's a count for the number of XHTML extract files that triggered a parse exception in tika-eval</li>
+	<li>Tag exception details A – this lists every XHTML extract file from tool A that triggered a parse exception in tika-eval</li>
+	<li>Tag exception details B – this lists every XHTML extract file from tool B that triggered a parse exception in tika-eval</li>
+</ul>
+                    </div>
+
+                                        
+                 
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on мая 02, 2023 15:13</p>
+                    <div id="footer-logo"><a href="https://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>
